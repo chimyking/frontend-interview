@@ -289,8 +289,22 @@ p.a // 'a' = 2
 当然这是简单版的响应式实现，如果需要实现一个 Vue 中的响应式，需要我们在 get 中收集依赖，在 set 派发更新，之所以 Vue3.0 要使用 Proxy 替换原本的 API 原因在于 Proxy 无需一层层递归为每个属性添加代理，一次即可完成以上操作，性能上更好，并且原本的实现有一些数据更新不能监听到，但是 Proxy 可以完美监听到任何方式的数据改变，唯一缺陷可能就是浏览器的兼容性不好了。
 
 ### 数组的方法（待完善）
+
 ### 异步编程
+- 回调函数
+- 事件监听
+- 发布订阅模式
+- Promise
+- Generator (ES6)
+- async (ES7)
 要彻底搞清楚异步编程，就必须清楚Event Loop 如果对Event Loop不清楚的可以先往下翻，查看下一个小节
+#### 常见的异步操作
+- 网络请求，如ajax http.get
+- IO 操作，如readFile readdir
+- 定时函数，如setTimeout setInterval
+- 事件绑定
+
+
 #### 并发（concurrency）和并行（parallelism）区别
 **并发**是宏观概念，我分别有任务 A 和任务 B，在一段时间内通过任务间的切换完成了这两个任务，这种情况就可以称之为并发。
 
@@ -306,7 +320,14 @@ p.a // 'a' = 2
 - 嵌套函数一多，就很难处理错误
 
 #### Generator
+[ES6 中的 Generator](https://www.cnblogs.com/wangfupeng1988/p/6532713.html)
 
+- Generator不是函数，不是函数，不是函数
+- Hello()不会立即出发执行，而是一上来就暂停
+- 每次h.next()都会打破暂停状态去执行，直到遇到下一个yield或者return
+- 遇到yield时，会执行yeild后面的表达式，并返回执行之后的值，然后再次进入暂停状态，此时done: false。
+- 遇到return时，会返回值，执行结束，即done: true
+- 每次h.next()的返回值永远都是{value: ... , done: ...}的形
 #### Promise
 
 #### async 及 await
@@ -316,17 +337,21 @@ p.a // 'a' = 2
 #### Rxjs
 #### MutationObserver or process.nextTick
 ### Event Loop
+
+
 #### 执行栈：什么是执行栈？
 #### 浏览器中的 Event Loop： 异步代码执行顺序？解释一下什么是 Event Loop ？
 #### Node 中的 Event Loop：Node 中的 Event Loop 和浏览器中的有什么区别？process.nexttick 执行顺序？
 
-
-
-
-
-
-
-
+[夯实基础-JavaScript异步编程](https://segmentfault.com/a/1190000014874668)
+[JS 异步编程六种方案](https://blog.csdn.net/howgod/article/details/93978297)
+[原生javascript实现异步的7种方式](https://www.cnblogs.com/goloving/p/9380136.html)
+[浅析JavaScript异步](https://www.cnblogs.com/aaron---blog/p/10903118.html)
+[JavaScript异步机制详解](https://www.jianshu.com/p/4ea4ee713ead)
+[JavaScript变为异步（并且非常棒)](https://baijiahao.baidu.com/s?id=1605688651635554164&wfr=spider&for=pc)
+[JavaScript 中的异步原理](http://www.sohu.com/a/312297249_179850)
+[撸js基础之异步](https://juejin.im/post/5a8fe8a05188255efc5f6c94)
+[你好，JavaScript异步编程---- 理解JavaScript异步的美妙](https://juejin.im/post/5b56c3586fb9a04faa79a8e0)
 
 
 
