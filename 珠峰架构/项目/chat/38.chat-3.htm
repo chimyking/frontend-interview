@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./38.chat-3_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t01.%20%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">1. 初始化项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t12.%E7%BB%98%E5%88%B6%E7%99%BB%E5%BD%95%E8%A1%A8%E5%8D%95">2.绘制登录表单</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t22.1%20login/index.js">2.1 login/index.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t33.%20%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95">3. 实现登录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t43.1%20%20src/pages/login/index.js">3.1  src/pages/login/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t53.2%20src/pages/login/models/login.js">3.2 src/pages/login/models/login.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t63.3%20src/pages/login/services/login.js">3.3 src/pages/login/services/login.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t73.4%20src/utils/request.js">3.4 src/utils/request.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t84.%20%E5%AE%9E%E7%8E%B0%E6%88%BF%E9%97%B4%E5%88%97%E8%A1%A8%E5%8A%9F%E8%83%BD">4. 实现房间列表功能</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t94.1%20pages/rooms/index.js">4.1 pages/rooms/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t104.2%20pages/rooms/models/rooms.js">4.2 pages/rooms/models/rooms.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t114.3%20services/rooms.js">4.3 services/rooms.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t125.%20%E8%81%8A%E5%A4%A9%E9%A1%B5%E9%9D%A2">5. 聊天页面</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t135.1%20src/pages/login/models/login.js">5.1 src/pages/login/models/login.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t145.2%20src/pages/login/services/login.js">5.2 src/pages/login/services/login.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t155.3%20src/pages/rooms/index.js">5.3 src/pages/rooms/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t165.4%20pages/messages/$id.js">5.4 pages/messages/$id.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t175.5%20src/pages/messages/models/messages.js">5.5 src/pages/messages/models/messages.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t186.%20%E6%94%AF%E6%8C%81%E8%A1%A8%E6%83%85">6. 支持表情</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t196.1%20src/pages/messages/$id.js">6.1 src/pages/messages/$id.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t206.2%20src/pages/messages/expressions.js">6.2 src/pages/messages/expressions.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t21%E5%8F%82%E8%80%83">参考</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. 初始化项目">1. 初始化项目 <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t01.%20%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"> # </a></h2>
+<pre><code class="lang-js">dva <span class="hljs-keyword">new</span> chat
+cd chat 
+npm i 
+npm start
+cnpm i styled-components -S
+</code></pre>
+<h2 id="t12.绘制登录表单">2.绘制登录表单 <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t12.%E7%BB%98%E5%88%B6%E7%99%BB%E5%BD%95%E8%A1%A8%E5%8D%95"> # </a></h2>
+<h3 id="t22.1 login/index.js">2.1 login/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t22.1%20login/index.js"> # </a></h3>
+<p>src/pages/login/index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> styled <span class="hljs-keyword">from</span> <span class="hljs-string">'styled-components'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva'</span>;
+<span class="hljs-keyword">import</span> {Form,Input,message,Button} <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span>;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Login</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+    handleSubmit=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        event.preventDefault();
+        <span class="hljs-keyword">this</span>.loginForm.props.form.validateFields(<span class="hljs-function">(<span class="hljs-params">err,values</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-keyword">return</span> message.warn(<span class="hljs-string">'登录信息输入不合法!请重新输入!'</span>);
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'login/login'</span>});
+            }
+        });
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;WrappedLayout&gt;
+                &lt;WrappedLoginForm
+                    handleSubmit={this.handleSubmit}
+                    wrappedComponentRef={inst=&gt;this.loginForm=inst}
+                /&gt;
+            &lt;/WrappedLayout&gt;
+       )
+   }
+}
+class LoginForm extends Component{
+    render() {
+        const {form: {getFieldDecorator},handleSubmit}=this.props;
+        return (
+            &lt;Form onSubmit={handleSubmit}&gt;
+                &lt;h4&gt;请输入邮箱登录&lt;/h4&gt;
+                &lt;Form.Item&gt;
+                    {
+                      getFieldDecorator('email',{
+                        rules: [
+                            {required:true,message:'请输入邮箱地址'},
+                            {type:'email',message:'请输入合法的邮箱地址'}
+                        ]
+                      })(&lt;Input placeholder="请输入邮箱"/&gt;)
+                    }
+                &lt;/Form.Item&gt;
+                &lt;Form.Item&gt;
+                    &lt;Button htmlType="submit" type="primary"&gt;登录&lt;/Button&gt;
+                &lt;/Form.Item&gt;
+            &lt;/Form&gt;
+        )
+    }
+}
+const WrappedLoginForm =  Form.create()(LoginForm);
+const WrappedLayout=styled.div`
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  form {
+      width:300px;
+      margin-top:-500px;
+      padding:20px;
+      border:1px solid #999;
+      border-radius:5px;
+      box-shadow:1px 1px 2px 1px,-1px -1px 2px 1px;
+      h4{
+          text-align:center;
+          font-weight:normal;
+      }
+      button{
+          width:100%;
+      }
+  }
+`
+
+export default connect(
+    state=&gt;state.login
+)(Login);
+</code></pre>
+<h2 id="t33. 实现登录">3. 实现登录 <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t33.%20%E5%AE%9E%E7%8E%B0%E7%99%BB%E5%BD%95"> # </a></h2>
+<h3 id="t43.1  src/pages/login/index.js">3.1  src/pages/login/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t43.1%20%20src/pages/login/index.js"> # </a></h3>
+<p>src/pages/login/index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> styled <span class="hljs-keyword">from</span> <span class="hljs-string">'styled-components'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva'</span>;
+<span class="hljs-keyword">import</span> {Form,Input,message,Button} <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span>;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Login</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+    handleSubmit=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        event.preventDefault();
+        <span class="hljs-keyword">this</span>.loginForm.props.form.validateFields(<span class="hljs-function">(<span class="hljs-params">err,values</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-keyword">return</span> message.warn(<span class="hljs-string">'登录信息输入不合法!请重新输入!'</span>);
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'login/login'</span>,<span class="hljs-attr">payload</span>:values});
+            }
+        });
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;WrappedLayout&gt;
+                &lt;WrappedLoginForm
+                    handleSubmit={this.handleSubmit}
+                    wrappedComponentRef={inst=&gt;this.loginForm=inst}
+                /&gt;
+            &lt;/WrappedLayout&gt;
+       )
+   }
+}
+class LoginForm extends Component{
+    render() {
+        const {form: {getFieldDecorator},handleSubmit}=this.props;
+        return (
+            &lt;Form onSubmit={handleSubmit}&gt;
+                &lt;h4&gt;请输入邮箱登录&lt;/h4&gt;
+                &lt;Form.Item&gt;
+                    {
+                      getFieldDecorator('email',{
+                        rules: [
+                            {required:true,message:'请输入邮箱地址'},
+                            {type:'email',message:'请输入合法的邮箱地址'}
+                        ]
+                      })(&lt;Input placeholder="请输入邮箱"/&gt;)
+                    }
+                &lt;/Form.Item&gt;
+                &lt;Form.Item&gt;
+                    &lt;Button htmlType="submit" type="primary"&gt;登录&lt;/Button&gt;
+                &lt;/Form.Item&gt;
+            &lt;/Form&gt;
+        )
+    }
+}
+const WrappedLoginForm =  Form.create()(LoginForm);
+const WrappedLayout=styled.div`
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  form {
+      width:300px;
+      padding:20px;
+      border:1px solid #999;
+      border-radius:5px;
+      box-shadow:1px 1px 2px 1px,-1px -1px 2px 1px;
+      h4{
+          text-align:center;
+          font-weight:normal;
+      }
+      button{
+          width:100%;
+      }
+  }
+`
+
+export default connect(
+    state=&gt;state.login
+)(Login);
+</code></pre>
+<h3 id="t53.2 src/pages/login/models/login.js">3.2 src/pages/login/models/login.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t53.2%20src/pages/login/models/login.js"> # </a></h3>
+<p>src/pages/login/models/login.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> service <span class="hljs-keyword">from</span> <span class="hljs-string">'../services/login'</span>;
+<span class="hljs-keyword">import</span> {routerRedux} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva/router'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+
+    <span class="hljs-attr">namespace</span>: <span class="hljs-string">'login'</span>,
+
+    <span class="hljs-attr">state</span>: {
+        <span class="hljs-attr">user</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">error</span>:<span class="hljs-literal">null</span>
+    },
+
+    <span class="hljs-attr">subscriptions</span>: {
+      setup({ dispatch, history }) {
+      },
+    },
+
+    <span class="hljs-attr">effects</span>: {
+        *login({payload},{call,put}) {
+            <span class="hljs-keyword">const</span> {data,error,code}=<span class="hljs-keyword">yield</span> call(service.login,payload);
+             <span class="hljs-keyword">if</span> (code == <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'setUser'</span>,<span class="hljs-attr">payload</span>:data});
+                <span class="hljs-keyword">yield</span> put(routerRedux.push(<span class="hljs-string">'/rooms'</span>));
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'setError'</span>,<span class="hljs-attr">payload</span>:error});
+            } 
+      }
+    },
+
+    <span class="hljs-attr">reducers</span>: {
+        setUser(state,{payload}) {
+          <span class="hljs-keyword">return</span> { ...state, <span class="hljs-attr">user</span>:payload };
+        },
+        setError(state,{payload}) {
+          <span class="hljs-keyword">return</span> { ...state, <span class="hljs-attr">error</span>:payload };
+      }
+    },
+};
+</code></pre>
+<h3 id="t63.3 src/pages/login/services/login.js">3.3 src/pages/login/services/login.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t63.3%20src/pages/login/services/login.js"> # </a></h3>
+<p>src/pages/login/services/login.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">'../../../utils/request'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span>(<span class="hljs-params">payload</span>) </span>{
+    <span class="hljs-keyword">return</span> request(<span class="hljs-string">'/login'</span>,{
+        <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>, 
+        <span class="hljs-attr">body</span>:<span class="hljs-built_in">JSON</span>.stringify(payload)
+    });
+}
+</code></pre>
+<h3 id="t73.4 src/utils/request.js">3.4 src/utils/request.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t73.4%20src/utils/request.js"> # </a></h3>
+<p>src/utils/request.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> BaseUrl=<span class="hljs-string">'http://localhost:7001'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">request</span>(<span class="hljs-params">url, options</span>) </span>{
+  <span class="hljs-keyword">return</span> fetch(BaseUrl+url, options)
+    .then(checkStatus)
+    .then(parseJSON)
+    .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> ({ err }));
+}
+</code></pre>
+<h2 id="t84. 实现房间列表功能">4. 实现房间列表功能 <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t84.%20%E5%AE%9E%E7%8E%B0%E6%88%BF%E9%97%B4%E5%88%97%E8%A1%A8%E5%8A%9F%E8%83%BD"> # </a></h2>
+<h3 id="t94.1 pages/rooms/index.js">4.1 pages/rooms/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t94.1%20pages/rooms/index.js"> # </a></h3>
+<p>pages/rooms/index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> styled <span class="hljs-keyword">from</span> <span class="hljs-string">'styled-components'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva'</span>;
+<span class="hljs-keyword">import</span> {Form,Input,message,Button,Layout,Menu,Breadcrumb,Card,Row,Col} <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span>;
+<span class="hljs-keyword">import</span> logo <span class="hljs-keyword">from</span> <span class="hljs-string">'../../assets/logo.png'</span>;
+<span class="hljs-keyword">import</span> styles <span class="hljs-keyword">from</span> <span class="hljs-string">'./index.less'</span>;
+<span class="hljs-keyword">import</span> Link <span class="hljs-keyword">from</span> <span class="hljs-string">'umi/link'</span>;
+<span class="hljs-keyword">const</span> {Header,Content,Footer}=Layout;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rooms</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+    handleSubmit=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        event.preventDefault();
+        <span class="hljs-keyword">this</span>.loginForm.props.form.validateFields(<span class="hljs-function">(<span class="hljs-params">err,values</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-keyword">return</span> message.warn(<span class="hljs-string">'登录信息输入不合法!请重新输入!'</span>);
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'login/login'</span>,<span class="hljs-attr">payload</span>:values});
+            }
+        });
+    }
+    handleKeywordChange=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'rooms/setKeyword'</span>,<span class="hljs-attr">payload</span>: event.target.value});
+    }
+    createRoom=<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'rooms/createRoom'</span>});
+    }
+    render() {
+        <span class="hljs-keyword">const</span> {list=[]}=<span class="hljs-keyword">this</span>.props;
+        <span class="hljs-keyword">return</span> (
+            &lt;Layout&gt;
+                &lt;Header&gt;
+                    &lt;img src={logo} className={styles.logo}/&gt;
+                    &lt;Menu
+                        theme="dark"
+                        mode="horizontal"
+                        defaultSelectedKeys={['/rooms']}
+                        style={{lineHeight:'64px'}}
+                    &gt;
+                        &lt;Menu.Item key="/rooms"&gt;房间列表&lt;/Menu.Item&gt;
+                    &lt;/Menu&gt;    
+                &lt;/Header&gt;
+                &lt;Content style={{padding:'0 50px'}}&gt;
+                    &lt;Breadcrumb style={{margin: '16px 0'}}&gt;
+                        &lt;Breadcrumb.Item&gt;房间列表&lt;/Breadcrumb.Item&gt;
+                    &lt;/Breadcrumb&gt;
+                    &lt;SearchForm
+                          createRoom={this.createRoom}
+                          handleKeywordChange={this.handleKeywordChange}
+                          size={list.length}
+                        /&gt;
+                    &lt;Card&gt;
+                        &lt;Row  gutter={16}&gt;
+                            {
+                                list.map(room =&gt; (
+                                    &lt;Col span={6} style={{padding:'5px 0'}}&gt;
+                                        &lt;Link to={`/rooms/${room._id}`}&gt;
+                                            &lt;Card
+                                                hoverable
+                                                style={{ width: 240 }}
+                                                cover={&lt;img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" /&gt;}
+                                            &gt;
+                                                &lt;Card.Meta
+                                                    title={room.name}
+                                                /&gt;
+                                            &lt;/Card&gt;
+                                        &lt;/Link&gt;
+                                    &lt;/Col&gt;
+                                ))
+                            }
+                        &lt;/Row&gt;
+                    &lt;/Card&gt;
+                &lt;/Content&gt;
+                &lt;Footer style={{textAlign:'center'}}&gt;
+                    珠峰培训 @2018 
+                &lt;/Footer&gt;
+            &lt;/Layout&gt;
+       )
+   }
+}
+class SearchForm extends Component{
+    render() {
+        const {handleKeywordChange,createRoom,size}=this.props;
+        const formItemLayout={
+            labelCol: {span: 8},
+            wrapperCol:{span:16}
+        }
+        return (
+            &lt;Form&gt;
+                &lt;Form.Item label="请输入房间名关键字" {...formItemLayout}&gt;
+                    &lt;Row gutter={18}&gt;
+                        &lt;Col span={12}&gt;&lt;Input placeholder="请输入关键字" onChange={handleKeywordChange} /&gt;&lt;/Col&gt;
+                        &lt;Col span={12}&gt;
+                            {size==0&amp;&amp;&lt;Button onClick={createRoom}&gt;创建房间&lt;/Button&gt;}
+
+                        &lt;/Col&gt;
+                    &lt;/Row&gt;
+                &lt;/Form.Item&gt;
+            &lt;/Form&gt;
+        )
+    }
+}
+
+export default connect(
+    state =&gt; ({
+        list: state.rooms.list.filter(item =&gt; {
+            return item.name&amp;&amp;item.name.indexOf(state.rooms.keyword)!=-1;
+        })
+    })
+)(Rooms);
+</code></pre>
+<h3 id="t104.2 pages/rooms/models/rooms.js">4.2 pages/rooms/models/rooms.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t104.2%20pages/rooms/models/rooms.js"> # </a></h3>
+<p>pages/rooms/models/rooms.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> service <span class="hljs-keyword">from</span> <span class="hljs-string">'../services/rooms'</span>;
+<span class="hljs-keyword">import</span> {routerRedux} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva/router'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+
+    <span class="hljs-attr">namespace</span>: <span class="hljs-string">'rooms'</span>,
+
+    <span class="hljs-attr">state</span>: {
+        <span class="hljs-attr">list</span>: [],
+        <span class="hljs-attr">error</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">keyword</span>:<span class="hljs-string">''</span>
+    },
+
+    <span class="hljs-attr">subscriptions</span>: {
+        setup({dispatch,history}) {
+            history.listen(<span class="hljs-function">(<span class="hljs-params">{pathname,query}</span>) =&gt;</span> {
+                <span class="hljs-keyword">if</span> (pathname == <span class="hljs-string">'/rooms'</span>) {
+                    dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'list'</span>});
+                }
+            });
+      },
+    },
+
+    <span class="hljs-attr">effects</span>: {
+        *list({payload},{call,put}) {
+            <span class="hljs-keyword">const</span> {data,error,code}=<span class="hljs-keyword">yield</span> call(service.list,payload);
+             <span class="hljs-keyword">if</span> (code == <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'listed'</span>,<span class="hljs-attr">payload</span>:data});
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'setError'</span>,<span class="hljs-attr">payload</span>:error});
+            } 
+        },
+        *createRoom({},{call,put,select}) {
+            <span class="hljs-keyword">let</span> keyword=<span class="hljs-keyword">yield</span> select(<span class="hljs-function"><span class="hljs-params">state</span> =&gt;</span> state.rooms.keyword);
+            <span class="hljs-keyword">const</span> {data,error,code}=<span class="hljs-keyword">yield</span> call(service.createRoom,{<span class="hljs-attr">name</span>:keyword});
+             <span class="hljs-keyword">if</span> (code == <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'list'</span>});
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'setError'</span>,<span class="hljs-attr">payload</span>:error});
+            } 
+      }
+    },
+
+    <span class="hljs-attr">reducers</span>: {
+        listed(state,{payload}) {
+          <span class="hljs-keyword">return</span> { ...state, <span class="hljs-attr">list</span>:payload };
+        },
+        setError(state,{payload}) {
+          <span class="hljs-keyword">return</span> { ...state, <span class="hljs-attr">error</span>:payload };
+        },
+        setKeyword(state,{payload}) {
+            <span class="hljs-keyword">return</span> {...state,<span class="hljs-attr">keyword</span>:payload};
+        }
+    },
+};
+
+</code></pre>
+<h3 id="t114.3 services/rooms.js">4.3 services/rooms.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t114.3%20services/rooms.js"> # </a></h3>
+<p>services/rooms.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">'../../../utils/request'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">list</span>(<span class="hljs-params">keyword=<span class="hljs-string">''</span></span>) </span>{
+    <span class="hljs-keyword">return</span> request(<span class="hljs-string">`/rooms`</span>,{
+        <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>
+    });
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createRoom</span>(<span class="hljs-params">values</span>) </span>{
+    <span class="hljs-keyword">return</span> request(<span class="hljs-string">`/rooms`</span>,{
+        <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>,
+        <span class="hljs-attr">headers</span>:{<span class="hljs-string">"Content-Type"</span>:<span class="hljs-string">"application/json"</span>},
+        <span class="hljs-attr">body</span>:<span class="hljs-built_in">JSON</span>.stringify(values)
+    });
+}
+
+</code></pre>
+<h2 id="t125. 聊天页面">5. 聊天页面 <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t125.%20%E8%81%8A%E5%A4%A9%E9%A1%B5%E9%9D%A2"> # </a></h2>
+<h3 id="t135.1 src/pages/login/models/login.js">5.1 src/pages/login/models/login.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t135.1%20src/pages/login/models/login.js"> # </a></h3>
+<p>src/pages/login/models/login.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> service <span class="hljs-keyword">from</span> <span class="hljs-string">'../services/login'</span>;
+<span class="hljs-keyword">import</span> {routerRedux} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva/router'</span>;
+<span class="hljs-keyword">import</span> {decode} <span class="hljs-keyword">from</span> <span class="hljs-string">'jsonwebtoken'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+
+    <span class="hljs-attr">namespace</span>: <span class="hljs-string">'login'</span>,
+
+    <span class="hljs-attr">state</span>: {
+        <span class="hljs-attr">user</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">token</span>:<span class="hljs-literal">null</span>,
+        <span class="hljs-attr">error</span>:<span class="hljs-literal">null</span>
+    },
+
+    <span class="hljs-attr">subscriptions</span>: {
+      setup({ dispatch, history }) {
+      },
+    },
+
+    <span class="hljs-attr">effects</span>: {
+        *login({payload},{call,put}) {
+            <span class="hljs-keyword">const</span> {<span class="hljs-attr">data</span>:token,error,code}=<span class="hljs-keyword">yield</span> call(service.login,payload);
+            <span class="hljs-keyword">if</span> (code==<span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">let</span> user=decode(token);        
+                localStorage.setItem(<span class="hljs-string">'token'</span>,token);
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'setUser'</span>,<span class="hljs-attr">payload</span>:user});
+                <span class="hljs-keyword">yield</span> put(routerRedux.push(<span class="hljs-string">'/rooms'</span>));
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'setError'</span>,<span class="hljs-attr">payload</span>:error});
+            } 
+        },
+        *validate({payload},{call,put}) {
+            <span class="hljs-keyword">let</span> token=localStorage.getItem(<span class="hljs-string">'token'</span>)||<span class="hljs-string">''</span>;
+            <span class="hljs-keyword">if</span> (token) {
+                <span class="hljs-keyword">let</span> user=decode(token);    
+                <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>:<span class="hljs-string">'setUser'</span>,<span class="hljs-attr">payload</span>:user});
+            }<span class="hljs-keyword">else</span>{
+                <span class="hljs-keyword">yield</span> put(routerRedux.push(<span class="hljs-string">'/login'</span>));
+            }
+        },
+        *logout({payload},{call,put}) {
+            <span class="hljs-keyword">yield</span> put({<span class="hljs-attr">type</span>: <span class="hljs-string">'setUser'</span>,<span class="hljs-attr">payload</span>: <span class="hljs-literal">null</span>});
+            localStorage.removeItem(<span class="hljs-string">'token'</span>);
+            <span class="hljs-keyword">yield</span> put(routerRedux.push(<span class="hljs-string">'/login'</span>));
+        }
+    },
+
+    <span class="hljs-attr">reducers</span>: {
+        setUser(state,{payload}) {
+          <span class="hljs-keyword">return</span> { ...state, <span class="hljs-attr">user</span>:payload };
+        },
+        setError(state,{payload}) {
+          <span class="hljs-keyword">return</span> { ...state, <span class="hljs-attr">error</span>:payload };
+      }
+    },
+};
+
+</code></pre>
+<h3 id="t145.2 src/pages/login/services/login.js">5.2 src/pages/login/services/login.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t145.2%20src/pages/login/services/login.js"> # </a></h3>
+<p>src/pages/login/services/login.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">'../../../utils/request'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span>(<span class="hljs-params">payload</span>) </span>{
+    <span class="hljs-keyword">return</span> request(<span class="hljs-string">'/login'</span>,{
+        <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>, 
+        <span class="hljs-attr">headers</span>:{<span class="hljs-string">"Content-Type"</span>:<span class="hljs-string">"application/json"</span>},
+        <span class="hljs-attr">body</span>:<span class="hljs-built_in">JSON</span>.stringify(payload)
+    });
+}
+</code></pre>
+<h3 id="t155.3 src/pages/rooms/index.js">5.3 src/pages/rooms/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t155.3%20src/pages/rooms/index.js"> # </a></h3>
+<p>src/pages/rooms/index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> styled <span class="hljs-keyword">from</span> <span class="hljs-string">'styled-components'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva'</span>;
+<span class="hljs-keyword">import</span> {Form,Input,message,Button,Layout,Menu,Breadcrumb,Card,Row,Col} <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span>;
+<span class="hljs-keyword">import</span> logo <span class="hljs-keyword">from</span> <span class="hljs-string">'../../assets/logo.png'</span>;
+<span class="hljs-keyword">import</span> styles <span class="hljs-keyword">from</span> <span class="hljs-string">'./index.less'</span>;
+<span class="hljs-keyword">import</span> Link <span class="hljs-keyword">from</span> <span class="hljs-string">'umi/link'</span>;
+<span class="hljs-keyword">const</span> {Header,Content,Footer}=Layout;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rooms</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+    handleSubmit=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        event.preventDefault();
+        <span class="hljs-keyword">this</span>.loginForm.props.form.validateFields(<span class="hljs-function">(<span class="hljs-params">err,values</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-keyword">return</span> message.warn(<span class="hljs-string">'登录信息输入不合法!请重新输入!'</span>);
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'login/login'</span>,<span class="hljs-attr">payload</span>:values});
+            }
+        });
+    }
+    handleKeywordChange=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'rooms/setKeyword'</span>,<span class="hljs-attr">payload</span>: event.target.value});
+    }
+    createRoom=<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.props.dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'rooms/createRoom'</span>});
+    }
+    render() {
+        <span class="hljs-keyword">const</span> {list=[],user}=<span class="hljs-keyword">this</span>.props;
+        <span class="hljs-keyword">return</span> (
+            &lt;Layout&gt;
+                &lt;Header&gt;
+                    &lt;img src={logo} className={styles.logo}/&gt;
+                    &lt;Menu
+                        theme="dark"
+                        mode="horizontal"
+                        defaultSelectedKeys={['/rooms']}
+                        style={{lineHeight:'64px'}}
+                    &gt;
+                        &lt;Menu.Item key="/rooms"&gt;
+                        房间列表
+                                用户: {user&amp;&amp;user.name}
+                        &lt;/Menu.Item&gt;
+                    &lt;/Menu&gt;    
+                &lt;/Header&gt;
+                &lt;Content style={{padding:'0 50px'}}&gt;
+                    &lt;Breadcrumb style={{margin: '16px 0'}}&gt;
+                        &lt;Breadcrumb.Item&gt;房间列表: {user&amp;&amp;user.name}&lt;/Breadcrumb.Item&gt;
+                    &lt;/Breadcrumb&gt;
+                    &lt;SearchForm
+                          createRoom={this.createRoom}
+                          handleKeywordChange={this.handleKeywordChange}
+                          size={list.length}
+                        /&gt;
+                    &lt;Card&gt;
+                        &lt;Row  gutter={16}&gt;
+                            {
+                                list.map(room =&gt; (
+                                    &lt;Col key={room._id} span={6} style={{padding:'5px 0'}}&gt;
+                                        &lt;Link to={`/messages/${room._id}`}&gt;
+                                            &lt;Card
+                                                hoverable
+                                                style={{ width: 240 }}
+                                                cover={&lt;img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" /&gt;}
+                                            &gt;
+                                                &lt;Card.Meta
+                                                    title={room.name}
+                                                /&gt;
+                                            &lt;/Card&gt;
+                                        &lt;/Link&gt;
+                                    &lt;/Col&gt;
+                                ))
+                            }
+                        &lt;/Row&gt;
+                    &lt;/Card&gt;
+                &lt;/Content&gt;
+                &lt;Footer style={{textAlign:'center'}}&gt;
+                    珠峰培训 @2018 
+                &lt;/Footer&gt;
+            &lt;/Layout&gt;
+       )
+   }
+}
+class SearchForm extends Component{
+    render() {
+        const {handleKeywordChange,createRoom,size}=this.props;
+        const formItemLayout={
+            labelCol: {span: 8},
+            wrapperCol:{span:16}
+        }
+        return (
+            &lt;Form&gt;
+                &lt;Form.Item label="请输入房间名关键字" {...formItemLayout}&gt;
+                    &lt;Row gutter={18}&gt;
+                        &lt;Col span={12}&gt;&lt;Input placeholder="请输入关键字" onChange={handleKeywordChange} /&gt;&lt;/Col&gt;
+                        &lt;Col span={12}&gt;
+                            {size==0&amp;&amp;&lt;Button onClick={createRoom}&gt;创建房间&lt;/Button&gt;}
+
+                        &lt;/Col&gt;
+                    &lt;/Row&gt;
+                &lt;/Form.Item&gt;
+            &lt;/Form&gt;
+        )
+    }
+}
+
+export default connect(
+    state =&gt; ({
+        list: state.rooms.list.filter(item =&gt; {
+            return item.name&amp;&amp;item.name.indexOf(state.rooms.keyword)!=-1;
+        }),
+        user:state.login.user
+    })
+)(Rooms);
+</code></pre>
+<h3 id="t165.4 pages/messages/$id.js">5.4 pages/messages/$id.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t165.4%20pages/messages/$id.js"> # </a></h3>
+<p>pages/messages/$id.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {Layout,Row,Col,Menu,Icon,Breadcrumb,Input,List,Avatar,Spin,Button} <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span>; 
+<span class="hljs-keyword">import</span> styles <span class="hljs-keyword">from</span> <span class="hljs-string">'./index.less'</span>;
+<span class="hljs-keyword">import</span> messages <span class="hljs-keyword">from</span> <span class="hljs-string">'./models/messages'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva'</span>;
+<span class="hljs-keyword">const</span> {Header,Sider,Footer,Content}=Layout;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Messages</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+    state={<span class="hljs-attr">collapsed</span>: <span class="hljs-literal">false</span>}
+    onCollapse=<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">collapsed</span>:!<span class="hljs-keyword">this</span>.state.collapsed});
+    }
+    handleKeyDown=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        <span class="hljs-keyword">let</span> code=event.keyCode;
+        <span class="hljs-keyword">let</span> content = event.target.value;
+        <span class="hljs-keyword">if</span> (code == <span class="hljs-number">13</span> &amp;&amp; content) {
+            <span class="hljs-keyword">this</span>.props.dispatch({
+                <span class="hljs-attr">type</span>: <span class="hljs-string">'messages/addMessage'</span>,
+                <span class="hljs-attr">payload</span>:{content}
+            });
+        }
+    }
+    render() {
+        <span class="hljs-keyword">let</span> {messages,users,room,user}=<span class="hljs-keyword">this</span>.props;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.props);
+        <span class="hljs-keyword">return</span> (
+            &lt;Layout style={{ minHeight: '100vh' }}&gt;
+                &lt;Sider
+                    collapsible
+                    collapsed={this.state.collapsed}
+                    onCollapse={this.onCollapse}
+                &gt;
+                    &lt;h3 className={styles['room-title']} &gt;{room.name}&lt;/h3&gt;
+                    &lt;Menu style={{padding:'10px'}} theme="dark" defaultSelectedKeys={['1']} mode="inline"&gt;
+                        {
+                            users.map(user =&gt; (
+                                &lt;Menu.Item key={user._id}&gt;
+                                    &lt;img src={user.avatar} style={{width:32,height:32,borderRadius:'5px'}}/&gt;
+                                    &lt;span style={{marginLeft: 15}}&gt;{user.name}&lt;/span&gt;
+                                &lt;/Menu.Item&gt;
+                            ))
+                        }
+                    &lt;/Menu&gt;
+                &lt;/Sider&gt;
+                &lt;Layout&gt;
+                    &lt;Content style={{margin: '16px',backgroundColor: '#FFF'}}&gt;
+                        &lt;List
+                            style={{padding:15}}
+                            itemLayout="horizontal"
+                            dataSource={messages}
+                            renderItem={
+                                message =&gt; (
+                                    &lt;List.Item actions={[]}&gt;
+                                        &lt;List.Item.Meta
+                                            avatar={&lt;Avatar src={message.user.avatar} /&gt;}
+                                            title={message.user.name}
+                                            description={message.user.email}
+                                        /&gt;
+                                        &lt;div&gt;{message.content}&lt;/div&gt;
+                                    &lt;/List.Item&gt;
+                                )
+                            }
+                        &gt;
+                        &lt;/List&gt;
+                    &lt;/Content&gt;
+                    &lt;Footer style={{textAlign: 'center'}}&gt;
+                        &lt;Row&gt;
+                            &lt;Col span={3}&gt;
+                                &lt;img src={user &amp;&amp; user.avatar} style={{height:30,height:30,borderRadius:5}}/&gt;
+                                {user&amp;&amp; user.name}说:
+                                &lt;/Col&gt;
+                            &lt;Col span={21}&gt;&lt;Input type="text" onKeyDown={this.handleKeyDown}/&gt;&lt;/Col&gt;
+                        &lt;/Row&gt;
+                    &lt;/Footer&gt;
+                &lt;/Layout&gt;
+           &lt;/Layout&gt;
+        )
+    }
+}
+export default connect(
+    state =&gt; ({
+        ...state.messages,
+        user:state.login.user
+    })
+)(Messages);
+</code></pre>
+<h3 id="t175.5 src/pages/messages/models/messages.js">5.5 src/pages/messages/models/messages.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t175.5%20src/pages/messages/models/messages.js"> # </a></h3>
+<p>src/pages/messages/models/messages.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> pathToRegexp <span class="hljs-keyword">from</span> <span class="hljs-string">'path-to-regexp'</span>;
+<span class="hljs-keyword">import</span> io <span class="hljs-keyword">from</span> <span class="hljs-string">'socket.io-client'</span>;
+<span class="hljs-keyword">import</span> {routerRedux} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva/router'</span>;
+<span class="hljs-keyword">let</span> client;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+
+    <span class="hljs-attr">namespace</span>: <span class="hljs-string">'messages'</span>,
+
+    <span class="hljs-attr">state</span>: {
+        <span class="hljs-attr">room</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-attr">users</span>:[],
+        <span class="hljs-attr">messages</span>:[]
+    },
+
+    <span class="hljs-attr">subscriptions</span>: {
+      setup({dispatch,history}) {
+          history.listen(<span class="hljs-function">(<span class="hljs-params">{pathname,query}</span>) =&gt;</span> {
+              <span class="hljs-keyword">let</span> result=pathToRegexp(<span class="hljs-string">'/messages/:id'</span>).exec(pathname);
+              <span class="hljs-keyword">if</span> (result) {
+                  <span class="hljs-keyword">let</span> room=result[<span class="hljs-number">1</span>];
+                  dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'setRoom'</span>,<span class="hljs-attr">payload</span>: room});
+                  dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'login/validate'</span>});
+                  <span class="hljs-keyword">let</span> socket=io(<span class="hljs-string">'http://127.0.0.1:7001'</span>,{
+                      <span class="hljs-attr">query</span>: {<span class="hljs-attr">token</span>:localStorage.getItem(<span class="hljs-string">'token'</span>)||<span class="hljs-string">''</span>,room}
+                  });
+                  client=socket;
+                  socket.on(<span class="hljs-string">'connect'</span>,() =&gt; {
+                      socket.emit(<span class="hljs-string">'getRoom'</span>,room);
+                  });
+                  socket.on(<span class="hljs-string">'room'</span>,(room) =&gt; {
+                      dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'room'</span>,<span class="hljs-attr">payload</span>:room});
+                  });
+                  socket.on(<span class="hljs-string">'messageAdded'</span>,message =&gt; {
+                      dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'messageAdded'</span>,<span class="hljs-attr">payload</span>:message});
+                  });
+                    socket.on(<span class="hljs-string">'online'</span>,user =&gt; {
+                      dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'addUser'</span>,<span class="hljs-attr">payload</span>:user});
+                  });
+                  socket.on(<span class="hljs-string">'offline'</span>,id =&gt; {
+                      dispatch({<span class="hljs-attr">type</span>:<span class="hljs-string">'delUser'</span>,<span class="hljs-attr">payload</span>:id});
+                  });
+                  socket.on(<span class="hljs-string">'needLogin'</span>,() =&gt; {
+                      dispatch(routerRedux.push(<span class="hljs-string">'/login'</span>));
+                    });
+                    socket.on(<span class="hljs-string">'disconnect'</span>,() =&gt; {
+                        dispatch({<span class="hljs-attr">type</span>: <span class="hljs-string">'login/logout'</span>});
+                    });
+                    socket.on(<span class="hljs-string">'error'</span>,() =&gt; {
+                      dispatch(routerRedux.push(<span class="hljs-string">'/login'</span>));
+                  });
+              }
+          });
+      }
+    },
+
+    <span class="hljs-attr">effects</span>: {
+      *addMessage({ payload }, { call, put,select }) {
+          <span class="hljs-keyword">const</span> {<span class="hljs-attr">login</span>:{user},<span class="hljs-attr">messages</span>:{room}}=<span class="hljs-keyword">yield</span> select(<span class="hljs-function"><span class="hljs-params">state</span> =&gt;</span> state);
+          <span class="hljs-keyword">let</span> message=payload;
+          message.user=user._id;
+          message.room=room;
+          client.emit(<span class="hljs-string">'addMessage'</span>,message);
+      }
+    },
+
+    <span class="hljs-attr">reducers</span>: {
+      setRoom(state, action) {
+          <span class="hljs-keyword">return</span> { ...state, <span class="hljs-attr">room</span>:action.payload};
+      },
+      room(state,{payload}) {
+          <span class="hljs-keyword">return</span> { ...state, ...payload};
+      },
+      messageAdded(state,action) {
+          <span class="hljs-keyword">return</span> {...state,<span class="hljs-attr">messages</span>:[...state.messages,action.payload]};
+     },
+        addUser(state,{payload}) {
+            <span class="hljs-keyword">let</span> existUser=state.users.find(<span class="hljs-function"><span class="hljs-params">user</span> =&gt;</span> user._id==payload._id);
+          <span class="hljs-keyword">return</span> existUser?state:{...state,<span class="hljs-attr">users</span>:[...state.users,payload]};
+     },
+        delUser(state,{payload}) {
+          <span class="hljs-keyword">return</span> {...state,<span class="hljs-attr">users</span>:state.users.filter(<span class="hljs-function"><span class="hljs-params">item</span>=&gt;</span>item._id!= payload)};
+     }
+    }
+};
+
+</code></pre>
+<h2 id="t186. 支持表情">6. 支持表情 <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t186.%20%E6%94%AF%E6%8C%81%E8%A1%A8%E6%83%85"> # </a></h2>
+<h3 id="t196.1 src/pages/messages/$id.js">6.1 src/pages/messages/$id.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t196.1%20src/pages/messages/$id.js"> # </a></h3>
+<p>src/pages/messages/$id.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {Layout,Row,Col,Menu,Icon,Breadcrumb,Input,List,Avatar,Spin,Button,Popover,Card} <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span>; 
+<span class="hljs-keyword">import</span> styles <span class="hljs-keyword">from</span> <span class="hljs-string">'./index.less'</span>;
+<span class="hljs-keyword">import</span> messages <span class="hljs-keyword">from</span> <span class="hljs-string">'./models/messages'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'dva'</span>;
+<span class="hljs-keyword">import</span> expressions <span class="hljs-keyword">from</span> <span class="hljs-string">'./expressions'</span>;
+<span class="hljs-keyword">import</span> styled <span class="hljs-keyword">from</span> <span class="hljs-string">'styled-components'</span>;
+<span class="hljs-keyword">import</span> face <span class="hljs-keyword">from</span> <span class="hljs-string">'../../assets/face.png'</span>;
+<span class="hljs-keyword">const</span> {Header,Sider,Footer,Content}=Layout;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Messages</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+    state={<span class="hljs-attr">collapsed</span>: <span class="hljs-literal">false</span>,<span class="hljs-attr">inputVal</span>:<span class="hljs-string">''</span>}
+    onCollapse=<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">collapsed</span>:!<span class="hljs-keyword">this</span>.state.collapsed});
+    }
+    sendMessage=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        <span class="hljs-keyword">let</span> content = event.target.value;
+        <span class="hljs-keyword">this</span>.props.dispatch({
+            <span class="hljs-attr">type</span>: <span class="hljs-string">'messages/addMessage'</span>,
+            <span class="hljs-attr">payload</span>:{content}
+        });
+    }
+    handleInputChange=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        <span class="hljs-keyword">this</span>.setState({
+            <span class="hljs-attr">inputVal</span>:event.target.value
+        });
+    }
+    fillFace=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        <span class="hljs-keyword">const</span> {index}=event.currentTarget.dataset;
+        <span class="hljs-keyword">this</span>.setState({
+            <span class="hljs-attr">inputVal</span>:<span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-keyword">this</span>.state.inputVal}</span>#(<span class="hljs-subst">${index}</span>)`</span>
+        });
+    }
+    render() {
+        <span class="hljs-keyword">let</span> {messages,users,room,user}=<span class="hljs-keyword">this</span>.props;
+        <span class="hljs-keyword">let</span> faces=(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Row</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{width:512}}</span>&gt;</span>
+                {
+                    expressions.default.map((item,index) =&gt; (
+                        <span class="hljs-tag">&lt;<span class="hljs-name">Col</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{index}</span> <span class="hljs-attr">span</span>=<span class="hljs-string">{3}</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+                                <span class="hljs-attr">data-index</span>=<span class="hljs-string">{index}</span>
+                                <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.fillFace}</span>
+                                <span class="hljs-attr">style</span>=<span class="hljs-string">{{width:</span> '<span class="hljs-attr">64px</span>',<span class="hljs-attr">height:</span> '<span class="hljs-attr">64px</span>',<span class="hljs-attr">backgroundImage:</span> `<span class="hljs-attr">url</span>(${<span class="hljs-attr">face</span>})`,<span class="hljs-attr">backgroundPosition:</span> `<span class="hljs-attr">left</span> ${<span class="hljs-attr">-64</span>*<span class="hljs-attr">index</span>+'<span class="hljs-attr">px</span>'}`}}&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">Col</span>&gt;</span>
+                    ))
+                }
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Row</span>&gt;</span></span>
+        )
+        <span class="hljs-keyword">let</span> facePanel=(
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Popover</span> <span class="hljs-attr">content</span>=<span class="hljs-string">{faces}</span> <span class="hljs-attr">title</span>=<span class="hljs-string">"表情"</span> <span class="hljs-attr">trigger</span>=<span class="hljs-string">"click"</span>&gt;</span>
+                表情
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Popover</span>&gt;</span></span>
+        )
+        <span class="hljs-keyword">return</span> (
+            &lt;Layout style={{ minHeight: '100vh' }}&gt;
+                &lt;Sider
+                    collapsible
+                    collapsed={this.state.collapsed}
+                    onCollapse={this.onCollapse}
+                &gt;
+                    &lt;h3 className={styles['room-title']} &gt;{room.name}&lt;/h3&gt;
+                    &lt;Menu style={{padding:'10px'}} theme="dark" defaultSelectedKeys={['1']} mode="inline"&gt;
+                        {
+                            users.map(user =&gt; (
+                                &lt;Menu.Item key={user._id}&gt;
+                                    &lt;img src={user.avatar} style={{width:32,height:32,borderRadius:'5px'}}/&gt;
+                                    &lt;span style={{marginLeft: 15}}&gt;{user.name}&lt;/span&gt;
+                                &lt;/Menu.Item&gt;
+                            ))
+                        }
+                    &lt;/Menu&gt;
+                &lt;/Sider&gt;
+                &lt;Layout&gt;
+                    &lt;Content style={{margin: '16px',backgroundColor: '#FFF'}}&gt;
+                        &lt;List
+                            style={{padding:15}}
+                            itemLayout="horizontal"
+                            dataSource={messages}
+                            renderItem={
+                                message =&gt; {
+                                    let content=message.content;
+                                    if (!content || content =='undefined') return  &lt;div&gt;&lt;/div&gt;;
+                                    content=content.replace(/#\((\d+)\)/g,function (matched,index) {
+                                        let offset=-64*parseInt(index)+'px';
+                                        return `&lt;span
+                                                  style="display:inline-block;width:64px;height:64px;background-image:url(${face});background-position:left ${offset}"
+                                               &gt;&lt;/span&gt;`
+                                    });
+                                    return (
+                                        &lt;List.Item actions={[]}&gt;
+                                        &lt;List.Item.Meta
+                                            avatar={&lt;Avatar src={message.user.avatar} /&gt;}
+                                            title={message.user.name}
+                                            description={message.user.email}
+                                            /&gt;
+                                            &lt;div dangerouslySetInnerHTML={{__html:content}}&gt;&lt;/div&gt;
+                                    &lt;/List.Item&gt;
+                                    )
+                                }
+                            }
+                        &gt;
+                        &lt;/List&gt;
+                    &lt;/Content&gt;
+                    &lt;Footer style={{textAlign: 'center'}}&gt;
+                        &lt;Row&gt;
+                            &lt;Col span={3}&gt;
+                                &lt;img src={user &amp;&amp; user.avatar} style={{height:30,height:30,borderRadius:5}}/&gt;
+                                {user&amp;&amp; user.name}说:
+                            &lt;/Col&gt;
+                            &lt;Col span={19}&gt;
+                                &lt;Input
+                                    onChange={this.handleInputChange}
+                                    value={this.state.inputVal}
+                                    addonBefore={facePanel}
+                                    placeholder="请输入信息"
+                                    onPressEnter={this.sendMessage}
+                                /&gt;
+                            &lt;/Col&gt;
+                        &lt;/Row&gt;
+                    &lt;/Footer&gt;
+                &lt;/Layout&gt;
+           &lt;/Layout&gt;
+        )
+    }
+}
+
+export default connect(
+    state =&gt; ({
+        ...state.messages,
+        user:state.login.user
+    })
+)(Messages);
+</code></pre>
+<h3 id="t206.2 src/pages/messages/expressions.js">6.2 src/pages/messages/expressions.js <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t206.2%20src/pages/messages/expressions.js"> # </a></h3>
+<p>src/pages/messages/expressions.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+    <span class="hljs-attr">default</span>: [
+        <span class="hljs-string">'呵呵'</span>, <span class="hljs-string">'哈哈'</span>, <span class="hljs-string">'吐舌'</span>, <span class="hljs-string">'啊'</span>, <span class="hljs-string">'酷'</span>, <span class="hljs-string">'怒'</span>, <span class="hljs-string">'开心'</span>, <span class="hljs-string">'汗'</span>, <span class="hljs-string">'泪'</span>, <span class="hljs-string">'黑线'</span>,
+        <span class="hljs-string">'鄙视'</span>, <span class="hljs-string">'不高兴'</span>, <span class="hljs-string">'真棒'</span>, <span class="hljs-string">'钱'</span>, <span class="hljs-string">'疑问'</span>, <span class="hljs-string">'阴险'</span>, <span class="hljs-string">'吐'</span>, <span class="hljs-string">'咦'</span>, <span class="hljs-string">'委屈'</span>, <span class="hljs-string">'花心'</span>,
+        <span class="hljs-string">'呼'</span>, <span class="hljs-string">'笑眼'</span>, <span class="hljs-string">'冷'</span>, <span class="hljs-string">'太开心'</span>, <span class="hljs-string">'滑稽'</span>, <span class="hljs-string">'勉强'</span>, <span class="hljs-string">'狂汗'</span>, <span class="hljs-string">'乖'</span>, <span class="hljs-string">'睡觉'</span>, <span class="hljs-string">'惊哭'</span>,
+        <span class="hljs-string">'升起'</span>, <span class="hljs-string">'惊讶'</span>, <span class="hljs-string">'喷'</span>, <span class="hljs-string">'爱心'</span>, <span class="hljs-string">'心碎'</span>, <span class="hljs-string">'玫瑰'</span>, <span class="hljs-string">'礼物'</span>, <span class="hljs-string">'星星月亮'</span>, <span class="hljs-string">'太阳'</span>, <span class="hljs-string">'音乐'</span>,
+        <span class="hljs-string">'灯泡'</span>, <span class="hljs-string">'蛋糕'</span>, <span class="hljs-string">'彩虹'</span>, <span class="hljs-string">'钱币'</span>, <span class="hljs-string">'咖啡'</span>, <span class="hljs-string">'haha'</span>, <span class="hljs-string">'胜利'</span>, <span class="hljs-string">'大拇指'</span>, <span class="hljs-string">'弱'</span>, <span class="hljs-string">'ok'</span>,
+    ],
+};
+</code></pre>
+<h2 id="t21参考">参考 <a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html#t21%E5%8F%82%E8%80%83"> # </a></h2>
+<ul>
+<li><a href="https://gitee.com/zhufengpeixun/chat">chat</a></li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./38.chat-3_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

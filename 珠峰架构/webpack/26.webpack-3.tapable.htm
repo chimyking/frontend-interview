@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./26.webpack-3.tapable_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t01.%20webpack%E7%9A%84%E6%8F%92%E4%BB%B6%E6%9C%BA%E5%88%B6">1. webpack的插件机制</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t11.%20tapable">1. tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t22.tapable%E7%94%A8%E6%B3%95">2.tapable用法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t33.%20SyncHook">3. SyncHook</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t44.%20SyncBailHook">4. SyncBailHook</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t55.%20SyncWaterfallHook">5. SyncWaterfallHook</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t66.%20SyncLoopHook">6. SyncLoopHook</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t77.%20AsyncParallelHook">7. AsyncParallelHook</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t87.1%20tap">7.1 tap</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t97.2%20tapAsync">7.2 tapAsync</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t107.3%20tapPromise">7.3 tapPromise</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t118.%20AsyncParallelBailHook">8. AsyncParallelBailHook</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t128.1%20tap">8.1 tap</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t138.2%20tapAsync">8.2 tapAsync</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t148.3%20tapPromise">8.3 tapPromise</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t159.%20AsyncSeriesHook">9. AsyncSeriesHook</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t169.1%20tap">9.1 tap</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t179.2%20tapAsync">9.2 tapAsync</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t189.3%20tapPromise">9.3 tapPromise</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t1910.%20AsyncSeriesBailHook">10. AsyncSeriesBailHook</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2010.1%20tap">10.1 tap</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2110.2%20tabAsync">10.2 tabAsync</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2210.3%20tapPromise">10.3 tapPromise</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2311.%20AsyncSeriesWaterfallHook">11. AsyncSeriesWaterfallHook</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2411.1%20tap">11.1 tap</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2511.2%20tapAsync">11.2 tapAsync</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2611.3%20tapPromise">11.3 tapPromise</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2712.%20tapable">12. tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t28%E5%8F%82%E8%80%83">参考</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. webpack的插件机制">1. webpack的插件机制 <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t01.%20webpack%E7%9A%84%E6%8F%92%E4%BB%B6%E6%9C%BA%E5%88%B6"> # </a></h2>
+<p>在具体介绍webpack内置插件与钩子可视化工具之前，我们先来了解一下webpack中的插件机制。
+webpack实现插件机制的大体方式是：</p>
+<ul>
+<li>创建 - webpack在其内部对象上创建各种钩子；</li>
+<li>注册 - 插件将自己的方法注册到对应钩子上，交给webpack；</li>
+<li>调用 - webpack编译过程中，会适时地触发相应钩子，因此也就触发了插件的方法。</li>
+</ul>
+<h2 id="t11. tapable">1. tapable <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t11.%20tapable"> # </a></h2>
+<p><code>Webpack</code>本质上是一种事件流的机制，它的工作流程就是将各个插件串联起来，而实现这一切的核心就是<code>Tapable</code>，webpack中最核心的负责编译的<code>Compiler</code>和负责创建bundle的<code>Compilation</code>都是Tapable的实例</p>
+<h2 id="t22.tapable用法">2.tapable用法 <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t22.tapable%E7%94%A8%E6%B3%95"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {
+    SyncHook,
+    SyncBailHook,
+    SyncWaterfallHook,
+    SyncLoopHook,
+    AsyncParallelHook,
+    AsyncParallelBailHook,
+    AsyncSeriesHook,
+    AsyncSeriesBailHook,
+    AsyncSeriesWaterfallHook
+ } = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>);
+</code></pre>
+<p><img src="./26.webpack-3.tapable_files/tapable.png" alt="tapable"></p>
+<h2 id="t33. SyncHook">3. SyncHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t33.%20SyncHook"> # </a></h2>
+<p>串行同步执行,不关心返回值</p>
+<pre><code class="lang-js"><span class="hljs-comment">//let {SyncHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tap(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    call() {
+        <span class="hljs-keyword">this</span>.tasks.forEach(<span class="hljs-function"><span class="hljs-params">task</span>=&gt;</span>task(...arguments));
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> SyncHook([<span class="hljs-string">'name'</span>]);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(name,<span class="hljs-number">1</span>);
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(name,<span class="hljs-number">2</span>);
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(name,<span class="hljs-number">3</span>);
+});
+queue.call(<span class="hljs-string">'zfpx'</span>);
+</code></pre>
+<h2 id="t44. SyncBailHook">4. SyncBailHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t44.%20SyncBailHook"> # </a></h2>
+<p>串行同步执行，有一个返回值不为null则跳过剩下的逻辑</p>
+<pre><code class="lang-js"><span class="hljs-comment">//let {SyncBailHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncBailHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tap(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    call() {
+        <span class="hljs-comment">// for (let i=0;i&lt;this.tasks.length;i++){</span>
+        <span class="hljs-comment">//     let ret=this.tasks[i](...arguments);</span>
+        <span class="hljs-comment">//     if (ret)</span>
+        <span class="hljs-comment">//         break;</span>
+        <span class="hljs-comment">// }</span>
+        <span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>,ret;
+        <span class="hljs-keyword">do</span> {
+            ret=<span class="hljs-keyword">this</span>.tasks[i++](...arguments);
+        } <span class="hljs-keyword">while</span> (!ret);
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> SyncBailHook([<span class="hljs-string">'name'</span>]);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(name,<span class="hljs-number">1</span>);
+  <span class="hljs-keyword">return</span> <span class="hljs-string">'Wrong'</span>;
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(name,<span class="hljs-number">2</span>);
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(name,<span class="hljs-number">3</span>);
+});
+queue.call(<span class="hljs-string">'zfpx'</span>);
+</code></pre>
+<h2 id="t55. SyncWaterfallHook">5. SyncWaterfallHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t55.%20SyncWaterfallHook"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncWaterfallHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tap(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    call() {
+        <span class="hljs-keyword">let</span> [first,...tasks]=<span class="hljs-keyword">this</span>.tasks;
+        tasks.reduce(<span class="hljs-function">(<span class="hljs-params">ret,task</span>)=&gt;</span>task(ret),first(...arguments));
+
+        <span class="hljs-comment">//this.tasks.reduce((a,b) =&gt; (...args) =&gt; b(a(...args)))(...arguments);</span>
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> SyncWaterfallHook([<span class="hljs-string">'name'</span>]);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,age</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(name,age,<span class="hljs-number">1</span>);
+  <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(data,<span class="hljs-number">2</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(data,<span class="hljs-number">3</span>);
+});
+queue.call(<span class="hljs-string">'zfpx'</span>,<span class="hljs-number">9</span>);
+
+</code></pre>
+<h2 id="t66. SyncLoopHook">6. SyncLoopHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t66.%20SyncLoopHook"> # </a></h2>
+<p>监听函数返回true表示继续循环，返回undefine表示结束循环</p>
+<pre><code class="lang-js"><span class="hljs-comment">//let {SyncHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SyncLoopHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tap(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    call(...args) {    
+        <span class="hljs-keyword">this</span>.tasks.forEach(<span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> {
+            <span class="hljs-keyword">let</span> ret=<span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">do</span> {
+                ret = task(...args);
+            }<span class="hljs-keyword">while</span>(ret == <span class="hljs-literal">true</span> || !(ret === <span class="hljs-literal">undefined</span>))
+        });
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> SyncLoopHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(count++);
+    <span class="hljs-keyword">if</span>(count==<span class="hljs-number">3</span>){
+        <span class="hljs-keyword">return</span>;
+    }<span class="hljs-keyword">else</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+});
+queue.call(<span class="hljs-string">'zfpx'</span>);
+</code></pre>
+<h2 id="t77. AsyncParallelHook">7. AsyncParallelHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t77.%20AsyncParallelHook"> # </a></h2>
+<p>异步并行执行钩子</p>
+<h3 id="t87.1 tap">7.1 tap <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t87.1%20tap"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncParallelHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tap(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">let</span> args=<span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> callback=args.pop();
+        <span class="hljs-keyword">this</span>.tasks.forEach(<span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> task(...args));
+        callback();
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncParallelHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t97.2 tapAsync">7.2 tapAsync <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t97.2%20tapAsync"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncParallelHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapAsync(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">let</span> args=<span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> callback=args.pop();
+        <span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>,length = <span class="hljs-keyword">this</span>.tasks.length;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">done</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-keyword">if</span> (++i == length) {
+                callback(err);
+            }
+        }
+        <span class="hljs-keyword">this</span>.tasks.forEach(<span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> {
+            task(...args,done);
+        });
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncParallelHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapAsync(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+        callback();
+    },<span class="hljs-number">1000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+        callback();
+    },<span class="hljs-number">2000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+        callback();
+    },<span class="hljs-number">3000</span>)
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t107.3 tapPromise">7.3 tapPromise <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t107.3%20tapPromise"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncParallelHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapPromise(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    promise() {
+        <span class="hljs-keyword">let</span> promises = <span class="hljs-keyword">this</span>.tasks.map(<span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> task());
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.all(promises);
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncParallelHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapPromise(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve,reject</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+            resolve();
+        },<span class="hljs-number">1000</span>)
+    });
+
+});
+queue.tapPromise(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve,reject</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+            resolve();
+        },<span class="hljs-number">2000</span>)
+    });
+});
+queue.tapPromise(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve,reject</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+            resolve();
+        },<span class="hljs-number">3000</span>)
+    });
+});
+queue.promise(<span class="hljs-string">'zfpx'</span>).then(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+})
+</code></pre>
+<h2 id="t118. AsyncParallelBailHook">8. AsyncParallelBailHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t118.%20AsyncParallelBailHook"> # </a></h2>
+<p>带保险的异步并行执行钩子</p>
+<h3 id="t128.1 tap">8.1 tap <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t128.1%20tap"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncParallelBailHook} = require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelBailHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tap(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">let</span> args=<span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> callback=args.pop();
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>;i&lt;<span class="hljs-keyword">this</span>.tasks.length;i++){
+            <span class="hljs-keyword">let</span> ret=<span class="hljs-keyword">this</span>.tasks[i](...args);
+            <span class="hljs-keyword">if</span> (ret) {
+                <span class="hljs-keyword">return</span> callback(ret);
+            }
+        }
+    }
+}
+<span class="hljs-keyword">let</span> queue=<span class="hljs-keyword">new</span> AsyncParallelBailHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"Wrong"</span>;
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t138.2 tapAsync">8.2 tapAsync <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t138.2%20tapAsync"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncParallelBailHook} = require('tapable');</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelBailHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapAsync(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">let</span> args=<span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> finalCallback=args.pop();
+        <span class="hljs-keyword">let</span> count=<span class="hljs-number">0</span>,total=<span class="hljs-keyword">this</span>.tasks.length;
+        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">done</span>(<span class="hljs-params">err</span>) </span>{
+            <span class="hljs-keyword">if</span> (err) {
+                <span class="hljs-keyword">return</span> finalCallback(err);
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">if</span> (++count == total) {
+                    <span class="hljs-keyword">return</span> finalCallback();
+                }
+            }
+        }
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>;i&lt;total;i++){
+            <span class="hljs-keyword">let</span> task=<span class="hljs-keyword">this</span>.tasks[i];
+            task(...args,done);
+        }
+    }
+}
+<span class="hljs-keyword">let</span> queue=<span class="hljs-keyword">new</span> AsyncParallelBailHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapAsync(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+    callback(<span class="hljs-string">'Wrong'</span>);
+});
+queue.tapAsync(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+    callback();
+});
+queue.tapAsync(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+    callback();
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t148.3 tapPromise">8.3 tapPromise <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t148.3%20tapPromise"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncParallelBailHook} = require('tapable');</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncParallelBailHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapPromise(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    promise() {
+        <span class="hljs-keyword">let</span> args=<span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> promises = <span class="hljs-keyword">this</span>.tasks.map(<span class="hljs-function"><span class="hljs-params">task</span> =&gt;</span> task(...arguments));
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.all(promises);
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncParallelBailHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapPromise(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve,reject</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+            resolve();
+        },<span class="hljs-number">1000</span>)
+    });
+});
+queue.tapPromise(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve,reject</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+            reject();
+        },<span class="hljs-number">2000</span>)
+    });
+});
+
+queue.tapPromise(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve,reject</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+            resolve();
+        },<span class="hljs-number">3000</span>)
+    });
+});
+
+queue.promise(<span class="hljs-string">'zfpx'</span>).then(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+},err =&gt; {
+    <span class="hljs-built_in">console</span>.error(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+})
+</code></pre>
+<h2 id="t159. AsyncSeriesHook">9. AsyncSeriesHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t159.%20AsyncSeriesHook"> # </a></h2>
+<p>异步串行钩子</p>
+<h3 id="t169.1 tap">9.1 tap <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t169.1%20tap"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> {AsyncSeriesHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tap(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>;i&lt;total;i++){
+            <span class="hljs-keyword">let</span> task=<span class="hljs-keyword">this</span>.tasks[i];
+            task(...args,done);
+        }
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t179.2 tapAsync">9.2 tapAsync <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t179.2%20tapAsync"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesBailHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapAsync(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">let</span> args = <span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> finalCallback = args.pop();
+        <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>, length = <span class="hljs-keyword">this</span>.tasks.length;
+        <span class="hljs-keyword">let</span> next = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            <span class="hljs-keyword">let</span> task = <span class="hljs-keyword">this</span>.tasks[index++];
+            <span class="hljs-keyword">if</span> (task) {
+                task(...args, next);
+            } <span class="hljs-keyword">else</span> {
+                finalCallback();
+            }
+        }
+        next();
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapAsync(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+   setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+       <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+   },<span class="hljs-number">1000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+        callback();
+    },<span class="hljs-number">2000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+        callback();
+    },<span class="hljs-number">3000</span>)
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t189.3 tapPromise">9.3 tapPromise <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t189.3%20tapPromise"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapPromise(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    promise() {
+         <span class="hljs-comment">//first是第一个函数， tasks是剩下的函数</span>
+        <span class="hljs-keyword">let</span> [first, ...tasks] = <span class="hljs-keyword">this</span>.tasks;
+        <span class="hljs-keyword">return</span> tasks.reduce(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> {
+            <span class="hljs-keyword">return</span> a.then(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> b());
+        }, first(...args));
+    }
+}
+<span class="hljs-keyword">let</span> queue=<span class="hljs-keyword">new</span> AsyncSeriesHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapPromise(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve</span>)</span>{
+       setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+           <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+           resolve();
+       },<span class="hljs-number">1000</span>)
+   });
+});
+queue.tapPromise(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+            resolve();
+        },<span class="hljs-number">2000</span>)
+    });
+});
+queue.tapPromise(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+            resolve();
+        },<span class="hljs-number">3000</span>)
+    });
+});
+queue.promise(<span class="hljs-string">'zfpx'</span>).then(<span class="hljs-function"><span class="hljs-params">data</span>=&gt;</span>{
+    <span class="hljs-built_in">console</span>.log(data);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h2 id="t1910. AsyncSeriesBailHook">10. AsyncSeriesBailHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t1910.%20AsyncSeriesBailHook"> # </a></h2>
+<h3 id="t2010.1 tap">10.1 tap <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2010.1%20tap"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> {AsyncSeriesBailHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>);
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesBailHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"Wrong"</span>;
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t2110.2 tabAsync">10.2 tabAsync <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2110.2%20tabAsync"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncSeriesBailHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesBailHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapAsync(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">let</span> args=<span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> callback=args.pop();
+        <span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>,size = <span class="hljs-keyword">this</span>.tasks.length;
+        <span class="hljs-keyword">let</span> next=<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span>  callback(err);
+            <span class="hljs-keyword">let</span> task=<span class="hljs-keyword">this</span>.tasks[i++];
+            task?task(...args,next):callback();
+        }
+        next();
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesBailHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapAsync(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+   setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+       <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+       callback(<span class="hljs-string">'wrong'</span>);
+   },<span class="hljs-number">1000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+        callback();
+    },<span class="hljs-number">2000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+        callback();
+    },<span class="hljs-number">3000</span>)
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t2210.3 tapPromise">10.3 tapPromise <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2210.3%20tapPromise"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> {AsyncSeriesBailHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>);
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesBailHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapPromise(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name</span>)</span>{
+   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve,reject</span>)</span>{
+       setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+           <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+           <span class="hljs-comment">//resolve();</span>
+           reject();
+       },<span class="hljs-number">1000</span>)
+   });
+});
+queue.tapPromise(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+            resolve();
+        },<span class="hljs-number">2000</span>)
+    });
+});
+queue.tapPromise(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve</span>)</span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+            resolve();
+        },<span class="hljs-number">3000</span>)
+    });
+});
+queue.promise(<span class="hljs-string">'zfpx'</span>).then(<span class="hljs-function"><span class="hljs-params">err</span>=&gt;</span>{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+},err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h2 id="t2311. AsyncSeriesWaterfallHook">11. AsyncSeriesWaterfallHook <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2311.%20AsyncSeriesWaterfallHook"> # </a></h2>
+<h3 id="t2411.1 tap">11.1 tap <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2411.1%20tap"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> {AsyncSeriesWaterfallHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>);
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesWaterfallHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tap(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+});
+queue.tap(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>,data);
+});
+queue.tap(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>,data);
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,err=&gt;{
+    <span class="hljs-built_in">console</span>.log(err);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t2511.2 tapAsync">11.2 tapAsync <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2511.2%20tapAsync"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-comment">//let {AsyncSeriesBailHook}=require('tapable');</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesWaterfallHook</span></span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks=[];
+    }
+    tapAsync(name,task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    callAsync() {
+        <span class="hljs-keyword">let</span> args=<span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">arguments</span>);
+        <span class="hljs-keyword">let</span> callback=args.pop();
+        <span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>,size = <span class="hljs-keyword">this</span>.tasks.length;
+        <span class="hljs-keyword">let</span> next=<span class="hljs-function">(<span class="hljs-params">err,data</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span>  callback(err);
+            <span class="hljs-keyword">let</span> task=<span class="hljs-keyword">this</span>.tasks[i++];
+            <span class="hljs-keyword">if</span> (task) {
+                <span class="hljs-keyword">if</span> (i==<span class="hljs-number">0</span>) {
+                    task(...args,next);
+                } <span class="hljs-keyword">else</span> {
+                    task(data,next);
+                }
+
+            } <span class="hljs-keyword">else</span> {
+                callback(err,data);
+            }
+        }
+        next();
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesWaterfallHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapAsync(<span class="hljs-string">'1'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">name,callback</span>)</span>{
+   setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+       <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+       callback(<span class="hljs-literal">null</span>,<span class="hljs-number">1</span>);
+   },<span class="hljs-number">1000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'2'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+        callback(<span class="hljs-literal">null</span>,<span class="hljs-number">2</span>);
+    },<span class="hljs-number">2000</span>)
+});
+queue.tapAsync(<span class="hljs-string">'3'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data,callback</span>)</span>{
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+        callback(<span class="hljs-literal">null</span>,<span class="hljs-number">3</span>);
+    },<span class="hljs-number">3000</span>)
+});
+queue.callAsync(<span class="hljs-string">'zfpx'</span>,(err,data)=&gt;{
+    <span class="hljs-built_in">console</span>.log(err,data);
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h3 id="t2611.3 tapPromise">11.3 tapPromise <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2611.3%20tapPromise"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> {AsyncSeriesWaterfallHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'tapable'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AsyncSeriesWaterfallHook</span> </span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.tasks = [];
+    }
+    tapPromise(name, task) {
+        <span class="hljs-keyword">this</span>.tasks.push(task);
+    }
+    promise(...args) {
+        <span class="hljs-comment">//first是第一个函数， tasks是剩下的函数</span>
+        <span class="hljs-keyword">let</span> [first, ...tasks] = <span class="hljs-keyword">this</span>.tasks;
+        <span class="hljs-keyword">return</span> tasks.reduce(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> {
+            <span class="hljs-keyword">return</span> a.then(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> b(data));
+        }, first(...args));
+    }
+}
+<span class="hljs-keyword">let</span> queue = <span class="hljs-keyword">new</span> AsyncSeriesWaterfallHook([<span class="hljs-string">'name'</span>]);
+<span class="hljs-built_in">console</span>.time(<span class="hljs-string">'cost'</span>);
+queue.tapPromise(<span class="hljs-string">'1'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve</span>) </span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(name, <span class="hljs-number">1</span>);
+            resolve(<span class="hljs-number">1</span>);
+        }, <span class="hljs-number">1000</span>);
+    });
+});
+queue.tapPromise(<span class="hljs-string">'2'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve</span>) </span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(data, <span class="hljs-number">2</span>);
+            resolve(<span class="hljs-number">2</span>);
+        }, <span class="hljs-number">2000</span>);
+    });
+});
+queue.tapPromise(<span class="hljs-string">'3'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve</span>) </span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-built_in">console</span>.log(data, <span class="hljs-number">3</span>);
+            resolve(<span class="hljs-number">3</span>);
+        }, <span class="hljs-number">3000</span>);
+    });
+});
+queue.promise(<span class="hljs-string">'zfpx'</span>).then(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.timeEnd(<span class="hljs-string">'cost'</span>);
+});
+</code></pre>
+<h2 id="t2712. tapable">12. tapable <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t2712.%20tapable"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Tapable,SyncHook} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"tapable"</span>);
+<span class="hljs-keyword">const</span> t = <span class="hljs-keyword">new</span> Tapable();
+t.hooks = {
+    <span class="hljs-attr">myHook</span>: <span class="hljs-keyword">new</span> SyncHook()
+};
+<span class="hljs-keyword">let</span> called = <span class="hljs-number">0</span>;
+t.plugin(<span class="hljs-string">"my-hook"</span>, () =&gt; called++);
+t.hooks.myHook.call();
+t.plugin(<span class="hljs-string">"my-hook"</span>, () =&gt; called += <span class="hljs-number">10</span>);
+t.hooks.myHook.call();
+<span class="hljs-built_in">console</span>.log(called);
+</code></pre>
+<h2 id="t28参考">参考 <a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html#t28%E5%8F%82%E8%80%83"> # </a></h2>
+<ul>
+<li><a href="https://github.com/alienzhou/webpack-internal-plugin-relation">webpack-internal-plugin-relation</a></li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./26.webpack-3.tapable_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

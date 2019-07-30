@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)http://www.zhufengpeixun.cn/architecture/html/34.unittest.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./34.unittest_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t01.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">1. 单元测试</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t11.1%20TDD%20%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91">1.1 TDD 测试驱动开发</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t21.2%20BDD%20%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91">1.2 BDD 行为驱动开发</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t32.%20%E5%B7%A5%E5%85%B7">2. 工具</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t42.1%20chai">2.1 chai</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t52.2%20supertest">2.2 supertest</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t63.%20egg.js">3. egg.js</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t73.1%20%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4">3.1 配置命令</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t83.2%20%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F">3.2 执行顺序</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t93.2%20%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%BF%94%E5%9B%9E%E5%80%BC">3.2 测试接口返回值</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t103.3%20%E6%B5%8B%E8%AF%95%E6%8E%A7%E5%88%B6%E5%99%A8">3.3 测试控制器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t113.4%20%E6%B5%8B%E8%AF%95%E6%9C%8D%E5%8A%A1">3.4 测试服务</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t123.5%20%E6%B5%8B%E8%AF%95%E6%89%A9%E5%B1%95">3.5 测试扩展</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t133.5.1%20application">3.5.1 application</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t143.5.2%20context">3.5.2 context</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t153.5.3%20request">3.5.3 request</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t163.5.4%20response">3.5.4 response</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t173.5.5%20helper">3.5.5 helper</a></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. 单元测试">1. 单元测试 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t01.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"> # </a></h2>
+<h3 id="t11.1 TDD 测试驱动开发">1.1 TDD 测试驱动开发 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t11.1%20TDD%20%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91"> # </a></h3>
+<p>TDD指的是Test Drive Development，很明显的意思是测试驱动开发，也就是说我们可以从测试的角度来检验整个项目。大概的流程是先针对每个功能点抽象出接口代码，然后编写单元测试代码，接下来实现接口，运行单元测试代码，循环此过程，直到整个单元测试都通过。</p>
+<h3 id="t21.2 BDD 行为驱动开发">1.2 BDD 行为驱动开发 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t21.2%20BDD%20%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91"> # </a></h3>
+<ul>
+<li>BDD指的是Behavior Drive Development，也就是行为驱动开发。</li>
+<li>在TDD中，我们并不能完全保证根据设计所编写的测试就是用户所期望的功能。</li>
+<li>BDD将这一部分简单和自然化，用自然语言来描述，让开发、测试、BA以及客户都能在这个基础上达成一致。</li>
+</ul>
+<h2 id="t32. 工具">2. 工具 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t32.%20%E5%B7%A5%E5%85%B7"> # </a></h2>
+<ul>
+<li>单元测试框架 mocha <a href="http://mochajs.org/">http://mochajs.org</a></li>
+<li>断言 chai http:/chaijs.com</li>
+<li>代理HTTP请求 supertest <a href="https://npmjs.com/package/supertest">https://npmjs.com/package/supertest</a></li>
+</ul>
+<h3 id="t42.1 chai">2.1 chai <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t42.1%20chai"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { expect } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'chai'</span>);
+<span class="hljs-comment">//mocha -t 5000</span>
+describe(<span class="hljs-string">'zftest'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    it(<span class="hljs-string">'#1'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        expect(<span class="hljs-number">1</span> + <span class="hljs-number">1</span>).to.be.equal(<span class="hljs-number">2</span>);
+    })
+    it(<span class="hljs-string">'#2'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">done</span>) </span>{
+        setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            expect(<span class="hljs-number">1</span> + <span class="hljs-number">1</span>).to.be.equal(<span class="hljs-number">2</span>);
+            done();
+        }, <span class="hljs-number">1000</span>);
+    })
+    it(<span class="hljs-string">'#3'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve</span>) </span>{
+            setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                expect(<span class="hljs-number">1</span> + <span class="hljs-number">1</span>).to.be.equal(<span class="hljs-number">2</span>);
+                resolve();
+            }, <span class="hljs-number">3000</span>);
+        });
+    });
+});
+
+</code></pre>
+<h3 id="t52.2 supertest">2.2 supertest <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t52.2%20supertest"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">const</span> app = express();
+app.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
+    res.status(<span class="hljs-number">200</span>).json({ <span class="hljs-attr">name</span>: <span class="hljs-string">'zfpx'</span> });
+});
+app.listen(<span class="hljs-number">8080</span>);
+<span class="hljs-built_in">module</span>.exports = app;
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../src/app'</span>);
+<span class="hljs-keyword">const</span> request = <span class="hljs-built_in">require</span>(<span class="hljs-string">'supertest'</span>);
+describe(<span class="hljs-string">'app'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    it(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">done</span>) </span>{
+        request(app)
+            .get(<span class="hljs-string">'/'</span>)
+            .expect(<span class="hljs-string">'Content-Type'</span>, /json/)
+            .expect(<span class="hljs-string">'Content-Length'</span>, <span class="hljs-string">"15"</span>)
+            .expect(<span class="hljs-number">200</span>)
+            .end(done);
+    });
+});
+</code></pre>
+<h2 id="t63. egg.js">3. egg.js <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t63.%20egg.js"> # </a></h2>
+<ul>
+<li>约定test目录为存放所有的测试脚本的目录</li>
+<li>测试脚本文件统一按 ${filename}.test.js 命名，必须以 .test.js 作为文件后缀。</li>
+</ul>
+<h3 id="t73.1 配置命令">3.1 配置命令 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t73.1%20%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"> # </a></h3>
+<pre><code class="lang-js">{
+  <span class="hljs-string">"scripts"</span>: {
+    <span class="hljs-string">"test"</span>: <span class="hljs-string">"egg-bin test"</span>
+  }
+}
+</code></pre>
+<h3 id="t83.2 执行顺序">3.2 执行顺序 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t83.2%20%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"> # </a></h3>
+<pre><code class="lang-js">describe(<span class="hljs-string">'exec order'</span>, () =&gt; {
+    before(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>));
+    before(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>));
+    after(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">6</span>));
+    beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>));
+    afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-number">5</span>));
+    it(<span class="hljs-string">'should work'</span>, () =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-number">4</span>));
+});
+</code></pre>
+<h3 id="t93.2 测试接口返回值">3.2 测试接口返回值 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t93.2%20%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3%E8%BF%94%E5%9B%9E%E5%80%BC"> # </a></h3>
+<p><a href="https://github.com/visionmedia/supertest">supertest</a></p>
+<pre><code class="lang-js">it(<span class="hljs-string">'promise 200'</span>, () =&gt; {
+    <span class="hljs-keyword">return</span> app.httpRequest()
+        .get(<span class="hljs-string">'/'</span>)
+        .expect(<span class="hljs-number">200</span>)
+});
+
+it(<span class="hljs-string">'callback 200'</span>, done =&gt; {
+    app.httpRequest()
+        .get(<span class="hljs-string">'/'</span>)
+        .expect(<span class="hljs-number">200</span>, done);
+});
+
+it(<span class="hljs-string">'done 200'</span>, done =&gt; {
+    app.httpRequest()
+        .get(<span class="hljs-string">'/'</span>)
+        .expect(<span class="hljs-number">200</span>)
+        .end(done)
+});
+
+it(<span class="hljs-string">'await 200'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">await</span> app.httpRequest()
+        .get(<span class="hljs-string">'/'</span>)
+        .expect(<span class="hljs-number">200</span>);
+});
+</code></pre>
+<h3 id="t103.3 测试控制器">3.3 测试控制器 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t103.3%20%E6%B5%8B%E8%AF%95%E6%8E%A7%E5%88%B6%E5%99%A8"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test/controller/home.test.js'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    describe(<span class="hljs-string">'GET /'</span>, () =&gt; {
+        it(<span class="hljs-string">'should 200 and get body'</span>, () =&gt; {
+            <span class="hljs-keyword">return</span> app.httpRequest()
+                .get(<span class="hljs-string">'/'</span>)
+                .expect(<span class="hljs-number">200</span>)
+                .expect(<span class="hljs-string">'hello'</span>)
+        })
+
+        it(<span class="hljs-string">'should 200 and get reqeust body'</span>, () =&gt; {
+            app.mockCsrf();
+            <span class="hljs-keyword">return</span> app.httpRequest()
+                .post(<span class="hljs-string">'/post'</span>)
+                .type(<span class="hljs-string">'form'</span>)
+                .send({ <span class="hljs-attr">name</span>: <span class="hljs-string">'zfpx'</span> })
+                .expect(<span class="hljs-number">200</span>)
+                .expect({ <span class="hljs-attr">name</span>: <span class="hljs-string">'zfpx'</span> })
+        })
+    });
+});
+</code></pre>
+<h3 id="t113.4 测试服务">3.4 测试服务 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t113.4%20%E6%B5%8B%E8%AF%95%E6%9C%8D%E5%8A%A1"> # </a></h3>
+<p>Service 相对于 Controller 来说，测试起来会更加简单， 我们只需要先创建一个 ctx，然后通过 ctx.service.${serviceName} 拿到 Service 实例， 然后调用 Service 方法即可。
+\app\service\user.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Service } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Service</span> </span>{
+    <span class="hljs-keyword">async</span> create(user) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.ctx.model.User.create(user);
+    }
+    <span class="hljs-keyword">async</span> get(username) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.ctx.model.User.findOne({ username });
+    }
+}
+<span class="hljs-built_in">module</span>.exports = UserService;
+</code></pre>
+<p>\test\service\user.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'get name'</span>, () =&gt; {
+    it(<span class="hljs-string">'create user'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext();
+        <span class="hljs-keyword">const</span> doc = <span class="hljs-keyword">await</span> ctx.service.user.create({ <span class="hljs-attr">username</span>: <span class="hljs-string">'zfpx'</span>, <span class="hljs-attr">password</span>: <span class="hljs-string">'123456'</span>, <span class="hljs-attr">email</span>: <span class="hljs-string">'1@qq.com'</span> });
+        assert(doc);
+        assert(doc.username == <span class="hljs-string">'zfpx'</span>);
+    });
+    it(<span class="hljs-string">'get user'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext();
+        <span class="hljs-keyword">const</span> doc = <span class="hljs-keyword">await</span> ctx.service.user.get(<span class="hljs-string">'zfpx'</span>);
+        assert(doc);
+        assert(doc.username == <span class="hljs-string">'zfpx'</span>);
+    });
+});
+</code></pre>
+<h3 id="t123.5 测试扩展">3.5 测试扩展 <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t123.5%20%E6%B5%8B%E8%AF%95%E6%89%A9%E5%B1%95"> # </a></h3>
+<h4 id="t133.5.1 application">3.5.1 application <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t133.5.1%20application"> # </a></h4>
+<p>app\extend\application.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+    get name() {
+        <span class="hljs-keyword">return</span> <span class="hljs-string">'app-name'</span>;
+    }
+}
+</code></pre>
+<p>\test\extend\application.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test app'</span>, () =&gt; {
+    it(<span class="hljs-string">'test app'</span>, () =&gt; {
+        assert(app.name == <span class="hljs-string">'app-name'</span>);
+    });
+});
+</code></pre>
+<h4 id="t143.5.2 context">3.5.2 context <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t143.5.2%20context"> # </a></h4>
+<p>app\extend\context.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+    get isXHR() {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'X-Requested-With'</span>) == <span class="hljs-string">'XMLHttpRequest'</span>;
+    }
+}
+</code></pre>
+<p>\test\extend\context.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test context'</span>, () =&gt; {
+    it(<span class="hljs-string">'XHR is true'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext({
+            <span class="hljs-attr">headers</span>: {
+                <span class="hljs-string">"X-Requested-With"</span>: <span class="hljs-string">"XMLHttpRequest"</span>
+            }
+        });
+        assert(ctx.isXHR == <span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'XHR is true'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext({
+            <span class="hljs-attr">headers</span>: {
+                <span class="hljs-string">"X-Requested-With"</span>: <span class="hljs-string">"SuperAgent"</span>
+            }
+        });
+        assert(ctx.isXHR == <span class="hljs-literal">false</span>);
+    });
+});
+</code></pre>
+<h4 id="t153.5.3 request">3.5.3 request <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t153.5.3%20request"> # </a></h4>
+<p>app\extend\request.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+    get isChrome() {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'User-Agent'</span>).toLowerCase().includes(<span class="hljs-string">'chrome'</span>);
+    }
+}
+</code></pre>
+<p>\test\extend\request.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test context'</span>, () =&gt; {
+    it(<span class="hljs-string">'XHR is true'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext({
+            <span class="hljs-attr">headers</span>: {
+                <span class="hljs-string">"X-Requested-With"</span>: <span class="hljs-string">"XMLHttpRequest"</span>
+            }
+        });
+        assert(ctx.isXHR == <span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'XHR is true'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext({
+            <span class="hljs-attr">headers</span>: {
+                <span class="hljs-string">"X-Requested-With"</span>: <span class="hljs-string">"SuperAgent"</span>
+            }
+        });
+        assert(ctx.isXHR == <span class="hljs-literal">false</span>);
+    });
+});
+</code></pre>
+<h4 id="t163.5.4 response">3.5.4 response <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t163.5.4%20response"> # </a></h4>
+<p>app\extend\response.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+    get isSuccess() {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.status == <span class="hljs-number">200</span>;
+    }
+}
+</code></pre>
+<p>\test\extend\response.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test app'</span>, () =&gt; {
+    it(<span class="hljs-string">'response isSuccess is true'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext();
+        ctx.status = <span class="hljs-number">200</span>;
+        assert(ctx.response.isSuccess == <span class="hljs-literal">true</span>);
+    });
+
+    it(<span class="hljs-string">'response isSuccess is false'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext();
+        ctx.status = <span class="hljs-number">404</span>;
+        assert(ctx.response.isSuccess == <span class="hljs-literal">false</span>);
+    });
+});
+</code></pre>
+<h4 id="t173.5.5 helper">3.5.5 helper <a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html#t173.5.5%20helper"> # </a></h4>
+<p>app\extend\helper.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+    money(val) {
+        <span class="hljs-keyword">const</span> lang = <span class="hljs-keyword">this</span>.ctx.get(<span class="hljs-string">'Accept-Language'</span>);
+        <span class="hljs-keyword">if</span> (lang.includes(<span class="hljs-string">'zh-CN'</span>)) {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">`￥ <span class="hljs-subst">${val}</span>`</span>;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">`$ <span class="hljs-subst">${val}</span>`</span>;
+        }
+    }
+}
+</code></pre>
+<p>\test\extend\helper.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test helper'</span>, () =&gt; {
+    it(<span class="hljs-string">'should RMB'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext({
+            <span class="hljs-attr">headers</span>: {
+                <span class="hljs-string">"Accept-Language"</span>: <span class="hljs-string">"zh-CN"</span>
+            }
+        });
+        assert(ctx.helper.money(<span class="hljs-number">100</span>) == <span class="hljs-string">'￥ 100'</span>);
+    });
+
+    it(<span class="hljs-string">'should Dollar'</span>, () =&gt; {
+        <span class="hljs-keyword">const</span> ctx = app.mockContext();
+        assert(ctx.helper.money(<span class="hljs-number">100</span>) == <span class="hljs-string">'$ 100'</span>);
+    });
+});
+</code></pre>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./34.unittest_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

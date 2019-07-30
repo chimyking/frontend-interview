@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./25.koa-1_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t01.%20koa">1. koa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t12.%E5%AE%89%E8%A3%85">2.安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t22.%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F">2.应用程序</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t33.%E7%BA%A7%E8%81%94%E4%B8%AD%E9%97%B4%E4%BB%B6">3.级联中间件</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t44.%20%E4%B8%8A%E4%B8%8B%E6%96%87(Context)">4. 上下文(Context)</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t55.%E8%8E%B7%E5%8F%96%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0">5.获取请求参数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t66.%E8%8E%B7%E5%8F%96%E8%AF%B7%E6%B1%82%E4%BD%93">6.获取请求体</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t77.%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%8E%B7%E5%8F%96%E6%99%AE%E9%80%9A%E8%AF%B7%E6%B1%82%E4%BD%93">7.使用中间件获取普通请求体</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t88.%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%8E%B7%E5%8F%96%E5%8C%85%E5%90%AB%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%B7%E6%B1%82%E4%BD%93">8.使用中间件获取包含文件的请求体</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t99.%20%E8%B7%AF%E7%94%B1%E4%B8%AD%E9%97%B4%E4%BB%B6">9. 路由中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1010.cookie">10.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1111.session">11.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1212.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E">12. 模板引擎</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1313.%20%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E4%B8%AD%E9%97%B4%E4%BB%B6">13. 静态资源中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1414.%20koa%E5%AE%9E%E7%8E%B0">14. koa实现</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1515.%20generator">15. generator</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1616.%20form-data">16. form-data</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. koa">1. koa <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t01.%20koa"> # </a></h2>
+<p><a href="http://koajs.com/">koajs</a>
+Koa2是现在最流行的基于Node.js平台的web开发框架</p>
+<h2 id="t12.安装">2.安装 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t12.%E5%AE%89%E8%A3%85"> # </a></h2>
+<pre><code class="lang-js">npm i koa
+</code></pre>
+<h2 id="t22.应用程序">2.应用程序 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t22.%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F"> # </a></h2>
+<p>Koa 应用程序是一个包含一组中间件函数的对象，它是按照类似堆栈的方式组织和执行的。</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+
+app.use(<span class="hljs-keyword">async</span> ctx =&gt; {
+  ctx.body = <span class="hljs-string">'Hello World'</span>;
+});
+
+app.on(<span class="hljs-string">'error'</span>, err =&gt; {
+  log.error(<span class="hljs-string">'server error'</span>, err)
+});
+
+app.listen(<span class="hljs-number">3000</span>);
+<span class="hljs-comment">//app.callback()</span>
+<span class="hljs-comment">//http.createServer(app.callback()).listen(3000);</span>
+<span class="hljs-comment">//https.createServer(app.callback()).listen(3000);</span>
+</code></pre>
+<h2 id="t33.级联中间件">3.级联中间件 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t33.%E7%BA%A7%E8%81%94%E4%B8%AD%E9%97%B4%E4%BB%B6"> # </a></h2>
+<p>Koa 中间件以更传统的方式级联</p>
+<pre><code class="lang-js">app.use(<span class="hljs-function"><span class="hljs-keyword">function</span>)
+</span></code></pre>
+<p><img src="./25.koa-1_files/koa-middleware.jpg" alt="koa-middleware"></p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+
+<span class="hljs-comment">// x-response-time</span>
+
+app.use(<span class="hljs-keyword">async</span> (ctx, next) =&gt; {
+  <span class="hljs-keyword">const</span> start = <span class="hljs-built_in">Date</span>.now();
+  <span class="hljs-keyword">await</span> next();
+  <span class="hljs-keyword">const</span> ms = <span class="hljs-built_in">Date</span>.now() - start;
+  ctx.set(<span class="hljs-string">'X-Response-Time'</span>, <span class="hljs-string">`<span class="hljs-subst">${ms}</span>ms`</span>);
+});
+
+<span class="hljs-comment">// logger</span>
+
+app.use(<span class="hljs-keyword">async</span> (ctx, next) =&gt; {
+  <span class="hljs-keyword">const</span> start = <span class="hljs-built_in">Date</span>.now();
+  <span class="hljs-keyword">await</span> next();
+  <span class="hljs-keyword">const</span> ms = <span class="hljs-built_in">Date</span>.now() - start;
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${ctx.method}</span> <span class="hljs-subst">${ctx.url}</span> - <span class="hljs-subst">${ms}</span>`</span>);
+});
+
+<span class="hljs-comment">// response</span>
+
+app.use(<span class="hljs-keyword">async</span> ctx =&gt; {
+  ctx.body = <span class="hljs-string">'Hello World'</span>;
+});
+
+app.listen(<span class="hljs-number">3000</span>);
+</code></pre>
+<h3 id="t44. 上下文(Context)">4. 上下文(Context) <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t44.%20%E4%B8%8A%E4%B8%8B%E6%96%87(Context)"> # </a></h3>
+<p>Koa Context 将 node 的 request 和 response 对象封装到单个对象中，为编写 Web 应用程序和 API 提供了许多有用的方法</p>
+<ul>
+<li>ctx.request; // 这是 koa Request</li>
+<li>ctx.response; // 这是 koa Response</li>
+<li>ctrx.req  //原始的http请求对象</li>
+<li>ctx.res   //原始的http响应对象</li>
+<li>ctx.app 应用程序实例引用</li>
+<li>ctx.request是Koa2中context经过封装的请求对象</li>
+</ul>
+<blockquote>
+<p>绕过 Koa 的 response 处理是 不被支持的</p>
+</blockquote>
+<h2 id="t55.获取请求参数">5.获取请求参数 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t55.%E8%8E%B7%E5%8F%96%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+app.use(<span class="hljs-keyword">async</span> (ctx) =&gt; {
+    <span class="hljs-built_in">console</span>.log(ctx.method); <span class="hljs-comment">//获取请求方法</span>
+    <span class="hljs-built_in">console</span>.log(ctx.url);    <span class="hljs-comment">//获取请求URL</span>
+    <span class="hljs-built_in">console</span>.log(ctx.query);  <span class="hljs-comment">//获取解析的查询字符串对象</span>
+    <span class="hljs-built_in">console</span>.log(ctx.querystring); <span class="hljs-comment">//根据 ? 获取原始查询字符串.</span>
+    <span class="hljs-built_in">console</span>.log(ctx.headers);<span class="hljs-comment">//获取请求头对象</span>
+    ctx.body = ctx.url;
+});
+
+app.listen(<span class="hljs-number">3000</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'server is starting at port 3000'</span>);
+});
+</code></pre>
+<h2 id="t66.获取请求体">6.获取请求体 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t66.%E8%8E%B7%E5%8F%96%E8%AF%B7%E6%B1%82%E4%BD%93"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> querystring = <span class="hljs-built_in">require</span>(<span class="hljs-string">'querystring'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+app.use(<span class="hljs-keyword">async</span> (ctx) =&gt; {
+    <span class="hljs-keyword">if</span> (ctx.method == <span class="hljs-string">'GET'</span>) {
+        ctx.set(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'text/html;charset=utf-8'</span>);
+        ctx.body = (
+            <span class="hljs-string">`
+            &lt;form method="POST"&gt;
+               &lt;input name="username" &gt;
+               &lt;input type="submit"&gt;
+            &lt;/form&gt;
+            `</span>
+        );
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ctx.method == <span class="hljs-string">'POST'</span>) {
+        ctx.set(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'application/json'</span>);
+        ctx.body = <span class="hljs-keyword">await</span> parseBody(ctx);
+    } <span class="hljs-keyword">else</span> {
+        ctx.body = <span class="hljs-string">'Not Allowed'</span>;
+    }
+});
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parseBody</span>(<span class="hljs-params">ctx</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) </span>{
+        <span class="hljs-keyword">let</span> buffers = [];
+        ctx.req.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+            buffers.push(data);
+        });
+        ctx.req.on(<span class="hljs-string">'end'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+            <span class="hljs-keyword">let</span> body = buffers.toString();
+            body = querystring.parse(body);
+            resolve(body);
+        });
+        ctx.req.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">errdata</span>) </span>{
+            reject(err);
+        });
+    });
+}
+
+app.listen(<span class="hljs-number">3000</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'server is starting at port 3000'</span>);
+});
+</code></pre>
+<h2 id="t77.使用中间件获取普通请求体">7.使用中间件获取普通请求体 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t77.%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%8E%B7%E5%8F%96%E6%99%AE%E9%80%9A%E8%AF%B7%E6%B1%82%E4%BD%93"> # </a></h2>
+<pre><code class="lang-js">npm i koa-bodyparser -S
+</code></pre>
+<p><a href="https://npmjs.org/package/koa-bodyparser">koa-bodyparser</a></p>
+<pre><code>const Koa = require('koa');
+const querystring = require('querystring');
+const bodyParser = require('koa-bodyparser');
+const app = new Koa();
+app.use(bodyParser());
+app.use(async (ctx) =&gt; {
+    if (ctx.method == 'GET') {
+        ctx.set('Content-Type', 'text/html;charset=utf-8');
+        ctx.body = (
+            `
+            &lt;form method="POST"&gt;
+               &lt;input name="username" &gt;
+               &lt;input type="submit"&gt;
+            &lt;/form&gt;
+            `
+        );
+    } else if (ctx.method == 'POST') {
+        ctx.set('Content-Type', 'application/json');
+        ctx.body = ctx.request.body;
+    } else {
+        ctx.body = 'Not Allowed';
+    }
+});
+
+app.listen(3000, () =&gt; {
+    console.log('server is starting at port 3000');
+});
+</code></pre><h2 id="t88.使用中间件获取包含文件的请求体">8.使用中间件获取包含文件的请求体 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t88.%E4%BD%BF%E7%94%A8%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%8E%B7%E5%8F%96%E5%8C%85%E5%90%AB%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%B7%E6%B1%82%E4%BD%93"> # </a></h2>
+<p><a href="https://www.npmjs.com/package/koa-better-body">koa-better-body</a></p>
+<pre><code class="lang-js">npm i koa-better-body -S
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> querystring = <span class="hljs-built_in">require</span>(<span class="hljs-string">'querystring'</span>);
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">const</span> convert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-convert'</span>);
+<span class="hljs-keyword">const</span> bodyParser = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-better-body'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+app.use(convert(bodyParser({
+    <span class="hljs-attr">uploadDir</span>: path.join(__dirname, <span class="hljs-string">'uploads'</span>),
+    <span class="hljs-attr">keepExtensions</span>: <span class="hljs-literal">true</span>
+})));
+app.use(<span class="hljs-keyword">async</span> (ctx) =&gt; {
+    <span class="hljs-keyword">if</span> (ctx.method == <span class="hljs-string">'GET'</span>) {
+        ctx.set(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'text/html;charset=utf-8'</span>);
+        ctx.body = (
+            <span class="hljs-string">`
+            &lt;form method="POST" enctype="multipart/form-data"&gt;
+               &lt;input name="username" &gt;
+               &lt;input name="avatar" type="file" &gt;
+               &lt;input type="submit"&gt;
+            &lt;/form&gt;
+            `</span>
+        );
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ctx.method == <span class="hljs-string">'POST'</span>) {
+        ctx.set(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'application/json'</span>);
+        <span class="hljs-built_in">console</span>.log(ctx.request.fields);
+        ctx.body = ctx.request.body;
+    } <span class="hljs-keyword">else</span> {
+        ctx.body = <span class="hljs-string">'Not Allowed'</span>;
+    }
+});
+
+app.listen(<span class="hljs-number">3000</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'server is starting at port 3000'</span>);
+});
+</code></pre>
+<pre><code class="lang-json">{
+    username: 'zfpx',
+    avatar: [File {
+        domain: null,
+        _events: {},
+        _eventsCount: 0,
+        _maxListeners: undefined,
+        size: 78540,
+        path: '\%uploads\%upload_b631c6cbae762214afbe18b6e18d9f68.png',
+        name: 'mm.png',
+        type: 'image/png',
+        hash: null,
+        lastModifiedDate: 2018 - 03 - 09 T09: 12: 20.679 Z,
+        _writeStream: [WriteStream]
+    }]
+}
+</code></pre>
+<h2 id="t99. 路由中间件">9. 路由中间件 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t99.%20%E8%B7%AF%E7%94%B1%E4%B8%AD%E9%97%B4%E4%BB%B6"> # </a></h2>
+<pre><code class="lang-js">npm install --save koa-router
+</code></pre>
+<p>单级路由</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> Router = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-router'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> Router();
+user.get(<span class="hljs-string">'/user'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ctx</span>) </span>{
+    ctx.body = <span class="hljs-string">'get user '</span>;
+}).get(<span class="hljs-string">'/query/:id'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ctx</span>) </span>{
+    ctx.body = ctx.params;
+}).post(<span class="hljs-string">'/user'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ctx</span>) </span>{
+    ctx.body = <span class="hljs-string">'post user '</span>;
+}).get(<span class="hljs-string">'/home'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ctx</span>) </span>{
+    ctx.body = <span class="hljs-string">'get home '</span>;
+});
+app.use(user.routes());
+
+app.listen(<span class="hljs-number">3000</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'server is starting at port 3000'</span>);
+});
+</code></pre>
+<p>多级路由</p>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> Router();
+user.get(<span class="hljs-string">'/add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ctx</span>) </span>{
+    ctx.body = <span class="hljs-string">'get user add '</span>;
+});
+
+<span class="hljs-keyword">let</span> article = <span class="hljs-keyword">new</span> Router();
+article.get(<span class="hljs-string">'/add'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ctx</span>) </span>{
+    ctx.body = <span class="hljs-string">'get article add '</span>;
+});
+
+<span class="hljs-keyword">let</span> router = <span class="hljs-keyword">new</span> Router();
+router.use(<span class="hljs-string">'/user'</span>, user.routes());
+router.use(<span class="hljs-string">'/article'</span>, article.routes());
+app.use(router.routes());
+</code></pre>
+<h2 id="t1010.cookie">10.cookie <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1010.cookie"> # </a></h2>
+<ul>
+<li>ctx.cookies.get(name,[optins]):读取上下文请求中的cookie。</li>
+<li>ctx.cookies.set(name,value,[options])：在上下文中写入cookie。<ul>
+<li>domain：写入cookie所在的域名</li>
+<li>path：写入cookie所在的路径</li>
+<li>maxAge：Cookie最大有效时长</li>
+<li>expires：cookie失效时间</li>
+<li>httpOnly:是否只用http请求中获得</li>
+<li>overwirte：是否允许重写</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-js">app.use(<span class="hljs-keyword">async</span> (ctx, next) =&gt; {
+    <span class="hljs-built_in">console</span>.log(ctx.url);
+
+    <span class="hljs-keyword">if</span> (ctx.url == <span class="hljs-string">'/write'</span>) {
+        ctx.cookies.set(<span class="hljs-string">'name'</span>, <span class="hljs-string">'zfpx'</span>);
+        ctx.body = <span class="hljs-string">'write'</span>;
+    } <span class="hljs-keyword">else</span> {
+        next();
+    }
+});
+app.use(<span class="hljs-keyword">async</span> (ctx) =&gt; {
+    <span class="hljs-keyword">if</span> (ctx.url == <span class="hljs-string">'/read'</span>) {
+        ctx.body = ctx.cookies.get(<span class="hljs-string">'name'</span>);
+    }
+});
+</code></pre>
+<h2 id="t1111.session">11.session <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1111.session"> # </a></h2>
+<p><a href="https://www.npmjs.com/package/koa-session">koa-session</a></p>
+<pre><code class="lang-js">$ npm install koa-session
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> session = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-session'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+app.keys = [<span class="hljs-string">'zfpx'</span>];
+app.use(session({}, app));
+app.use(<span class="hljs-keyword">async</span> (ctx) =&gt; {
+    <span class="hljs-keyword">let</span> visit = ctx.session.visit;
+    <span class="hljs-keyword">if</span> (visit) {
+        visit = visit + <span class="hljs-number">1</span>;
+    } <span class="hljs-keyword">else</span> {
+        visit = <span class="hljs-number">1</span>;
+    }
+    ctx.session.visit = visit;
+    ctx.body = <span class="hljs-string">`这是你的第<span class="hljs-subst">${visit}</span>次访问`</span>;
+});
+app.listen(<span class="hljs-number">3000</span>);
+</code></pre>
+<h2 id="t1212. 模板引擎">12. 模板引擎 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1212.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E"> # </a></h2>
+<pre><code class="lang-js">npm i koa-views ejs -S
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> views = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-views'</span>);
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+app.use(views(path.join(__dirname, <span class="hljs-string">'./views'</span>), {
+    <span class="hljs-attr">extension</span>: <span class="hljs-string">'ejs'</span>
+}));
+
+app.use(<span class="hljs-keyword">async</span> ctx =&gt; {
+    <span class="hljs-keyword">await</span> ctx.render(<span class="hljs-string">'index'</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">'珠峰培训'</span> });
+});
+
+app.listen(<span class="hljs-number">3000</span>, () =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'server is starting at port 3000'</span>);
+});
+</code></pre>
+<h2 id="t1313. 静态资源中间件">13. 静态资源中间件 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1313.%20%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E4%B8%AD%E9%97%B4%E4%BB%B6"> # </a></h2>
+<pre><code class="lang-js">npm install --save koa-<span class="hljs-keyword">static</span>
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> <span class="hljs-keyword">static</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-static'</span>)
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa()
+app.use(<span class="hljs-keyword">static</span>(path.join( __dirname,  <span class="hljs-string">'public'</span>)))
+app.use( <span class="hljs-keyword">async</span> ( ctx ) =&gt; {
+  ctx.body = <span class="hljs-string">'Not Found'</span>
+})
+</code></pre>
+<h2 id="t1414. koa实现">14. koa实现 <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1414.%20koa%E5%AE%9E%E7%8E%B0"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./koa'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+app.use(<span class="hljs-keyword">async</span> (<span class="hljs-keyword">async</span>, next) =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">await</span> next();
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">2</span>);
+});
+app.use(<span class="hljs-keyword">async</span> (ctx, next) =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">3</span>);
+    <span class="hljs-keyword">await</span> next();
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">4</span>);
+});
+app.use(<span class="hljs-keyword">async</span> (ctx, next) =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-number">5</span>);
+});
+app.listen(<span class="hljs-number">3000</span>);
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Koa</span> </span>{
+    <span class="hljs-keyword">constructor</span>() {
+        <span class="hljs-keyword">this</span>.middleware = [];
+    }
+    use(fn) {
+        <span class="hljs-keyword">this</span>.middleware.push(fn);
+    }
+    listen(port) {
+        <span class="hljs-keyword">let</span> middleware = <span class="hljs-keyword">this</span>.middleware;
+        <span class="hljs-keyword">let</span> server = http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+            <span class="hljs-keyword">let</span> ctx = { req, res }
+            <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">dispatch</span>(<span class="hljs-params">idx</span>) </span>{
+                middleware[idx](ctx, () =&gt; dispatch(idx + <span class="hljs-number">1</span>));
+            }
+            dispatch(<span class="hljs-number">0</span>);
+        });
+        server.listen(port);
+    }
+}
+
+<span class="hljs-built_in">module</span>.exports = Koa;
+</code></pre>
+<h2 id="t1515. generator">15. generator <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1515.%20generator"> # </a></h2>
+<p><a href="https://github.com/17koa/koa-generator">koa-generator</a></p>
+<pre><code class="lang-js">$ npm install -g koa-generator
+</code></pre>
+<pre><code class="lang-js">$ koa /tmp/foo &amp;&amp; cd /tmp/foo
+$ npm install
+$ npm start
+</code></pre>
+<h2 id="t1616. form-data">16. form-data <a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html#t1616.%20form-data"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> Koa = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa'</span>);
+<span class="hljs-keyword">const</span> views = <span class="hljs-built_in">require</span>(<span class="hljs-string">'koa-views'</span>);
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+<span class="hljs-keyword">let</span> querystring = <span class="hljs-built_in">require</span>(<span class="hljs-string">'querystring'</span>);
+<span class="hljs-keyword">let</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">let</span> uuid = <span class="hljs-built_in">require</span>(<span class="hljs-string">'uuid'</span>);
+<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> Koa();
+app.use(<span class="hljs-keyword">async</span> (ctx, next) =&gt; {
+    <span class="hljs-keyword">if</span> (ctx.method == <span class="hljs-string">'GET'</span>) {
+        ctx.set(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'text/html;charset=utf8'</span>);
+        ctx.body = (
+            <span class="hljs-string">`
+                &lt;form id="userform" method="POST" enctype="multipart/form-data"&gt;
+                  用户名:&lt;input type="text"  name="username"&gt; 
+                  密码&lt;input type="text" name="password"&gt; 
+                  头像&lt;input type="file" name="avatar"&gt;
+                  &lt;input type="submit"&gt;
+                 &lt;/form&gt;
+                `</span>
+        );
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ctx.method == <span class="hljs-string">'POST'</span>) {
+        <span class="hljs-keyword">let</span> buffers = [];
+        ctx.req.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+            buffers.push(data);
+        });
+        ctx.req.on(<span class="hljs-string">'end'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">let</span> result = Buffer.concat(buffers);
+            <span class="hljs-keyword">let</span> type = ctx.headers[<span class="hljs-string">'content-type'</span>];
+            <span class="hljs-keyword">let</span> matched = type.match(<span class="hljs-regexp">/\bboundary=(.+)\b/</span>);
+            <span class="hljs-keyword">if</span> (matched) {
+                <span class="hljs-keyword">let</span> seperator = <span class="hljs-string">'--'</span> + matched[<span class="hljs-number">1</span>];
+                <span class="hljs-keyword">let</span> body = process(seperator, result);
+                ctx.body = body;
+            } <span class="hljs-keyword">else</span> {
+                next();
+            }
+        });
+        ctx.body = <span class="hljs-string">'hello'</span>;
+    } <span class="hljs-keyword">else</span> {
+        next();
+    }
+
+});
+app.listen(<span class="hljs-number">3000</span>);
+Buffer.prototype.split = Buffer.prototype.split || <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">sep</span>) </span>{
+    <span class="hljs-keyword">let</span> len = Buffer.byteLength(sep);
+    <span class="hljs-keyword">let</span> parts = [];
+    <span class="hljs-keyword">let</span> offset = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">let</span> pos = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">-1</span> != (pos = <span class="hljs-keyword">this</span>.indexOf(sep, offset))) {
+        parts.push(<span class="hljs-keyword">this</span>.slice(offset, pos));
+        offset = pos + len;
+    }
+    parts.push(<span class="hljs-keyword">this</span>.slice(offset));
+    <span class="hljs-keyword">return</span> parts;
+}
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">process</span>(<span class="hljs-params">seperator, result</span>) </span>{
+    <span class="hljs-keyword">let</span> lines = result.split(seperator);
+    lines = lines.slice(<span class="hljs-number">1</span>, <span class="hljs-number">-1</span>);
+    <span class="hljs-keyword">let</span> body = {};
+    <span class="hljs-keyword">let</span> files = [];
+    lines.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">line</span>) </span>{
+        <span class="hljs-keyword">let</span> [desc, val] = line.split(<span class="hljs-string">'\r\n\r\n'</span>);
+        desc = desc.toString();
+        val = val.slice(<span class="hljs-number">0</span>, <span class="hljs-number">-2</span>);
+        <span class="hljs-keyword">if</span> (desc.includes(<span class="hljs-string">'filename'</span>)) {<span class="hljs-comment">//如果是文件的话</span>
+            <span class="hljs-keyword">let</span> [, line1, line2] = desc.split(<span class="hljs-string">'\r\n'</span>);
+            <span class="hljs-keyword">let</span> obj1 = querystring.parse(line1, <span class="hljs-string">'; '</span>);
+            <span class="hljs-keyword">let</span> obj2 = querystring.parse(line2, <span class="hljs-string">'; '</span>);
+            <span class="hljs-keyword">let</span> filepath = path.join(__dirname, <span class="hljs-string">'uploads'</span>, uuid.v4());
+            fs.writeFileSync(filepath, val);
+            files.push({
+                ...obj1, filepath
+            });
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">let</span> matched = desc.match(<span class="hljs-regexp">/\bname=(.+)\b/</span>);
+            <span class="hljs-keyword">if</span> (matched)
+                body[matched[<span class="hljs-number">1</span>]] = val.toString();
+        }
+    });
+    <span class="hljs-keyword">return</span> { body, files };
+}
+</code></pre>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./25.koa-1_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

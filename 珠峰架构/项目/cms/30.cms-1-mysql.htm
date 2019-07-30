@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./30.cms-1-mysql_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t01.%20%E6%95%B0%E6%8D%AE%E5%BA%93%E8%83%BD%E5%A4%9F%E5%81%9A%E4%BB%80%E4%B9%88">1. 数据库能够做什么</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t12.%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">2. 数据库的基本概念</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t22.1%20%E5%AE%9E%E4%BD%93">2.1 实体</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t32.2%20%E6%95%B0%E6%8D%AE%E5%BA%93(DB)">2.2 数据库(DB)</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t42.3%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(DBMS)">2.3 数据库管理系统(DBMS)</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t52.4%20%20SQL">2.4  SQL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t62.5%20%20SQL%E8%A7%84%E8%8C%83">2.5  SQL规范</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t73.%20%E6%95%B0%E6%8D%AE%E8%A1%A8">3. 数据表</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t84.MYSQL%E7%AE%80%E4%BB%8B">4.MYSQL简介</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t94.1%20MYSQL%E7%89%B9%E7%82%B9">4.1 MYSQL特点</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t104.2%20MYSQL%E5%AE%89%E8%A3%85">4.2 MYSQL安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t114.3%20MYSQL%E9%85%8D%E7%BD%AE">4.3 MYSQL配置</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t124.4%20%20MYSQL%E5%90%AF%E5%8A%A8%E5%92%8C%E5%81%9C%E6%AD%A2">4.4  MYSQL启动和停止</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t134.5%20%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5MYSQL">4.5 通过命令行连接MYSQL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t144.6%20%E5%88%87%E6%8D%A2%E6%95%B0%E6%8D%AE%E5%BA%93">4.6 切换数据库</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t154.7%20%E6%98%BE%E7%A4%BA%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A1%A8">4.7 显示有哪些表</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t164.8%20%E6%98%BE%E7%A4%BA%E5%BD%93%E5%89%8D%E6%95%B0%E6%8D%AE%E5%BA%93">4.8 显示当前数据库</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t174.9%20%E6%9F%A5%E8%AF%A2%E8%A1%A8%E7%BB%93%E6%9E%84">4.9 查询表结构</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t185.%20%E5%88%9B%E5%BB%BA%E8%A1%A8">5. 创建表</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t196.%20%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7">6. 数据完整性</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t206.1%20%E5%9F%9F%E5%AE%8C%E6%95%B4%E6%80%A7">6.1 域完整性</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t216.2%20%E9%BB%98%E8%AE%A4%E5%80%BC">6.2 默认值</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t226.3%20%E9%9D%9E%E7%A9%BA%E7%BA%A6%E6%9D%9F">6.3 非空约束</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t237.%E5%AE%9E%E4%BD%93%E5%AE%8C%E6%95%B4%E6%80%A7">7.实体完整性</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t247.1%20%E4%B8%BB%E9%94%AE%E7%BA%A6%E6%9D%9F">7.1 主键约束</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t257.2%20%20%E5%A4%96%E9%94%AE">7.2  外键</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t267.3%20%20%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F">7.3  唯一约束</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t277.4%20%20%E6%A0%87%E8%AF%86%E5%88%97">7.4  标识列</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t287.5%20%20%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F">7.5  外键约束</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t298.%20%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C">8. 数据操作</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t308.1%20%E5%88%9B%E5%BB%BA%E5%AD%A6%E7%94%9F%E8%A1%A8">8.1 创建学生表</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t318.2%20%E5%A2%9E%E5%8A%A0%E8%BA%AB%E4%BB%BD%E8%AF%81%E5%8F%B7%E5%AD%97%E6%AE%B5">8.2 增加身份证号字段</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t328.3%20%E6%B7%BB%E5%8A%A0%E7%BA%A6%E6%9D%9F">8.3 添加约束</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t338.4%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE">8.4 准备数据</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t349.%20SQL">9. SQL</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t359.1%20SQL%E6%98%AF%E4%BB%80%E4%B9%88">9.1 SQL是什么</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t369.2%20%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8SQL">9.2 为什么要用SQL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t379.3%20SQL%E7%BB%84%E6%88%90">9.3 SQL组成</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t389.3.1%20DDL%EF%BC%88data%20definition%20language%EF%BC%89%E6%98%AF%E6%95%B0%E6%8D%AE%E5%AE%9A%E4%B9%89%E8%AF%AD%E8%A8%80">9.3.1 DDL（data definition language）是数据定义语言</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t399.3.2%20%20DML%EF%BC%88data%20manipulation%20language%EF%BC%89%E6%98%AF%E6%95%B0%E6%8D%AE%E6%93%8D%E7%BA%B5%E8%AF%AD%E8%A8%80">9.3.2  DML（data manipulation language）是数据操纵语言</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t409.3.3%20%20%20DCL%EF%BC%88DataControlLanguage%EF%BC%89%E6%98%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8E%A7%E5%88%B6%E8%AF%AD%E8%A8%80">9.3.3   DCL（DataControlLanguage）是数据库控制语言</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t419.4%20%20SQL%E8%BF%90%E7%AE%97%E7%AC%A6">9.4  SQL运算符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t429.4.1%20%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6">9.4.1 算术运算符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t439.4.2%20%20%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6">9.4.2  逻辑运算符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t449.4.3%20%20%20%E6%AF%94%E8%BE%83%E8%BF%90%E7%AE%97%E7%AC%A6">9.4.3   比较运算符</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t459.5%20%E6%9F%A5%E8%AF%A2%E7%AA%97%E5%8F%A3">9.5 查询窗口</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t469.6%20%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C%E8%AF%AD%E8%A8%80">9.6 数据操作语言</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t479.6.1%20%20%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE%E8%A1%8C">9.6.1  插入数据行</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t489.6.1.1%20%E8%AF%AD%E6%B3%95">9.6.1.1 语法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t499.6.1.2%20%E5%90%91%E5%AD%A6%E7%94%9F%E8%A1%A8%E6%8F%92%E5%85%A5%E4%B8%80%E6%9D%A1%E8%AE%B0%E5%BD%95,%20%E5%A7%93%E5%90%8D%E5%BC%A0%E4%B8%89,%E8%BA%AB%E4%BB%BD%E8%AF%81%E5%8F%B7123456,%E5%B9%B4%E9%BE%8430,%E5%9F%8E%E5%B8%82%E5%8C%97%E4%BA%AC">9.6.1.2 向学生表插入一条记录, 姓名张三,身份证号123456,年龄30,城市北京</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t509.6.1.3%20%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">9.6.1.3 注意事项</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t519.6.2%20%20%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE%E8%A1%8C">9.6.2  更新数据行</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t529.6.2.1%20%E8%AF%AD%E6%B3%95">9.6.2.1 语法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t539.6.2.2%20%E6%9B%B4%E6%96%B0ID%E7%AD%89%E4%BA%8E7%E7%9A%84%E5%AD%A6%E7%94%9F%E5%B9%B4%E9%BE%84%E6%94%B9%E4%B8%BA40%EF%BC%8C%E5%9F%8E%E5%B8%82%E6%94%B9%E4%B8%BA%E4%B8%8A%E6%B5%B7">9.6.2.2 更新ID等于7的学生年龄改为40，城市改为上海</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t549.6.2.3%20%E6%B3%A8%E6%84%8F">9.6.2.3 注意</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t559.6.3%20%20%20%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE">9.6.3   删除数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t569.6.2.1%20%E8%AF%AD%E6%B3%95">9.6.2.1 语法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t579.6.2.2%20%E5%88%A0%E9%99%A4ID=7%E7%9A%84%E5%AD%A6%E7%94%9F%E8%AE%B0%E5%BD%95">9.6.2.2 删除ID=7的学生记录</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t589.6.2.3%20%E6%B3%A8%E6%84%8F">9.6.2.3 注意</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t599.6.4%20TRUNCATE%20%E6%88%AA%E6%96%AD%E8%A1%A8">9.6.4 TRUNCATE 截断表</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t609.6.4.1%20%E8%AF%AD%E6%B3%95">9.6.4.1 语法</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t619.6.4.2%20%E6%88%AA%E6%96%AD%E5%AD%A6%E7%94%9F%E8%A1%A8">9.6.4.2 截断学生表</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t629.7%20%20%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2">9.7  数据查询</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t639.7.1%20%20%E6%9F%A5%E8%AF%A2">9.7.1  查询</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t649.7.1.1%20%20%20%E8%AF%AD%E6%B3%95">9.7.1.1   语法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t659.7.1.2%20%E6%9F%A5%E8%AF%A2%E5%8C%97%E4%BA%AC%E7%9A%84%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%EF%BC%8C%E5%B9%B6%E6%8C%89ID%E6%AD%A3%E5%BA%8F%E6%8E%92%E5%88%97">9.7.1.2 查询北京的学生信息，并按ID正序排列</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t669.7.1.3%20%20%E5%88%AB%E5%90%8D">9.7.1.3  别名</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t679.7.1.4%20%20%E6%9F%A5%E8%AF%A2%E7%A9%BA%E8%A1%8C">9.7.1.4  查询空行</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t689.7.1.5%20%20%E5%B8%B8%E9%87%8F%E5%88%97">9.7.1.5  常量列</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t699.7.1.6%20%20%E9%99%90%E5%88%B6%E8%BF%94%E5%9B%9E%E7%9A%84%E8%A1%8C%E6%95%B0">9.7.1.6  限制返回的行数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t709.7.1.7%20%20%E6%9F%A5%E8%AF%A2%E5%90%8C%E5%AD%A6%E4%BB%AC%E4%B8%80%E5%85%B1%E6%9D%A5%E8%87%AA%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C%E7%9A%84%E5%9F%8E%E5%B8%82">9.7.1.7  查询同学们一共来自哪些不同的城市</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t719.7.1.8%20%20%E5%9C%A8MYSQL%E4%B8%AD+%E5%8F%B7%E5%8F%AA%E8%83%BD%E7%94%A8%E4%BD%9C%E8%BF%90%E7%AE%97%E7%AC%A6">9.7.1.8  在MYSQL中+号只能用作运算符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t729.7.1.7%20%20%E7%BB%83%E4%B9%A0">9.7.1.7  练习</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t739.7.1.7.1%20%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE">9.7.1.7.1  准备数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t749.7.1.7.2%20%20%E6%9F%A5%E8%AF%A2%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9A%84%E5%90%8C%E5%AD%A6%E5%85%A8%E9%83%A8%E4%BF%A1%E6%81%AF">9.7.1.7.2  查询山东省的同学全部信息</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t759.7.1.7.3%20%20%E6%9F%A5%E8%AF%A2%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9A%84%E7%94%B7%E5%90%8C%E5%AD%A6%E7%9A%84%E5%85%A8%E9%83%A8%E4%BF%A1%E6%81%AF">9.7.1.7.3  查询山东省的男同学的全部信息</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t769.7.1.7.4%20%20%E6%9F%A5%E8%AF%A2%E6%B2%A1%E6%9C%89%E5%A1%AB%E5%86%99%E7%94%B5%E5%AD%90%E9%82%AE%E7%AE%B1%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E5%A7%93%E5%90%8D%E5%92%8C%E8%BA%AB%E4%BB%BD%E8%AF%81%E5%8F%B7">9.7.1.7.4  查询没有填写电子邮箱的同学的姓名和身份证号</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t779.7.1.8%20%E6%8E%92%E5%BA%8F">9.7.1.8 排序</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t789.7.1.8.1%20%E6%8A%8A%E5%AD%A6%E7%94%9F%E7%9A%84%E5%88%86%E6%95%B0%E6%8C%89%E5%8D%87%E5%BA%8F%E6%8E%92%E5%88%97">9.7.1.8.1 把学生的分数按升序排列</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t799.7.1.8.2%20%E6%8A%8A%E5%AD%A6%E7%94%9F%E7%9A%84%E5%88%86%E6%95%B0%E6%8C%89%E9%99%8D%E5%BA%8F%E6%8E%92%E5%88%97">9.7.1.8.2 把学生的分数按降序排列</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t809.7.1.8.3%20%E8%AF%BE%E7%A8%8B%E7%BC%96%E5%8F%B7%E6%8C%89%E5%8D%87%E5%BA%8F%EF%BC%8C%E6%88%90%E7%BB%A9%E6%8C%89%E9%99%8D%E5%BA%8F">9.7.1.8.3 课程编号按升序，成绩按降序</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t819.8%20%E5%87%BD%E6%95%B0">9.8 函数</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t829.8.1%20%20%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0">9.8.1  字符函数</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t839.8.1.1%20%20LENGTH">9.8.1.1  LENGTH</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t849.8.1.2%20%20%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%20[CONCAT]">9.8.1.2  拼接字符串 [CONCAT]</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t859.8.1.3%20%20%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%20[UPPER]">9.8.1.3  拼接字符串 [UPPER]</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t869.8.1.4%20%20%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%20[LOWER]">9.8.1.4  拼接字符串 [LOWER]</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t879.8.1.5%20%20%E6%88%AA%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2%20[SUBSTR]">9.8.1.5  截取字符串 [SUBSTR]</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t889.8.1.6%20%20%E5%A7%93%E5%90%8D%E7%9A%84%E9%A6%96%E5%AD%97%E7%AC%A6%E5%A4%A7%E5%86%99%EF%BC%8C%E5%85%B6%E5%AE%83%E5%AD%97%E7%AC%A6%E5%B0%8F%E5%86%99%E7%84%B6%E5%90%8E%E7%94%A8_%E6%8B%BC%E6%8E%A5">9.8.1.6  姓名的首字符大写，其它字符小写然后用_拼接</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t899.8.1.7%20%20%E8%BF%94%E5%9B%9E%E5%AD%90%E4%B8%B2%E5%9C%A8%E5%8E%9F%E5%A7%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E8%B5%B7%E5%A7%8B%E7%B4%A2%E5%BC%95">9.8.1.7  返回子串在原始字符串的起始索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t909.8.1.8%20%20%E5%8E%BB%E6%8E%89%E5%B7%A6%E5%8F%B3%E7%A9%BA%E6%A0%BC[TRIM]">9.8.1.8  去掉左右空格[TRIM]</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t919.8.1.9%20%20%E7%94%A8%E7%A9%BA%E6%A0%BC%E8%A1%A5%E9%BD%90[LPAD]">9.8.1.9  用空格补齐[LPAD]</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t929.8.1.10%20%20%E6%9B%BF%E6%8D%A2">9.8.1.10  替换</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t939.8.1.11%20%20FORMAT">9.8.1.11  FORMAT</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t949.8.1.12%20LEFT%20RIGHT">9.8.1.12 LEFT RIGHT</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t959.8.2%20%E6%95%B0%E5%AD%A6%E5%87%BD%E6%95%B0">9.8.2 数学函数</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t969.8.2.1%20%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5">9.8.2.1 四舍五入</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t979.8.2.2%20%E5%90%91%E4%B8%8A%E5%8F%96%E6%95%B4">9.8.2.2 向上取整</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t989.8.2.3%20%E5%90%91%E4%B8%8B%E5%8F%96%E6%95%B4">9.8.2.3 向下取整</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t999.8.2.4%20%E6%88%AA%E6%96%AD">9.8.2.4 截断</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1009.8.2.5%20%E5%8F%96%E4%BD%99">9.8.2.5 取余</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1019.8.3%20%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0">9.8.3 日期函数</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1029.8.3.1%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4">9.8.3.1 返回日期时间</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1039.8.3.2%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F">9.8.3.2 返回日期</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1049.8.3.3%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F">9.8.3.3 返回日期</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1059.8.3.4%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F%E4%B8%AD%E6%8C%87%E5%AE%9A%E7%9A%84%E9%83%A8%E5%88%86">9.8.3.4 返回日期中指定的部分</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1069.8.3.5%20str_to_date">9.8.3.5 str_to_date</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1079.8.3.6">9.8.3.6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1089.8.3.7%20DATE_FORMAT">9.8.3.7 DATE_FORMAT</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1099.8.3.8%20DATE_ADD">9.8.3.8 DATE_ADD</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1109.8.3.9%20DATEDIFF">9.8.3.9 DATEDIFF</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1119.8.4%20%E5%85%B6%E5%AE%83%E5%87%BD%E6%95%B0">9.8.4 其它函数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1129.9%20%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%87%BD%E6%95%B0">9.9 流程控制函数</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1139.9.1%20IF">9.9.1 IF</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1149.9.2%20CASE%E5%87%BD%E6%95%B0">9.9.2 CASE函数</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1159.10%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0">9.10 自定义函数</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1169.10.1%20%E8%AF%AD%E6%B3%95">9.10.1 语法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1179.10.2%20znow">9.10.2 znow</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1189.10.3%20zadd">9.10.3 zadd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1199.10.4%20addUser">9.10.4 addUser</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1209.11%20%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2">9.11 模糊查询</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1219.11.1%20%E9%80%9A%E9%85%8D%E7%AC%A6">9.11.1 通配符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1229.11.2%20%20BETWEEN%20AND">9.11.2  BETWEEN AND</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1239.11.3%20%20IN">9.11.3  IN</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1249.11.4%20IS%20NUL">9.11.4 IS NUL</a></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. 数据库能够做什么">1. 数据库能够做什么 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t01.%20%E6%95%B0%E6%8D%AE%E5%BA%93%E8%83%BD%E5%A4%9F%E5%81%9A%E4%BB%80%E4%B9%88"> # </a></h2>
+<ul>
+<li>存储大量数据，方便检索和访问</li>
+<li>保持数据信息的一致、完整</li>
+<li>共享和安全</li>
+<li>通过组合分析，产生新的有用信息</li>
+</ul>
+<h2 id="t12. 数据库的基本概念">2. 数据库的基本概念 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t12.%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"> # </a></h2>
+<h3 id="t22.1 实体">2.1 实体 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t22.1%20%E5%AE%9E%E4%BD%93"> # </a></h3>
+<p>只要是在客观世界存在的、可以被描述出来的都是实体</p>
+<h3 id="t32.2 数据库(DB)">2.2 数据库(DB) <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t32.2%20%E6%95%B0%E6%8D%AE%E5%BA%93(DB)"> # </a></h3>
+<ul>
+<li>数据库就是数据的仓库，可以存放结构化的数据</li>
+</ul>
+<h3 id="t42.3 数据库管理系统(DBMS)">2.3 数据库管理系统(DBMS) <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t42.3%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F(DBMS)"> # </a></h3>
+<p>是一种系统软件，提供操作数据库的环境，可以通过数据库管理系统对数据进行插入、修改、删除和查询等操作。</p>
+<h3 id="t52.4  SQL">2.4  SQL <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t52.4%20%20SQL"> # </a></h3>
+<p>结构化查询语言 专门用来和数据库进行交流的语言,几乎所有的DBMS都支持SQL</p>
+<p><img src="./30.cms-1-mysql_files/dbmspng.png" alt="dbms"></p>
+<h3 id="t62.5  SQL规范">2.5  SQL规范 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t62.5%20%20SQL%E8%A7%84%E8%8C%83"> # </a></h3>
+<ol>
+<li>SQL语句不区分大小写，建议SQL关键字大写，表名和列表小写</li>
+<li>命令用分号结尾</li>
+<li>命令可以缩进和换行，一种类型的关键字放在一行</li>
+<li>可以写单行和多行注释 , #和--是单行注释，/***/多行注释</li>
+</ol>
+<h2 id="t73. 数据表">3. 数据表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t73.%20%E6%95%B0%E6%8D%AE%E8%A1%A8"> # </a></h2>
+<ul>
+<li>表是数据库中包含所有数据的数据库对象，也是其它对象的基础。</li>
+<li>表定义是一个列的集合，数据在表中是按行和列的格式组织的，用来存放数据</li>
+<li>行也称为记录用来存放一个个实体，列称为字段用来描述实体的某一个属性
+学生管理系统 </li>
+</ul>
+<p><img src="./30.cms-1-mysql_files/table.png" alt="table"></p>
+<h2 id="t84.MYSQL简介">4.MYSQL简介 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t84.MYSQL%E7%AE%80%E4%BB%8B"> # </a></h2>
+<h3 id="t94.1 MYSQL特点">4.1 MYSQL特点 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t94.1%20MYSQL%E7%89%B9%E7%82%B9"> # </a></h3>
+<ul>
+<li>开源免费</li>
+<li>性能高</li>
+<li>安装使用都简单</li>
+</ul>
+<h3 id="t104.2 MYSQL安装">4.2 MYSQL安装 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t104.2%20MYSQL%E5%AE%89%E8%A3%85"> # </a></h3>
+<ul>
+<li><a href="https://dev.mysql.com/downloads/mysql/5.5.html">mysql下载</a></li>
+<li>安装MYSQL</li>
+</ul>
+<h3 id="t114.3 MYSQL配置">4.3 MYSQL配置 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t114.3%20MYSQL%E9%85%8D%E7%BD%AE"> # </a></h3>
+<p>C:\Program Files\MySQL\MySQL Server 5.5\my.ini</p>
+<ul>
+<li>port 端口号</li>
+<li>basedir 安装目录</li>
+<li>datadir 数据存放访目录</li>
+<li>character_set_server 字符集</li>
+<li>default-storage-engine 存储引擎</li>
+<li>sql-mode 语法模式</li>
+<li>max-connections 最大连接数</li>
+</ul>
+<h3 id="t124.4  MYSQL启动和停止">4.4  MYSQL启动和停止 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t124.4%20%20MYSQL%E5%90%AF%E5%8A%A8%E5%92%8C%E5%81%9C%E6%AD%A2"> # </a></h3>
+<pre><code class="lang-js">net start MySQL
+net stop MySQL
+</code></pre>
+<h3 id="t134.5 通过命令行连接MYSQL">4.5 通过命令行连接MYSQL <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t134.5%20%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BF%9E%E6%8E%A5MYSQL"> # </a></h3>
+<pre><code class="lang-js">mysql -h <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> -P <span class="hljs-number">3306</span> -uroot -p123456
+exit
+</code></pre>
+<h3 id="t144.6 切换数据库">4.6 切换数据库 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t144.6%20%E5%88%87%E6%8D%A2%E6%95%B0%E6%8D%AE%E5%BA%93"> # </a></h3>
+<pre><code class="lang-js">use test;
+</code></pre>
+<h3 id="t154.7 显示有哪些表">4.7 显示有哪些表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t154.7%20%E6%98%BE%E7%A4%BA%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A1%A8"> # </a></h3>
+<pre><code class="lang-js">show tables;
+show tables <span class="hljs-keyword">from</span> mysql;
+</code></pre>
+<h3 id="t164.8 显示当前数据库">4.8 显示当前数据库 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t164.8%20%E6%98%BE%E7%A4%BA%E5%BD%93%E5%89%8D%E6%95%B0%E6%8D%AE%E5%BA%93"> # </a></h3>
+<pre><code class="lang-js">select database();
+</code></pre>
+<h3 id="t174.9 查询表结构">4.9 查询表结构 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t174.9%20%E6%9F%A5%E8%AF%A2%E8%A1%A8%E7%BB%93%E6%9E%84"> # </a></h3>
+<pre><code class="lang-js">DESC user;
+</code></pre>
+<h2 id="t185. 创建表">5. 创建表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t185.%20%E5%88%9B%E5%BB%BA%E8%A1%A8"> # </a></h2>
+<p><img src="./30.cms-1-mysql_files/students.png" alt="student">
+<img src="./30.cms-1-mysql_files/course.png" alt="course">
+<img src="./30.cms-1-mysql_files/score.png" alt="score"></p>
+<h2 id="t196. 数据完整性">6. 数据完整性 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t196.%20%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7"> # </a></h2>
+<ul>
+<li>为了实现数据完整性，需要检验数据库表中的每行和每列数据是否符合要求</li>
+<li>在创建表的时候，应该保证以后的数据输入是正确的，错误的数据不允许输入</li>
+</ul>
+<h3 id="t206.1 域完整性">6.1 域完整性 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t206.1%20%E5%9F%9F%E5%AE%8C%E6%95%B4%E6%80%A7"> # </a></h3>
+<p>不同的字段需要设置为各种合适的类型，比如年龄就是整数类型</p>
+<p><img src="./30.cms-1-mysql_files/datatype.jpg" alt="datatype"></p>
+<h3 id="t216.2 默认值">6.2 默认值 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t216.2%20%E9%BB%98%E8%AE%A4%E5%80%BC"> # </a></h3>
+<p>默认值是指如果用户没有指定值的情况下会记录的此字段指定一个提供一个预先设定的值</p>
+<blockquote>
+<p>可以把居住地默认值设置为北京</p>
+</blockquote>
+<h3 id="t226.3 非空约束">6.3 非空约束 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t226.3%20%E9%9D%9E%E7%A9%BA%E7%BA%A6%E6%9D%9F"> # </a></h3>
+<p>我们可以指定某个字段不能不输入，必须提供一个非空的值</p>
+<blockquote>
+<p>姓名字段不能为空</p>
+</blockquote>
+<h2 id="t237.实体完整性">7.实体完整性 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t237.%E5%AE%9E%E4%BD%93%E5%AE%8C%E6%95%B4%E6%80%A7"> # </a></h2>
+<h3 id="t247.1 主键约束">7.1 主键约束 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t247.1%20%E4%B8%BB%E9%94%AE%E7%BA%A6%E6%9D%9F"> # </a></h3>
+<ul>
+<li>表中一列或者几列组合的值能用来唯一标识表中的每一行，这样的列或者列组合称为表的主键，主键表的数据不同重复。</li>
+<li>如果两列或者多列组合起来唯一标识表中的每一行，则该主键又称为"组合键"</li>
+</ul>
+<p><strong>主键的选择标准</strong></p>
+<ol>
+<li>最少性 尽量选择单个键作为主键 </li>
+<li>稳定性 ，由于主键是用来在两个表间建立联接的，所以不能经常更新，最好就不更新</li>
+</ol>
+<h3 id="t257.2  外键">7.2  外键 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t257.2%20%20%E5%A4%96%E9%94%AE"> # </a></h3>
+<p> 成绩表中的学生ID应该在学生表中是存在的
+ 我们应该让成绩表中的ID只能引用学生表中的ID，它们的值应该是一一对应的，也就是说成绩表中的ID是成绩表中的外键，对应学生表的主键 ，这样就可以保证数据的引用完整性</p>
+<h3 id="t267.3  唯一约束">7.3  唯一约束 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t267.3%20%20%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F"> # </a></h3>
+<p>唯一约束是指某个字段值是唯一的，在所有的记录中不能有重复的值.</p>
+<blockquote>
+<p>学生的身份证号可以设置为唯一约束</p>
+</blockquote>
+<h3 id="t277.4  标识列">7.4  标识列 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t277.4%20%20%E6%A0%87%E8%AF%86%E5%88%97"> # </a></h3>
+<ul>
+<li>当表中没有合适的列作为主键时可以考虑增加标识列，标识列是一个无实际业务含义的列，仅仅用来区分每条记录。</li>
+<li>标识列的值是自动生成的，不能在该列上输入数据</li>
+</ul>
+<h3 id="t287.5  外键约束">7.5  外键约束 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t287.5%20%20%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F"> # </a></h3>
+<p>一个表的外键必须引用另一个表的主键,比如成绩表中的学生ID会引用学生表的主键，课程ID会引用成绩表的主键</p>
+<ul>
+<li>主表没有记录，子表中不能添加相应的记录</li>
+<li>修改和删除主表记录不能让子表记录孤立，必须相应修改和删除</li>
+</ul>
+<h2 id="t298. 数据操作">8. 数据操作 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t298.%20%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C"> # </a></h2>
+<h3 id="t308.1 创建学生表">8.1 创建学生表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t308.1%20%E5%88%9B%E5%BB%BA%E5%AD%A6%E7%94%9F%E8%A1%A8"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span> (
+<span class="hljs-string">`id`</span>  <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> PRIMARY <span class="hljs-keyword">KEY</span> AUTO_INCREMENT   ,
+<span class="hljs-string">`name`</span>  <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> ,
+<span class="hljs-string">`age`</span>  <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-literal">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span> ,
+<span class="hljs-string">`city`</span>  <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">'北京'</span> ,
+)
+</code></pre>
+<h3 id="t318.2 增加身份证号字段">8.2 增加身份证号字段 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t318.2%20%E5%A2%9E%E5%8A%A0%E8%BA%AB%E4%BB%BD%E8%AF%81%E5%8F%B7%E5%AD%97%E6%AE%B5"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span> <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`idcard`</span>  <span class="hljs-built_in">varchar</span>(<span class="hljs-number">15</span>) <span class="hljs-literal">NULL</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-string">`city`</span>; <span class="hljs-comment">--增加身份证字段</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span> <span class="hljs-keyword">MODIFY</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`idcard`</span>  <span class="hljs-built_in">varchar</span>(<span class="hljs-number">18</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-string">`name`</span>; <span class="hljs-comment">--修改身份证字段</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`idcard`</span>; <span class="hljs-comment">--删除身份证字段</span>
+</code></pre>
+<h3 id="t328.3 添加约束">8.3 添加约束 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t328.3%20%E6%B7%BB%E5%8A%A0%E7%BA%A6%E6%9D%9F"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-comment">-- 主键约束</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span> <span class="hljs-keyword">ADD</span> PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`id`</span>);
+<span class="hljs-comment">-- 唯一约束</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span> <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">INDEX</span> <span class="hljs-string">`uq_idcard`</span> (<span class="hljs-string">`idcard`</span>) ;
+<span class="hljs-comment">-- 默认约束</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span> <span class="hljs-keyword">MODIFY</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`city`</span>  <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>)  <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">'北京'</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-string">`age`</span>;
+<span class="hljs-comment">-- 外键约束</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">CONSTRAINT</span> <span class="hljs-string">`fk_stuid`</span> <span class="hljs-keyword">FOREIGN</span> <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`student_id`</span>) <span class="hljs-keyword">REFERENCES</span> <span class="hljs-string">`student`</span> (<span class="hljs-string">`id`</span>);
+<span class="hljs-comment">-- 删除约束</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">FOREIGN</span> <span class="hljs-keyword">KEY</span> <span class="hljs-string">`fk_stuid`</span>;
+</code></pre>
+<h3 id="t338.4 准备数据">8.4 准备数据 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t338.4%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE"> # </a></h3>
+<p><img src="./30.cms-1-mysql_files/relations.png" alt="relations"></p>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span> (
+  <span class="hljs-string">`id`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT,
+  <span class="hljs-string">`name`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`idcard`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">18</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`age`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`city`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">''</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`id`</span>)
+);
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`course`</span> (
+  <span class="hljs-string">`id`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT,
+  <span class="hljs-string">`name`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`id`</span>)
+);
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`score`</span> (
+  <span class="hljs-string">`student_id`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">'0'</span>,
+  <span class="hljs-string">`course_id`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">'0'</span>,
+  <span class="hljs-string">`grade`</span> <span class="hljs-built_in">float</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`student_id`</span>,<span class="hljs-string">`course_id`</span>),
+  <span class="hljs-keyword">KEY</span> <span class="hljs-string">`fk_courseid`</span> (<span class="hljs-string">`course_id`</span>),
+  <span class="hljs-keyword">CONSTRAINT</span> <span class="hljs-string">`fk_courseid`</span> <span class="hljs-keyword">FOREIGN</span> <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`course_id`</span>) <span class="hljs-keyword">REFERENCES</span> <span class="hljs-string">`course`</span> (<span class="hljs-string">`id`</span>),
+  <span class="hljs-keyword">CONSTRAINT</span> <span class="hljs-string">`fk_stuid`</span> <span class="hljs-keyword">FOREIGN</span> <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`student_id`</span>) <span class="hljs-keyword">REFERENCES</span> <span class="hljs-string">`student`</span> (<span class="hljs-string">`id`</span>)
+) <span class="hljs-keyword">ENGINE</span>=<span class="hljs-keyword">InnoDB</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARSET</span>=utf8;
+
+</code></pre>
+<h2 id="t349. SQL">9. SQL <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t349.%20SQL"> # </a></h2>
+<h3 id="t359.1 SQL是什么">9.1 SQL是什么 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t359.1%20SQL%E6%98%AF%E4%BB%80%E4%B9%88"> # </a></h3>
+<p>Structured Query Language：结构化查询语言</p>
+<h3 id="t369.2 为什么要用SQL">9.2 为什么要用SQL <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t369.2%20%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8SQL"> # </a></h3>
+<ol>
+<li>使用界面操作数据库不方便</li>
+<li>我们需要通过应用程序去操作数据库</li>
+</ol>
+<h3 id="t379.3 SQL组成">9.3 SQL组成 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t379.3%20SQL%E7%BB%84%E6%88%90"> # </a></h3>
+<h4 id="t389.3.1 DDL（data definition language）是数据定义语言">9.3.1 DDL（data definition language）是数据定义语言 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t389.3.1%20DDL%EF%BC%88data%20definition%20language%EF%BC%89%E6%98%AF%E6%95%B0%E6%8D%AE%E5%AE%9A%E4%B9%89%E8%AF%AD%E8%A8%80"> # </a></h4>
+<p>主要的命令有<code>CREATE</code>、<code>ALTER</code>、<code>DROP</code>等，<strong>DDL</strong>主要是用在定义或改变表（TABLE）的结构，数据类型，表之间的链接和约束等初始化工作上，他们大多在建立表时使用</p>
+<h4 id="t399.3.2  DML（data manipulation language）是数据操纵语言">9.3.2  DML（data manipulation language）是数据操纵语言 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t399.3.2%20%20DML%EF%BC%88data%20manipulation%20language%EF%BC%89%E6%98%AF%E6%95%B0%E6%8D%AE%E6%93%8D%E7%BA%B5%E8%AF%AD%E8%A8%80"> # </a></h4>
+<p>它们是<code>SELECT</code>、<code>UPDATE、</code>INSERT<code>、</code>DELETE`，就象它的名字一样，这4条命令是用来对数据库里的数据进行操作的语言</p>
+<h4 id="t409.3.3   DCL（DataControlLanguage）是数据库控制语言">9.3.3   DCL（DataControlLanguage）是数据库控制语言 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t409.3.3%20%20%20DCL%EF%BC%88DataControlLanguage%EF%BC%89%E6%98%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8E%A7%E5%88%B6%E8%AF%AD%E8%A8%80"> # </a></h4>
+<p>是用来设置或更改数据库用户或角色权限的语句，包括（<code>grant</code>,<code>revoke</code>等）语句</p>
+<h3 id="t419.4  SQL运算符">9.4  SQL运算符 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t419.4%20%20SQL%E8%BF%90%E7%AE%97%E7%AC%A6"> # </a></h3>
+<p>是一种符号，它是用来进行列间或者变量之间的比较和数学运算的</p>
+<h3 id="t429.4.1 算术运算符">9.4.1 算术运算符 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t429.4.1%20%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">运算符</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">+</td>
+<td style="text-align:left">加运算，求两个数或表达式相加的和，如1+1</td>
+</tr>
+<tr>
+<td style="text-align:left">-</td>
+<td style="text-align:left">减少减运算，求两个数或表达式相减的差，如4-1</td>
+</tr>
+<tr>
+<td style="text-align:left">*</td>
+<td style="text-align:left">乘运算，求两个数或表达式相乘的积，如2*2</td>
+</tr>
+<tr>
+<td style="text-align:left">/</td>
+<td style="text-align:left">除运算，求两个数或表达式相除的商，如6/4的值为1</td>
+</tr>
+<tr>
+<td style="text-align:left">%</td>
+<td style="text-align:left">取模运算，求两个数或表达式相除的余数，如：6%4的值为2</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>查询姓名全称</li>
+</ul>
+<h3 id="t439.4.2  逻辑运算符">9.4.2  逻辑运算符 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t439.4.2%20%20%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">运算符</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">AND</td>
+<td style="text-align:left">当且仅当两个布尔表达式都为true时，返回TRUE</td>
+</tr>
+<tr>
+<td style="text-align:left">OR</td>
+<td style="text-align:left">当且仅当两个布尔表达式都为false，返回FALSE</td>
+</tr>
+<tr>
+<td style="text-align:left">NOT</td>
+<td style="text-align:left">布尔表达式的值取反</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t449.4.3   比较运算符">9.4.3   比较运算符 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t449.4.3%20%20%20%E6%AF%94%E8%BE%83%E8%BF%90%E7%AE%97%E7%AC%A6"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">运算符</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">=</td>
+<td style="text-align:left">等于</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt;</td>
+<td style="text-align:left">大于</td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;</td>
+<td style="text-align:left">小于</td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;&gt;</td>
+<td style="text-align:left">不等于</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt;=</td>
+<td style="text-align:left">大于等于</td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;=</td>
+<td style="text-align:left">小于等于</td>
+</tr>
+<tr>
+<td style="text-align:left">!=</td>
+<td style="text-align:left">不等于</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t459.5 查询窗口">9.5 查询窗口 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t459.5%20%E6%9F%A5%E8%AF%A2%E7%AA%97%E5%8F%A3"> # </a></h2>
+<p><img src="./30.cms-1-mysql_files/query.png" alt="query"></p>
+<h2 id="t469.6 数据操作语言">9.6 数据操作语言 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t469.6%20%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C%E8%AF%AD%E8%A8%80"> # </a></h2>
+<h3 id="t479.6.1  插入数据行">9.6.1  插入数据行 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t479.6.1%20%20%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE%E8%A1%8C"> # </a></h3>
+<h3 id="t489.6.1.1 语法">9.6.1.1 语法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t489.6.1.1%20%E8%AF%AD%E6%B3%95"> # </a></h3>
+<pre><code class="lang-sql"> <span class="hljs-keyword">INSERT</span>  [<span class="hljs-keyword">INTO</span>]  表名  [(列名)] <span class="hljs-keyword">VALUES</span>  (值列表)
+</code></pre>
+<h3 id="t499.6.1.2 向学生表插入一条记录, 姓名张三,身份证号123456,年龄30,城市北京">9.6.1.2 向学生表插入一条记录, 姓名张三,身份证号123456,年龄30,城市北京 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t499.6.1.2%20%E5%90%91%E5%AD%A6%E7%94%9F%E8%A1%A8%E6%8F%92%E5%85%A5%E4%B8%80%E6%9D%A1%E8%AE%B0%E5%BD%95,%20%E5%A7%93%E5%90%8D%E5%BC%A0%E4%B8%89,%E8%BA%AB%E4%BB%BD%E8%AF%81%E5%8F%B7123456,%E5%B9%B4%E9%BE%8430,%E5%9F%8E%E5%B8%82%E5%8C%97%E4%BA%AC"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> [school].[student]
+(<span class="hljs-keyword">name</span>,idcard,age,city)
+<span class="hljs-keyword">VALUES</span>
+(<span class="hljs-string">'张三'</span>,<span class="hljs-string">'123456'</span>,<span class="hljs-number">30</span>,<span class="hljs-string">'北京'</span>)
+</code></pre>
+<h3 id="t509.6.1.3 注意事项">9.6.1.3 注意事项 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t509.6.1.3%20%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"> # </a></h3>
+<ul>
+<li>每次插入一行数据，不能只插入一部分数据，插入的数据是否有效将按照整行的完整性要求来检验</li>
+<li>每个数据值的数据类型、精度、位数必须与要应的列名精确匹配</li>
+<li>不能为标识符指定值</li>
+<li>如果某字段设置为不能为空，则必须插入数据</li>
+<li>插入数据时还要符合检查性约束的要求</li>
+<li>有缺省值的列，可以使用DEFAULT关键字来代替插入实际的值</li>
+</ul>
+<h3 id="t519.6.2  更新数据行">9.6.2  更新数据行 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t519.6.2%20%20%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE%E8%A1%8C"> # </a></h3>
+<h3 id="t529.6.2.1 语法">9.6.2.1 语法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t529.6.2.1%20%E8%AF%AD%E6%B3%95"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">UPDATE</span> 表名 <span class="hljs-keyword">SET</span> 列名 = 更新值 [<span class="hljs-keyword">WHERE</span> 更新条件]
+</code></pre>
+<h3 id="t539.6.2.2 更新ID等于7的学生年龄改为40，城市改为上海">9.6.2.2 更新ID等于7的学生年龄改为40，城市改为上海 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t539.6.2.2%20%E6%9B%B4%E6%96%B0ID%E7%AD%89%E4%BA%8E7%E7%9A%84%E5%AD%A6%E7%94%9F%E5%B9%B4%E9%BE%84%E6%94%B9%E4%B8%BA40%EF%BC%8C%E5%9F%8E%E5%B8%82%E6%94%B9%E4%B8%BA%E4%B8%8A%E6%B5%B7"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">UPDATE</span> [school].[student]
+   <span class="hljs-keyword">SET</span> age = <span class="hljs-number">40</span>,city = <span class="hljs-string">'上海'</span>
+<span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">id</span>=<span class="hljs-number">7</span>
+</code></pre>
+<h3 id="t549.6.2.3 注意">9.6.2.3 注意 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t549.6.2.3%20%E6%B3%A8%E6%84%8F"> # </a></h3>
+<ul>
+<li>多列时用逗号隔开，一定要加更新条件以免错误更新</li>
+<li>多个联合条件使用 AND <code>id=7 and idcard='410787'</code></li>
+<li>判断某字段是否为空 <code>email is null or email = ''</code></li>
+</ul>
+<h3 id="t559.6.3   删除数据">9.6.3   删除数据 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t559.6.3%20%20%20%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE"> # </a></h3>
+<h3 id="t569.6.2.1 语法">9.6.2.1 语法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t569.6.2.1%20%E8%AF%AD%E6%B3%95"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">DELETE</span> [<span class="hljs-keyword">FROM</span>]  表名 [<span class="hljs-keyword">WHERE</span> &lt;删除条件&gt;]
+</code></pre>
+<h3 id="t579.6.2.2 删除ID=7的学生记录">9.6.2.2 删除ID=7的学生记录 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t579.6.2.2%20%E5%88%A0%E9%99%A4ID=7%E7%9A%84%E5%AD%A6%E7%94%9F%E8%AE%B0%E5%BD%95"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">FROM</span> [school].[student] <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">id</span>=<span class="hljs-number">7</span>
+</code></pre>
+<h3 id="t589.6.2.3 注意">9.6.2.3 注意 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t589.6.2.3%20%E6%B3%A8%E6%84%8F"> # </a></h3>
+<ul>
+<li>Delete语句是对整行进行操作，因此不需要提供列名</li>
+<li>如果要删除主表数据，则要先删除子表记录</li>
+</ul>
+<h3 id="t599.6.4 TRUNCATE 截断表">9.6.4 TRUNCATE 截断表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t599.6.4%20TRUNCATE%20%E6%88%AA%E6%96%AD%E8%A1%A8"> # </a></h3>
+<p>截断整个表中的数据</p>
+<h3 id="t609.6.4.1 语法">9.6.4.1 语法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t609.6.4.1%20%E8%AF%AD%E6%B3%95"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">TRUNCATE</span>  <span class="hljs-keyword">TABLE</span>  表名
+</code></pre>
+<h4 id="t619.6.4.2 截断学生表">9.6.4.2 截断学生表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t619.6.4.2%20%E6%88%AA%E6%96%AD%E5%AD%A6%E7%94%9F%E8%A1%A8"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">TRUNCATE</span> <span class="hljs-keyword">TABLE</span> student
+</code></pre>
+<blockquote>
+<p> 数据全部清空,但表结构、列、约束等不被改动
+ 不能用于有外键约束引用的表
+ 标识列重新开始编号
+ 因为要删除的数据不会写入日志，数据也不能恢复，所以工作中请尽量不要使用此命令</p>
+</blockquote>
+<h2 id="t629.7  数据查询">9.7  数据查询 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t629.7%20%20%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2"> # </a></h2>
+<ul>
+<li>查询就是从客户端 发出查询请求数据库服务器，并从数据库返回查询结果的过程</li>
+<li>每次执行查询只是从数据表中提取数据，并按表的方式呈现出来</li>
+<li>查询产生的是虚拟表,并不会保存起来</li>
+</ul>
+<h3 id="t639.7.1  查询">9.7.1  查询 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t639.7.1%20%20%E6%9F%A5%E8%AF%A2"> # </a></h3>
+<h3 id="t649.7.1.1   语法">9.7.1.1   语法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t649.7.1.1%20%20%20%E8%AF%AD%E6%B3%95"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span>    &lt;列名&gt; 
+<span class="hljs-keyword">FROM</span>      &lt;表名&gt; 
+[<span class="hljs-keyword">WHERE</span>    &lt;查询条件表达式&gt;] 
+[<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> &lt;排序的列名&gt;[<span class="hljs-keyword">ASC</span>或<span class="hljs-keyword">DESC</span>]]
+</code></pre>
+<h3 id="t659.7.1.2 查询北京的学生信息，并按ID正序排列">9.7.1.2 查询北京的学生信息，并按ID正序排列 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t659.7.1.2%20%E6%9F%A5%E8%AF%A2%E5%8C%97%E4%BA%AC%E7%9A%84%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%EF%BC%8C%E5%B9%B6%E6%8C%89ID%E6%AD%A3%E5%BA%8F%E6%8E%92%E5%88%97"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,idcard,age,city
+<span class="hljs-keyword">FROM</span> student
+<span class="hljs-keyword">WHERE</span> home= <span class="hljs-string">'北京'</span>
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">id</span> <span class="hljs-keyword">asc</span>
+</code></pre>
+<p><img src="./30.cms-1-mysql_files/selectquery.png" alt="selectquery"></p>
+<h3 id="t669.7.1.3  别名">9.7.1.3  别名 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t669.7.1.3%20%20%E5%88%AB%E5%90%8D"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,idcard,age,city <span class="hljs-keyword">AS</span> home
+<span class="hljs-keyword">FROM</span> student
+<span class="hljs-keyword">WHERE</span> city= <span class="hljs-string">'山东'</span>
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">id</span> <span class="hljs-keyword">asc</span>
+</code></pre>
+<h3 id="t679.7.1.4  查询空行">9.7.1.4  查询空行 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t679.7.1.4%20%20%E6%9F%A5%E8%AF%A2%E7%A9%BA%E8%A1%8C"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,age,city
+<span class="hljs-keyword">FROM</span> student
+<span class="hljs-keyword">WHERE</span> city <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">or</span> city =<span class="hljs-string">''</span>
+</code></pre>
+<h3 id="t689.7.1.5  常量列">9.7.1.5  常量列 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t689.7.1.5%20%20%E5%B8%B8%E9%87%8F%E5%88%97"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,age,city,<span class="hljs-string">'中国'</span> <span class="hljs-keyword">as</span> country
+<span class="hljs-keyword">FROM</span> student
+</code></pre>
+<h3 id="t699.7.1.6  限制返回的行数">9.7.1.6  限制返回的行数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t699.7.1.6%20%20%E9%99%90%E5%88%B6%E8%BF%94%E5%9B%9E%E7%9A%84%E8%A1%8C%E6%95%B0"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,age,city,<span class="hljs-string">'中国'</span> <span class="hljs-keyword">as</span> country
+<span class="hljs-keyword">FROM</span> student <span class="hljs-keyword">limit</span> <span class="hljs-number">2</span>
+</code></pre>
+<h3 id="t709.7.1.7  查询同学们一共来自哪些不同的城市">9.7.1.7  查询同学们一共来自哪些不同的城市 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t709.7.1.7%20%20%E6%9F%A5%E8%AF%A2%E5%90%8C%E5%AD%A6%E4%BB%AC%E4%B8%80%E5%85%B1%E6%9D%A5%E8%87%AA%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C%E7%9A%84%E5%9F%8E%E5%B8%82"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,age,<span class="hljs-keyword">DISTINCT</span> city,<span class="hljs-string">'中国'</span> <span class="hljs-keyword">as</span> country
+<span class="hljs-keyword">FROM</span> student 
+</code></pre>
+<h3 id="t719.7.1.8  在MYSQL中+号只能用作运算符">9.7.1.8  在MYSQL中+号只能用作运算符 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t719.7.1.8%20%20%E5%9C%A8MYSQL%E4%B8%AD+%E5%8F%B7%E5%8F%AA%E8%83%BD%E7%94%A8%E4%BD%9C%E8%BF%90%E7%AE%97%E7%AC%A6"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span>+<span class="hljs-number">1</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span>+<span class="hljs-string">'1'</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span>+<span class="hljs-string">'zfpx'</span>  
+<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span>+<span class="hljs-literal">null</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CONCAT</span>(last_name,first_name) <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">user</span>;
+</code></pre>
+<h3 id="t729.7.1.7  练习">9.7.1.7  练习 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t729.7.1.7%20%20%E7%BB%83%E4%B9%A0"> # </a></h3>
+<h4 id="t739.7.1.7.1  准备数据">9.7.1.7.1  准备数据 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t739.7.1.7.1%20%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`student`</span>
+<span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`province`</span>  <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-literal">NULL</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-string">`city`</span>,
+<span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`birthday`</span>  <span class="hljs-built_in">date</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-string">`province`</span>,
+<span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`gender`</span>   <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-literal">NULL</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-string">`birthday`</span>,
+<span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> <span class="hljs-string">`email`</span>  <span class="hljs-built_in">varchar</span>(<span class="hljs-number">50</span>) <span class="hljs-literal">NULL</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-string">`gender`</span>;
+
+</code></pre>
+<p><img src="./30.cms-1-mysql_files/studenttable.png" alt="studenttable">
+<img src="./30.cms-1-mysql_files/coursetable.png" alt="coursetable">
+<img src="./30.cms-1-mysql_files/scoretable.png" alt="scoretable"></p>
+<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`student`</span>(<span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,gender,age,city,province,birthday,idcard,email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'1'</span>, <span class="hljs-string">'郭靖'</span>, <span class="hljs-string">'1'</span>, <span class="hljs-string">'1'</span>, <span class="hljs-string">'济南'</span>, <span class="hljs-string">'山东省'</span>, <span class="hljs-string">'1982-09-03'</span>, <span class="hljs-number">1</span>, <span class="hljs-string">'1@qq.com'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`student`</span>(<span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,gender,age,city,province,birthday,idcard,email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'2'</span>, <span class="hljs-string">'黄蓉'</span>, <span class="hljs-string">'2'</span>, <span class="hljs-string">'2'</span>, <span class="hljs-string">'济南'</span>, <span class="hljs-string">'山东省'</span>, <span class="hljs-string">'1982-09-03'</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'2@qq.com'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`student`</span>(<span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,gender,age,city,province,birthday,idcard,email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'3'</span>, <span class="hljs-string">'杨过'</span>, <span class="hljs-string">'3'</span>, <span class="hljs-string">'3'</span>, <span class="hljs-string">'终南山'</span>, <span class="hljs-string">'陕西省'</span>, <span class="hljs-string">'1979-09-03'</span>, <span class="hljs-number">1</span>, <span class="hljs-string">'3@qq.com'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`student`</span>(<span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,gender,age,city,province,birthday,idcard,email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'4'</span>, <span class="hljs-string">'小龙女'</span>, <span class="hljs-string">'4'</span>, <span class="hljs-string">'4'</span>, <span class="hljs-string">'终南山'</span>, <span class="hljs-string">'陕西省'</span>, <span class="hljs-string">'1970-09-03'</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'4@qq.com'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`student`</span>(<span class="hljs-keyword">id</span>,<span class="hljs-keyword">name</span>,gender,age,city,province,birthday,idcard,email) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'5'</span>, <span class="hljs-string">'欧阳锋'</span>, <span class="hljs-string">'5'</span>, <span class="hljs-string">'5'</span>, <span class="hljs-string">'白驼山'</span>, <span class="hljs-string">'新疆'</span>, <span class="hljs-string">'1989-09-09'</span>, <span class="hljs-number">1</span>, <span class="hljs-string">'5@qq.com'</span>);
+
+
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`course`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'1'</span>, <span class="hljs-string">'语文'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`course`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'2'</span>, <span class="hljs-string">'数学'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`course`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'3'</span>, <span class="hljs-string">'英语'</span>);
+
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'1'</span>, <span class="hljs-string">'1'</span>, <span class="hljs-string">'100'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'1'</span>, <span class="hljs-string">'2'</span>, <span class="hljs-string">'90'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'1'</span>, <span class="hljs-string">'3'</span>, <span class="hljs-string">'70'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'2'</span>, <span class="hljs-string">'1'</span>, <span class="hljs-string">'100'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'2'</span>, <span class="hljs-string">'2'</span>, <span class="hljs-string">'90'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'2'</span>, <span class="hljs-string">'3'</span>, <span class="hljs-string">'80'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'3'</span>, <span class="hljs-string">'1'</span>, <span class="hljs-string">'100'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'3'</span>, <span class="hljs-string">'2'</span>, <span class="hljs-string">'90'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`score`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">'3'</span>, <span class="hljs-string">'3'</span>, <span class="hljs-string">'80'</span>);
+
+</code></pre>
+<h4 id="t749.7.1.7.2  查询山东省的同学全部信息">9.7.1.7.2  查询山东省的同学全部信息 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t749.7.1.7.2%20%20%E6%9F%A5%E8%AF%A2%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9A%84%E5%90%8C%E5%AD%A6%E5%85%A8%E9%83%A8%E4%BF%A1%E6%81%AF"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> student <span class="hljs-keyword">where</span> province = <span class="hljs-string">'山东'</span>;
+</code></pre>
+<h4 id="t759.7.1.7.3  查询山东省的男同学的全部信息">9.7.1.7.3  查询山东省的男同学的全部信息 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t759.7.1.7.3%20%20%E6%9F%A5%E8%AF%A2%E5%B1%B1%E4%B8%9C%E7%9C%81%E7%9A%84%E7%94%B7%E5%90%8C%E5%AD%A6%E7%9A%84%E5%85%A8%E9%83%A8%E4%BF%A1%E6%81%AF"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> student <span class="hljs-keyword">where</span> province = <span class="hljs-string">'山东'</span> <span class="hljs-keyword">and</span> gender=<span class="hljs-number">1</span>;
+</code></pre>
+<h4 id="t769.7.1.7.4  查询没有填写电子邮箱的同学的姓名和身份证号">9.7.1.7.4  查询没有填写电子邮箱的同学的姓名和身份证号 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t769.7.1.7.4%20%20%E6%9F%A5%E8%AF%A2%E6%B2%A1%E6%9C%89%E5%A1%AB%E5%86%99%E7%94%B5%E5%AD%90%E9%82%AE%E7%AE%B1%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E5%A7%93%E5%90%8D%E5%92%8C%E8%BA%AB%E4%BB%BD%E8%AF%81%E5%8F%B7"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">name</span>,idcard <span class="hljs-keyword">FROM</span> student <span class="hljs-keyword">WHERE</span> email <span class="hljs-keyword">IS</span> <span class="hljs-literal">NULL</span>
+</code></pre>
+<h3 id="t779.7.1.8 排序">9.7.1.8 排序 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t779.7.1.8%20%E6%8E%92%E5%BA%8F"> # </a></h3>
+<h4 id="t789.7.1.8.1 把学生的分数按升序排列">9.7.1.8.1 把学生的分数按升序排列 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t789.7.1.8.1%20%E6%8A%8A%E5%AD%A6%E7%94%9F%E7%9A%84%E5%88%86%E6%95%B0%E6%8C%89%E5%8D%87%E5%BA%8F%E6%8E%92%E5%88%97"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> score <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> grade <span class="hljs-keyword">asc</span>;
+</code></pre>
+<h4 id="t799.7.1.8.2 把学生的分数按降序排列">9.7.1.8.2 把学生的分数按降序排列 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t799.7.1.8.2%20%E6%8A%8A%E5%AD%A6%E7%94%9F%E7%9A%84%E5%88%86%E6%95%B0%E6%8C%89%E9%99%8D%E5%BA%8F%E6%8E%92%E5%88%97"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> score <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> grade <span class="hljs-keyword">desc</span>;
+</code></pre>
+<h4 id="t809.7.1.8.3 课程编号按升序，成绩按降序">9.7.1.8.3 课程编号按升序，成绩按降序 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t809.7.1.8.3%20%E8%AF%BE%E7%A8%8B%E7%BC%96%E5%8F%B7%E6%8C%89%E5%8D%87%E5%BA%8F%EF%BC%8C%E6%88%90%E7%BB%A9%E6%8C%89%E9%99%8D%E5%BA%8F"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> score <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> course_id <span class="hljs-keyword">asc</span>, grade <span class="hljs-keyword">desc</span>;
+</code></pre>
+<h2 id="t819.8 函数">9.8 函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t819.8%20%E5%87%BD%E6%95%B0"> # </a></h2>
+<h3 id="t829.8.1  字符函数">9.8.1  字符函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t829.8.1%20%20%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">函数名称</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">CONCAT</td>
+<td style="text-align:left">字符串连接</td>
+</tr>
+<tr>
+<td style="text-align:left">CONCAT_WS</td>
+<td style="text-align:left">使用指定的分隔符进行字符连接</td>
+</tr>
+<tr>
+<td style="text-align:left">FORMAT</td>
+<td style="text-align:left">数字格式化</td>
+</tr>
+<tr>
+<td style="text-align:left">LOWER</td>
+<td style="text-align:left">转小写字母</td>
+</tr>
+<tr>
+<td style="text-align:left">UPPER</td>
+<td style="text-align:left">转大写字母</td>
+</tr>
+<tr>
+<td style="text-align:left">LEFT</td>
+<td style="text-align:left">返回字符串s开始的最左边n个字符</td>
+</tr>
+<tr>
+<td style="text-align:left">RIGHT</td>
+<td style="text-align:left">返回字符串s开始的最左边n个字符</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t839.8.1.1  LENGTH">9.8.1.1  LENGTH <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t839.8.1.1%20%20LENGTH"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LENGTH</span>(<span class="hljs-string">'zfpx'</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LENGTH</span>(<span class="hljs-string">'珠峰培训'</span>);
+<span class="hljs-keyword">SHOW</span> <span class="hljs-keyword">VARIABLES</span> <span class="hljs-keyword">like</span> <span class="hljs-string">'%char%'</span>;
+</code></pre>
+<h4 id="t849.8.1.2  拼接字符串 [CONCAT]">9.8.1.2  拼接字符串 [CONCAT] <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t849.8.1.2%20%20%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%20[CONCAT]"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CONCAT</span>(last_name,<span class="hljs-string">'_'</span>,first_name) <span class="hljs-keyword">FROM</span> employees;
+</code></pre>
+<h4 id="t859.8.1.3  拼接字符串 [UPPER]">9.8.1.3  拼接字符串 [UPPER] <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t859.8.1.3%20%20%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%20[UPPER]"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">UPPER</span>(<span class="hljs-string">'zfpx'</span>) <span class="hljs-keyword">FROM</span> employees;
+</code></pre>
+<h4 id="t869.8.1.4  拼接字符串 [LOWER]">9.8.1.4  拼接字符串 [LOWER] <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t869.8.1.4%20%20%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%20[LOWER]"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LOWER</span>(<span class="hljs-string">'ZFPX'</span>) <span class="hljs-keyword">FROM</span> employees;
+</code></pre>
+<h4 id="t879.8.1.5  截取字符串 [SUBSTR]">9.8.1.5  截取字符串 [SUBSTR] <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t879.8.1.5%20%20%E6%88%AA%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2%20[SUBSTR]"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">SUBSTR</span>(<span class="hljs-string">'zfpx'</span>,<span class="hljs-number">2</span>);<span class="hljs-comment">-- 截取从指定索引处开始的所有的字符</span>
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">SUBSTR</span>(<span class="hljs-string">'zfpx'</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>);<span class="hljs-comment">--截取从指定索引处开始的指定数量的字符</span>
+</code></pre>
+<h4 id="t889.8.1.6  姓名的首字符大写，其它字符小写然后用_拼接">9.8.1.6  姓名的首字符大写，其它字符小写然后用_拼接 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t889.8.1.6%20%20%E5%A7%93%E5%90%8D%E7%9A%84%E9%A6%96%E5%AD%97%E7%AC%A6%E5%A4%A7%E5%86%99%EF%BC%8C%E5%85%B6%E5%AE%83%E5%AD%97%E7%AC%A6%E5%B0%8F%E5%86%99%E7%84%B6%E5%90%8E%E7%94%A8_%E6%8B%BC%E6%8E%A5"> # </a></h4>
+<pre><code class="lang-sql"> <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CONCAT</span>(<span class="hljs-keyword">UPPER</span>(<span class="hljs-keyword">SUBSTR</span>(last_name,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)),<span class="hljs-string">'_'</span>,<span class="hljs-keyword">LOWER</span>(<span class="hljs-keyword">SUBSTR</span>(last_name,<span class="hljs-number">2</span>)));
+</code></pre>
+<h4 id="t899.8.1.7  返回子串在原始字符串的起始索引">9.8.1.7  返回子串在原始字符串的起始索引 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t899.8.1.7%20%20%E8%BF%94%E5%9B%9E%E5%AD%90%E4%B8%B2%E5%9C%A8%E5%8E%9F%E5%A7%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E8%B5%B7%E5%A7%8B%E7%B4%A2%E5%BC%95"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">INSTR</span>(<span class="hljs-string">'zfpx'</span>,<span class="hljs-string">'f'</span>);
+</code></pre>
+<h4 id="t909.8.1.8  去掉左右空格[TRIM]">9.8.1.8  去掉左右空格[TRIM] <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t909.8.1.8%20%20%E5%8E%BB%E6%8E%89%E5%B7%A6%E5%8F%B3%E7%A9%BA%E6%A0%BC[TRIM]"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">TRIM</span>(<span class="hljs-string">'  zfpx  '</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LTRIM</span>(<span class="hljs-string">'  zfpx  '</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">RTRIM</span>(<span class="hljs-string">'  zfpx  '</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">TRIM</span>(<span class="hljs-string">'x'</span> <span class="hljs-keyword">FROM</span> <span class="hljs-string">'xxzfpxxx'</span>);
+</code></pre>
+<h4 id="t919.8.1.9  用空格补齐[LPAD]">9.8.1.9  用空格补齐[LPAD] <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t919.8.1.9%20%20%E7%94%A8%E7%A9%BA%E6%A0%BC%E8%A1%A5%E9%BD%90[LPAD]"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LPAD</span>(<span class="hljs-string">'zfpx'</span>,<span class="hljs-number">10</span>,<span class="hljs-string">'@'</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">LPAD</span>(<span class="hljs-string">'1'</span>,<span class="hljs-number">8</span>,<span class="hljs-string">'0'</span>);
+<span class="hljs-keyword">SELECT</span> RPAD(<span class="hljs-string">'1'</span>,<span class="hljs-number">8</span>,<span class="hljs-string">'0'</span>);
+</code></pre>
+<h4 id="t929.8.1.10  替换">9.8.1.10  替换 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t929.8.1.10%20%20%E6%9B%BF%E6%8D%A2"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">REPLACE</span>(<span class="hljs-string">'zfpx'</span>,<span class="hljs-string">'f'</span>,<span class="hljs-string">'q'</span>)
+</code></pre>
+<h4 id="t939.8.1.11  FORMAT">9.8.1.11  FORMAT <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t939.8.1.11%20%20FORMAT"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">FORMAT</span>(<span class="hljs-number">100000</span>,<span class="hljs-number">2</span>); 100,000.00
+<span class="hljs-keyword">select</span> <span class="hljs-keyword">format</span>(<span class="hljs-number">100.31111</span>,<span class="hljs-number">2</span>) <span class="hljs-number">100.31</span>
+<span class="hljs-keyword">select</span> <span class="hljs-keyword">format</span>(<span class="hljs-number">100.31111</span>,<span class="hljs-number">0</span>); 100
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">FORMAT</span>(<span class="hljs-number">423423234.65534453</span>,<span class="hljs-number">2</span>); 423,423,234.66
+</code></pre>
+<h4 id="t949.8.1.12 LEFT RIGHT">9.8.1.12 LEFT RIGHT <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t949.8.1.12%20LEFT%20RIGHT"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> <span class="hljs-keyword">left</span>(<span class="hljs-string">'abcde12345'</span>,<span class="hljs-number">5</span>);   //abcde
+<span class="hljs-keyword">select</span> <span class="hljs-keyword">left</span>(<span class="hljs-string">'abcde12345'</span>,<span class="hljs-number">5</span>);   //12345
+</code></pre>
+<h3 id="t959.8.2 数学函数">9.8.2 数学函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t959.8.2%20%E6%95%B0%E5%AD%A6%E5%87%BD%E6%95%B0"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">函数名称</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">CEIL</td>
+<td style="text-align:left">向上取整</td>
+</tr>
+<tr>
+<td style="text-align:left">FLOOR</td>
+<td style="text-align:left">向下取整数</td>
+</tr>
+<tr>
+<td style="text-align:left">DIV</td>
+<td style="text-align:left">整数取</td>
+</tr>
+<tr>
+<td style="text-align:left">MOD</td>
+<td style="text-align:left">取余(取模)</td>
+</tr>
+<tr>
+<td style="text-align:left">POWER</td>
+<td style="text-align:left">幂运算</td>
+</tr>
+<tr>
+<td style="text-align:left">ROUND</td>
+<td style="text-align:left">四舍五入</td>
+</tr>
+<tr>
+<td style="text-align:left">TRUNCATE</td>
+<td style="text-align:left">数字截取</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t969.8.2.1 四舍五入">9.8.2.1 四舍五入 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t969.8.2.1%20%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">ROUND</span>(<span class="hljs-number">2.5</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">ROUND</span>(<span class="hljs-number">2.555</span>,<span class="hljs-number">2</span>);
+</code></pre>
+<h4 id="t979.8.2.2 向上取整">9.8.2.2 向上取整 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t979.8.2.2%20%E5%90%91%E4%B8%8A%E5%8F%96%E6%95%B4"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CEIL</span>(<span class="hljs-number">1.00</span>);
+</code></pre>
+<h4 id="t989.8.2.3 向下取整">9.8.2.3 向下取整 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t989.8.2.3%20%E5%90%91%E4%B8%8B%E5%8F%96%E6%95%B4"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">FLOOR</span>(<span class="hljs-number">1.00</span>);
+</code></pre>
+<h4 id="t999.8.2.4 截断">9.8.2.4 截断 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t999.8.2.4%20%E6%88%AA%E6%96%AD"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">TRUNCATE</span>(<span class="hljs-number">1.66</span>,<span class="hljs-number">1</span>);
+</code></pre>
+<h4 id="t1009.8.2.5 取余">9.8.2.5 取余 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1009.8.2.5%20%E5%8F%96%E4%BD%99"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">mod</span>(<span class="hljs-number">10</span>,<span class="hljs-number">3</span>);
+</code></pre>
+<h3 id="t1019.8.3 日期函数">9.8.3 日期函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1019.8.3%20%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">函数名称</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">NOW</td>
+<td style="text-align:left">当前日期和时间</td>
+</tr>
+<tr>
+<td style="text-align:left">CURDATE</td>
+<td style="text-align:left">当前日期</td>
+</tr>
+<tr>
+<td style="text-align:left">CURTIME</td>
+<td style="text-align:left">当前时间</td>
+</tr>
+<tr>
+<td style="text-align:left">DATE_ADD</td>
+<td style="text-align:left">日期变化</td>
+</tr>
+<tr>
+<td style="text-align:left">DATEDIFF</td>
+<td style="text-align:left">计算日期差</td>
+</tr>
+<tr>
+<td style="text-align:left">DATE_FORMAT</td>
+<td style="text-align:left">日期格式化</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t1029.8.3.1 返回日期时间">9.8.3.1 返回日期时间 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1029.8.3.1%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">NOW</span>():
+</code></pre>
+<h4 id="t1039.8.3.2 返回日期">9.8.3.2 返回日期 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1039.8.3.2%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CURDATE</span>():
+</code></pre>
+<h4 id="t1049.8.3.3 返回日期">9.8.3.3 返回日期 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1049.8.3.3%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">CURTIME</span>():
+</code></pre>
+<h4 id="t1059.8.3.4 返回日期中指定的部分">9.8.3.4 返回日期中指定的部分 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1059.8.3.4%20%E8%BF%94%E5%9B%9E%E6%97%A5%E6%9C%9F%E4%B8%AD%E6%8C%87%E5%AE%9A%E7%9A%84%E9%83%A8%E5%88%86"> # </a></h4>
+<p>年 月 日 小时 分钟 秒</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">YEAR</span>(<span class="hljs-keyword">NOW</span>());
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">MONTH</span>(<span class="hljs-keyword">NOW</span>());
+<span class="hljs-keyword">SELECT</span> MONTHNAME(<span class="hljs-keyword">NOW</span>());
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DAY</span>(<span class="hljs-keyword">NOW</span>());
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">HOUR</span>(<span class="hljs-keyword">NOW</span>());
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">MINUTE</span>(<span class="hljs-keyword">NOW</span>());
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">SECOND</span>(<span class="hljs-keyword">NOW</span>());
+</code></pre>
+<h4 id="t1069.8.3.5 str_to_date">9.8.3.5 str_to_date <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1069.8.3.5%20str_to_date"> # </a></h4>
+<p>将日期格式的字符串转成指定格式的日期</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">STR_TO_DATE</span>(<span class="hljs-string">'2018-09-09'</span>,<span class="hljs-string">'%Y-%m-%d'</span>)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">序号</th>
+<th style="text-align:left">格式符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">%Y</td>
+<td>4位的年份</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">%y</td>
+<td>2位的年份</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left">%m</td>
+<td>月份(01,02)</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td style="text-align:left">%c</td>
+<td>月份(1,2)</td>
+</tr>
+<tr>
+<td style="text-align:left">5</td>
+<td style="text-align:left">%d</td>
+<td>日(01,02)</td>
+</tr>
+<tr>
+<td style="text-align:left">6</td>
+<td style="text-align:left">%H</td>
+<td>小时(24小时制)</td>
+</tr>
+<tr>
+<td style="text-align:left">7</td>
+<td style="text-align:left">%h</td>
+<td>小时(12小时制)</td>
+</tr>
+<tr>
+<td style="text-align:left">8</td>
+<td style="text-align:left">%i</td>
+<td>分钟(00,01)</td>
+</tr>
+<tr>
+<td style="text-align:left">9</td>
+<td style="text-align:left">%s</td>
+<td>秒(00,01)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t1079.8.3.6">9.8.3.6 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1079.8.3.6"> # </a></h4>
+<p>查询入职日期为1984-8-4的员工信息</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> employees <span class="hljs-keyword">WHERE</span> hiredate = <span class="hljs-keyword">STR_TO_DATE</span>(<span class="hljs-string">'12-30 1984'</span>,<span class="hljs-string">'%m-%d %Y'</span>);
+</code></pre>
+<h4 id="t1089.8.3.7 DATE_FORMAT">9.8.3.7 DATE_FORMAT <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1089.8.3.7%20DATE_FORMAT"> # </a></h4>
+<p>将日期转换成指定字符串</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DATE_FORMAT</span>(<span class="hljs-keyword">NOW</span>(),<span class="hljs-string">'%Y年%m月%d日'</span>)
+</code></pre>
+<h4 id="t1099.8.3.8 DATE_ADD">9.8.3.8 DATE_ADD <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1099.8.3.8%20DATE_ADD"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DATE_ADD</span>(<span class="hljs-keyword">NOW</span>(),<span class="hljs-built_in">INTERVAL</span> <span class="hljs-number">365</span> <span class="hljs-keyword">DAY</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DATE_ADD</span>(<span class="hljs-keyword">NOW</span>(),<span class="hljs-built_in">INTERVAL</span> <span class="hljs-number">1</span> <span class="hljs-keyword">MONTH</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DATE_ADD</span>(<span class="hljs-keyword">NOW</span>(),<span class="hljs-built_in">INTERVAL</span> <span class="hljs-number">1</span> <span class="hljs-keyword">YEAR</span>);
+</code></pre>
+<h4 id="t1109.8.3.9 DATEDIFF">9.8.3.9 DATEDIFF <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1109.8.3.9%20DATEDIFF"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DATEDIFF</span>(<span class="hljs-string">'2019-1-1'</span>,<span class="hljs-keyword">NOW</span>());
+</code></pre>
+<h3 id="t1119.8.4 其它函数">9.8.4 其它函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1119.8.4%20%E5%85%B6%E5%AE%83%E5%87%BD%E6%95%B0"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> CONNECTION_ID();
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">DATABASE</span>();
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">VERSION</span>();
+<span class="hljs-keyword">select</span> <span class="hljs-keyword">LAST_INSERT_ID</span>();
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">USER</span>();
+
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">MD5</span>(<span class="hljs-string">'123456'</span>);//摘要算法
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">PASSWORD</span>(<span class="hljs-string">'123456'</span>);//修改当前用户的密码
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">User</span>,<span class="hljs-keyword">Password</span> <span class="hljs-keyword">from</span> mysql.user;
+</code></pre>
+<h3 id="t1129.9 流程控制函数">9.9 流程控制函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1129.9%20%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%87%BD%E6%95%B0"> # </a></h3>
+<h4 id="t1139.9.1 IF">9.9.1 IF <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1139.9.1%20IF"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">IF</span>(<span class="hljs-number">1</span>&gt;<span class="hljs-number">0</span>,<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>);
+</code></pre>
+<h4 id="t1149.9.2 CASE函数">9.9.2 CASE函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1149.9.2%20CASE%E5%87%BD%E6%95%B0"> # </a></h4>
+<pre><code class="lang-sql">CASE 要判断的字段和表达式
+WHEN 常量1 then 要显示的值或语句1
+WHEN 常量2 then 要显示的值或语句2
+ELSE 要显示的值
+<span class="hljs-keyword">END</span>
+</code></pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+<span class="hljs-keyword">CASE</span> 
+<span class="hljs-keyword">WHEN</span> grade&lt;<span class="hljs-number">60</span> <span class="hljs-keyword">then</span> <span class="hljs-string">'不及格'</span>
+<span class="hljs-keyword">WHEN</span> grade&gt;=<span class="hljs-number">60</span> <span class="hljs-keyword">then</span> <span class="hljs-string">'及格'</span>
+<span class="hljs-keyword">ELSE</span> <span class="hljs-string">'未知'</span>
+<span class="hljs-keyword">END</span>
+<span class="hljs-keyword">FROM</span> score;
+</code></pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+<span class="hljs-keyword">CASE</span> <span class="hljs-keyword">level</span>
+<span class="hljs-keyword">WHEN</span> <span class="hljs-string">'A'</span> <span class="hljs-keyword">then</span> <span class="hljs-string">'优秀'</span>
+<span class="hljs-keyword">WHEN</span> <span class="hljs-string">'B'</span> <span class="hljs-keyword">then</span> <span class="hljs-string">'良好'</span>
+<span class="hljs-keyword">ELSE</span> <span class="hljs-string">'未知'</span>
+<span class="hljs-keyword">END</span>
+<span class="hljs-keyword">FROM</span> score;
+</code></pre>
+<h3 id="t1159.10 自定义函数">9.10 自定义函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1159.10%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"> # </a></h3>
+<ul>
+<li>自定义函数是对MySQL的扩展，使用方式和内置函数相同</li>
+<li>函数必须要有参数和返回值</li>
+<li>函数可以接收任意类型的值，也可以接收这些类型的参数</li>
+<li>函数体由合法的SQL语句组成</li>
+<li>函数体可以是简单的SELECT语句或INSERT语句，如果是复合结构要用BEGIN...END</li>
+<li>函数体也可以包含声明，循环和流程控制</li>
+<li>返回值只能有一个</li>
+</ul>
+<h4 id="t1169.10.1 语法">9.10.1 语法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1169.10.1%20%E8%AF%AD%E6%B3%95"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> func_name() <span class="hljs-keyword">RETURNS</span>  <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">64</span>)
+<span class="hljs-keyword">body</span>
+</code></pre>
+<h4 id="t1179.10.2 znow">9.10.2 znow <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1179.10.2%20znow"> # </a></h4>
+<ul>
+<li>注意函数名一定要跟着小括号表示参数</li>
+</ul>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> znow() <span class="hljs-keyword">RETURNS</span> <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">30</span>)
+<span class="hljs-keyword">RETURN</span> <span class="hljs-keyword">DATE_FORMAT</span>(<span class="hljs-keyword">NOW</span>(),<span class="hljs-string">'%Y年%m月%d日 %H点:%i分%s秒'</span>);
+</code></pre>
+<h4 id="t1189.10.3 zadd">9.10.3 zadd <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1189.10.3%20zadd"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> zadd(num1 <span class="hljs-built_in">INT</span>,num2 <span class="hljs-built_in">INT</span>) <span class="hljs-keyword">RETURNS</span> <span class="hljs-built_in">INT</span>
+<span class="hljs-keyword">RETURN</span> num1+num2;
+</code></pre>
+<h4 id="t1199.10.4 addUser">9.10.4 addUser <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1199.10.4%20addUser"> # </a></h4>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> stu(<span class="hljs-keyword">id</span> <span class="hljs-built_in">int</span> PRIMARY <span class="hljs-keyword">KEY</span> AUTO_INCREMENT,<span class="hljs-keyword">name</span> <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">50</span>));
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> addUser(<span class="hljs-keyword">name</span> <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">50</span>)) <span class="hljs-keyword">RETURNS</span> <span class="hljs-built_in">INT</span>
+<span class="hljs-keyword">BEGIN</span>
+  <span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> stu(<span class="hljs-keyword">name</span>) <span class="hljs-keyword">VALUES</span>(<span class="hljs-keyword">name</span>);
+  RETURN LAST_INSERT_ID();
+<span class="hljs-keyword">END</span>
+
+<span class="hljs-keyword">SELECT</span> addUser(<span class="hljs-string">'zfpx'</span>);
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">FUNCTION</span> addUser
+</code></pre>
+<h3 id="t1209.11 模糊查询">9.11 模糊查询 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1209.11%20%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"> # </a></h3>
+<p>就是查询的条件是模糊的，不是特别明确的</p>
+<h4 id="t1219.11.1 通配符">9.11.1 通配符 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1219.11.1%20%E9%80%9A%E9%85%8D%E7%AC%A6"> # </a></h4>
+<p>代替一个或多个真正的字符，与LIKE 关键字一起使用</p>
+<ul>
+<li><code>_</code>表示一个任意字符  </li>
+<li><code>%</code>表示任意长度的字符串</li>
+</ul>
+<h4 id="t1229.11.2  BETWEEN AND">9.11.2  BETWEEN AND <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1229.11.2%20%20BETWEEN%20AND"> # </a></h4>
+<p>查询某一列在指定的规范内的记录，包括两个边界</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> score <span class="hljs-keyword">where</span> grade <span class="hljs-keyword">between</span> <span class="hljs-number">80</span> <span class="hljs-keyword">and</span> <span class="hljs-number">100</span>
+</code></pre>
+<h4 id="t1239.11.3  IN">9.11.3  IN <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1239.11.3%20%20IN"> # </a></h4>
+<p>查询某一列中的值在列出的内容列表中</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> student <span class="hljs-keyword">where</span> city <span class="hljs-keyword">in</span> (<span class="hljs-string">'北京'</span>,<span class="hljs-string">'上海'</span>,<span class="hljs-string">'广东'</span>)
+</code></pre>
+<h4 id="t1249.11.4 IS NUL">9.11.4 IS NUL <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html#t1249.11.4%20IS%20NUL"> # </a></h4>
+<ul>
+<li>查询没有邮箱的 IS NUL</li>
+<li>查询有邮箱的 IS NOT NULL</li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./30.cms-1-mysql_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./29.mongodb-3_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t01.%20%E7%B4%A2%E5%BC%95">1. 索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t12%20%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95">2 建立索引</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t22.1%20%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE">2.1 插入数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t32.1.2%20%E5%88%9B%E5%BB%BA%E5%8C%BF%E5%90%8D%E7%B4%A2%E5%BC%95">2.1.2 创建匿名索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t42.1.3%20%20%E5%88%9B%E5%BB%BA%E5%91%BD%E5%90%8D%E7%B4%A2%E5%BC%95">2.1.3  创建命名索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t52.1.4%20%E5%88%86%E6%9E%90%E7%B4%A2%E5%BC%95%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B">2.1.4 分析索引的执行过程</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t62.1.5%20%E6%8C%87%E5%AE%9A%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B4%A2%E5%BC%95">2.1.5 指定使用的索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t72.1.6%20%E5%88%9B%E5%BB%BA%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E5%B9%B6%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95">2.1.6 创建唯一索引并删除重复记录</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t82.1.7%20%20%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95">2.1.7  删除索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t92.1.8%20%20%20%E5%9C%A8%E5%90%8E%E5%8F%B0%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">2.1.8   在后台创建索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t102.1.9%20%20%20%E5%BB%BA%E7%AB%8B%E5%A4%9A%E9%94%AE%E7%B4%A2%E5%BC%95">2.1.9   建立多键索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t112.1.10%20%E5%A4%8D%E5%90%88%E7%B4%A2%E5%BC%95">2.1.10 复合索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t122.1.11%20%E8%BF%87%E6%9C%9F%E7%B4%A2%E5%BC%95">2.1.11 过期索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t132.1.12%20%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95">2.1.12 全文索引</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t142.2%20%E4%BA%8C%E7%BB%B4%E7%B4%A2%E5%BC%95">2.2 二维索引</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t152.2.1%20%E5%88%9B%E5%BB%BA2D%E7%B4%A2%E5%BC%95">2.2.1 创建2D索引</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t162.2.2%20%E6%9F%A5%E8%AF%A2%E5%87%BA%E8%B7%9D%E7%A6%BB%E7%82%B9()%E6%9C%80%E8%BF%91%E7%9A%843%E4%B8%AA%E7%82%B9">2.2.2 查询出距离点()最近的3个点</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t172.2.3%20%E6%9F%A5%E8%AF%A2%E4%BB%A5%E7%82%B9(50,50)%E5%92%8C%E7%82%B9(190,190)%E4%B8%BA%E5%AF%B9%E8%A7%92%E7%BA%BF%E7%9A%84%E6%AD%A3%E6%96%B9%E5%BD%A2%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E7%9A%84%E7%82%B9">2.2.3 查询以点(50,50)和点(190,190)为对角线的正方形中的所有的点</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t182.2.4%20%E6%9F%A5%E5%87%BA%E4%BB%A5%E5%9C%86%E5%BF%83%E4%B8%BA%E4%B8%BA%E5%8D%8A%E5%BE%84%E4%B8%BA%E8%A7%84%E5%88%99%E4%B8%8B%E5%9C%86%E5%BF%83%E9%9D%A2%E7%A7%AF%E4%B8%AD%E7%9A%84%E7%82%B9">2.2.4 查出以圆心为为半径为规则下圆心面积中的点</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t192.2.5%20%20%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">2.2.5  索引使用的注意事项</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t20%E9%99%84%E5%BD%95">附录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t21queryPlanner%E5%88%86%E6%9E%90">queryPlanner分析</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t22%E5%AF%B9executionStats%E8%BF%94%E5%9B%9E%E9%80%90%E5%B1%82%E5%88%86%E6%9E%90">对executionStats返回逐层分析</a></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. 索引">1. 索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t01.%20%E7%B4%A2%E5%BC%95"> # </a></h2>
+<ul>
+<li>索引通常能够极大的提高查询的效率，如果没有索引，MongoDB在读取数据时必须扫描集合中的每个文件并选取那些符合查询条件的记录。</li>
+<li>这种扫描全集合的查询效率是非常低的，特别在处理大量的数据时，查询可以要花费几十秒甚至几分钟，这对网站的性能是非常致命的。</li>
+<li>索引是特殊的数据结构，索引存储在一个易于遍历读取的数据集合中，索引是对数据库表中一列或多列的值进行排序的一种结构</li>
+</ul>
+<p><img src="./29.mongodb-3_files/mongoindex.png" alt="mongoindex"></p>
+<ul>
+<li>特殊的数据结构，按顺序保存文档中的一个或多个字段</li>
+<li>使用索引，方便范围查询和匹配查询。</li>
+</ul>
+<h2 id="t12 建立索引">2 建立索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t12%20%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95"> # </a></h2>
+<h3 id="t22.1 插入数据">2.1 插入数据 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t22.1%20%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> students = [];
+<span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">1</span>;i&lt;=<span class="hljs-number">300000</span>;i++){
+   students.push({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>+i,<span class="hljs-attr">age</span>:i,<span class="hljs-attr">random</span>:i});
+}
+ db.students.insert(students);
+db.students.find({<span class="hljs-attr">age</span>:<span class="hljs-number">299999</span>}).explain(<span class="hljs-literal">true</span>);<span class="hljs-comment">// "executionTimeMillis" : 245,</span>
+</code></pre>
+<h3 id="t32.1.2 创建匿名索引">2.1.2 创建匿名索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t32.1.2%20%E5%88%9B%E5%BB%BA%E5%8C%BF%E5%90%8D%E7%B4%A2%E5%BC%95"> # </a></h3>
+<pre><code class="lang-js">db.students.ensureIndex({<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+db.students.find({<span class="hljs-attr">age</span>:<span class="hljs-number">299999</span>}).explain(<span class="hljs-literal">true</span>);<span class="hljs-comment">// "executionTimeMillis" : 7,</span>
+</code></pre>
+<h3 id="t42.1.3  创建命名索引">2.1.3  创建命名索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t42.1.3%20%20%E5%88%9B%E5%BB%BA%E5%91%BD%E5%90%8D%E7%B4%A2%E5%BC%95"> # </a></h3>
+<pre><code class="lang-js">db.students.ensureIndex({<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>},{<span class="hljs-attr">name</span>:<span class="hljs-string">'namedIndex'</span>});
+db.students.getIndexes()<span class="hljs-comment">//查看索引</span>
+</code></pre>
+<h3 id="t52.1.4 分析索引的执行过程">2.1.4 分析索引的执行过程 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t52.1.4%20%E5%88%86%E6%9E%90%E7%B4%A2%E5%BC%95%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"> # </a></h3>
+<p>MongoDB 提供了一个 explain 命令让我们获知系统如何处理查询请求。利用 explain 命令，我们可以很好地观察系统如何使用索引来加快检索，同时可以针对性优化索引。</p>
+<ul>
+<li>cursor: 返回游标类型<ul>
+<li>BasicCursor而没有使用索引的查询并不是胡乱查询，而是使用了基本游标：，同理，</li>
+<li>使用索引的查询就是BtreeCursor</li>
+</ul>
+</li>
+<li>nscanned: 查找过的索引条目的数量</li>
+<li>n: 返回的文档数量</li>
+<li>nscannedObjects ：数据库按照索引去磁盘上查找实际文档的次数</li>
+<li>millis: 执行本次查询所花费的时间，以毫秒计算，这也是判断查询效率的一个重点</li>
+<li>indexBounds:  描述索引的使用情况</li>
+<li>isMultiKey:是否使用了多键索引</li>
+<li>scanAndOrder: 是否在内存中对结果进行了排序</li>
+<li>indexOnly:是否仅仅使用索引完成了本次查询</li>
+</ul>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx150000'</span>}).explain();
+</code></pre>
+<h3 id="t62.1.5 指定使用的索引">2.1.5 指定使用的索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t62.1.5%20%E6%8C%87%E5%AE%9A%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B4%A2%E5%BC%95"> # </a></h3>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx299999'</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">299999</span>}).hint({<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>}).explain(<span class="hljs-literal">true</span>);
+</code></pre>
+<h3 id="t72.1.6 创建唯一索引并删除重复记录">2.1.6 创建唯一索引并删除重复记录 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t72.1.6%20%E5%88%9B%E5%BB%BA%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95%E5%B9%B6%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95"> # </a></h3>
+<pre><code class="lang-js">db.person.ensureIndex({ <span class="hljs-string">"name"</span> : <span class="hljs-number">-1</span> },{ <span class="hljs-string">"name"</span> : <span class="hljs-string">"indexname"</span>, <span class="hljs-string">"unique"</span> : <span class="hljs-literal">true</span>,<span class="hljs-attr">dropDups</span>:<span class="hljs-literal">true</span> })
+</code></pre>
+<h3 id="t82.1.7  删除索引">2.1.7  删除索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t82.1.7%20%20%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95"> # </a></h3>
+<pre><code class="lang-js">db.students.dropIndex(<span class="hljs-string">'namedIndex'</span>);<span class="hljs-comment">//删除指定的索引</span>
+db.students.dropIndex(<span class="hljs-string">'*'</span>);
+db.runCommand({<span class="hljs-attr">dropIndexes</span>:<span class="hljs-string">"students"</span>,<span class="hljs-attr">index</span>:<span class="hljs-string">"namedIndex"</span>});<span class="hljs-comment">//删除所有的索引</span>
+</code></pre>
+<h3 id="t92.1.8   在后台创建索引">2.1.8   在后台创建索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t92.1.8%20%20%20%E5%9C%A8%E5%90%8E%E5%8F%B0%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95"> # </a></h3>
+<pre><code class="lang-js">db.students.ensureIndex({<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>},{<span class="hljs-attr">name</span>:<span class="hljs-string">'nameIndex'</span>,<span class="hljs-attr">unique</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">background</span>:<span class="hljs-literal">true</span>});
+</code></pre>
+<h3 id="t102.1.9   建立多键索引">2.1.9   建立多键索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t102.1.9%20%20%20%E5%BB%BA%E7%AB%8B%E5%A4%9A%E9%94%AE%E7%B4%A2%E5%BC%95"> # </a></h3>
+<p>mongodb可以自动对数组进行索引</p>
+<pre><code class="lang-js">db.students.insert({<span class="hljs-attr">hobby</span>:[<span class="hljs-string">'basketball'</span>,<span class="hljs-string">'football'</span>,<span class="hljs-string">'pingpang'</span>]});
+db.students.ensureIndex({<span class="hljs-attr">hobby</span>:<span class="hljs-number">1</span>});
+db.students.find({<span class="hljs-attr">hobby</span>:<span class="hljs-string">'football'</span>},{<span class="hljs-attr">hobby</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">_id</span>:<span class="hljs-number">0</span>}).explain(<span class="hljs-literal">true</span>);
+</code></pre>
+<h3 id="t112.1.10 复合索引">2.1.10 复合索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t112.1.10%20%E5%A4%8D%E5%90%88%E7%B4%A2%E5%BC%95"> # </a></h3>
+<p>查询的条件不止一个，需要用复合索引</p>
+<pre><code class="lang-js">db.students.ensureIndex({<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+db.students.find({<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">2</span>},{<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">_id</span>:<span class="hljs-number">0</span>}).explain(<span class="hljs-literal">true</span>);
+</code></pre>
+<h3 id="t122.1.11 过期索引">2.1.11 过期索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t122.1.11%20%E8%BF%87%E6%9C%9F%E7%B4%A2%E5%BC%95"> # </a></h3>
+<p>在一定的时间后会过期，过期后相应数据数据被删除,比如 <code>session</code>、日志、缓存和临时文件</p>
+<pre><code class="lang-js">db.stus.insert({<span class="hljs-attr">time</span>:<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()});
+db.stus.ensureIndex({<span class="hljs-attr">time</span>:<span class="hljs-number">1</span>},{<span class="hljs-attr">expireAfterSeconds</span>:<span class="hljs-number">10</span>});
+db.stus.find();
+</code></pre>
+<ul>
+<li>1.索引字段的值必须Date对象，不能是其它类型比如时间戳</li>
+<li>2.删除时间不精确，每60秒跑一次。删除也要时间，所以有误差。</li>
+</ul>
+<h3 id="t132.1.12 全文索引">2.1.12 全文索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t132.1.12%20%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95"> # </a></h3>
+<p>大篇幅的文章中搜索关键词,MongoDB为我们提供了全文索引</p>
+<pre><code class="lang-js">db.article.insert({<span class="hljs-attr">content</span>:<span class="hljs-string">'I am a gir'</span>});
+db.article.insert({<span class="hljs-attr">content</span>:<span class="hljs-string">'I am a boy'</span>});
+</code></pre>
+<ul>
+<li>$text:表示要在全文索引中查东西</li>
+<li>$search:后边跟查找的内容, 默认全部匹配</li>
+</ul>
+<pre><code class="lang-js">db.article.find({<span class="hljs-attr">$text</span>:{<span class="hljs-attr">$search</span>:<span class="hljs-string">'boy'</span>}});
+db.article.find({<span class="hljs-attr">$text</span>:{<span class="hljs-attr">$search</span>:<span class="hljs-string">'girl'</span>}});
+db.article.find({<span class="hljs-attr">$text</span>:{<span class="hljs-attr">$search</span>:<span class="hljs-string">'boy girl'</span>}});<span class="hljs-comment">//多次查找，多个关键字为或的关系</span>
+db.article.find({<span class="hljs-attr">$text</span>:{<span class="hljs-attr">$search</span>:<span class="hljs-string">"a b"</span>}}); 
+db.article.find({<span class="hljs-attr">$text</span>:{<span class="hljs-attr">$search</span>:<span class="hljs-string">"boy -girl"</span>}}); <span class="hljs-comment">// -表示取消</span>
+db.article.find({<span class="hljs-attr">$text</span>:{<span class="hljs-attr">$search</span>:<span class="hljs-string">"a \"coco cola\" b "</span>}}); <span class="hljs-comment">//支持转义符的,用\斜杠来转义</span>
+</code></pre>
+<h2 id="t142.2 二维索引">2.2 二维索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t142.2%20%E4%BA%8C%E7%BB%B4%E7%B4%A2%E5%BC%95"> # </a></h2>
+<p>mongodb提供强大的空间索引可以查询出一定落地的地理坐标</p>
+<pre><code class="lang-json">[{ gis : { x : 50 , y : 30 } ];
+
+</code></pre>
+<h3 id="t152.2.1 创建2D索引">2.2.1 创建2D索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t152.2.1%20%E5%88%9B%E5%BB%BA2D%E7%B4%A2%E5%BC%95"> # </a></h3>
+<pre><code class="lang-js">db.maps.ensureIndex({<span class="hljs-attr">gis</span>:<span class="hljs-string">'2d'</span>},{<span class="hljs-attr">min</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">max</span>:<span class="hljs-number">3</span>});
+默认会创建一个<span class="hljs-number">2</span>D索引
+</code></pre>
+<h3 id="t162.2.2 查询出距离点()最近的3个点">2.2.2 查询出距离点()最近的3个点 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t162.2.2%20%E6%9F%A5%E8%AF%A2%E5%87%BA%E8%B7%9D%E7%A6%BB%E7%82%B9()%E6%9C%80%E8%BF%91%E7%9A%843%E4%B8%AA%E7%82%B9"> # </a></h3>
+<pre><code class="lang-js">db.maps.find({<span class="hljs-attr">gis</span>:{<span class="hljs-attr">$near</span>:[<span class="hljs-number">1</span>,<span class="hljs-number">1</span>]}}).limit(<span class="hljs-number">3</span>);
+</code></pre>
+<h3 id="t172.2.3 查询以点(50,50)和点(190,190)为对角线的正方形中的所有的点">2.2.3 查询以点(50,50)和点(190,190)为对角线的正方形中的所有的点 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t172.2.3%20%E6%9F%A5%E8%AF%A2%E4%BB%A5%E7%82%B9(50,50)%E5%92%8C%E7%82%B9(190,190)%E4%B8%BA%E5%AF%B9%E8%A7%92%E7%BA%BF%E7%9A%84%E6%AD%A3%E6%96%B9%E5%BD%A2%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E7%9A%84%E7%82%B9"> # </a></h3>
+<pre><code class="lang-js">db.map.find({<span class="hljs-attr">gis</span>:{<span class="hljs-attr">$within</span>:{<span class="hljs-attr">$box</span>:[[<span class="hljs-number">1</span>,<span class="hljs-number">1</span>],[<span class="hljs-number">2</span>,<span class="hljs-number">2</span>]]}}},{<span class="hljs-attr">_id</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">gis</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h3 id="t182.2.4 查出以圆心为为半径为规则下圆心面积中的点">2.2.4 查出以圆心为为半径为规则下圆心面积中的点 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t182.2.4%20%E6%9F%A5%E5%87%BA%E4%BB%A5%E5%9C%86%E5%BF%83%E4%B8%BA%E4%B8%BA%E5%8D%8A%E5%BE%84%E4%B8%BA%E8%A7%84%E5%88%99%E4%B8%8B%E5%9C%86%E5%BF%83%E9%9D%A2%E7%A7%AF%E4%B8%AD%E7%9A%84%E7%82%B9"> # </a></h3>
+<pre><code class="lang-js">db.maps.find({<span class="hljs-attr">gis</span>:{<span class="hljs-attr">$within</span>:{<span class="hljs-attr">$center</span>:[[<span class="hljs-number">2</span>,<span class="hljs-number">2</span>],<span class="hljs-number">1</span>]}}},{<span class="hljs-attr">_id</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">gis</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h3 id="t192.2.5  索引使用的注意事项">2.2.5  索引使用的注意事项 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t192.2.5%20%20%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"> # </a></h3>
+<ol>
+<li>1为正序 -1为倒序</li>
+<li>索引虽然可以提升查询性能，但会降低插件性能，对于插入多查询少不要创索引</li>
+<li>数据量不大时不需要使用索引。性能的提升并不明显，反而大大增加了内存和硬盘的消耗。</li>
+<li>查询数据超过表数据量30%时，不要使用索引字段查询</li>
+<li>排序工作的时候可以建立索引以提高排序速度</li>
+<li>数字索引，要比字符串索引快的多</li>
+</ol>
+<h2 id="t20附录">附录 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t20%E9%99%84%E5%BD%95"> # </a></h2>
+<h3 id="t21queryPlanner分析">queryPlanner分析 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t21queryPlanner%E5%88%86%E6%9E%90"> # </a></h3>
+<ul>
+<li>queryPlanner: queryPlanner的返回<ul>
+<li>queryPlanner.namespace:该值返回的是该query所查询的表</li>
+<li>queryPlanner.indexFilterSet:针对该query是否有indexfilter</li>
+<li>queryPlanner.winningPlan:查询优化器针对该query所返回的最优执行计划的详细内容。</li>
+<li>queryPlanner.winningPlan.stage:最优执行计划的stage，这里返回是FETCH，可以理解为通过返回的index位置去检索具体的文档（stage有数个模式，将在后文中进行详解）。</li>
+<li>queryPlanner.winningPlan.inputStage:用来描述子stage，并且为其父stage提供文档和索引关键字。</li>
+<li>queryPlanner.winningPlan.stage的child stage，此处是IXSCAN，表示进行的是index scanning。</li>
+<li>queryPlanner.winningPlan.keyPattern:所扫描的index内容，此处是did:1,status:1,modify_time: -1与scid : 1</li>
+<li>queryPlanner.winningPlan.indexName：winning plan所选用的index。</li>
+<li>queryPlanner.winningPlan.isMultiKey是否是Multikey，此处返回是false，如果索引建立在array上，此处将是true。</li>
+<li>queryPlanner.winningPlan.direction：此query的查询顺序，此处是forward，如果用了.sort({modify_time:-1})将显示backward。</li>
+<li>queryPlanner.winningPlan.indexBounds:winningplan所扫描的索引范围,如果没有制定范围就是[MaxKey, MinKey]，这主要是直接定位到mongodb的chunck中去查找数据，加快数据读取。</li>
+<li>queryPlanner.rejectedPlans：其他执行计划（非最优而被查询优化器reject的）的详细返回，其中具体信息与winningPlan的返回中意义相同，故不在此赘述。</li>
+</ul>
+</li>
+</ul>
+<h3 id="t22对executionStats返回逐层分析">对executionStats返回逐层分析 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html#t22%E5%AF%B9executionStats%E8%BF%94%E5%9B%9E%E9%80%90%E5%B1%82%E5%88%86%E6%9E%90"> # </a></h3>
+<ul>
+<li>第一层，executionTimeMillis</li>
+<li>最为直观explain返回值是executionTimeMillis值，指的是我们这条语句的执行时间，这个值当然是希望越少越好。</li>
+<li>其中有3个executionTimeMillis，分别是：<ul>
+<li>executionStats.executionTimeMillis 该query的整体查询时间。</li>
+<li>executionStats.executionStages.executionTimeMillisEstimate</li>
+<li>该查询根据index去检索document获得2001条数据的时间。</li>
+<li>executionStats.executionStages.inputStage.executionTimeMillisEstimate</li>
+<li>该查询扫描2001行index所用时间。</li>
+</ul>
+</li>
+<li>第二层，index与document扫描数与查询返回条目数
+这个主要讨论3个返回项，nReturned、totalKeysExamined、totalDocsExamined，分别代表该条查询返回的条目、索引扫描条目、文档扫描条目。
+这些都是直观地影响到executionTimeMillis，我们需要扫描的越少速度越快。
+对于一个查询，我们最理想的状态是：nReturned=totalKeysExamined=totalDocsExamined</li>
+<li>第三层，stage状态分析
+那么又是什么影响到了totalKeysExamined和totalDocsExamined？是stage的类型。类型列举如下：</li>
+<li>COLLSCAN：全表扫描</li>
+<li>IXSCAN：索引扫描</li>
+<li>FETCH：根据索引去检索指定document</li>
+<li>SHARD_MERGE：将各个分片返回数据进行merge</li>
+<li>SORT：表明在内存中进行了排序</li>
+<li>LIMIT：使用limit限制返回数</li>
+<li>SKIP：使用skip进行跳过</li>
+<li>IDHACK：针对_id进行查询</li>
+<li>SHARDING_FILTER：通过mongos对分片数据进行查询</li>
+<li>COUNT：利用db.coll.explain().count()之类进行count运算</li>
+<li>COUNTSCAN：count不使用Index进行count时的stage返回</li>
+<li>COUNT_SCAN：count使用了Index进行count时的stage返回</li>
+<li>SUBPLA：未使用到索引的$or查询的stage返回</li>
+<li>TEXT：使用全文索引进行查询时候的stage返回</li>
+<li>PROJECTION：限定返回字段时候stage的返回</li>
+<li><p>对于普通查询，我希望看到stage的组合(查询的时候尽可能用上索引)：</p>
+<ul>
+<li>Fetch+IDHACK</li>
+<li>Fetch+ixscan</li>
+<li>Limit+（Fetch+ixscan）</li>
+<li>PROJECTION+ixscan</li>
+<li>SHARDING_FITER+ixscan</li>
+<li>COUNT_SCAN</li>
+</ul>
+</li>
+<li><p>不希望看到包含如下的stage：</p>
+<ul>
+<li>COLLSCAN(全表扫描),SORT(使用sort但是无index),不合理的SKIP,SUBPLA(未用到index的$or),COUNTSCAN(不使用index进行count)</li>
+</ul>
+</li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./29.mongodb-3_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)http://www.zhufengpeixun.cn/architecture/html/35.jwt.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./35.jwt_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t01.JWT">1.JWT</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t12.%E4%B8%BB%E8%A6%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF">2.主要应用场景</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t23.JWT%E7%9A%84%E7%BB%93%E6%9E%84">3.JWT的结构</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t33.1%20Header">3.1 Header</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t43.2%20Payload">3.2 Payload</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t53.2.1%20%E6%A0%87%E5%87%86%E4%B8%AD%E6%B3%A8%E5%86%8C%E7%9A%84%E5%A3%B0%E6%98%8E%20(%E5%BB%BA%E8%AE%AE%E4%BD%86%E4%B8%8D%E5%BC%BA%E5%88%B6%E4%BD%BF%E7%94%A8)">3.2.1 标准中注册的声明 (建议但不强制使用)</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t63.2.2%20%E5%85%AC%E5%85%B1%E7%9A%84%E5%A3%B0%E6%98%8E">3.2.2 公共的声明</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t73.2.3%20%E7%A7%81%E6%9C%89%E7%9A%84%E5%A3%B0%E6%98%8E">3.2.3 私有的声明</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t83.2.4%20%20%E8%B4%9F%E8%BD%BD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%BE%8B%E5%AD%90">3.2.4  负载使用的例子</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t93.3%20Signature">3.3 Signature</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t104.%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8JWT">4.如何使用JWT</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t115.%20JWT%E5%AE%9E%E6%88%98">5. JWT实战</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t125.1%20config.js">5.1 config.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t135.2%20app.js">5.2 app.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t145.3%20jwt.js">5.3 jwt.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t155.4%20user.js">5.4 user.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t166.%20%E5%89%8D%E7%AB%AF">6. 前端</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t176.1%20index.js">6.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t186.2%20api.js">6.2 api.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t196.3%20Login.js">6.3 Login.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t206.4%20User.js">6.4 User.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t217.%E5%8E%9F%E7%90%86%E5%AE%9E%E7%8E%B0">7.原理实现</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01.JWT">1.JWT <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t01.JWT"> # </a></h2>
+<ul>
+<li>JWT(json web token)是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准。</li>
+<li>JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源。比如用在用户登录上。</li>
+<li>因为数字签名的存在，这些信息是可信的，JWT可以使用HMAC算法或者是RSA的公私秘钥对进行签名</li>
+</ul>
+<h2 id="t12.主要应用场景">2.主要应用场景 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t12.%E4%B8%BB%E8%A6%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"> # </a></h2>
+<ul>
+<li>身份认证在这种场景下，一旦用户完成了登陆，在接下来的每个请求中包含JWT，可以用来验证用户身份以及对路由，服务和资源的访问权限进行验证。</li>
+<li>信息交换在通信的双方之间使用JWT对数据进行编码是一种非常安全的方式，由于它的信息是经过签名的，可以确保发送者发送的信息是没有经过伪造的<h2 id="t23.JWT的结构">3.JWT的结构 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t23.JWT%E7%9A%84%E7%BB%93%E6%9E%84"> # </a></h2>
+JWT包含了使用<code>.</code>分隔的三部分</li>
+<li>Header 头部</li>
+<li>Payload 负载</li>
+<li>Signature 签名</li>
+</ul>
+<h3 id="t33.1 Header">3.1 Header <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t33.1%20Header"> # </a></h3>
+<p>在header中通常包含了两部分：token类型和采用的加密算法。</p>
+<pre><code class="lang-json">{ <span class="hljs-attr">"alg"</span>: <span class="hljs-string">"HS256"</span>, <span class="hljs-attr">"typ"</span>: <span class="hljs-string">"JWT"</span>} 
+</code></pre>
+<p>接下来对这部分内容使用<code>Base64Url</code>编码组成了<code>JWT</code>结构的第一部分。</p>
+<h3 id="t43.2 Payload">3.2 Payload <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t43.2%20Payload"> # </a></h3>
+<p>负载就是存放有效信息的地方。这个名字像是指货车上承载的货物，这些有效信息包含三个部分</p>
+<ul>
+<li>标准中注册的声明</li>
+<li>公共的声明</li>
+<li>私有的声明</li>
+</ul>
+<h4 id="t53.2.1 标准中注册的声明 (建议但不强制使用)">3.2.1 标准中注册的声明 (建议但不强制使用) <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t53.2.1%20%E6%A0%87%E5%87%86%E4%B8%AD%E6%B3%A8%E5%86%8C%E7%9A%84%E5%A3%B0%E6%98%8E%20(%E5%BB%BA%E8%AE%AE%E4%BD%86%E4%B8%8D%E5%BC%BA%E5%88%B6%E4%BD%BF%E7%94%A8)"> # </a></h4>
+<ul>
+<li>iss: jwt签发者</li>
+<li>sub: jwt所面向的用户</li>
+<li>aud: 接收jwt的一方</li>
+<li>exp: jwt的过期时间，这个过期时间必须要大于签发时间,这是一个秒数</li>
+<li>nbf: 定义在什么时间之前，该jwt都是不可用的.</li>
+<li>iat: jwt的签发时间</li>
+</ul>
+<h4 id="t63.2.2 公共的声明">3.2.2 公共的声明 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t63.2.2%20%E5%85%AC%E5%85%B1%E7%9A%84%E5%A3%B0%E6%98%8E"> # </a></h4>
+<p>公共的声明可以添加任何的信息，一般添加用户的相关信息或其他业务需要的必要信息.但不建议添加敏感信息，因为该部分在客户端可解密</p>
+<h4 id="t73.2.3 私有的声明">3.2.3 私有的声明 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t73.2.3%20%E7%A7%81%E6%9C%89%E7%9A%84%E5%A3%B0%E6%98%8E"> # </a></h4>
+<p>私有声明是提供者和消费者所共同定义的声明，一般不建议存放敏感信息，因为base64是对称解密的，意味着该部分信息可以归类为明文信息</p>
+<h4 id="t83.2.4  负载使用的例子">3.2.4  负载使用的例子 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t83.2.4%20%20%E8%B4%9F%E8%BD%BD%E4%BD%BF%E7%94%A8%E7%9A%84%E4%BE%8B%E5%AD%90"> # </a></h4>
+<pre><code class="lang-js">{ <span class="hljs-string">"sub"</span>: <span class="hljs-string">"1234567890"</span>, <span class="hljs-string">"name"</span>: <span class="hljs-string">"zfpx"</span>, <span class="hljs-string">"admin"</span>: <span class="hljs-literal">true</span>} 
+</code></pre>
+<p>上述的负载需要经过<code>Base64Url</code>编码后作为JWT结构的第二部分</p>
+<h3 id="t93.3 Signature">3.3 Signature <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t93.3%20Signature"> # </a></h3>
+<ul>
+<li>创建签名需要使用编码后的header和payload以及一个秘钥</li>
+<li>使用header中指定签名算法进行签名</li>
+<li>例如如果希望使用HMAC SHA256算法，那么签名应该使用下列方式创建<pre><code class="lang-js">HMACSHA256( base64UrlEncode(header) + <span class="hljs-string">"."</span> + base64UrlEncode(payload), secret) 
+</code></pre>
+</li>
+<li>签名用于验证消息的发送者以及消息是没有经过篡改的</li>
+<li>完整的JWT 完整的JWT格式的输出是以. 分隔的三段Base64编码</li>
+<li>密钥secret是保存在服务端的，服务端会根据这个密钥进行生成token和验证，所以需要保护好。</li>
+</ul>
+<h2 id="t104.如何使用JWT">4.如何使用JWT <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t104.%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8JWT"> # </a></h2>
+<ol>
+<li>当用户使用它的认证信息登陆系统之后，会返回给用户一个JWT</li>
+<li>用户只需要本地保存该token（通常使用local storage，也可以使用cookie）即可</li>
+<li>当用户希望访问一个受保护的路由或者资源的时候，通常应该在Authorization头部使用Bearer模式添加JWT，其内容看起来是下面这样<pre><code class="lang-js">Authorization: Bearer &lt;token&gt;
+</code></pre>
+</li>
+<li>因为用户的状态在服务端的内存中是不存储的，所以这是一种无状态的认证机制</li>
+<li>服务端的保护路由将会检查请求头Authorization中的JWT信息，如果合法，则允许用户的行为。</li>
+<li>由于JWT是自包含的，因此减少了需要查询数据库的需要</li>
+<li>JWT的这些特性使得我们可以完全依赖其无状态的特性提供数据API服务，甚至是创建一个下载流服务。</li>
+<li>因为JWT并不使用Cookie的，所以你可以使用任何域名提供你的API服务而不需要担心跨域资源共享问题（CORS）</li>
+</ol>
+<p><img src="./35.jwt_files/JWT.png" alt="JWT"></p>
+<h2 id="t115. JWT实战">5. JWT实战 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t115.%20JWT%E5%AE%9E%E6%88%98"> # </a></h2>
+<h3 id="t125.1 config.js">5.1 config.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t125.1%20config.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-attr">dbUrl</span>: <span class="hljs-string">'mongodb://127.0.0.1/jwt'</span>,
+    <span class="hljs-attr">secret</span>: <span class="hljs-string">'zfpx'</span>
+}
+</code></pre>
+<h3 id="t135.2 app.js">5.2 app.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t135.2%20app.js"> # </a></h3>
+<p><a href="http://momentjs.cn/">momentjs</a></p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">const</span> jwt = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jwt-simple'</span>);
+<span class="hljs-keyword">const</span> bodyParser = <span class="hljs-built_in">require</span>(<span class="hljs-string">'body-parser'</span>);
+<span class="hljs-keyword">const</span> moment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'moment'</span>);
+<span class="hljs-keyword">const</span> User = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./model/user'</span>);
+<span class="hljs-keyword">const</span> jwtWare = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./jwt'</span>);
+<span class="hljs-keyword">const</span> { secret } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./config'</span>);
+<span class="hljs-keyword">const</span> app = express();
+app.use(bodyParser.urlencoded({ <span class="hljs-attr">extended</span>: <span class="hljs-literal">true</span> }));
+app.use(bodyParser.json());
+app.post(<span class="hljs-string">'/signup'</span>, <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
+    <span class="hljs-keyword">let</span> user = req.body;
+    user = <span class="hljs-keyword">await</span> User.create(user);
+    <span class="hljs-keyword">if</span> (user) {
+        res.json({
+            <span class="hljs-attr">code</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">data</span>: {
+                user
+            }
+        });
+    } <span class="hljs-keyword">else</span> {
+        res.json({
+            <span class="hljs-attr">code</span>: <span class="hljs-number">1</span>,
+            <span class="hljs-attr">data</span>: <span class="hljs-string">'用户注册失败'</span>
+        });
+    }
+});
+app.post(<span class="hljs-string">'/login'</span>, <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
+    <span class="hljs-keyword">let</span> user = req.body;
+    user = <span class="hljs-keyword">await</span> User.findOne(user);
+    <span class="hljs-keyword">if</span> (user) {
+        <span class="hljs-keyword">let</span> expires = moment().add(<span class="hljs-number">7</span>, <span class="hljs-string">'days'</span>).valueOf();
+        <span class="hljs-keyword">let</span> userInfo = {
+            <span class="hljs-attr">id</span>: user._id,
+            <span class="hljs-attr">username</span>: user.username
+        };
+        <span class="hljs-keyword">let</span> token = jwt.encode({
+            <span class="hljs-attr">user</span>: userInfo,
+            <span class="hljs-attr">exp</span>: expires
+        }, secret);
+        res.json({
+            <span class="hljs-attr">code</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">data</span>: {
+                token,
+                expires,
+                <span class="hljs-attr">user</span>: userInfo
+            }
+        });
+    } <span class="hljs-keyword">else</span> {
+        res.json({
+            <span class="hljs-attr">code</span>: <span class="hljs-number">1</span>,
+            <span class="hljs-attr">data</span>: <span class="hljs-string">'用户名或密码错误'</span>
+        });
+    }
+});
+app.get(<span class="hljs-string">'/user'</span>, jwtWare, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
+    res.json({
+        <span class="hljs-attr">code</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">data</span>: {
+            <span class="hljs-attr">user</span>: req.user
+        }
+    });
+});
+app.listen(<span class="hljs-number">8080</span>);
+</code></pre>
+<h3 id="t145.3 jwt.js">5.3 jwt.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t145.3%20jwt.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { secret } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./config'</span>);
+<span class="hljs-keyword">const</span> jwt = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jwt-simple'</span>);
+<span class="hljs-keyword">const</span> User = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./model/user'</span>);
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
+    <span class="hljs-keyword">let</span> authorization = req.headers[<span class="hljs-string">'authorization'</span>];
+    <span class="hljs-keyword">if</span> (authorization) {
+        <span class="hljs-keyword">try</span> {
+            <span class="hljs-keyword">let</span> decoded = jwt.decode(authorization.split(<span class="hljs-string">' '</span>)[<span class="hljs-number">1</span>], secret);
+            req.user = decoded.user;
+            next();
+        } <span class="hljs-keyword">catch</span> (err) {
+            <span class="hljs-built_in">console</span>.log(err);
+            res.status(<span class="hljs-number">401</span>).send(<span class="hljs-string">'Not Allowed'</span>);
+        }
+    } <span class="hljs-keyword">else</span> {
+        res.status(<span class="hljs-number">401</span>).send(<span class="hljs-string">'Not Allowed'</span>);
+    }
+}
+</code></pre>
+<h3 id="t155.4 user.js">5.4 user.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t155.4%20user.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+<span class="hljs-keyword">let</span> Schema = mongoose.Schema;
+<span class="hljs-keyword">let</span> ObjectId = Schema.Types.ObjectId;
+<span class="hljs-keyword">let</span> { dbUrl } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../config'</span>);
+<span class="hljs-keyword">let</span> conn = mongoose.createConnection(dbUrl);
+<span class="hljs-keyword">let</span> UserSchema = <span class="hljs-keyword">new</span> Schema({
+    <span class="hljs-attr">username</span>: <span class="hljs-built_in">String</span>,
+    <span class="hljs-attr">password</span>: <span class="hljs-built_in">String</span>
+});
+<span class="hljs-built_in">module</span>.exports = conn.model(<span class="hljs-string">"User"</span>, UserSchema);
+</code></pre>
+<h2 id="t166. 前端">6. 前端 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t166.%20%E5%89%8D%E7%AB%AF"> # </a></h2>
+<pre><code class="lang-js">create-react-app front
+cd front
+cnpm i react react-dom react-router-dom axios -S
+</code></pre>
+<h3 id="t176.1 index.js">6.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t176.1%20index.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> { Router, Route, Switch, Redirect } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
+<span class="hljs-keyword">import</span> createHashHistory <span class="hljs-keyword">from</span> <span class="hljs-string">'history/createHashHistory'</span>;
+<span class="hljs-keyword">import</span> Login <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Login'</span>;
+<span class="hljs-keyword">import</span> User <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/User'</span>;
+<span class="hljs-keyword">const</span> history = createHashHistory();
+ReactDOM.render(
+    &lt;Router history={history}&gt;
+        &lt;Switch&gt;
+            &lt;Route exact path="/" component={Login} /&gt;
+            &lt;Route path="/user" component={User} /&gt;
+            &lt;Redirect to="/" /&gt;
+        &lt;/Switch&gt;
+    &lt;/Router&gt;, document.querySelector('#root')
+);
+</code></pre>
+<h3 id="t186.2 api.js">6.2 api.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t186.2%20api.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+<span class="hljs-keyword">import</span> createHashHistory <span class="hljs-keyword">from</span> <span class="hljs-string">'history/createHashHistory'</span>;
+<span class="hljs-keyword">const</span> history = createHashHistory();
+axios.interceptors.request.use(<span class="hljs-function"><span class="hljs-params">config</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (localStorage.token) {
+        config.headers.Authorization = <span class="hljs-string">'Bearer '</span> + localStorage.token
+    }
+    <span class="hljs-keyword">return</span> config
+}, error =&gt; {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.reject(error)
+})
+
+axios.interceptors.response.use(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (res.data.code != <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.reject(res);
+    }
+    <span class="hljs-keyword">return</span> res;
+}, error =&gt; {
+    <span class="hljs-keyword">if</span> (error.response.status == <span class="hljs-number">401</span>) {
+        history.push(<span class="hljs-string">'/'</span>);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.reject(error.response.data);
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-keyword">return</span> axios({
+        <span class="hljs-attr">url</span>: <span class="hljs-string">'http://localhost:8080/login'</span>,
+        <span class="hljs-attr">method</span>: <span class="hljs-string">'post'</span>,
+        data
+    }).then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+        <span class="hljs-keyword">let</span> data = response.data;
+        localStorage.setItem(<span class="hljs-string">'token'</span>, data.data.token);
+        <span class="hljs-keyword">return</span> data;
+    })
+}
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getUser</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-keyword">return</span> axios({
+        <span class="hljs-attr">url</span>: <span class="hljs-string">'http://localhost:8080/user'</span>,
+        <span class="hljs-attr">method</span>: <span class="hljs-string">'get'</span>
+    }).then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+        <span class="hljs-keyword">return</span> response.data;
+    })
+}
+</code></pre>
+<h3 id="t196.3 Login.js">6.3 Login.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t196.3%20Login.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { login } <span class="hljs-keyword">from</span> <span class="hljs-string">'../api'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Login</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    handleSubmit = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+        event.preventDefault();
+        <span class="hljs-keyword">let</span> username = <span class="hljs-keyword">this</span>.username.value;
+        <span class="hljs-keyword">let</span> password = <span class="hljs-keyword">this</span>.password.value;
+        login({ username, password }).then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> {
+            <span class="hljs-keyword">if</span> (data.code == <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">this</span>.props.history.push(<span class="hljs-string">'/user'</span>);
+            }
+        });
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            &lt;form onSubmit={this.handleSubmit}&gt;
+                用户名&lt;input required ref={ref =&gt; this.username = ref} /&gt;
+                密码&lt;input required ref={ref =&gt; this.password = ref} /&gt;
+                &lt;input type="submit" /&gt;
+            &lt;/form&gt;
+        )
+    }
+}
+</code></pre>
+<h3 id="t206.4 User.js">6.4 User.js <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t206.4%20User.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { getUser } <span class="hljs-keyword">from</span> <span class="hljs-string">'../api'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    state = {
+        <span class="hljs-attr">user</span>: {}
+    }
+    componentDidMount() {
+        getUser().then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> {
+            <span class="hljs-keyword">if</span> (res &amp;&amp; res.code == <span class="hljs-number">0</span>) {
+                <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">user</span>: res.data.user });
+            }
+        });
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                欢迎 {this.state.user.username}
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        )
+    }
+}
+</code></pre>
+<h2 id="t217.原理实现">7.原理实现 <a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html#t217.%E5%8E%9F%E7%90%86%E5%AE%9E%E7%8E%B0"> # </a></h2>
+<p>jwt.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">'crypto'</span>);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">encode</span>(<span class="hljs-params">payload, key</span>) </span>{
+    <span class="hljs-keyword">let</span> header = { <span class="hljs-attr">type</span>: <span class="hljs-string">'JWT'</span>, <span class="hljs-attr">alg</span>: <span class="hljs-string">'sha256'</span> };<span class="hljs-comment">//声明类型和算法</span>
+    <span class="hljs-keyword">var</span> segments = [];<span class="hljs-comment">//声明一个数组</span>
+    segments.push(base64urlEncode(<span class="hljs-built_in">JSON</span>.stringify(header)));<span class="hljs-comment">//对header进行base64</span>
+    segments.push(base64urlEncode(<span class="hljs-built_in">JSON</span>.stringify(payload)));<span class="hljs-comment">//对负载进行base64</span>
+    segments.push(sign(segments.join(<span class="hljs-string">'.'</span>), key));<span class="hljs-comment">//加入签名</span>
+    <span class="hljs-keyword">return</span> segments.join(<span class="hljs-string">'.'</span>);
+}
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sign</span>(<span class="hljs-params">input, key</span>) </span>{
+    <span class="hljs-keyword">return</span> crypto.createHmac(<span class="hljs-string">'sha256'</span>, key).update(input).digest(<span class="hljs-string">'base64'</span>);
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">decode</span>(<span class="hljs-params">token, key</span>) </span>{
+    <span class="hljs-keyword">var</span> segments = token.split(<span class="hljs-string">'.'</span>);
+    <span class="hljs-keyword">var</span> headerSeg = segments[<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">var</span> payloadSeg = segments[<span class="hljs-number">1</span>];
+    <span class="hljs-keyword">var</span> signatureSeg = segments[<span class="hljs-number">2</span>];
+
+    <span class="hljs-keyword">var</span> header = <span class="hljs-built_in">JSON</span>.parse(base64urlDecode(headerSeg));
+    <span class="hljs-keyword">var</span> payload = <span class="hljs-built_in">JSON</span>.parse(base64urlDecode(payloadSeg));
+
+    <span class="hljs-keyword">if</span> (signatureSeg != sign([headerSeg, payloadSeg].join(<span class="hljs-string">'.'</span>), key)) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'verify failed'</span>);
+    }
+
+    <span class="hljs-keyword">if</span> (payload.exp &amp;&amp; <span class="hljs-built_in">Date</span>.now() &gt; payload.exp * <span class="hljs-number">1000</span>) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Token expired'</span>);
+    }
+    <span class="hljs-keyword">return</span> payload;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">base64urlEncode</span>(<span class="hljs-params">str</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Buffer(str).toString(<span class="hljs-string">'base64'</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">base64urlDecode</span>(<span class="hljs-params">str</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Buffer(str, <span class="hljs-string">'base64'</span>).toString();
+}
+
+<span class="hljs-built_in">module</span>.exports = {
+    encode,
+    decode
+}
+</code></pre>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./35.jwt_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

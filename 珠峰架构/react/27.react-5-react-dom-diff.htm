@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<!-- saved from url=(0076)http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./27.react-5-react-dom-diff_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t01.%20%E8%99%9A%E6%8B%9FDOM">1. 虚拟DOM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t12.%20%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4">2. 实现步骤</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t23.%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0">3.代码实现</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t33.1%20%E8%99%9A%E6%8B%9FDOM">3.1 虚拟DOM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t43.2%20DOM%20DIFF">3.2 DOM DIFF</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t53.2.1%20Diffing%20%E7%AE%97%E6%B3%95">3.2.1 Diffing 算法</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t63.3%20%E8%AE%A1%E7%AE%97%E5%B7%AE%E5%BC%82">3.3 计算差异</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t73.4%20%E6%89%93%E8%A1%A5%E4%B8%81">3.4 打补丁</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t83.5%20keys%E4%BD%9C%E7%94%A8">3.5 keys作用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t93.5%20%E5%B8%B8%E8%A7%81%E5%9C%BA%E6%99%AF%E4%BC%98%E5%8C%96">3.5 常见场景优化</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t103.5.1%20%E5%A4%B4%E9%83%A8%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0">3.5.1 头部添加一个元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t113.5.2%20%E4%B8%AD%E9%97%B4%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0">3.5.2 中间添加一个元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t123.5.3%20%E5%B0%BE%E9%83%A8%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0">3.5.3 尾部添加一个元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t133.5.4%20%E5%A4%B4%E9%83%A8%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0">3.5.4 头部删除一个元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t143.5.5%20%E4%B8%AD%E9%97%B4%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0">3.5.5 中间删除一个元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t153.5.6%20%E5%B0%BE%E9%83%A8%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0">3.5.6 尾部删除一个元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t163.5.7%20%E6%80%A7%E8%83%BD%E6%9D%80%E6%89%8B">3.5.7 性能杀手</a></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. 虚拟DOM">1. 虚拟DOM <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t01.%20%E8%99%9A%E6%8B%9FDOM"> # </a></h2>
+<ul>
+<li>所谓的<code>virtual dom</code>，也就是虚拟节点。它通过<code>JS</code>的<code>Object</code>对象模拟DOM中的节点，然后再通过特定的<code>render</code>方法将其渲染成真实的DOM节点</li>
+<li><code>dom diff</code> 则是通过<code>JS</code>层面的计算，返回一个<code>patch</code>对象，即补丁对象，在通过特定的操作解析<code>patch</code>对象，完成页面的重新渲染</li>
+</ul>
+<p><img src="./27.react-5-react-dom-diff_files/domdiff3.jpg" alt="domdiff3"></p>
+<h2 id="t12. 实现步骤">2. 实现步骤 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t12.%20%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"> # </a></h2>
+<ol>
+<li>用JavaScript对象模拟DOM</li>
+<li>把此虚拟DOM转成真实DOM并插入页面中</li>
+<li>如果有事件发生修改了虚拟DOM</li>
+<li>比较两棵虚拟DOM树的差异，得到差异对象</li>
+<li>把差异对象应用到真正的DOM树上</li>
+</ol>
+<h2 id="t23.代码实现">3.代码实现 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t23.%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"> # </a></h2>
+<h3 id="t33.1 虚拟DOM">3.1 虚拟DOM <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t33.1%20%E8%99%9A%E6%8B%9FDOM"> # </a></h3>
+<p>用<code>JavaScript</code>对象结构表示<code>DOM</code>树的结构；然后用这个树构建一个真正的<code>DOM</code>树，插到文档当中</p>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> createElement=<span class="hljs-built_in">require</span>(<span class="hljs-string">'./element'</span>);
+<span class="hljs-keyword">let</span> ul1=createElement(<span class="hljs-string">'ul'</span>,{<span class="hljs-attr">class</span>: <span class="hljs-string">'list'</span>},[
+    createElement(<span class="hljs-string">'li'</span>,{<span class="hljs-attr">class</span>: <span class="hljs-string">'list1'</span>},[<span class="hljs-string">'1'</span>]),
+    createElement(<span class="hljs-string">'li'</span>,{<span class="hljs-attr">class</span>: <span class="hljs-string">'list2'</span>},[<span class="hljs-string">'2'</span>]),
+    createElement(<span class="hljs-string">'li'</span>,{<span class="hljs-attr">class</span>:<span class="hljs-string">'list3'</span>},[<span class="hljs-string">'3'</span>])
+]);
+<span class="hljs-keyword">let</span> ul1Element = ul1.render();
+<span class="hljs-built_in">document</span>.body.appendChild(ul1Element);
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Element</span></span>{
+    <span class="hljs-keyword">constructor</span>(tagName,attrs,children) {
+        <span class="hljs-keyword">this</span>.tagName=tagName;
+        <span class="hljs-keyword">this</span>.attrs=attrs;
+        <span class="hljs-keyword">this</span>.children=children;
+    }
+    render() {
+        <span class="hljs-keyword">let</span> element=<span class="hljs-built_in">document</span>.createElement(<span class="hljs-keyword">this</span>.tagName);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> attr <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.attrs) {
+            element.setAttribute(attr,<span class="hljs-keyword">this</span>.attrs[attr]);
+        }
+        <span class="hljs-keyword">let</span> children=<span class="hljs-keyword">this</span>.children||[];
+        children.forEach(<span class="hljs-function"><span class="hljs-params">child</span> =&gt;</span> {
+            <span class="hljs-keyword">let</span> childElement=(child <span class="hljs-keyword">instanceof</span> Element)? child.render():<span class="hljs-built_in">document</span>.createTextNode(child);
+            element.appendChild(childElement);
+        });
+        <span class="hljs-keyword">return</span> element;
+    }
+}
+
+
+<span class="hljs-built_in">module</span>.exports=<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">tagName,attrs,children</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Element(tagName,attrs,children);
+}
+
+</code></pre>
+<h3 id="t43.2 DOM DIFF">3.2 DOM DIFF <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t43.2%20DOM%20DIFF"> # </a></h3>
+<p>比较两棵DOM树的差异是<code>Virtual DOM</code>算法最核心的部分,<code>Read Diff</code>算法有三个优化策略</p>
+<ul>
+<li>DOM节点的跨层级移动操作特别少，可以忽略不计</li>
+</ul>
+<p><img src="./27.react-5-react-dom-diff_files/domcompare.png" alt="domcompare">
+<img src="./27.react-5-react-dom-diff_files/removedom.png" alt="removedom"></p>
+<ul>
+<li>拥有相同类的两个组件会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构</li>
+</ul>
+<ul>
+<li>对于同一层级的一组节点，它们可以通过唯一的key进行区分,开发人员可以使用一个<code>key</code>指示在不同的渲染中那个那些元素可以保持稳定。</li>
+</ul>
+<p><img src="./27.react-5-react-dom-diff_files/domkeys.png" alt="domkeys"></p>
+<h4 id="t53.2.1 Diffing 算法">3.2.1 Diffing 算法 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t53.2.1%20Diffing%20%E7%AE%97%E6%B3%95"> # </a></h4>
+<ul>
+<li>元素类型不相同,无论什么时候，当根元素类型不同时，React 将会销毁原先的树并重写构建新的树
+<code>`</code>js<div>
+<counter>
+</counter></div>
+
+</li>
+</ul>
+<p><span>
+  <counter>
+</counter></span></p>
+<pre><code>
+#### 3.2.2 DOM元素类型相同
+当比较两个相同类型的 React DOM 元素时，React 检查它们的属性（attributes），保留相同的底层 DOM 节点，只更新发生改变的属性（attributes）
+```js
+&lt;div className="before" title="stuff" /&gt;
+&lt;div className="after" title="stuff" /&gt;
+</code></pre><p>通过比较两个元素，React 会仅修改底层 DOM 节点的 className 属性。
+当更新 style属性，React 也会仅仅只更新已经改变的属性，例如:</p>
+<pre><code class="lang-js">&lt;div style={{<span class="hljs-string">'{{'</span>}}color: <span class="hljs-string">'red'</span>, <span class="hljs-attr">fontWeight</span>: <span class="hljs-string">'bold'</span>}} /&gt;
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span>'{{'}}<span class="hljs-attr">color:</span> '<span class="hljs-attr">green</span>', <span class="hljs-attr">fontWeight:</span> '<span class="hljs-attr">bold</span>'}} /&gt;</span>
+</span></code></pre>
+<p>当React对两个元素进行转化的时候，仅会修改<code>color</code>，而不会修改<code>fontWeight</code>
+在处理完当前 DOM 节点后，React 会递归处理子节点。</p>
+<h3 id="t63.3 计算差异">3.3 计算差异 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t63.3%20%E8%AE%A1%E7%AE%97%E5%B7%AE%E5%BC%82"> # </a></h3>
+<p><img src="./27.react-5-react-dom-diff_files/deeptranverse.png" alt="deeptranverse"></p>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> utils=<span class="hljs-built_in">require</span>(<span class="hljs-string">'./utils'</span>);
+<span class="hljs-keyword">const</span> REPLACE=<span class="hljs-string">'REPLACE'</span>;<span class="hljs-comment">//节点整个被替换</span>
+<span class="hljs-keyword">const</span> ATTRS=<span class="hljs-string">'ATTRS'</span>;<span class="hljs-comment">//属性改变</span>
+<span class="hljs-keyword">const</span> REMOVE=<span class="hljs-string">'REMOVE'</span>;<span class="hljs-comment">//节点被移除</span>
+<span class="hljs-keyword">const</span> TEXT=<span class="hljs-string">'TEXT'</span>;<span class="hljs-comment">//文本内容改变</span>
+<span class="hljs-keyword">let</span> keyIndex=<span class="hljs-number">0</span>;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">diff</span>(<span class="hljs-params">oldTree,newTree</span>) </span>{
+    keyIndex=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">let</span> patches={};
+    <span class="hljs-keyword">let</span> index=<span class="hljs-number">0</span>;
+    walk(oldTree,newTree,index,patches);
+    <span class="hljs-keyword">return</span> patches;
+}
+<span class="hljs-comment">/**
+ * 
+ * @param {*} oldNode 老节点
+ * @param {*} newNode 新节点
+ * @param {*} index 老节点在旧树深度遍历中的索引
+ * @param {*} patches 补丁对象
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">walk</span>(<span class="hljs-params">oldNode,newNode,index,patches</span>) </span>{
+    <span class="hljs-keyword">let</span> currentPatch=[];
+    <span class="hljs-keyword">if</span> (newNode == <span class="hljs-literal">null</span>) {
+        currentPatch.push({<span class="hljs-attr">type</span>:REMOVE,index});
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (utils.isString(oldNode)&amp;&amp;utils.isString(newNode)) {
+        <span class="hljs-keyword">if</span> (oldNode != newNode) {
+            currentPatch.push({<span class="hljs-attr">type</span>:TEXT,<span class="hljs-attr">content</span>:newNode});
+        }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (oldNode.tagName==newNode.tagName) {
+        <span class="hljs-keyword">let</span> attrsPatch=diffAttrs(oldNode,newNode);
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Object</span>.keys(attrsPatch).length&gt;<span class="hljs-number">0</span>) {
+            currentPatch.push(attrsPatch);
+        }
+        diffChildren(oldNode.children,newNode.children,index,patches);
+    } <span class="hljs-keyword">else</span> {
+        currentPatch.push({<span class="hljs-attr">type</span>:REMOVE,<span class="hljs-attr">node</span>:newNode});
+    }
+    <span class="hljs-keyword">if</span>(currentPatch.length&gt;<span class="hljs-number">0</span>)
+       patches[index]=currentPatch;
+}
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">diffChildren</span>(<span class="hljs-params">oldChildren,newChildren,index,patches</span>) </span>{
+    oldChildren.forEach(<span class="hljs-function">(<span class="hljs-params">oldChild,idx</span>) =&gt;</span> {
+        walk(oldChild,newChildren[idx],++keyIndex,patches);
+    });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">diffAttrs</span>(<span class="hljs-params">oldNode,newNode</span>) </span>{
+    <span class="hljs-keyword">let</span> attrsPatch={};
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> attr <span class="hljs-keyword">in</span> oldNode.attrs) {
+        <span class="hljs-keyword">if</span> (oldNode.attrs[attr]!=newNode.attrs[attr]) {
+            attrsPatch[attr]=newNode.attrs[attr];
+        }
+    }
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> attr <span class="hljs-keyword">in</span> newNode.attrs) {
+        <span class="hljs-keyword">if</span> (!(oldNode.attrs.hasOwnProperty(attr))) {
+            attrsPatch[attr]=newNode.attrs[attr];
+        }
+    }
+    <span class="hljs-keyword">return</span> attrsPatch;
+}
+<span class="hljs-built_in">module</span>.exports=diff;
+</code></pre>
+<h3 id="t73.4 打补丁">3.4 打补丁 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t73.4%20%E6%89%93%E8%A1%A5%E4%B8%81"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> {REPLACE,ATTRS,REMOVE,TEXT}=<span class="hljs-built_in">require</span>(<span class="hljs-string">'./diff'</span>);
+<span class="hljs-keyword">let</span> keyIndex=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">let</span> allPatches;
+<span class="hljs-keyword">let</span> utils=<span class="hljs-built_in">require</span>(<span class="hljs-string">'./utils'</span>);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">patch</span>(<span class="hljs-params">root,patches</span>) </span>{
+    keyIndex=<span class="hljs-number">0</span>;
+    allPatches=patches;
+    walk(root);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">walk</span>(<span class="hljs-params">node</span>) </span>{
+    <span class="hljs-keyword">let</span> currentPatches=allPatches[keyIndex++];
+    (node.childNodes||[]).forEach(<span class="hljs-function"><span class="hljs-params">child</span> =&gt;</span> {
+        walk(child);
+    });
+    <span class="hljs-keyword">if</span> (currentPatches) {
+        dealPatches(node,currentPatches);
+    }
+}
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">dealPatches</span>(<span class="hljs-params">node,currentPatches</span>) </span>{
+    currentPatches.forEach(<span class="hljs-function"><span class="hljs-params">currentPatch</span> =&gt;</span> {
+        <span class="hljs-keyword">switch</span> (currentPatch.type) {
+            <span class="hljs-keyword">case</span> REPLACE:
+                <span class="hljs-keyword">let</span> newNode=(<span class="hljs-keyword">typeof</span> currentPatch.node==<span class="hljs-string">'string'</span>)? <span class="hljs-built_in">document</span>.createTextNode(currentPatch.node):currentPath.node.render();
+                node.parentNode.replaceChild(newNode,node);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> ATTRS:
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> attr <span class="hljs-keyword">in</span> currentPatch.attrs) {
+                    <span class="hljs-keyword">if</span> (currentPatch.attrs[attr]) {
+                        utils.setAttr(node,attr,currentPatch.attrs[attr]);
+                    } <span class="hljs-keyword">else</span> {
+                        node.removeAttribute(attr);
+                    }
+                }
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> TEXT:
+                node.textContent=currentPatch.content;
+            <span class="hljs-keyword">default</span>:
+                <span class="hljs-keyword">break</span>;    
+        }
+    });
+}
+
+<span class="hljs-built_in">module</span>.exports=patch;
+</code></pre>
+<h3 id="t83.5 keys作用">3.5 keys作用 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t83.5%20keys%E4%BD%9C%E7%94%A8"> # </a></h3>
+<ul>
+<li>删除一个</li>
+<li>第一个换到最后一个</li>
+<li>最后一个换到第一个</li>
+<li>少创建DOM
+<code>`</code>js
+const oldKeys = ['A', 'B', 'C', 'D'];
+const root = document.createElement('ul');
+oldKeys.forEach(key =&gt; {
+  let li = document.createElement('li');
+  li.innerHTML = key;
+  root.appendChild(li);
+});
+document.body.appendChild(root);</li>
+</ul>
+<p>const newKeys = ['C', 'B', 'D', 'E'];
+const patches = diff(oldKeys, newKeys);
+patch(root, patches);
+function patch(root, patches = []) {
+    patches.forEach(patch =&gt; {
+        let oldNode;
+        switch (patch.type) {
+            case 'INSERT':
+                oldNode = root.childNodes[patch.index];
+                let newNode = document.createElement('li');
+                newNode.innerHTML = patch.key;
+                if (oldNode) {
+                    root.insertBefore(newNode, oldNode);
+                } else {
+                    root.appendChild(newNode);
+                }
+                break;
+            case 'REMOVE':
+                oldNode = root.childNodes[patch.index];
+                if (oldNode)
+                    root.removeChild(oldNode);
+                break;
+        }
+    });
+}</p>
+<p>function diff(oldKeys, newKeys) {
+    //清除没用的key
+    let oldIndex = 0;
+    let patches = [];
+    while (oldIndex &lt; oldKeys.length) {
+        let oldKey = oldKeys[oldIndex];
+        if (!newKeys.includes(oldKey)) {
+            remove(oldIndex);
+            oldKeys.splice(oldIndex, 1);
+        } else {
+            oldIndex++;
+        }
+    }</p>
+<pre><code>//构造新的列表
+oldIndex = 0;
+let newIndex = 0;
+while (newIndex &lt; newKeys.length) {
+    let oldKey = oldKeys[oldIndex];
+    let newKey = newKeys[newIndex];
+    if (!oldKey || oldKey !== newKey) {
+        insert(newIndex, newKey);
+        newIndex++;
+    } else {
+        newIndex++;
+        oldIndex++;
+    }
+}
+
+while (oldIndex++ &lt; oldKeys.length) {
+    remove(newIndex);
+}
+
+function remove(index) {
+    patches.push({ type: 'REMOVE', index });
+}
+function insert(index, key) {
+    patches.push({ type: 'INSERT', index, key });
+}
+return patches;
+</code></pre><p>}</p>
+<pre><code>
+```js
+//const oldKeys = ['A', 'B', 'C', 'D'];
+class Element {
+    constructor(tagName, key, children) {
+        this.tagName = tagName;
+        this.key = key;
+        this.children = children;
+    }
+    render() {
+        let element = document.createElement(this.tagName);
+        element.innerHTML = this.children;
+        element.setAttribute('key', this.key);
+        return element;
+    }
+}
+function el(tagName, key, children) {
+    return new Element(tagName, key, children);
+}
+// abcd bcda
+//最后移动到第一个
+//第一个移到到最后
+const oldChildren = [
+    el('li', 'A', 'A'),
+    el('li', 'B', 'B'),
+    el('li', 'C', 'C'),
+    el('li', 'D', 'D'),
+];
+const root = document.createElement('ul');
+oldChildren.forEach(item =&gt; {
+    root.appendChild(item.render());
+});
+document.body.appendChild(root);
+
+const newChildren = [
+    el('li', 'B', 'B'),
+    el('li', 'C', 'C'),
+    el('li', 'D', 'D'),
+    el('li', 'A', 'A'),
+];
+
+function render() {
+    let newNode = document.createElement(this.tagName);
+    newNode.innerHTML = this.children;
+    newNode.setAttribute('key', this.key);
+    return newNode;
+}
+
+const patches = diff(oldChildren, newChildren);
+console.log(patches);
+patch(root, patches);
+function patch(root, patches = []) {
+    patches.forEach(patch =&gt; {
+        let oldNode;
+        switch (patch.type) {
+            case 'INSERT':
+                console.log('INSERT');
+                oldNode = root.childNodes[patch.index];
+                let newNode = patch.node.render();
+                if (oldNode) {
+                    root.insertBefore(newNode, oldNode);
+                } else {
+                    root.appendChild(newNode);
+                }
+                break;
+            case 'REMOVE':
+                console.log('REMOVE');
+                oldNode = root.childNodes[patch.index];
+                if (oldNode)
+                    root.removeChild(oldNode);
+                break;
+        }
+    });
+}
+
+function diff(oldChildren, newChildren) {
+    let newKeys = newChildren.map(item =&gt; item.key);
+    //清除没用的key
+    let oldIndex = 0;
+    let patches = [];
+    while (oldIndex &lt; oldChildren.length) {
+        let oldKey = oldChildren[oldIndex].key;
+        if (!newKeys.includes(oldKey)) {
+            remove(oldIndex);
+            oldChildren.splice(oldIndex, 1);
+        } else {
+            oldIndex++;
+        }
+    }
+
+    //构造新的列表
+    oldIndex = 0;
+    let newIndex = 0;
+    while (newIndex &lt; newChildren.length) {
+        let oldKey = (oldChildren[oldIndex] || {}).key;
+        let newKey = (newChildren[newIndex] || {}).key;
+        if (!oldKey) {
+            insert(newIndex, newKey);
+            newIndex++;
+        } else if (oldKey !== newKey) {
+            let nextOldKey = (oldChildren[oldIndex + 1] || {}).key;
+            if (nextOldKey === newKey) {
+                remove(newIndex);
+                oldChildren.splice(oldIndex, 1);
+            } else {
+                insert(newIndex, newKey);
+                newIndex++;
+            }
+        } else {
+            newIndex++;
+            oldIndex++;
+        }
+    }
+
+    while (oldIndex++ &lt; oldChildren.length) {
+        remove(newIndex);
+    }
+
+    function remove(index) {
+        patches.push({ type: 'REMOVE', index });
+    }
+    function insert(index, key) {
+        patches.push({ type: 'INSERT', index, node: { tagName: 'li', key: key, children: key, render } });
+    }
+    return patches;
+}
+</code></pre><pre><code class="lang-js"><span class="hljs-comment">//const oldKeys = ['A', 'B', 'C', 'D'];</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Element</span> </span>{
+    <span class="hljs-keyword">constructor</span>(tagName, key, children) {
+        <span class="hljs-keyword">this</span>.tagName = tagName;
+        <span class="hljs-keyword">this</span>.key = key;
+        <span class="hljs-keyword">this</span>.children = children;
+    }
+    render() {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'render'</span>);
+        <span class="hljs-keyword">let</span> element = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-keyword">this</span>.tagName);
+        element.innerHTML = <span class="hljs-keyword">this</span>.children;
+        element.setAttribute(<span class="hljs-string">'key'</span>, <span class="hljs-keyword">this</span>.key);
+        <span class="hljs-keyword">return</span> element;
+    }
+}
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">el</span>(<span class="hljs-params">tagName, key, children</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Element(tagName, key, children);
+}
+<span class="hljs-comment">// abcd bcda</span>
+<span class="hljs-comment">//最后移动到第一个</span>
+<span class="hljs-comment">//第一个移到到最后</span>
+<span class="hljs-keyword">const</span> oldChildren = [
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'A'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'B'</span>, <span class="hljs-string">'B'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'C'</span>, <span class="hljs-string">'C'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'D'</span>, <span class="hljs-string">'D'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'E'</span>, <span class="hljs-string">'E'</span>)
+
+];
+<span class="hljs-keyword">const</span> root = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'ul'</span>);
+oldChildren.forEach(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+    root.appendChild(item.render());
+});
+<span class="hljs-built_in">document</span>.body.appendChild(root);
+
+<span class="hljs-keyword">const</span> newChildren = [
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'B'</span>, <span class="hljs-string">'B'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'C'</span>, <span class="hljs-string">'C'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'D'</span>, <span class="hljs-string">'D'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'A'</span>, <span class="hljs-string">'A'</span>),
+    el(<span class="hljs-string">'li'</span>, <span class="hljs-string">'F'</span>, <span class="hljs-string">'F'</span>)
+];
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">let</span> newNode = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-keyword">this</span>.tagName);
+    newNode.innerHTML = <span class="hljs-keyword">this</span>.children;
+    newNode.setAttribute(<span class="hljs-string">'key'</span>, <span class="hljs-keyword">this</span>.key);
+    <span class="hljs-keyword">return</span> newNode;
+}
+
+<span class="hljs-keyword">const</span> patches = diff(oldChildren, newChildren);
+<span class="hljs-built_in">console</span>.log(patches);
+patch(root, patches);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">patch</span>(<span class="hljs-params">root, patches = []</span>) </span>{
+    <span class="hljs-keyword">let</span> map = <span class="hljs-built_in">Array</span>.from(root.childNodes).map(<span class="hljs-function"><span class="hljs-params">node</span> =&gt;</span> (
+        { [node.key]: node }
+    ));
+    patches.forEach(<span class="hljs-function"><span class="hljs-params">patch</span> =&gt;</span> {
+        <span class="hljs-keyword">let</span> oldNode;
+        <span class="hljs-keyword">switch</span> (patch.type) {
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'INSERT'</span>:
+                oldNode = root.childNodes[patch.index];
+                <span class="hljs-keyword">let</span> newNode = map[patch.key] ? map[patch.key] : patch.node.render();
+                <span class="hljs-keyword">if</span> (oldNode) {
+                    root.insertBefore(newNode, oldNode);
+                } <span class="hljs-keyword">else</span> {
+                    root.appendChild(newNode);
+                }
+
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">'REMOVE'</span>:
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'REMOVE'</span>);
+                oldNode = root.childNodes[patch.index];
+                <span class="hljs-keyword">if</span> (oldNode)
+                    root.removeChild(oldNode);
+                <span class="hljs-keyword">break</span>;
+        }
+    });
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">diff</span>(<span class="hljs-params">oldChildren, newChildren</span>) </span>{
+    <span class="hljs-keyword">let</span> newKeys = newChildren.map(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> item.key);
+    <span class="hljs-comment">//清除没用的key</span>
+    <span class="hljs-keyword">let</span> oldIndex = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">let</span> patches = [];
+    <span class="hljs-keyword">while</span> (oldIndex &lt; oldChildren.length) {
+        <span class="hljs-keyword">let</span> oldKey = oldChildren[oldIndex].key;
+        <span class="hljs-keyword">if</span> (!newKeys.includes(oldKey)) {
+            remove(oldIndex);
+            oldChildren.splice(oldIndex, <span class="hljs-number">1</span>);
+        } <span class="hljs-keyword">else</span> {
+            oldIndex++;
+        }
+    }
+
+    <span class="hljs-comment">//构造新的列表</span>
+    oldIndex = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">let</span> newIndex = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (newIndex &lt; newChildren.length) {
+        <span class="hljs-keyword">let</span> oldKey = (oldChildren[oldIndex] || {}).key;
+        <span class="hljs-keyword">let</span> newKey = (newChildren[newIndex] || {}).key;
+        <span class="hljs-keyword">if</span> (!oldKey) {
+            insert(newIndex, newKey);
+            newIndex++;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (oldKey !== newKey) {
+            <span class="hljs-keyword">let</span> nextOldKey = (oldChildren[oldIndex + <span class="hljs-number">1</span>] || {}).key;
+            <span class="hljs-keyword">if</span> (nextOldKey === newKey) {
+                remove(newIndex);
+                oldChildren.splice(oldIndex, <span class="hljs-number">1</span>);
+            } <span class="hljs-keyword">else</span> {
+                insert(newIndex, newKey);
+                newIndex++;
+            }
+        } <span class="hljs-keyword">else</span> {
+            newIndex++;
+            oldIndex++;
+        }
+    }
+
+    <span class="hljs-keyword">while</span> (oldIndex++ <span class="xml"><span class="hljs-tag">&lt; <span class="hljs-attr">oldChildren.length</span>) {
+        <span class="hljs-attr">remove</span>(<span class="hljs-attr">newIndex</span>);
+    }
+
+    <span class="hljs-attr">function</span> <span class="hljs-attr">remove</span>(<span class="hljs-attr">index</span>) {
+        <span class="hljs-attr">patches.push</span>({ <span class="hljs-attr">type:</span> '<span class="hljs-attr">REMOVE</span>', <span class="hljs-attr">index</span> });
+    }
+    <span class="hljs-attr">function</span> <span class="hljs-attr">insert</span>(<span class="hljs-attr">index</span>, <span class="hljs-attr">key</span>) {
+        <span class="hljs-attr">patches.push</span>({ <span class="hljs-attr">type:</span> '<span class="hljs-attr">INSERT</span>', <span class="hljs-attr">index</span>, <span class="hljs-attr">node:</span> { <span class="hljs-attr">tagName:</span> '<span class="hljs-attr">li</span>', <span class="hljs-attr">key:</span> <span class="hljs-attr">key</span>, <span class="hljs-attr">children:</span> <span class="hljs-attr">key</span>, <span class="hljs-attr">render</span> } });
+    }
+    <span class="hljs-attr">return</span> <span class="hljs-attr">patches</span>;
+}
+</span></span></code></pre>
+<h3 id="t93.5 常见场景优化">3.5 常见场景优化 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t93.5%20%E5%B8%B8%E8%A7%81%E5%9C%BA%E6%99%AF%E4%BC%98%E5%8C%96"> # </a></h3>
+<h4 id="t103.5.1 头部添加一个元素">3.5.1 头部添加一个元素 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t103.5.1%20%E5%A4%B4%E9%83%A8%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> oldKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+<span class="hljs-keyword">const</span> newKeys=[<span class="hljs-string">'D'</span>,<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'E'</span>];
+</code></pre>
+<pre><code class="lang-js">[{<span class="hljs-attr">type</span>: <span class="hljs-string">"INSERT"</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">key</span>: <span class="hljs-string">"E"</span>}]
+</code></pre>
+<h4 id="t113.5.2 中间添加一个元素">3.5.2 中间添加一个元素 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t113.5.2%20%E4%B8%AD%E9%97%B4%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> oldKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+<span class="hljs-keyword">const</span> newKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'E'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+</code></pre>
+<pre><code class="lang-js">[{<span class="hljs-attr">type</span>: <span class="hljs-string">"INSERT"</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">key</span>: <span class="hljs-string">"E"</span>}]
+</code></pre>
+<h4 id="t123.5.3 尾部添加一个元素">3.5.3 尾部添加一个元素 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t123.5.3%20%E5%B0%BE%E9%83%A8%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> oldKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+<span class="hljs-keyword">const</span> newKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>,<span class="hljs-string">'E'</span>];
+</code></pre>
+<pre><code class="lang-js">[{<span class="hljs-attr">type</span>: <span class="hljs-string">"INSERT"</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">key</span>: <span class="hljs-string">"E"</span>}]
+</code></pre>
+<h4 id="t133.5.4 头部删除一个元素">3.5.4 头部删除一个元素 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t133.5.4%20%E5%A4%B4%E9%83%A8%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> oldKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+<span class="hljs-keyword">const</span> newKeys=[<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+</code></pre>
+<pre><code class="lang-js">{<span class="hljs-attr">type</span>: <span class="hljs-string">"REMOVE"</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">0</span>}
+</code></pre>
+<h4 id="t143.5.5 中间删除一个元素">3.5.5 中间删除一个元素 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t143.5.5%20%E4%B8%AD%E9%97%B4%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> oldKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+<span class="hljs-keyword">const</span> newKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+</code></pre>
+<pre><code class="lang-js">
+{<span class="hljs-attr">type</span>: <span class="hljs-string">"REMOVE"</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">1</span>}
+</code></pre>
+<h4 id="t153.5.6 尾部删除一个元素">3.5.6 尾部删除一个元素 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t153.5.6%20%E5%B0%BE%E9%83%A8%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> oldKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>,<span class="hljs-string">'D'</span>];
+<span class="hljs-keyword">const</span> newKeys=[<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>,<span class="hljs-string">'C'</span>];
+</code></pre>
+<pre><code class="lang-js">{<span class="hljs-attr">type</span>: <span class="hljs-string">"REMOVE"</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">3</span>}
+</code></pre>
+<h4 id="t163.5.7 性能杀手">3.5.7 性能杀手 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html#t163.5.7%20%E6%80%A7%E8%83%BD%E6%9D%80%E6%89%8B"> # </a></h4>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./27.react-5-react-dom-diff_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

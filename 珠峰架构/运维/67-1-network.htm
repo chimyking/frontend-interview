@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)http://www.zhufengpeixun.cn/architecture/html/67-1-network.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./67-1-network_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t01.%20OSI%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B">1. OSI七层模型</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t11.1%20%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B">1.1 分层模型</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t21.2%20%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B">1.2 封装过程</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t32.%20TCP/IP%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B">2. TCP/IP参考模型</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t42.1%20%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BD%9C%E7%94%A8">2.1 协议的概念和作用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t52.2%20%E5%B8%B8%E7%94%A8%E5%8D%8F%E8%AE%AE">2.2 常用协议</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t63.%20%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82">3. 网络接口层</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t73.1%20%E7%89%A9%E7%90%86%E5%B1%82">3.1 物理层</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t83.1.1%20%E6%95%B0%E5%AD%97%E4%BF%A1%E5%8F%B7%E7%9A%84%E7%BC%96%E7%A0%81">3.1.1 数字信号的编码</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t93.1.1.1%20%E9%9D%9E%E5%BD%92%E9%9B%B6%E7%BC%96%E7%A0%81">3.1.1.1 非归零编码</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t103.1.1.2%20%E6%9B%BC%E5%BD%BB%E6%96%AF%E7%89%B9%E7%BC%96%E7%A0%81">3.1.1.2 曼彻斯特编码</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t113.2%20%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82">3.2 数据链路层</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t123.2.1%20%E4%BB%A5%E5%A4%AA%E7%BD%91">3.2.1 以太网</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t133.2.2%20%E6%80%BB%E7%BA%BF%E5%9E%8B%E6%8B%93%E6%89%91">3.2.2 总线型拓扑</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t143.2.2.1%20%E8%BD%BD%E6%B3%A2%E7%9B%91%E5%90%AC%E5%A4%9A%E8%B7%AF%E8%AE%BF%E9%97%AE">3.2.2.1 载波监听多路访问</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t153.2.2.2%20%E5%86%B2%E7%AA%81%E6%A3%80%E6%B5%8B">3.2.2.2 冲突检测</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t163.2.3%20MAC%E5%9C%B0%E5%9D%80">3.2.3 MAC地址</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t173.2.4%20%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7%E6%A0%BC%E5%BC%8F">3.2.4 以太网帧格式</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t183.2.5%20ARP%E5%8D%8F%E8%AE%AE">3.2.5 ARP协议</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t193.2.5.1%20ARP%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87">3.2.5.1 ARP协议报文</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t203.2.5.2%20ARP%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B">3.2.5.2 ARP地址解析过程</a></li></ul></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t214.%20%E4%BA%92%E8%81%94%E7%BD%91%E5%B1%82(%E7%BD%91%E7%BB%9C%E5%B1%82)">4. 互联网层(网络层)</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t224.1%20%E9%80%89%E5%9D%80">4.1 选址</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t234.2%20%E8%B7%AF%E7%94%B1">4.2 路由</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t244.3%20IP">4.3 IP</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t254.3.1%20IP%E5%A4%B4%E9%83%A8">4.3.1 IP头部</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t264.3.2%20IP%E5%9C%B0%E5%9D%80%E6%A0%BC%E5%BC%8F">4.3.2 IP地址格式</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t274.3.3%20IP%E5%9C%B0%E5%9D%80%E7%BB%84%E6%88%90">4.3.3 IP地址组成</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t284.3.4%20IP%E5%9C%B0%E5%9D%80%E8%A1%A8%E7%A4%BA">4.3.4 IP地址表示</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t294.3.5%20IP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E7%B1%BB">4.3.5 IP地址的分类</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t304.3.6%20%E5%85%AC%E6%9C%89%E5%9C%B0%E5%9D%80%E5%92%8C%E7%A7%81%E6%9C%89%E5%9C%B0%E5%9D%80">4.3.6 公有地址和私有地址</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t314.3.7%20%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81">4.3.7 子网掩码</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t325.%20%E4%BC%A0%E8%BE%93%E5%B1%82">5. 传输层</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t335.1%20%E4%BC%A0%E8%BE%93%E5%B1%82%E7%9A%84%E5%8A%9F%E8%83%BD">5.1 传输层的功能</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t345.2%20%E5%8D%8F%E8%AE%AE%E5%88%86%E7%B1%BB">5.2 协议分类</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t355.3%20TCP%E5%8D%8F%E8%AE%AE">5.3 TCP协议</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t365.3.1%20TCP%E6%95%B0%E6%8D%AE%E5%8C%85%E5%B0%81%E8%A3%85">5.3.1 TCP数据包封装</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t375.3.1.1%20%E6%A0%BC%E5%BC%8F">5.3.1.1 格式</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t385.3.1.2%2032%E4%BD%8D%E5%BA%8F%E5%88%97%E5%8F%B7">5.3.1.2 32位序列号</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t395.3.1.3%20%E7%A1%AE%E8%AE%A4%E5%BA%94%E7%AD%94%E5%8F%B7">5.3.1.3 确认应答号</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t405.3.1.4%20%E9%A6%96%E9%83%A8%E9%95%BF%E5%BA%A6">5.3.1.4 首部长度</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t415.3.1.5%20%E6%8E%A7%E5%88%B6%E4%BD%8D">5.3.1.5 控制位</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t425.3.1.5.1%20SYN">5.3.1.5.1 SYN</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t435.3.1.5.2%20ACK">5.3.1.5.2 ACK</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t445.3.1.5.3%20FIN">5.3.1.5.3 FIN</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t455.3.1.6%20%E7%AA%97%E5%8F%A3%E5%80%BC">5.3.1.6 窗口值</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t465.3.1.7%20%20%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6">5.3.1.7  差错控制</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t475.3.2%20%E6%8F%A1%E6%89%8B%E5%92%8C%E6%96%AD%E5%BC%80">5.3.2 握手和断开</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t485.3.2.1%20tcp%E6%9C%8D%E5%8A%A1%E5%99%A8">5.3.2.1 tcp服务器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t495.3.2.1.1%20tcp_server.js">5.3.2.1.1 tcp_server.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t505.3.2.1.2%20tcp_client.js">5.3.2.1.2 tcp_client.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t515.3.2.1%20%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B">5.3.2.1 三次握手</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t525.3.2.2%20%E6%94%B6%E5%8F%91%E6%95%B0%E6%8D%AE">5.3.2.2 收发数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t535.3.2.3%20%E5%9B%9B%E6%AC%A1%E6%96%AD%E5%BC%80">5.3.2.3 四次断开</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t545.3.3%20%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3">5.3.3 滑动窗口</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t555.3.3.1%20%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6">5.3.3.1 窗口机制</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t565.3.3.2%20%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6">5.3.3.2 拥塞控制</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t575.4%20UDP">5.4 UDP</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t585.4.1%20UDP%E7%9A%84%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F">5.4.1 UDP的封装格式</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t595.4.1.1%20%E6%95%B0%E6%8D%AE%E5%8C%85">5.4.1.1 数据包</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t605.4.1.2%20%E6%95%B0%E6%8D%AE%E9%95%BF%E5%BA%A6">5.4.1.2 数据长度</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t615.4.1.3%20%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6">5.4.1.3 差错控制</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t625.4.2%20UDP%E7%9A%84%E5%BA%94%E7%94%A8">5.4.2 UDP的应用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t635.4.3%20UDP%E6%9C%8D%E5%8A%A1%E5%99%A8">5.4.3 UDP服务器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t645.4.3.1%20%E7%82%B9%E5%AF%B9%E7%82%B9">5.4.3.1 点对点</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t655.4.3.1.1%20udp_server.js">5.4.3.1.1 udp_server.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t665.4.3.1.2%20udp_client.js">5.4.3.1.2 udp_client.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t675.4.3.2%20%E5%B9%BF%E6%92%AD">5.4.3.2 广播</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t685.4.3.2.1%20udp_server.js">5.4.3.2.1 udp_server.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t695.4.3.2.2%20udp_client.js">5.4.3.2.2 udp_client.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t705.4.3.3%20%E7%BB%84%E6%92%AD">5.4.3.3 组播</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t715.4.3.3.1%20udp_server.js">5.4.3.3.1 udp_server.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t725.4.3.3.2%20udp_client.js">5.4.3.3.2 udp_client.js</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t735.4.3%20DNS%E6%9C%8D%E5%8A%A1%E5%99%A8">5.4.3 DNS服务器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t743.4.3.1%20%E5%9F%9F%E5%90%8D">3.4.3.1 域名</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t753.4.3.2%20DNS%E6%9C%8D%E5%8A%A1%E5%99%A8">3.4.3.2 DNS服务器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t763.4.3.3%20%E6%9F%A5%E6%89%BE%E8%BF%87%E7%A8%8B">3.4.3.3 查找过程</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t775.4.4%20DHCP%E6%9C%8D%E5%8A%A1%E5%99%A8">5.4.4 DHCP服务器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t785.4.4.1%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">5.4.4.1 工作流程</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t795.4.4.2%20%E6%8A%93%E5%8C%85">5.4.4.2 抓包</a></li></ul></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t806.%20%E5%BA%94%E7%94%A8%E5%B1%82">6. 应用层</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t816.1%20%E5%8D%8F%E8%AE%AE">6.1 协议</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t826.2%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE">6.2 应用层常见协议</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t836.3%20%E6%A1%88%E4%BE%8B">6.3 案例</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t846.3.1%20%E5%8F%91%E9%80%81%E6%96%B9%E6%98%AF%E4%BB%8E%E9%AB%98%E5%B1%82%E5%88%B0%E4%BD%8E%E5%B1%82%E5%B0%81%E8%A3%85%E6%95%B0%E6%8D%AE">6.3.1 发送方是从高层到低层封装数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t856.3.2%20%E6%8E%A5%E6%94%B6%E6%96%B9%E6%98%AF%E4%BB%8E%E4%BD%8E%E5%B1%82%E5%88%B0%E9%AB%98%E5%B1%82%E8%A7%A3%E5%B0%81%E8%A3%85">6.3.2 接收方是从低层到高层解封装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t866.3.3%20%E7%9C%9F%E5%AE%9E%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83">6.3.3 真实网络环境</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t877.%20%E9%99%84%E5%BD%95">7. 附录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t887.1%20%E4%B8%8D%E5%90%8C%E5%B1%82%E4%B8%AD%E7%9A%84%E7%A7%B0%E8%B0%93%EF%BC%9A">7.1 不同层中的称谓：</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t897.2%20IP%E5%A4%B4%E6%9C%8D%E5%8A%A1%E7%B1%BB%E5%9E%8B">7.2 IP头服务类型</a></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. OSI七层模型">1. OSI七层模型 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t01.%20OSI%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B"> # </a></h2>
+<p><code>Open System Interconnection</code>适用于所有的网络</p>
+<ul>
+<li>分工带来效能</li>
+<li>将复杂的流程分解为几个功能相对单一的子进程</li>
+<li>整个流程更加清晰，复杂问题简单化</li>
+<li>更容易发现问题并针对性的解决问题<ul>
+<li>应用层(Application) 提供网络与用户应用软件之间的接口服务(HTTP)</li>
+<li>表示层(Presentation) 提供格式化的表示和转换数据服务，如加密和压缩()</li>
+<li>会话层(Session) 提供包括访问验证和会话管理在内的建立和维护应用之间通信的机制()</li>
+<li>传输层(Transimission) 提供建立、维护和取消传输连接功能，负责可靠地传输数据(TCP)</li>
+<li>网络层(Network) 处理网络间路由，确保数据及时传送(路由器)</li>
+<li>数据链路层(DataLink) 负责无错传输数据，确认帧、发错重传等(交换机)</li>
+<li>物理层(Physics) 提供机械、电气、功能和过程特性(网卡、网线、双绞线、同轴电缆、中继器)</li>
+</ul>
+</li>
+</ul>
+<h3 id="t11.1 分层模型">1.1 分层模型 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t11.1%20%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B"> # </a></h3>
+<p><img src="./67-1-network_files/osi.png" alt="分层模型"></p>
+<h3 id="t21.2 封装过程">1.2 封装过程 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t21.2%20%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B"> # </a></h3>
+<p><img src="./67-1-network_files/19.receive.png" alt="connect"></p>
+<h2 id="t32. TCP/IP参考模型">2. TCP/IP参考模型 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t32.%20TCP/IP%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B"> # </a></h2>
+<ul>
+<li>TCP/IP是传输控制协议/网络互联协议的简称</li>
+<li>早期的TCP/IP模型是一个四层结构，从下往上依次是网络接口层、互联网层、传输层和应用层</li>
+<li>后来在使用过程中，借鉴OSI七层参考模型，将网络接口层划分为了物理层和数据链路层，形成五层结构</li>
+</ul>
+<p><img src="./67-1-network_files/tcpip.png" alt="tcpip"></p>
+<h3 id="t42.1 协议的概念和作用">2.1 协议的概念和作用 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t42.1%20%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BD%9C%E7%94%A8"> # </a></h3>
+<ul>
+<li>为了让计算机能够通信，计算机需要定义通信规则，这些规则就是协议</li>
+<li>规则是多种，协议也有多种</li>
+<li>协议就是数据封装格式+传输</li>
+</ul>
+<h3 id="t52.2 常用协议">2.2 常用协议 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t52.2%20%E5%B8%B8%E7%94%A8%E5%8D%8F%E8%AE%AE"> # </a></h3>
+<ul>
+<li>TCP/IP协议被称为传输控制协议/互联网协议，又称网络通讯协议</li>
+<li>是由网络层的IP协议和传输层的TCP协议组成，是一个很大的协议集合</li>
+<li>物理层和数据链路层没有定义任何特定协议，支持所有的标准和专用的协议</li>
+</ul>
+<p><img src="./67-1-network_files/protocal.png" alt="分层模型"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">层级</th>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">应用层</td>
+<td style="text-align:left">HTTP</td>
+<td style="text-align:left">超文本传输协议（HTTP，HyperText Transfer Protocol)是互联网上应用最为广泛的一种网络协议</td>
+</tr>
+<tr>
+<td style="text-align:left">应用层</td>
+<td style="text-align:left">FTP</td>
+<td style="text-align:left">文件传输协议（英文：File Transfer Protocol，缩写：FTP）是用于在网络上进行文件传输的一套标准协议，使用客户/服务器模式</td>
+</tr>
+<tr>
+<td style="text-align:left">应用层</td>
+<td style="text-align:left">TFTP</td>
+<td style="text-align:left">(Trivial File Transfer Protocol,简单文件传输协议)是TCP/IP协议族中的一个用来在客户机与服务器之间进行简单文件传输的协议</td>
+</tr>
+<tr>
+<td style="text-align:left">应用层</td>
+<td style="text-align:left">SMTP</td>
+<td style="text-align:left">简单邮件传输协议 (Simple Mail Transfer Protocol, SMTP) 是在Internet传输Email的事实标准</td>
+</tr>
+<tr>
+<td style="text-align:left">应用层</td>
+<td style="text-align:left">SNMP</td>
+<td style="text-align:left">简单网络管理协议（SNMP，Simple Network Management Protocol），由一组网络管理的标准组成，包含一个应用层协议（application layer protocol）、数据库模型（database schema）和一组资源对象,该协议能够支持网络管理系统，用以监测连接到网络上的设备是否有任何引起管理上关注的情况。</td>
+</tr>
+<tr>
+<td style="text-align:left">应用层</td>
+<td style="text-align:left">DNS</td>
+<td style="text-align:left">域名系统（英文：Domain Name System，缩写：DNS）是互联网的一项服务。它作为将域名和IP地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">TCP</td>
+<td style="text-align:left">TCP（Transmission Control Protocol 传输控制协议）是一种面向连接的、可靠的、基于字节流的传输层通信协议</td>
+</tr>
+<tr>
+<td style="text-align:left">传输层</td>
+<td style="text-align:left">UDP</td>
+<td style="text-align:left">UDP 是User Datagram Protocol的简称， 中文名是用户数据报协议，是OSI（Open System Interconnection，开放式系统互联） 参考模型中一种无连接的传输层协议，提供面向事务的简单不可靠信息传送服务</td>
+</tr>
+<tr>
+<td style="text-align:left">传输层</td>
+<td style="text-align:left">ICMP</td>
+<td style="text-align:left">ICMP（Internet Control Message Protocol）Internet控制报文协议。它是TCP/IP协议簇的一个子协议，用于在IP主机、路由器之间传递控制消息。控制消息是指网络通不通、主机是否可达、路由是否可用等网络本身的消息</td>
+</tr>
+<tr>
+<td style="text-align:left">网络层</td>
+<td style="text-align:left">IGMP</td>
+<td style="text-align:left">Internet 组管理协议称为IGMP协议（Internet Group Management Protocol），是因特网协议家族中的一个组播协议。该协议运行在主机和组播路由器之间</td>
+</tr>
+<tr>
+<td style="text-align:left">网络层</td>
+<td style="text-align:left">IP</td>
+<td style="text-align:left">互联网协议地址（英语：Internet Protocol Address，又译为网际协议地址），缩写为IP地址（英语：IP Address），是分配给用户上网使用的网际协议（英语：Internet Protocol, IP）的设备的数字标签</td>
+</tr>
+<tr>
+<td style="text-align:left">网络层</td>
+<td style="text-align:left">ARP</td>
+<td style="text-align:left">地址解析协议，即ARP（Address Resolution Protocol），是根据IP地址获取物理地址的一个TCP/IP协议</td>
+</tr>
+<tr>
+<td style="text-align:left">网络层</td>
+<td style="text-align:left">RARP</td>
+<td style="text-align:left">反向地址转换协议（RARP：Reverse Address Resolution Protocol） 反向地址转换协议（RARP）允许局域网的物理机器从网关服务器的 ARP 表或者缓存上请求其 IP 地址</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t63. 网络接口层">3. 网络接口层 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t63.%20%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82"> # </a></h2>
+<ul>
+<li>网络接口层是TCP/IP模型的最底层，负责接收从上一层交来的数据报并将数据报通过底层的物理网络发送出去，比较常见的就是设备的驱动程序，此层没有特定的协议</li>
+<li>网络接口层又分为物理层和数据链路层</li>
+</ul>
+<h3 id="t73.1 物理层">3.1 物理层 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t73.1%20%E7%89%A9%E7%90%86%E5%B1%82"> # </a></h3>
+<ul>
+<li>计算机在传递数据的时候传递的都是0和1的数字，而物理层关心的是用什么信号来表示0和1，是否可以双向通信，最初的连接如何建立以及完成连接如何终止,物理层是为数据传输提供可靠的环境</li>
+<li>尽可能的屏蔽掉物理设备和传输媒介，使数据链路层不考虑这些差异，只考虑本层的协议和服务</li>
+<li>为用户提供在一条物理传输媒体上提供传送和接收比特流的能力</li>
+<li>需要解决物理连接、维护和释放的问题</li>
+</ul>
+<p><img src="./67-1-network_files/2.phisical.png" alt="物理层"></p>
+<h4 id="t83.1.1 数字信号的编码">3.1.1 数字信号的编码 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t83.1.1%20%E6%95%B0%E5%AD%97%E4%BF%A1%E5%8F%B7%E7%9A%84%E7%BC%96%E7%A0%81"> # </a></h4>
+<ul>
+<li>数字信号的编码：用何种物理信号来表示<code>0</code>和<code>1</code></li>
+</ul>
+<h5 id="t93.1.1.1 非归零编码">3.1.1.1 非归零编码 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t93.1.1.1%20%E9%9D%9E%E5%BD%92%E9%9B%B6%E7%BC%96%E7%A0%81"> # </a></h5>
+<p><img src="./67-1-network_files/1.phisical.png" alt="phisical"></p>
+<ul>
+<li>优点： 编/译码简单。</li>
+<li>缺点： 内部不含时钟信号， 收/发端同步困难。</li>
+<li>用途： 计算机内部， 或低速数据通信。<h5 id="t103.1.1.2 曼彻斯特编码">3.1.1.2 曼彻斯特编码 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t103.1.1.2%20%E6%9B%BC%E5%BD%BB%E6%96%AF%E7%89%B9%E7%BC%96%E7%A0%81"> # </a></h5>
+</li>
+</ul>
+<p><img src="./67-1-network_files/2.phisical.png" alt="phisical"></p>
+<ul>
+<li>优点：<ul>
+<li>内部自含时钟， 收/发端同步容易。</li>
+<li>抗干扰能力强。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>编/译码较复杂。</li>
+<li>占用更多的信道带宽， 在同样的波特率的情况下， 要比非归零编码多占用一倍信道带宽。</li>
+<li>用途： 802.3局域网（以太网）</li>
+</ul>
+</li>
+</ul>
+<h3 id="t113.2 数据链路层">3.2 数据链路层 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t113.2%20%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"> # </a></h3>
+<ul>
+<li>数据链路层是OSI参考模型中的第二层，介乎于物理层和网络层之间</li>
+<li>数据链路层在物理层提供的服务的基础上向网络层提供服务，其最基本的服务是将源自网络层来的数据可靠地传输到相邻节点的目标机网络层</li>
+<li>如何将数据组合成数据块，在数据链路层中称这种数据块为帧<code>frame</code>，帧是数据链路层的传送单位</li>
+<li>如何控制帧在物理信道上的传输，包括如何处理传输差错，如何调节发送速率以使与接收方相匹配</li>
+<li>以及在两个网络实体之间提供数据链路通路的建立、维持和释放的管理</li>
+</ul>
+<h4 id="t123.2.1 以太网">3.2.1 以太网 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t123.2.1%20%E4%BB%A5%E5%A4%AA%E7%BD%91"> # </a></h4>
+<ul>
+<li>以太网（Ethernet）是一种计算机局域网技术。IEEE组织的IEEE 802.3标准制定了以太网的技术标准，它规定了包括物理层的连线、电子信号和介质访问层协议的内容</li>
+<li>以太网的标准拓扑结构为总线型拓扑</li>
+<li>以太网仍然使用总线型拓扑和CSMA/CD（Carrier Sense Multiple Access/Collision Detection，即载波多重访问/碰撞侦测）的总线技术</li>
+<li>以太网实现了网络上无线电系统多个节点发送信息的想法，每个节点必须获取电缆或者信道的才能传送信息</li>
+<li>每一个节点有全球唯一的48位地址也就是制造商分配给网卡的MAC地址，以保证以太网上所有节点能互相鉴别</li>
+</ul>
+<h4 id="t133.2.2 总线型拓扑">3.2.2 总线型拓扑 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t133.2.2%20%E6%80%BB%E7%BA%BF%E5%9E%8B%E6%8B%93%E6%89%91"> # </a></h4>
+<ul>
+<li>总线型拓扑是采用单根传输作为共用的传输介质,将网络中所有的计算机通过相应的硬件接口和电缆直接连接到这根共享的总线上</li>
+<li>使用总线型拓扑结构需解决的是确保端用户使用媒体发送数据时不能出现冲突。</li>
+<li>总线型网络采用<code>载波监听多路访问</code>/<code>冲突检测协议</code>（CSMA/CD)作为控制策略</li>
+</ul>
+<p><img src="./67-1-network_files/totalline.png" alt="totalline"></p>
+<h5 id="t143.2.2.1 载波监听多路访问">3.2.2.1 载波监听多路访问 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t143.2.2.1%20%E8%BD%BD%E6%B3%A2%E7%9B%91%E5%90%AC%E5%A4%9A%E8%B7%AF%E8%AE%BF%E9%97%AE"> # </a></h5>
+<ul>
+<li>全称Carrier Sense Multiple Access (CSMA)，是一种允许多个设备在同一信道发送信号的协议，其中的设备监听其它设备是否忙碌，只有在线路空闲时才发送</li>
+<li>在此种访问方式下，网络中的所有用户共享传输介质，信息通过广播传送到所有端口，网络中的工作站对接收到的信息进行确认，若是发给自己的便接收否则不理</li>
+<li>从发送端情况看，当一个工作站有数据要发送时，他首先监听信道并检测网络上是否有其他的工作站正在发送DATA，如果检测到信道忙，工作站将继续WAIT若发现信道空闲，则开始发送数据，信息发送出去后，发送端还要继续对发送出去的信息进行确认，以了解接收端是否已经正确接收到数据，如果收到则发送结束，否则再次发送</li>
+<li>核心思想<ul>
+<li>先听后讲 信道空闲则发送，信道忙则等待。</li>
+<li>边听边讲 发送信号时不断检测信道是否碰撞。</li>
+<li>碰撞即停 </li>
+<li>退避重传 二进制指数退避重传</li>
+<li>多次碰撞，放弃发送,最多16次</li>
+</ul>
+</li>
+</ul>
+<h5 id="t153.2.2.2 冲突检测">3.2.2.2 冲突检测 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t153.2.2.2%20%E5%86%B2%E7%AA%81%E6%A3%80%E6%B5%8B"> # </a></h5>
+<ul>
+<li>冲突检测即发送站点在发送数据时要边发送边监听信道，若监听到信道有干扰信号，则表示产生了冲突，于是就要停止发送数据，计算出退避等待时间，然后使用CSMA方法继续尝试发送</li>
+<li>计算退避等待时间采用的是<code>二进制指数退避算法</code></li>
+</ul>
+<h4 id="t163.2.3 MAC地址">3.2.3 MAC地址 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t163.2.3%20MAC%E5%9C%B0%E5%9D%80"> # </a></h4>
+<ul>
+<li>在通信过程中是用内置在网卡内的地址来标识计算机身份的</li>
+<li>每个网卡都有一个全球唯一的地址来标识自己，不会重复</li>
+<li>MAC地址48位的二进制组成，通常分为6段，用16进制表示</li>
+</ul>
+<p><img src="./67-1-network_files/8.mac.png" alt="mac"></p>
+<h4 id="t173.2.4 以太网帧格式">3.2.4 以太网帧格式 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t173.2.4%20%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%B8%A7%E6%A0%BC%E5%BC%8F"> # </a></h4>
+<ul>
+<li>在以太网链路上的数据包称作以太帧。以太帧起始部分由前导码和帧开始符组成</li>
+<li>后面紧跟着一个以太网报头，以MAC地址说明目的地址和源地址</li>
+<li>帧的中部是该帧负载的包含其他协议报头的数据包(例如IP协议)</li>
+<li>以太帧由一个32位冗余校验码结尾。它用于检验数据传输是否出现损坏</li>
+</ul>
+<p><img src="./67-1-network_files/802.3frame.png" alt="internetframe"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">前导符(Preamble)</td>
+<td style="text-align:left">由1和0交互构成(10101010…..)，共占7个字节，用于使PLS子层电路与收到的帧达成时钟同步</td>
+</tr>
+<tr>
+<td style="text-align:left">帧起始(Start-of-Frame Delimiter, SFD)</td>
+<td style="text-align:left">为10101011，共占1个字节，表示一个帧的开始。它和前导符共同使接收方能根据1、0交替来迅速实现比特同步，当检测到连续的两位1时，将后续信息交给MAC子层。通常来说，Pre和SFD这两个字段只用于提醒接收端新帧到达，并不计入MAC帧大小，也不算作是MAC帧头的组成部分</td>
+</tr>
+<tr>
+<td style="text-align:left">目的MAC(Destination Address, DA)/源MAC(Source Address, SA)</td>
+<td style="text-align:left">分别用于标识目的MAC地址和源MAC地址，两个字段各占6个字节。它们可以是单播地址也可以是广播地址。当地址的最高位为0时表示单播，最高位为1时为组播，全为1时为广播</td>
+</tr>
+<tr>
+<td style="text-align:left">长度(Length)/类型(Type)</td>
+<td style="text-align:left">这是一个二选一的字段，共占2个字节，对于不同的网络协议，它有不同的含义。但是，作为类型使用时，如上表所示，最小值也总是大于1536（十六进制0x600）；所以不会产生冲突。另外，在IEEE 802.3中，数据字段的长度为38~1500个字节</td>
+</tr>
+<tr>
+<td style="text-align:left">数据(Data)</td>
+<td style="text-align:left">该字段对于不同的以太网帧包含的内容不一，对于较老的以太网标准，它是网络层来的数据报；而较新的标准，则是一个LLC帧的全部内容</td>
+</tr>
+<tr>
+<td style="text-align:left">帧校验序列(FCS)</td>
+<td style="text-align:left">它是一个包含32位CRC校验值的字段，一共占4个字节。由发送端对MAC帧的DA字段到Data字段间（不包含前导符和帧起始）的二进制序列进行计算</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t183.2.5 ARP协议">3.2.5 ARP协议 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t183.2.5%20ARP%E5%8D%8F%E8%AE%AE"> # </a></h4>
+<ul>
+<li>地址解析协议，即ARP（Address Resolution Protocol），是根据IP地址获取物理地址的一个TCP/IP协议</li>
+<li>主机发送信息时将包含目标IP地址的ARP请求广播到网络上的所有主机，并接收返回消息，以此确定目标的物理地址；收到返回消息后将该IP地址和物理地址存入本机ARP缓存中并保留一定时间，下次请求时直接查询ARP缓存以节约资源</li>
+<li>地址解析协议是建立在网络中各个主机互相信任的基础上的，网络上的主机可以自主发送ARP应答消息，其他主机收到应答报文时不会检测该报文的真实性就会将其记入本机ARP缓存</li>
+<li>由此攻击者就可以向某一主机发送伪ARP应答报文，使其发送的信息无法到达预期的主机或到达错误的主机，这就构成了一个ARP欺骗</li>
+</ul>
+<h5 id="t193.2.5.1 ARP协议报文">3.2.5.1 ARP协议报文 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t193.2.5.1%20ARP%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87"> # </a></h5>
+<p><img src="./67-1-network_files/arppackage.jpg" alt="arppackage"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">硬件类型</td>
+<td style="text-align:left">表示硬件地址的类型，值为1表示以太网地址</td>
+</tr>
+<tr>
+<td style="text-align:left">协议类型</td>
+<td style="text-align:left">表示要映射的协议地址类型。它的值为0x0800表示IP地址类型</td>
+</tr>
+<tr>
+<td style="text-align:left">硬件地址长度和协议长度</td>
+<td style="text-align:left">以字节为单位，对于以太网上的IP地址的ARP请求或应答来说，他们的值分别为6和4</td>
+</tr>
+<tr>
+<td style="text-align:left">操作类型</td>
+<td style="text-align:left">用来表示这个报文的类型，ARP请求为1，ARP响应为2，RARP请求为3，RARP响应为4</td>
+</tr>
+<tr>
+<td style="text-align:left">发送端MAC地址</td>
+<td style="text-align:left">发送方设备的硬件地址</td>
+</tr>
+<tr>
+<td style="text-align:left">发送端IP地址</td>
+<td style="text-align:left">发送方设备的IP地址</td>
+</tr>
+<tr>
+<td style="text-align:left">目标MAC地址</td>
+<td style="text-align:left">接收方设备的硬件地址</td>
+</tr>
+<tr>
+<td style="text-align:left">目标IP地址</td>
+<td style="text-align:left">接收方设备的IP地址</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./67-1-network_files/arpwireshark.png" alt="arpwireshark"></p>
+<h5 id="t203.2.5.2 ARP地址解析过程">3.2.5.2 ARP地址解析过程 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t203.2.5.2%20ARP%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B"> # </a></h5>
+<p><img src="./67-1-network_files/arpflow.jpg" alt="arpflow"></p>
+<p>主机A和B在同一个网段，主机A要向主机B发送信息</p>
+<ul>
+<li><ol>
+<li>主机A首先查看自己的ARP表，确定其中是否包含有主机B对应的ARP表项。如果找到了对应的MAC地址，则主机A直接利用ARP表中的MAC地址，对IP数据包进行帧封装，并将数据包发送给主机B。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>如果主机A在ARP表中找不到对应的MAC地址，则将缓存该数据报文，然后以广播方式发送一个ARP请求报文。ARP请求报文中的发送端IP地址和发送端MAC地址为主机A的IP地址和MAC地址，目标IP地址和目标MAC地址为主机B的IP地址和全0的MAC地址。由于ARP请求报文以广播方式发送，该网段上的所有主机都可以接收到该请求，但只有被请求的主机（即主机B）会对该请求进行处理。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>主机B比较自己的IP地址和ARP请求报文中的目标IP地址，当两者相同时进行如下处理：将ARP请求报文中的发送端（即主机A）的IP地址和MAC地址存入自己的ARP表中。之后以单播方式发送ARP响应报文给主机A，其中包含了自己的MAC地址。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>主机A收到ARP响应报文后，将主机B的MAC地址加入到自己的ARP表中以用于后续报文的转发，同时将IP数据包进行封装后发送出去。</li>
+</ol>
+</li>
+</ul>
+<h2 id="t214. 互联网层(网络层)">4. 互联网层(网络层) <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t214.%20%E4%BA%92%E8%81%94%E7%BD%91%E5%B1%82(%E7%BD%91%E7%BB%9C%E5%B1%82)"> # </a></h2>
+<ul>
+<li>位于传输层和网络接口层之间,用于把数据从源主机经过若干个中间节点传送到目标主机,并向传输层提供最基础的数据传输服务,它要提供路由和选址的工作</li>
+</ul>
+<p><img src="./67-1-network_files/8.iplayer.png" alt="网络层"></p>
+<h3 id="t224.1 选址">4.1 选址 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t224.1%20%E9%80%89%E5%9D%80"> # </a></h3>
+<p>交换机是靠MAC来寻址的，而因为MAC地址是无层次的,所以要靠IP地址来确认计算机的位置,这就是选址</p>
+<p><img src="./67-1-network_files/8.address.png" alt="网络层"></p>
+<p><img src="./67-1-network_files/t0123c4234759d969dc.jpg" alt="信封"></p>
+<h3 id="t234.2 路由">4.2 路由 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t234.2%20%E8%B7%AF%E7%94%B1"> # </a></h3>
+<p>在能够选择的多条道路之间选择一条最短的路径就是路由的工作</p>
+<p><img src="./67-1-network_files/8.router.png" alt="网络层"></p>
+<h3 id="t244.3 IP">4.3 IP <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t244.3%20IP"> # </a></h3>
+<p>在网络中，每台计算机都有一个唯一的地址，方便别人找到它，这个地址称为IP地址。</p>
+<h4 id="t254.3.1 IP头部">4.3.1 IP头部 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t254.3.1%20IP%E5%A4%B4%E9%83%A8"> # </a></h4>
+<p><img src="./67-1-network_files/ipheader.png" alt="ipheader"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">版本</td>
+<td style="text-align:left">Version）字段：占4比特。用来表明IP协议实现的版本号，当前一般为IPv4，即0100</td>
+</tr>
+<tr>
+<td style="text-align:left">首部长部</td>
+<td style="text-align:left">报头长度（Internet Header Length，IHL）字段：占4比特。是头部占32比特的数字，包括可选项。普通IP数据报（没有任何选项），该字段的值是5，即160比特=20字节。此字段最大值为60字节</td>
+</tr>
+<tr>
+<td style="text-align:left">优先级与服务类型</td>
+<td style="text-align:left">占8比特。其中前3比特为优先权子字段（Precedence，现已被忽略）。第8比特保留未用。第4至第7比特分别代表延迟、吞吐量、可靠性和花费。当它们取值为1时分别代表要求最小时延、最大吞吐量、最高可靠性和最小费用。这4比特的服务类型中只能置其中1比特为1。可以全为0，若全为0则表示一般服务。服务类型字段声明了数据报被网络系统传输时可以被怎样处理。例如：TELNET协议可能要求有最小的延迟，FTP协议（数据）可能要求有最大吞吐量，SNMP协议可能要求有最高可靠性，NNTP（Network News Transfer Protocol，网络新闻传输协议）可能要求最小费用，而ICMP协议可能无特殊要求（4比特全为0</td>
+</tr>
+<tr>
+<td style="text-align:left">总长度</td>
+<td style="text-align:left">占16比特。指明整个数据报的长度（以字节为单位）。最大长度为65535字节</td>
+</tr>
+<tr>
+<td style="text-align:left">标识符</td>
+<td style="text-align:left">占16比特。用来唯一地标识主机发送的每一份数据报。通常每发一份报文，它的值会加1</td>
+</tr>
+<tr>
+<td style="text-align:left">标志</td>
+<td style="text-align:left">分为3个字段，依次为保留位、不分片位和更多片位</td>
+</tr>
+<tr>
+<td style="text-align:left">标志</td>
+<td style="text-align:left">保留位：一般被置为0</td>
+</tr>
+<tr>
+<td style="text-align:left">标志</td>
+<td style="text-align:left">不分片位：表示该数据报是否被分片，如果被置为1，则不能对数据报进行分片，如果要对其进行分片处理，就应将其置为0</td>
+</tr>
+<tr>
+<td style="text-align:left">标志</td>
+<td style="text-align:left">更多片位：除了最后一个分片，其他每个组成数据报的片都要将该位置设置为1.</td>
+</tr>
+<tr>
+<td style="text-align:left">段偏移量</td>
+<td style="text-align:left">占13比特。如果一份数据报要求分段的话，此字段指明该段偏移距原始数据报开始的位置</td>
+</tr>
+<tr>
+<td style="text-align:left">TTL(Time to Live生存时间)</td>
+<td style="text-align:left">该字段用于表示IP数据包的生命周期，可以防止一个数据包在网络中无限循环地发下去。TTL的意思是一个数据包在被丢弃之前在网络中的最大周转时间。该数据包经过的每一个路由器都会检查该字段中的值，当TTL的值为0时此数据包会被丢弃。TTL对应于一个数据包通过路由器的数目，一个数据包每经过一个路由器，TTL将减去1</td>
+</tr>
+<tr>
+<td style="text-align:left">协议号</td>
+<td style="text-align:left">占8比特。指明IP层所封装的上层协议类型，如ICMP（1）、IGMP（2） 、TCP（6）、UDP（17）等</td>
+</tr>
+<tr>
+<td style="text-align:left">首部校验和</td>
+<td style="text-align:left">检验和是16位的错误检测字段。目的主机和网络中的每个网关都要重新计算报头的校验和，一样表示没有改动过,计算方法是：对头部中每个16比特进行二进制反码求和</td>
+</tr>
+<tr>
+<td style="text-align:left">源IP地址</td>
+<td style="text-align:left">该字段用于表示数据包的源地址，指的是发送该数据包的设备的网络地址</td>
+</tr>
+<tr>
+<td style="text-align:left">目标IP地址</td>
+<td style="text-align:left">该字段用于表示数据包的目标的地址，指的是接收节点的网络地址</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./67-1-network_files/ipwireshark.png" alt="ipwireshark"></p>
+<h4 id="t264.3.2 IP地址格式">4.3.2 IP地址格式 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t264.3.2%20IP%E5%9C%B0%E5%9D%80%E6%A0%BC%E5%BC%8F"> # </a></h4>
+<ul>
+<li>IP地址是一个网络编码，用来确定网络中的一个节点。</li>
+<li>IP地址是由32位二进制(32bit)组成</li>
+</ul>
+<p><img src="./67-1-network_files/9.ip.png" alt="IP地址"></p>
+<h4 id="t274.3.3 IP地址组成">4.3.3 IP地址组成 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t274.3.3%20IP%E5%9C%B0%E5%9D%80%E7%BB%84%E6%88%90"> # </a></h4>
+<ul>
+<li>网络部分(NETWORK)</li>
+<li>主机部分(HOST)</li>
+</ul>
+<p><img src="./67-1-network_files/ippart.png" alt="compose"></p>
+<h4 id="t284.3.4 IP地址表示">4.3.4 IP地址表示 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t284.3.4%20IP%E5%9C%B0%E5%9D%80%E8%A1%A8%E7%A4%BA"> # </a></h4>
+<p><img src="./67-1-network_files/9.ip.png" alt="compose"></p>
+<h4 id="t294.3.5 IP地址的分类">4.3.5 IP地址的分类 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t294.3.5%20IP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E7%B1%BB"> # </a></h4>
+<ul>
+<li>IP地址的网络部分是由Internet地址分配机构来统一分配的，这样可以保证IP的唯一性。</li>
+<li>ip地址中全为1的ip即255.255.255.255，它称为限制广播地址，如果将其作为数据包的目标地址可以理解为发送到所有网络的所有主机</li>
+<li>ip地址中全为0的ip即0.0.0.0，它表示启动时的ip地址，其含义就是尚未未分配时的ip地址</li>
+<li>127是用来进行本机测试的，除了127.255.255.255外，其它的127开头的地址都代表本机</li>
+</ul>
+<p><img src="./67-1-network_files/10.ipclass.png" alt="compose"></p>
+<h4 id="t304.3.6 公有地址和私有地址">4.3.6 公有地址和私有地址 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t304.3.6%20%E5%85%AC%E6%9C%89%E5%9C%B0%E5%9D%80%E5%92%8C%E7%A7%81%E6%9C%89%E5%9C%B0%E5%9D%80"> # </a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">分类</th>
+<th style="text-align:left">范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">A类私有IP</td>
+<td style="text-align:left">10.0.0.0 ~ 10.255.255.255</td>
+</tr>
+<tr>
+<td style="text-align:left">B类私有IP</td>
+<td style="text-align:left">172.16.0.0 ~ 172.31.255.255</td>
+</tr>
+<tr>
+<td style="text-align:left">C类私有IP</td>
+<td style="text-align:left">192.168.0.0 ~ 192.168.255.255</td>
+</tr>
+</tbody>
+</table>
+<p>其他范围的IP均为公有IP地址</p>
+<h4 id="t314.3.7 子网掩码">4.3.7 子网掩码 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t314.3.7%20%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"> # </a></h4>
+<ul>
+<li>子网掩码(subnet mask)又叫子网络遮罩，它是一种用来指明一个IP地址的哪些位标识的是主机所在的子网，以及哪些位标识的是主机位的掩码。</li>
+<li>子网掩码不能单独存在，它必须结合IP地址一起使用。</li>
+<li>子网掩码只有一个作用，就是将某个IP地址划分成网络地址和主机地址两部分。</li>
+<li>子网掩码也是32个二进制位</li>
+<li>对应IP的网络部分用1表示</li>
+<li>对应IP地址的主机部分用0表示</li>
+<li>IP地址和子网掩码做逻辑与运算得到网络地址<ul>
+<li>0和任何数相与都是0</li>
+<li>1和任何数相与都等于任何数本身</li>
+</ul>
+</li>
+<li>A B C 三类地址都有自己默认的子网掩码<ul>
+<li>A类 255.0.0.0</li>
+<li>B类 255.255.0.0</li>
+<li>C类 255.255.255.0</li>
+</ul>
+</li>
+</ul>
+<p><img src="./67-1-network_files/dividesubnet.jpg" alt="dividesubnet"></p>
+<p><img src="./67-1-network_files/10.mask.png" alt="transfer"></p>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> ip1 = <span class="hljs-string">'192.168.0.1'</span>;
+<span class="hljs-keyword">let</span> ip2 = <span class="hljs-string">'192.168.0.4'</span>;
+<span class="hljs-keyword">let</span> mask = <span class="hljs-string">'255.255.255.0'</span>;
+<span class="hljs-keyword">let</span> ip1s = ip1.split(<span class="hljs-string">'.'</span>).map(<span class="hljs-function"><span class="hljs-params">item</span>=&gt;</span>(+item).toString(<span class="hljs-number">2</span>).padStart(<span class="hljs-number">8</span>,<span class="hljs-string">'0'</span>)).join(<span class="hljs-string">''</span>);
+<span class="hljs-keyword">let</span> ip2s = ip2.split(<span class="hljs-string">'.'</span>).map(<span class="hljs-function"><span class="hljs-params">item</span>=&gt;</span>(+item).toString(<span class="hljs-number">2</span>).padStart(<span class="hljs-number">8</span>,<span class="hljs-string">'0'</span>)).join(<span class="hljs-string">''</span>);;
+<span class="hljs-keyword">let</span> masks = mask.split(<span class="hljs-string">'.'</span>).map(<span class="hljs-function"><span class="hljs-params">item</span>=&gt;</span>(+item).toString(<span class="hljs-number">2</span>).padStart(<span class="hljs-number">8</span>,<span class="hljs-string">'0'</span>)).join(<span class="hljs-string">''</span>);
+
+<span class="hljs-built_in">console</span>.log(ip1s,<span class="hljs-built_in">parseInt</span>(ip1s,<span class="hljs-number">2</span>),<span class="hljs-built_in">parseInt</span>(masks,<span class="hljs-number">2</span>),<span class="hljs-built_in">parseInt</span>(ip1s,<span class="hljs-number">2</span>)&amp;<span class="hljs-built_in">parseInt</span>(masks,<span class="hljs-number">2</span>));
+<span class="hljs-built_in">console</span>.log(ip2s,<span class="hljs-built_in">parseInt</span>(ip2s,<span class="hljs-number">2</span>),<span class="hljs-built_in">parseInt</span>(masks,<span class="hljs-number">2</span>),<span class="hljs-built_in">parseInt</span>(ip2s,<span class="hljs-number">2</span>)&amp;<span class="hljs-built_in">parseInt</span>(masks,<span class="hljs-number">2</span>));
+<span class="hljs-built_in">console</span>.log((<span class="hljs-built_in">parseInt</span>(ip1s,<span class="hljs-number">2</span>)&amp;<span class="hljs-built_in">parseInt</span>(masks,<span class="hljs-number">2</span>)) === (<span class="hljs-built_in">parseInt</span>(ip2s,<span class="hljs-number">2</span>)&amp;<span class="hljs-built_in">parseInt</span>(masks,<span class="hljs-number">2</span>)));
+</code></pre>
+<h2 id="t325. 传输层">5. 传输层 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t325.%20%E4%BC%A0%E8%BE%93%E5%B1%82"> # </a></h2>
+<ul>
+<li>位于应用层和网络接口层之间</li>
+<li>是面向连接的、可靠的的进程到进程通信的协议</li>
+<li>TCP提供全双工服务，即数据可在同一时间双向传播</li>
+<li>TCP将若干个字节构成一个分组，此分组称为报文段(Segment)</li>
+<li>对可靠性要求高的上层协议，实现可靠性的保证,如果数据丢失、损坏的情况下如何保证可靠性,网络层只管传递数据，成功与否并不关心</li>
+</ul>
+<p><img src="./67-1-network_files/11.transfer.png" alt="transfer"></p>
+<h3 id="t335.1 传输层的功能">5.1 传输层的功能 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t335.1%20%E4%BC%A0%E8%BE%93%E5%B1%82%E7%9A%84%E5%8A%9F%E8%83%BD"> # </a></h3>
+<ul>
+<li>提供了一种端到端的连接</li>
+</ul>
+<p><img src="./67-1-network_files/11.connect.png" alt="connect"></p>
+<h3 id="t345.2 协议分类">5.2 协议分类 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t345.2%20%E5%8D%8F%E8%AE%AE%E5%88%86%E7%B1%BB"> # </a></h3>
+<ul>
+<li>TCP(Transimision Control Protocal)<ul>
+<li>传输控制协议</li>
+<li>可靠的、面向连接的协议</li>
+<li>传输效率低</li>
+</ul>
+</li>
+<li>UDP(User Datagram Protocal)<ul>
+<li>用户数据报协议</li>
+<li>不可靠的、无连接的服务</li>
+<li>传输效率高</li>
+</ul>
+</li>
+</ul>
+<h3 id="t355.3 TCP协议">5.3 TCP协议 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t355.3%20TCP%E5%8D%8F%E8%AE%AE"> # </a></h3>
+<ul>
+<li>将数据进行分段打包传输</li>
+<li>对每个数据包编号控制顺序</li>
+<li>运输中丢失、重发和丢弃处理</li>
+<li>流量控制避免拥塞</li>
+</ul>
+<h4 id="t365.3.1 TCP数据包封装">5.3.1 TCP数据包封装 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t365.3.1%20TCP%E6%95%B0%E6%8D%AE%E5%8C%85%E5%B0%81%E8%A3%85"> # </a></h4>
+<h5 id="t375.3.1.1 格式">5.3.1.1 格式 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t375.3.1.1%20%E6%A0%BC%E5%BC%8F"> # </a></h5>
+<ul>
+<li>源端口号和目标端口号，计算机通过端口号识别访问哪个服务,比如http服务或ftp服务，发送方端口号是进行随机端口，目标端口号决定了接收方哪个程序来接收</li>
+</ul>
+<p><img src="./67-1-network_files/tcpport.png" alt="connect"></p>
+<h5 id="t385.3.1.2 32位序列号">5.3.1.2 32位序列号 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t385.3.1.2%2032%E4%BD%8D%E5%BA%8F%E5%88%97%E5%8F%B7"> # </a></h5>
+<ul>
+<li>32位序列号 TCP用序列号对数据包进行标记，以便在到达目的地后重新重装，假设当前的序列号为 s，发送数据长度为 l，则下次发送数据时的序列号为 s + l。在建立连接时通常由计算机生成一个随机数作为序列号的初始值</li>
+</ul>
+<p><img src="./67-1-network_files/tcpsequence.png" alt="connect"></p>
+<h5 id="t395.3.1.3 确认应答号">5.3.1.3 确认应答号 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t395.3.1.3%20%E7%A1%AE%E8%AE%A4%E5%BA%94%E7%AD%94%E5%8F%B7"> # </a></h5>
+<ul>
+<li>确认应答号 它等于下一次应该接收到的数据的序列号。假设发送端的序列号为 s，发送数据的长度为 l，那么接收端返回的确认应答号也是 s + l。发送端接收到这个确认应答后，可以认为这个位置以前所有的数据都已被正常接收。</li>
+</ul>
+<p><img src="./67-1-network_files/tcpconfirm.png" alt="connect"></p>
+<h5 id="t405.3.1.4 首部长度">5.3.1.4 首部长度 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t405.3.1.4%20%E9%A6%96%E9%83%A8%E9%95%BF%E5%BA%A6"> # </a></h5>
+<ul>
+<li>首部长度：TCP 首部的长度，单位为 4 字节。如果没有可选字段，那么这里的值就是 5。表示 TCP 首部的长度为 20 字节。</li>
+</ul>
+<p><img src="./67-1-network_files/tcpcontrolpng.png" alt="connect"></p>
+<h5 id="t415.3.1.5 控制位">5.3.1.5 控制位 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t415.3.1.5%20%E6%8E%A7%E5%88%B6%E4%BD%8D"> # </a></h5>
+<ul>
+<li>控制位 TCP的连接、传输和断开都受这六个控制位的指挥<ul>
+<li>PSH(push急迫位)   缓存区将满，立刻传输速度</li>
+<li>RST(reset重置位)  连接断了重新连接</li>
+<li>URG(urgent紧急位) 紧急信号</li>
+</ul>
+</li>
+<li>紧急指针：尽在 URG(urgent紧急) 控制位为 1 时有效。表示紧急数据的末尾在 TCP 数据部分中的位置。通常在暂时中断通信时使用（比如输入 Ctrl + C）。</li>
+</ul>
+<h6 id="t425.3.1.5.1 SYN">5.3.1.5.1 SYN <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t425.3.1.5.1%20SYN"> # </a></h6>
+<ul>
+<li>SYN(synchronous建立联机) 同步序号位 TCP建立连接时要将这个值设为1</li>
+</ul>
+<p><img src="./67-1-network_files/tcpsyn.png" alt="tcpsyn"></p>
+<h6 id="t435.3.1.5.2 ACK">5.3.1.5.2 ACK <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t435.3.1.5.2%20ACK"> # </a></h6>
+<ul>
+<li>ACK(acknowledgement 确认)为1表示确认号</li>
+</ul>
+<p><img src="./67-1-network_files/tcpack.png" alt="tcpack"></p>
+<h6 id="t445.3.1.5.3 FIN">5.3.1.5.3 FIN <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t445.3.1.5.3%20FIN"> # </a></h6>
+<ul>
+<li>FIN发送端完成位，提出断开连接的一方把FIN置为1表示要断开连接</li>
+</ul>
+<p><img src="./67-1-network_files/tcpfin.png" alt="tcpfin"></p>
+<h5 id="t455.3.1.6 窗口值">5.3.1.6 窗口值 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t455.3.1.6%20%E7%AA%97%E5%8F%A3%E5%80%BC"> # </a></h5>
+<ul>
+<li>窗口值 说明本地可接收数据段的数目，这个值的大小是可变的。当网络通畅时将这个窗口值变大加快传输速度，当网络不稳定时减少这个值可以保证网络数据的可靠传输。它是来在TCP传输中进行流量控制的</li>
+<li>窗口大小：用于表示从应答号开始能够接受多少个 8 位字节。如果窗口大小为 0，可以发送窗口探测。</li>
+</ul>
+<p><img src="./67-1-network_files/tcpwindow.png" alt="tcpwindow"></p>
+<h5 id="t465.3.1.7  差错控制">5.3.1.7  差错控制 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t465.3.1.7%20%20%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6"> # </a></h5>
+<ul>
+<li>校验和用来做差错控制，TCP校验和的计算包括TCP首部、数据和其它填充字节。在发送TCP数据段时，由发送端计算校验和，当到达目的地时又进行一次检验和计算。如果两次校验 和一致说明数据是正确的，否则 将认为数据被破坏，接收端将丢弃该数据</li>
+</ul>
+<p><img src="./67-1-network_files/tcpcheck.png" alt="connect"></p>
+<h4 id="t475.3.2 握手和断开">5.3.2 握手和断开 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t475.3.2%20%E6%8F%A1%E6%89%8B%E5%92%8C%E6%96%AD%E5%BC%80"> # </a></h4>
+<ul>
+<li>TCP是面向连接的协议，它在源点和终点之间建立虚拟连接，而不是物理连接</li>
+<li>在数据通信之前，发送端与接收端要先建立连接，等数据发送结束后，双方再断开连接</li>
+<li>TCP连接的每一方都是由一个IP地址和一个端口组成</li>
+</ul>
+<p><img src="./67-1-network_files/sequencenumber.jpg" alt="sequencenumber"></p>
+<p><img src="./67-1-network_files/tcpflow.png" alt="tcpflow.png"></p>
+<h5 id="t485.3.2.1 tcp服务器">5.3.2.1 tcp服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t485.3.2.1%20tcp%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h5>
+<h6 id="t495.3.2.1.1 tcp_server.js">5.3.2.1.1 tcp_server.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t495.3.2.1.1%20tcp_server.js"> # </a></h6>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> net = <span class="hljs-built_in">require</span>(<span class="hljs-string">"net"</span>);
+<span class="hljs-keyword">var</span> server = <span class="hljs-keyword">new</span> net.Server();
+server.on(<span class="hljs-string">"connection"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">socket</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"connected"</span>);
+    socket.on(<span class="hljs-string">'data'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+        <span class="hljs-built_in">console</span>.log(data.toString());
+        socket.write(<span class="hljs-string">"server:"</span>+data);
+    })
+    socket.on(<span class="hljs-string">'end'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'end'</span>);
+    })
+    socket.on(<span class="hljs-string">'error'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>)</span>{
+        <span class="hljs-built_in">console</span>.log(error);
+    })
+});
+server.listen(<span class="hljs-number">8000</span>);
+server.on(<span class="hljs-string">"listening"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Created server on http://127.0.0.1:8000/"</span>);
+
+})
+server.on(<span class="hljs-string">"close"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"server closed!"</span>);
+})
+server.on(<span class="hljs-string">"error"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(err);
+})
+</code></pre>
+<h6 id="t505.3.2.1.2 tcp_client.js">5.3.2.1.2 tcp_client.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t505.3.2.1.2%20tcp_client.js"> # </a></h6>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> net = <span class="hljs-built_in">require</span>(<span class="hljs-string">"net"</span>);
+<span class="hljs-keyword">var</span> socket = net.Socket();
+socket.connect(<span class="hljs-number">8000</span>, <span class="hljs-string">'127.0.0.1'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"connect the server"</span>);
+    socket.write(<span class="hljs-string">"hello"</span>);
+})
+socket.on(<span class="hljs-string">"data"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data.toString());
+    socket.destroy();
+})
+socket.on(<span class="hljs-string">"error"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(err);
+})
+socket.on(<span class="hljs-string">"end"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"data end"</span>);
+})
+</code></pre>
+<h5 id="t515.3.2.1 三次握手">5.3.2.1 三次握手 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t515.3.2.1%20%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"> # </a></h5>
+<ul>
+<li>第一次握手主机A通过一个标识为SYN标识位的数据段发送给主机B请求连接，通过该数据段告诉主机B希望建立连接，需要B应答，并告诉主机B传输的起始序列号</li>
+<li>第二次握手是主机B用一个确认应答ACK和同步序列号SYNC标志位的数据段来响应主机A，一是发送ACK告诉主机A收到了数据段，二是通知主机A从哪个序列号做标记。</li>
+<li>第三次握手是主机A确认收到了主机B的数据段并可以开始传输实际数据。</li>
+</ul>
+<p><img src="./67-1-network_files/handshake1.png" alt="handshake1">
+<img src="./67-1-network_files/handshake2.png" alt="handshake2">
+<img src="./67-1-network_files/handshake3.png" alt="handshake3"></p>
+<h5 id="t525.3.2.2 收发数据">5.3.2.2 收发数据 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t525.3.2.2%20%E6%94%B6%E5%8F%91%E6%95%B0%E6%8D%AE"> # </a></h5>
+<p><img src="./67-1-network_files/sendhello.png" alt="sendhello">
+<img src="./67-1-network_files/ackhello.png" alt="ackhello">
+<img src="./67-1-network_files/serverhello.png" alt="serverhello">
+<img src="./67-1-network_files/ackserverhello.png" alt="ackserverhello"></p>
+<h5 id="t535.3.2.3 四次断开">5.3.2.3 四次断开 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t535.3.2.3%20%E5%9B%9B%E6%AC%A1%E6%96%AD%E5%BC%80"> # </a></h5>
+<ul>
+<li>主机A发送FIN控制位发出断开连接的请求</li>
+<li>主机B进行响应，确认收到断开连接请求</li>
+<li>主机B提出反方向的关闭要求</li>
+<li>主机A确认收到的主机B的关闭连接请求</li>
+</ul>
+<p><img src="./67-1-network_files/goodbye1.png" alt="goodbye1">
+<img src="./67-1-network_files/goodbye2.png" alt="goodbye2">
+<img src="./67-1-network_files/goodbye3.png" alt="goodbye3">
+<img src="./67-1-network_files/goodbye4.png" alt="goodbye4"></p>
+<h4 id="t545.3.3 滑动窗口">5.3.3 滑动窗口 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t545.3.3%20%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"> # </a></h4>
+<ul>
+<li>滑动窗口（Sliding window）是一种流量控制技术</li>
+<li>早期的网络通信中，通信双方不会考虑网络的拥挤情况直接发送数据。由于大家不知道网络拥塞状况，同时发送数据，导致中间节点阻塞掉包，谁也发不了数据，所以就有了滑动窗口机制来解决此问题</li>
+<li>TCP中采用滑动窗口来进行传输控制，滑动窗口的大小意味着接收方还有多大的缓冲区可以用于接收数据。发送方可以通过滑动窗口的大小来确定应该发送多少字节的数据</li>
+<li>当滑动窗口为0时，发送方一般不能再发送数据报，但有两种情况除外，一种情况是可以发送紧急数据，例如，允许用户终止在远端机上的运行进程。另一种情况是发送方可以发送一个1字节的数据报来通知接收方重新声明它希望接收的下一字节及发送方的滑动窗口大小</li>
+</ul>
+<h5 id="t555.3.3.1 窗口机制">5.3.3.1 窗口机制 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t555.3.3.1%20%E7%AA%97%E5%8F%A3%E6%9C%BA%E5%88%B6"> # </a></h5>
+<ul>
+<li>滑动窗口协议的基本原理就是在任意时刻，发送方都维持了一个连续的允许发送的帧的序号，称为发送窗口；同时，接收方也维持了一个连续的允许接收的帧的序号，称为接收窗口</li>
+<li>发送窗口和接收窗口的序号的上下界不一定要一样，甚至大小也可以不同</li>
+<li>不同的滑动窗口协议窗口大小一般不同</li>
+<li>发送方窗口内的序列号代表了那些已经被发送，但是还没有被确认的帧，或者是那些可以被发送的帧</li>
+</ul>
+<p><img src="./67-1-network_files/slidewindow.png" alt="slidewindow"></p>
+<h5 id="t565.3.3.2 拥塞控制">5.3.3.2 拥塞控制 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t565.3.3.2%20%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"> # </a></h5>
+<ul>
+<li>TCP拥塞控制是传输控制协议（英语：Transmission Control Protocol，缩写TCP）避免网络拥塞的算法，是互联网上主要的一个拥塞控制措施</li>
+<li>TCP使用多种拥塞控制策略来避免雪崩式拥塞。TCP会为每条连接维护一个“拥塞窗口”来限制可能在端对端间传输的未确认分组总数量</li>
+<li>这类似TCP流量控制机制中使用的滑动窗口，是由发送方控制的</li>
+<li>TCP在一个连接初始化或超时后使用一种“慢启动”机制来增加拥塞窗口的大小。它的起始值一般为最大分段大小（Maximum segment size，MSS）的两倍，虽然名为“慢启动”，初始值也相当低，但其增长极快：当每个分段得到确认时，拥塞窗口会增加一个MSS，使得在每次往返时间（round-trip time，RTT）内拥塞窗口能高效地双倍增长</li>
+<li>在流量控制中，接收方通过TCP的“窗口”值（Window Size）来告知发送方，由发送方通过对拥塞窗口和接收窗口的大小比较，来确定任何时刻内需要传输的数据量</li>
+<li>和式增加，积式减少（additive-increase/multiplicative-decrease，AIMD，这里简称“线增积减”）是一种反馈控制算法，其包含了对拥塞窗口线性增加，和当发生拥塞时对窗口积式减少。多个使用AIMD控制的TCP流最终会收敛到对线路的等量竞争使用。</li>
+<li>未确认的数据包刚好等于带宽等于延迟</li>
+<li>当发现丢包的时候立刻减半</li>
+</ul>
+<p><img src="./67-1-network_files/traffic.png" alt="traffic"></p>
+<h3 id="t575.4 UDP">5.4 UDP <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t575.4%20UDP"> # </a></h3>
+<ul>
+<li>UDP是一个无连接、不保证可靠性的传输层协议，也就是说发送端不关心发送的数据是否到达目标主机、数据是否出错等，收到数据的主机也不会告诉 发送方是否收到了数据，它的可靠性由上层协议来保障</li>
+<li>首部结构简单，在数据传输时能实现最小的开销，如果进程想发送很短的报文而对可靠性要求不高可以使用</li>
+</ul>
+<h4 id="t585.4.1 UDP的封装格式">5.4.1 UDP的封装格式 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t585.4.1%20UDP%E7%9A%84%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F"> # </a></h4>
+<h5 id="t595.4.1.1 数据包">5.4.1.1 数据包 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t595.4.1.1%20%E6%95%B0%E6%8D%AE%E5%8C%85"> # </a></h5>
+<p><img src="./67-1-network_files/15.udp.png" alt="connect"></p>
+<h5 id="t605.4.1.2 数据长度">5.4.1.2 数据长度 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t605.4.1.2%20%E6%95%B0%E6%8D%AE%E9%95%BF%E5%BA%A6"> # </a></h5>
+<p><img src="./67-1-network_files/udplength.png" alt="connect"></p>
+<h5 id="t615.4.1.3 差错控制">5.4.1.3 差错控制 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t615.4.1.3%20%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6"> # </a></h5>
+<p><img src="./67-1-network_files/udpcheck.png" alt="connect"></p>
+<h4 id="t625.4.2 UDP的应用">5.4.2 UDP的应用 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t625.4.2%20UDP%E7%9A%84%E5%BA%94%E7%94%A8"> # </a></h4>
+<ul>
+<li>QQ</li>
+<li>视频软件</li>
+<li>TFTP 简单文件传输协议(短信)</li>
+</ul>
+<h4 id="t635.4.3 UDP服务器">5.4.3 UDP服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t635.4.3%20UDP%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h4>
+<h5 id="t645.4.3.1 点对点">5.4.3.1 点对点 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t645.4.3.1%20%E7%82%B9%E5%AF%B9%E7%82%B9"> # </a></h5>
+<h6 id="t655.4.3.1.1 udp_server.js">5.4.3.1.1 udp_server.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t655.4.3.1.1%20udp_server.js"> # </a></h6>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> dgram = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dgram'</span>);
+<span class="hljs-keyword">var</span> socket = dgram.createSocket(<span class="hljs-string">'udp4'</span>);
+socket.on(<span class="hljs-string">'message'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg,rinfo</span>)</span>{
+  <span class="hljs-built_in">console</span>.log(msg.toString());
+  <span class="hljs-built_in">console</span>.log(rinfo);
+   socket.send(msg,<span class="hljs-number">0</span>,msg.length,rinfo.port,rinfo.address);
+});
+socket.bind(<span class="hljs-number">41234</span>,<span class="hljs-string">'localhost'</span>);
+</code></pre>
+<h6 id="t665.4.3.1.2 udp_client.js">5.4.3.1.2 udp_client.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t665.4.3.1.2%20udp_client.js"> # </a></h6>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> dgram = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dgram'</span>);
+<span class="hljs-keyword">var</span> socket = dgram.createSocket(<span class="hljs-string">'udp4'</span>);
+socket.on(<span class="hljs-string">'message'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg,rinfo</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(msg.toString());
+    <span class="hljs-built_in">console</span>.log(rinfo);
+});
+socket.send(<span class="hljs-keyword">new</span> Buffer(<span class="hljs-string">'helloworld'</span>),<span class="hljs-number">0</span>,<span class="hljs-number">5</span>,<span class="hljs-number">41234</span>,<span class="hljs-string">'localhost'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err,bytes</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'发送了个%d字节'</span>,bytes);
+});
+socket.on(<span class="hljs-string">'error'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>)</span>{
+    <span class="hljs-built_in">console</span>.error(err);
+});
+</code></pre>
+<p><img src="./67-1-network_files/sendudp.png" alt="sendudp"></p>
+<p><img src="./67-1-network_files/receiveudp.png" alt="receiveudp"></p>
+<h5 id="t675.4.3.2 广播">5.4.3.2 广播 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t675.4.3.2%20%E5%B9%BF%E6%92%AD"> # </a></h5>
+<ul>
+<li>创建一个UDP服务器并通过该服务器进行数据的广播<h6 id="t685.4.3.2.1 udp_server.js">5.4.3.2.1 udp_server.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t685.4.3.2.1%20udp_server.js"> # </a></h6>
+<pre><code class="lang-js">let dgram = require('dgram');
+let server = dgram.createSocket('udp4);
+server.on('message',function(msg){
+let buf = new Bufffer('已经接收客户端发送的数据'+msg);
+server.setBroadcast(true);
+server.send(buf,0,buf.length,41235,"192.168.1.255");
+});
+server.bind(41234,'192.168.1.100');
+</code></pre>
+<h6 id="t695.4.3.2.2 udp_client.js">5.4.3.2.2 udp_client.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t695.4.3.2.2%20udp_client.js"> # </a></h6>
+<pre><code class="lang-js">let dgram = require('dgram');
+let client = dgram.createSocket('udp4);
+client.bind(41235,'192.168.1.102);
+let buf = new Buffer('hello');
+client.send(buf,0,buf.length,41234,'192.168.1.100');
+client.on('message',function(msg,rinfo){
+console.log('received : ',msg);
+});
+</code></pre>
+<h5 id="t705.4.3.3 组播">5.4.3.3 组播 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t705.4.3.3%20%E7%BB%84%E6%92%AD"> # </a></h5>
+</li>
+<li>所谓的组播，就是将网络中同一业务类型进行逻辑上的分组，从某个socket端口上发送的数据只能被该组中的其他主机所接收，不被组外的任何主机接收。</li>
+<li>实现组播时，并不直接把数据发送给目标地址，而是将数据发送到组播主机，操作系统将把该数据组播给组内的其他所有成员。</li>
+<li>在网络中，使用D类地址作为组播地址。范围是指 224.0.0.0 ~ 239.255.255.255,分为三类<ul>
+<li>局部组播地址: 224.0.0.0 ~ 224.0.0.255 为路由协议和其他用途保留</li>
+<li>预留组播地址: 224.0.1.0 ~ 238.255.255.255 可用于全球范围或网络协议</li>
+<li>管理权限组播地址 ： 239.0.0.0 ～ 239.255.255.255 组织内部使用，不可用于Internet<h6 id="t715.4.3.3.1 udp_server.js">5.4.3.3.1 udp_server.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t715.4.3.3.1%20udp_server.js"> # </a></h6>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> dgram = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dgram'</span>);
+<span class="hljs-keyword">let</span> server = dgram.createSocket(<span class="hljs-string">'udp4'</span>);
+server.on(<span class="hljs-string">'listening'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+server.MulticastTTL(<span class="hljs-number">128</span>);
+server.setMulticastLoopback(<span class="hljs-literal">true</span>);
+server.addMembership(<span class="hljs-string">'230.185.192.108'</span>);
+});
+setInterval(broadcast,<span class="hljs-number">1000</span>);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">broadcast</span>(<span class="hljs-params"></span>)</span>{
+<span class="hljs-keyword">let</span> buffer = Buffer.from(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toLocaleString());
+server.send(buffer,<span class="hljs-number">0</span>,buffer.length,<span class="hljs-number">8080</span>,<span class="hljs-string">"230.185.192.108"</span>);
+}
+</code></pre>
+<h6 id="t725.4.3.3.2 udp_client.js">5.4.3.3.2 udp_client.js <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t725.4.3.3.2%20udp_client.js"> # </a></h6>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> dgram = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dgram'</span>);
+<span class="hljs-keyword">let</span> client = dgram.createSocket(<span class="hljs-string">'udp4'</span>);
+client.on(<span class="hljs-string">'listening'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+client.addMembership(<span class="hljs-string">'230.185.192.108'</span>);
+});
+client.on(<span class="hljs-string">'message'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">message,remote</span>)</span>{
+<span class="hljs-built_in">console</span>.log(message.toString());
+});
+client.bind(<span class="hljs-number">8080</span>,<span class="hljs-string">'192.168.1.103'</span>);
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="t735.4.3 DNS服务器">5.4.3 DNS服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t735.4.3%20DNS%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h4>
+<h6 id="t743.4.3.1 域名">3.4.3.1 域名 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t743.4.3.1%20%E5%9F%9F%E5%90%8D"> # </a></h6>
+<ul>
+<li>域名空间结构</li>
+<li>根域</li>
+<li>顶级域<ul>
+<li>组织域</li>
+<li>国家/地区域名</li>
+</ul>
+</li>
+<li>二级域名</li>
+</ul>
+<p><img src="./67-1-network_files/arealocal.png" alt="域名"></p>
+<h6 id="t753.4.3.2 DNS服务器">3.4.3.2 DNS服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t753.4.3.2%20DNS%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h6>
+<p>DNS是Domain Name Service的缩写，DNS服务器进行域名和与之对应的IP地址转换的服务器</p>
+<ul>
+<li>IP地址不易记忆</li>
+<li>早期使用Hosts文件解析域名<ul>
+<li>主要名称重复</li>
+<li>主机维护困难</li>
+</ul>
+</li>
+<li>DNS(Domain Name System 域名系统)<ul>
+<li>分布式</li>
+<li>层次性</li>
+</ul>
+</li>
+</ul>
+<h6 id="t763.4.3.3 查找过程">3.4.3.3 查找过程 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t763.4.3.3%20%E6%9F%A5%E6%89%BE%E8%BF%87%E7%A8%8B"> # </a></h6>
+<p><img src="./67-1-network_files/dnsquery.jpg" alt="dns"></p>
+<ul>
+<li>客户端向本地域名服务器发出请求，我要访问<a href="http://www.163.xn--com%2Cip-eu6jr5qee876bm8r511dm13cmsa/">www.163.com，请告诉我它的IP地址</a></li>
+<li>本地DNS服务器向DNS根服务器发出请求，根DNS服务器会告诉本地服务器(.com)的服务器地址</li>
+<li>本地DNS服务器会向(.com域)发请求，会得到(163.com)的服务器地址</li>
+<li>本地DNS服务器会向(163.com)发请求,会得到(<a href="http://www.163.xn--com%29ip1-2f5pqft559a.1.1.1/">www.163.com)的IP地址1.1.1.1</a></li>
+<li>本地DNS服务器向客户端回复域名(<a href="http://www.163.xn--com%29ip1-2f5pqf339c0hi6w1az59c.1.1.1/">www.163.com)对应的IP地址是1.1.1.1</a></li>
+</ul>
+<h4 id="t775.4.4 DHCP服务器">5.4.4 DHCP服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t775.4.4%20DHCP%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h4>
+<ul>
+<li>保证任何IP地址在同一时刻只能由一台DHCP客户机所使用。</li>
+<li>DHCP应当可以给用户分配永久固定的IP地址。</li>
+<li>DHCP应当可以同用其他方法获得IP地址的主机共存（如手工配置IP地址的主机）</li>
+<li>DHCP服务器应当向现有的BOOTP客户端提供服务。</li>
+</ul>
+<h5 id="t785.4.4.1 工作流程">5.4.4.1 工作流程 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t785.4.4.1%20%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"> # </a></h5>
+<ul>
+<li>主机发送<code>DHCPDISCOVER</code>广播包在网络上寻找DHCP服务器；</li>
+<li>DHCP服务器向主机发送<code>DHCPOFFER</code>单播数据包，包含IP地址、MAC地址、域名信息以及地址租期；</li>
+<li>主机发送<code>DHCPREQUEST</code>广播包，正式向服务器请求分配已提供的IP地址；</li>
+<li>DHCP服务器向主机发送DHCPACK单播包，确认主机的请求</li>
+</ul>
+<p><img src="./67-1-network_files/dhcpserver.jpg" alt="dhcpserver"></p>
+<h5 id="t795.4.4.2 抓包">5.4.4.2 抓包 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t795.4.4.2%20%E6%8A%93%E5%8C%85"> # </a></h5>
+<p><img src="./67-1-network_files/dhcprequest.png" alt="dhcprequest"></p>
+<p><img src="./67-1-network_files/dhcpack.png" alt="dhcpack"></p>
+<h2 id="t806. 应用层">6. 应用层 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t806.%20%E5%BA%94%E7%94%A8%E5%B1%82"> # </a></h2>
+<h3 id="t816.1 协议">6.1 协议 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t816.1%20%E5%8D%8F%E8%AE%AE"> # </a></h3>
+<p><img src="./67-1-network_files/17.mail.png" alt="connect"></p>
+<h3 id="t826.2 应用层常见协议">6.2 应用层常见协议 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t826.2%20%E5%BA%94%E7%94%A8%E5%B1%82%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE"> # </a></h3>
+<ul>
+<li>HTTP 超文件传输协议</li>
+<li>FTP 文件传输协议</li>
+<li>SMTP(发送邮件)和POP3(接收邮件)</li>
+</ul>
+<h3 id="t836.3 案例">6.3 案例 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t836.3%20%E6%A1%88%E4%BE%8B"> # </a></h3>
+<p>数据-&gt;传输层(包)-&gt;网络层(段Segment)-&gt;数据链路层(帧)</p>
+<h4 id="t846.3.1 发送方是从高层到低层封装数据">6.3.1 发送方是从高层到低层封装数据 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t846.3.1%20%E5%8F%91%E9%80%81%E6%96%B9%E6%98%AF%E4%BB%8E%E9%AB%98%E5%B1%82%E5%88%B0%E4%BD%8E%E5%B1%82%E5%B0%81%E8%A3%85%E6%95%B0%E6%8D%AE"> # </a></h4>
+<ul>
+<li>在应用层要把各式各样的数据如字母、数字、汉字、图片等转换成二进制</li>
+<li>在TCP传输层中，上层的数据被分割成小的数据段，并为每个分段后的数据封装TCP报文头部</li>
+<li>在TCP头部有一个关键的字段信息端口号，它用于标识上层的协议或应用程序，确保上层数据的正常通信</li>
+<li>计算机可以多进程并发运行，例如在发邮件的同时也可以通过浏览器浏览网页，这两种应用通过端口号进行区分</li>
+<li>在网络层，上层数据被封装上亲的报文头部(IP头部)，上层的数据是包括TCP头部的。IP地址包括的最关键字段信息就是IP地址，用于标识网络的逻辑地址。</li>
+<li>数据链路径层，上层数据成一个MAC头部，内部有最关键的是MAC地址。MAC地址就是固化在硬件设备内部的全球唯一的物理地址。</li>
+<li>在物理层，无论在之前哪一层封装的报文头和还是上层数据都是由二进制组成的，物理将这些二进制数字比特流转换成电信号在网络中传输</li>
+</ul>
+<p><img src="./67-1-network_files/18.send.png" alt="connect"></p>
+<h4 id="t856.3.2 接收方是从低层到高层解封装">6.3.2 接收方是从低层到高层解封装 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t856.3.2%20%E6%8E%A5%E6%94%B6%E6%96%B9%E6%98%AF%E4%BB%8E%E4%BD%8E%E5%B1%82%E5%88%B0%E9%AB%98%E5%B1%82%E8%A7%A3%E5%B0%81%E8%A3%85"> # </a></h4>
+<ul>
+<li>数据封装完毕传输到接收方后，将数据要进行解封装</li>
+<li>在物理层，先把电信号转成二进制数据，并将数据传送至数据链路层</li>
+<li>在数据链路层，把MAC头部拆掉，并将剩余的数据传送至上一层</li>
+<li>在网络层，数据的IP头部被拆掉，并将剩余的数据送至上一层</li>
+<li>在传输层，把TCP头部拆掉，将真实的数据传送至应用层</li>
+</ul>
+<p><img src="./67-1-network_files/19.receive.png" alt="connect"></p>
+<h4 id="t866.3.3 真实网络环境">6.3.3 真实网络环境 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t866.3.3%20%E7%9C%9F%E5%AE%9E%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83"> # </a></h4>
+<ul>
+<li>发送方和接收方中间可能会有多个硬件中转设备</li>
+<li>中间可能会增加交换机和路由器</li>
+<li>数据在传输过程中不断地进行封装和解封装的过程，每层设备只能处理哪一层的数据<ul>
+<li>交换机属于数据链路层</li>
+<li>路由器属于网络层</li>
+</ul>
+</li>
+</ul>
+<p><img src="./67-1-network_files/reaenv2.png" alt="分层模型"></p>
+<h2 id="t877. 附录">7. 附录 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t877.%20%E9%99%84%E5%BD%95"> # </a></h2>
+<h3 id="t887.1 不同层中的称谓：">7.1 不同层中的称谓： <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t887.1%20%E4%B8%8D%E5%90%8C%E5%B1%82%E4%B8%AD%E7%9A%84%E7%A7%B0%E8%B0%93%EF%BC%9A"> # </a></h3>
+<ul>
+<li>数据帧（Frame）：是一种信息单位，它的起始点和目的点都是<strong>数据链路层</strong>。</li>
+<li>数据包（Packet）：也是一种信息单位，它的起始和目的地是<strong>网络层</strong>。</li>
+<li>段（Segment）：通常是指起始点和目的地都是<strong>传输层</strong>的信息单元。</li>
+<li>消息（message）：是指起始点和目的地都在网络层以上（经常在<strong>应用层</strong>）的信息单元。</li>
+</ul>
+<h3 id="t897.2 IP头服务类型">7.2 IP头服务类型 <a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html#t897.2%20IP%E5%A4%B4%E6%9C%8D%E5%8A%A1%E7%B1%BB%E5%9E%8B"> # </a></h3>
+<ul>
+<li>IP首部中的服务类型（TOS）</li>
+<li>TOS包括共8位，包括3 bit的优先权字段（取值可以从000-111所有值），4 bit的TOS子字段和1 bit未用位但必须置0。</li>
+<li>3bit的8个优先级的定义如下：<ul>
+<li>111--Network Control(网络控制）一般保留给网络控制数据使用，如路由。</li>
+<li>110--Internetwork Control(网间控制)</li>
+<li>101--Critic(关键)语音数据使用。</li>
+<li>100--Flash Override(疾速)视频会议和视频流使用。</li>
+<li>011--Flash(闪速)语音控制数据使用。</li>
+<li>010--Immediate(快速)数据业务使用</li>
+<li>001--Priority(优先)数据业务使用</li>
+<li>000--Routine(普通)默认标记值。</li>
+</ul>
+</li>
+<li>4 bit的TOS分别代表：最小时延、最大吞吐量、最高可靠性和最小费用。4 bit中只能置其中1 bit。如果所有4 bit均为0，那么就意味着是一般服务。</li>
+<li>Telnet、Rlogin这两个交互应用要求最小的传输时延，FTP文件传输要求最大吞吐量，最高可靠性是指网络管理（SNMP）和路由选择协议。用户网络新闻要求最小费用</li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./67-1-network_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

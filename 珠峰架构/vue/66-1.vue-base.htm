@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./66-1.vue-base_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t0%E4%BB%80%E4%B9%88%E6%98%AFvue?">什么是vue?</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t1%E4%BB%80%E4%B9%88%E6%98%AF%E5%BA%93%EF%BC%8C%E4%BB%80%E4%B9%88%E6%98%AF%E6%A1%86%E6%9E%B6?">什么是库，什么是框架?</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t2%E5%88%9D%E5%A7%8B%E4%BD%BF%E7%94%A8">初始使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t3mvc%20&amp;&amp;%20mvvm">mvc &amp;&amp; mvvm</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t4%E5%A3%B0%E6%98%8E%E5%BC%8F%E5%92%8C%E5%91%BD%E4%BB%A4%E5%BC%8F">声明式和命令式</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t5%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95%20mustache">模板语法 mustache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t6%E8%A7%82%E5%AF%9F%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96">观察数据变化</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t7%E4%BD%BF%E7%94%A8proxy%E5%AE%9E%E7%8E%B0%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8F%98%E5%8C%96">使用proxy实现响应式变化</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t8%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8F%98%E5%8C%96">响应式变化</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t9vue%E5%AE%9E%E4%BE%8B%E4%B8%8A%E5%B8%B8%E8%A7%81%E5%B1%9E%E6%80%A7%E5%92%8C%E6%96%B9%E6%B3%95">vue实例上常见属性和方法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t10vue%E4%B8%AD%E7%9A%84%E6%8C%87%E4%BB%A4">vue中的指令</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t11v-for%E4%BD%BF%E7%94%A8">v-for使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t12%E5%B1%9E%E6%80%A7%E7%BB%91%E5%AE%9A%20:%EF%BC%88v-bind%EF%BC%89">属性绑定 :（v-bind）</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t13%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6%20@%20%EF%BC%88v-on%EF%BC%89">绑定事件 @ （v-on）</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t14vue%E7%9A%84%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%20(v-model)">vue的双向绑定 (v-model)</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t15%E9%BC%A0%E6%A0%87%20%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6">鼠标 键盘事件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t16watch%20&amp;%20computed">watch &amp; computed</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t17%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">条件渲染</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t18%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E5%BA%94%E7%94%A8%20(%E8%BF%87%E6%BB%A4%E5%99%A8%E4%B8%AD%E7%9A%84this%E9%83%BD%E6%98%AFwindow)">过滤器的应用 (过滤器中的this都是window)</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t19%E6%8C%87%E4%BB%A4%E7%9A%84%E7%BC%96%E5%86%99">指令的编写</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t20vue%E4%B8%AD%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">vue中的生命周期</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t21%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0%E4%B8%AD%E8%AF%A5%E5%81%9A%E7%9A%84%E4%BA%8B%E6%83%85">钩子函数中该做的事情</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t22vue%E4%B8%AD%E7%9A%84%E5%8A%A8%E7%94%BB">vue中的动画</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t23%E4%BD%BF%E7%94%A8animate.css%E8%AE%BE%E7%BD%AE%E5%8A%A8%E7%94%BB">使用animate.css设置动画</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t24vue%E4%B8%ADjs%E5%8A%A8%E7%94%BB">vue中js动画</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t25%E4%BD%BF%E7%94%A8js%E5%8A%A8%E7%94%BB%E5%BA%93">使用js动画库</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t26%E7%AD%9B%E9%80%89%E5%8A%A8%E7%94%BB">筛选动画</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t0什么是vue?">什么是vue? <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t0%E4%BB%80%E4%B9%88%E6%98%AFvue?"> # </a></h2>
+<p>Vue (读音 /vjuː/，类似于 view) 是一套用于构建用户界面的渐进式框架。<br>特点: 易用，灵活，高效
+渐进式框架   </p>
+<p><img src="./66-1.vue-base_files/vue.png" alt="">  </p>
+<p>逐一递增 vue + components + vue-router + vuex + vue-cli </p>
+<h2 id="t1什么是库，什么是框架?">什么是库，什么是框架? <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t1%E4%BB%80%E4%B9%88%E6%98%AF%E5%BA%93%EF%BC%8C%E4%BB%80%E4%B9%88%E6%98%AF%E6%A1%86%E6%9E%B6?"> # </a></h2>
+<ul>
+<li>库是将代码集合成一个产品,库是我们调用库中的方法实现自己的功能。</li>
+<li>框架则是为解决一类问题而开发的产品,框架是我们在指定的位置编写好代码，框架帮我们调用。</li>
+</ul>
+<p>框架是库的升级版</p>
+<h2 id="t2初始使用">初始使用 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t2%E5%88%9D%E5%A7%8B%E4%BD%BF%E7%94%A8"> # </a></h2>
+<pre><code>new Vue({
+    el:'#app',
+    template:'&lt;div&gt;我是姜文～～&lt;/div&gt;', // 优先使用template
+    data:{}
+});
+</code></pre><h2 id="t3mvc &amp;&amp; mvvm">mvc &amp;&amp; mvvm <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t3mvc%20&amp;&amp;%20mvvm"> # </a></h2>
+<p><img src="./66-1.vue-base_files/mvc.png" alt="">
+<img src="./66-1.vue-base_files/mvvm.png" alt=""></p>
+<p>在传统的mvc中除了model和view以外的逻辑都放在了controller中，导致controller逻辑复杂难以维护,在mvvm中view和model没有直接的关系，全部通过viewModel进行交互</p>
+<h2 id="t4声明式和命令式">声明式和命令式 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t4%E5%A3%B0%E6%98%8E%E5%BC%8F%E5%92%8C%E5%91%BD%E4%BB%A4%E5%BC%8F"> # </a></h2>
+<ul>
+<li>自己写for循环就是命令式  (命令其按照自己的方式得到结果)</li>
+<li>声明式就是利用数组的方法forEach (我们想要的是循环，内部帮我们去做)</li>
+</ul>
+<h2 id="t5模板语法 mustache">模板语法 mustache <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t5%E6%A8%A1%E6%9D%BF%E8%AF%AD%E6%B3%95%20mustache"> # </a></h2>
+<p>允许开发者声明式地将 DOM 绑定至底层 Vue 实例的数据。在使用数据前需要先声明</p>
+<ul>
+<li>编写三元表达式 </li>
+<li>获取返回值 </li>
+<li>JavaScript 表达式 <pre><code>&lt;div id="app"&gt;
+  {{ 1+1 }}
+  {{ msg == 'hello'?'yes':'no' }}
+  {{ {name:1} }}
+&lt;/div&gt;
+&lt;script src="./node_modules/vue/dist/vue.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  let vm = new Vue({
+      el:'#app',
+      data:{
+          msg:'hello'
+      }
+  })
+&lt;/script&gt;
+</code></pre></li>
+</ul>
+<h2 id="t6观察数据变化">观察数据变化 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t6%E8%A7%82%E5%AF%9F%E6%95%B0%E6%8D%AE%E5%8F%98%E5%8C%96"> # </a></h2>
+<pre><code>function notify(){
+    console.log('视图更新')
+}
+let data = {
+    name:'jw',
+    age:18,
+    arr:[]
+}
+// 重写数组的方法
+let oldProtoMehtods = Array.prototype;
+let proto = Object.create(oldProtoMehtods);
+['push','pop','shift','unshift'].forEach(method=&gt;{
+    proto[method] = function(){
+        notify();
+        oldProtoMehtods[method].call(this,...arguments)
+    }
+})
+function observer(obj){
+    if(Array.isArray(obj)){
+        obj.__proto__ = proto
+        return;
+    }
+    if(typeof obj === 'object'){
+        for(let key in obj){
+            defineReactive(obj,key,obj[key]);
+        }
+    }
+}
+function defineReactive(obj,key,value){
+    observer(value); // 再一次循环value
+    Object.defineProperty(obj,key,{ // 不支持数组
+        get(){
+            return value;
+        },
+        set(val){
+            notify();
+            observer(val);
+            value = val;
+        }
+    });
+}
+observer(data);
+data.arr.push(1);
+</code></pre><h2 id="t7使用proxy实现响应式变化">使用proxy实现响应式变化 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t7%E4%BD%BF%E7%94%A8proxy%E5%AE%9E%E7%8E%B0%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8F%98%E5%8C%96"> # </a></h2>
+<pre><code>let obj = {
+    name:{name:'jw'},
+    arr:['吃','喝','玩']
+}
+let handler = {
+    get(target,key,receiver){
+        if(typeof target[key] === 'object' &amp;&amp;  target[key] !== null){
+            return new Proxy(target[key],handler);
+        }
+        return Reflect.get(target,key,receiver);
+    },
+    set(target,key,value,receiver){
+        if(key === 'length') return true;
+        console.log('update')
+        return Reflect.set(target,key,value,receiver);
+    }
+}
+let proxy = new Proxy(obj,handler);
+proxy.name.name = 'zf';
+</code></pre><h2 id="t8响应式变化">响应式变化 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t8%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8F%98%E5%8C%96"> # </a></h2>
+<ul>
+<li><p>数组的变异方法(不能通过通过长度，索引改变数组)</p>
+<pre><code>  &lt;div id="app"&gt;
+      {{hobbies}}
+  &lt;/div&gt;
+  &lt;script src="node_modules/vue/dist/vue.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+      let vm = new Vue({
+          el:'#app',
+          data:{
+              hobbies:['洗澡','吃饭','睡觉']
+          }
+      });
+      vm.hobbies[0] = '喝水';// 数据变化视图不刷新
+      vm.hobbies.length--;// 数据变化视图不会刷新
+  &lt;/script&gt;
+</code></pre><pre><code>  vm.hobbies = ['喝水']; // 替换的方式
+  vm.hobbies.push('吃饭'); // push slice pop ...变异方法
+</code></pre></li>
+<li><p>不能给对象新增属性 </p>
+<pre><code>  &lt;div id="app"&gt;
+  {{state.a}}
+  &lt;/div&gt;
+  &lt;script src="node_modules/vue/dist/vue.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+      let vm = new Vue({
+          el:'#app',
+          data:{
+              state:{count:0}
+          }
+      });
+      //vm.state.a = 100; // 新增熟悉不会响应到视图上
+  &lt;/script&gt;
+</code></pre></li>
+<li><p>使用vm.$set方法强制添加响应式数据   </p>
+<pre><code>  function $set(data,key,val){
+  if(Array.isArray(data)){
+      return data.splice(key,1,val);
+  }
+  defineReactive(data,key,val);
+  }
+  $set(data.arr,0,1);
+
+  vm.$set(vm.state,'a','100');
+</code></pre></li>
+</ul>
+<h2 id="t9vue实例上常见属性和方法">vue实例上常见属性和方法 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t9vue%E5%AE%9E%E4%BE%8B%E4%B8%8A%E5%B8%B8%E8%A7%81%E5%B1%9E%E6%80%A7%E5%92%8C%E6%96%B9%E6%B3%95"> # </a></h2>
+<ul>
+<li><p>vm.$set();  </p>
+<pre><code>  vm.$set(vm.state,'a','100');
+</code></pre></li>
+<li><p>vm.$watch();</p>
+<pre><code>  vm.$watch('state.count',function(newValue,oldValue){
+      console.log(newValue,oldValue);
+  });
+</code></pre></li>
+<li><p>vm.$mount();</p>
+<pre><code>  let vm = new Vue({
+      data:{state:{count:0}}
+  });
+  vm.$mount('#app');
+</code></pre></li>
+<li><p>vm.$nextTick();</p>
+<pre><code>  vm.state.count = 100; // 更高数据后会将更改的内容缓存起来
+  // 在下一个事件循环tick中 刷新队列
+  vm.$nextTick(function(){
+      console.log(vm.$el.innerHTML);
+  });
+</code></pre></li>
+<li><p>vm.$data  </p>
+</li>
+<li><p>vm.$el</p>
+</li>
+</ul>
+<h2 id="t10vue中的指令">vue中的指令 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t10vue%E4%B8%AD%E7%9A%84%E6%8C%87%E4%BB%A4"> # </a></h2>
+<p>在vue中 指令 (Directives) 是带有 v- 前缀的特殊特性,主要的功能就是操作DOM  </p>
+<ul>
+<li><p>v-once   </p>
+<pre><code>  &lt;div v-once&gt;{{state.count}} &lt;/div&gt;
+</code></pre></li>
+<li><p>v-html （不要对用户输入使用v-html显示）</p>
+<pre><code>  &lt;div v-html="text"&gt;&lt;/div&gt;
+</code></pre><p>  <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/innerHTML#%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98">https://developer.mozilla.org/zh-CN/docs/Web/API/Element/innerHTML#%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98</a>  </p>
+</li>
+<li>v-text</li>
+<li>v-if/v-else使用</li>
+</ul>
+<h2 id="t11v-for使用">v-for使用 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t11v-for%E4%BD%BF%E7%94%A8"> # </a></h2>
+<ul>
+<li><p>v-for遍历数组</p>
+<pre><code>  fruits:['香蕉','苹果','桃子']
+  &lt;div v-for="(fruit,index) in fruits" :key="index"&gt;
+      {{fruit}}
+  &lt;/div&gt;
+</code></pre></li>
+<li><p>v-for遍历对象</p>
+<pre><code>  info:{name:'jiang',location:'回龙观',phone:18310349227}
+  &lt;div v-for="(item,key) in info" :key="key"&gt;
+      {{item}} {{key}}
+  &lt;/div&gt;
+</code></pre></li>
+<li><p>template的使用</p>
+<pre><code>  &lt;template v-for="(item,key) in fruits"&gt;
+      &lt;p v-if="key%2"&gt;hello&lt;/p&gt;
+      &lt;span v-else&gt;world&lt;/span&gt;
+  &lt;/template&gt;
+</code></pre></li>
+<li><p>key属性的应用  </p>
+<pre><code>  &lt;div v-if="flag"&gt;
+      &lt;span&gt;珠峰&lt;/span&gt;
+      &lt;input key="2"/&gt;   
+  &lt;/div&gt;
+  &lt;div v-else&gt;
+      &lt;span&gt;架构&lt;/span&gt;
+      &lt;input key="1"/&gt;  
+  &lt;/div&gt;
+</code></pre></li>
+<li><p>key尽量不要使用索引  </p>
+<pre><code>   &lt;ul&gt;
+      &lt;li key="0"&gt;🍌&lt;/li&gt;
+      &lt;li key="1"&gt;🍎&lt;/li&gt;
+      &lt;li key="2"&gt;🍊&lt;/l&gt;
+  &lt;/ul&gt;
+  &lt;ul&gt;
+      &lt;li key="0"&gt;🍊&lt;/li&gt;
+      &lt;li key="1"&gt;🍎&lt;/li&gt;
+      &lt;li key="2"&gt;🍌&lt;/li&gt;
+  &lt;/ul&gt;
+</code></pre></li>
+</ul>
+<h2 id="t12属性绑定 :（v-bind）">属性绑定 :（v-bind） <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t12%E5%B1%9E%E6%80%A7%E7%BB%91%E5%AE%9A%20:%EF%BC%88v-bind%EF%BC%89"> # </a></h2>
+<p>Class 与 Style 绑定  </p>
+<ul>
+<li><p>数组的绑定  </p>
+<pre><code>      &lt;div :class="['apple','banana']" &gt;&lt;/div&gt;
+      &lt;div :class="{banana:true}"&gt;&lt;/div&gt;
+</code></pre></li>
+<li><p>对象类型的绑定  </p>
+<pre><code>      &lt;div :class="['apple','banana']" &gt;&lt;/div&gt;
+      &lt;div :class="{banana:true}"&gt;&lt;/div&gt;
+      &lt;div :style="[{background:'red'},{color:'red'}]"&gt;&lt;/div&gt;
+      &lt;div :style="{color:'red'}"&gt;&lt;/div&gt;
+</code></pre></li>
+</ul>
+<h2 id="t13绑定事件 @ （v-on）">绑定事件 @ （v-on） <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t13%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6%20@%20%EF%BC%88v-on%EF%BC%89"> # </a></h2>
+<ul>
+<li>事件的绑定 v-on绑定事件</li>
+<li>事件修饰符 (.stop .prevent) .capture .self .once .passive</li>
+</ul>
+<h2 id="t14vue的双向绑定 (v-model)">vue的双向绑定 (v-model) <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t14vue%E7%9A%84%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%20(v-model)"> # </a></h2>
+<pre><code>    &lt;input type="text" :value="value" @input="input"&gt;
+    &lt;input type="text" v-model="value"&gt;
+</code></pre><ul>
+<li>input,textarea</li>
+<li><p>select</p>
+<pre><code>  &lt;select v-model="select"&gt;
+      &lt;option 
+          v-for="fruit in fruits"
+          :value="fruit"&gt;
+              {{fruit}}
+      &lt;/option&gt;
+  &lt;/select&gt;
+</code></pre></li>
+<li><p>radio </p>
+<pre><code>  &lt;input type="radio" v-model="value"  value="男"&gt;
+  &lt;input type="radio" v-model="value"  value="女"&gt;
+</code></pre></li>
+<li><p>checkbox</p>
+<pre><code>  &lt;input type="checkbox" v-model="checks" value="游泳" &gt;
+  &lt;input type="checkbox" v-model="checks" value="健身"&gt;
+</code></pre></li>
+<li><p>修饰符应用 .number .lazy .trim</p>
+<pre><code>  &lt;input type="text" v-model.number="value"&gt;
+  &lt;input type="text" v-model.trim="value"&gt;
+</code></pre></li>
+</ul>
+<h2 id="t15鼠标 键盘事件">鼠标 键盘事件 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t15%E9%BC%A0%E6%A0%87%20%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6"> # </a></h2>
+<ul>
+<li>按键、鼠标修饰符  Vue.config.keyCodes<pre><code>Vue.config.keyCodes = {
+  'f1':112
+}
+</code></pre></li>
+</ul>
+<h2 id="t16watch &amp; computed">watch &amp; computed <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t16watch%20&amp;%20computed"> # </a></h2>
+<ul>
+<li><p>计算属性和watch的区别  （异步）</p>
+<pre><code>  let vm = new Vue({
+      el:'#app',
+      data:{
+          firstName:'姜',
+          lastName:'文',
+          fullName:''
+      },
+      mounted(){
+          this.getFullName();
+      },
+      methods:{
+          getFullName(){
+              this.fullName = this.firstName + this.lastName
+          }
+      },
+      watch:{
+          firstName(){
+              setTimeout(()=&gt;{
+                  this.getFullName();
+              },1000)
+          },
+          lastName(){
+                  this.getFullName();
+          }
+      }
+      // 计算属性不支持异步
+      // computed:{
+      //    fullName(){
+      //        return this.firstName + this.lastName;
+      //    }
+      // }
+  });
+</code></pre></li>
+<li><p>计算属性和 method的区别 （缓存）</p>
+</li>
+</ul>
+<h2 id="t17条件渲染">条件渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t17%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93"> # </a></h2>
+<ul>
+<li>v-if和v-show区别</li>
+<li>v-if/v-else-if/v-else</li>
+<li>v-show</li>
+</ul>
+<h2 id="t18过滤器的应用 (过滤器中的this都是window)">过滤器的应用 (过滤器中的this都是window) <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t18%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E5%BA%94%E7%94%A8%20(%E8%BF%87%E6%BB%A4%E5%99%A8%E4%B8%AD%E7%9A%84this%E9%83%BD%E6%98%AFwindow)"> # </a></h2>
+<ul>
+<li>全局过滤器 和 局部过滤器 </li>
+<li>编写一个过滤器<pre><code>&lt;div&gt;{{'hello' | capitalize(3)}}&lt;/div&gt;
+Vue.filter('capitalize',(value,count=1)=&gt;{
+  return value.slice(0,count).toUpperCase() + value.slice(count);
+});
+</code></pre></li>
+</ul>
+<h2 id="t19指令的编写">指令的编写 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t19%E6%8C%87%E4%BB%A4%E7%9A%84%E7%BC%96%E5%86%99"> # </a></h2>
+<ul>
+<li>全局指令和 局部指令 </li>
+<li><p>编写一个自定义指令 </p>
+<ul>
+<li><p>钩子函数bind，inserted，update  </p>
+<pre><code>      &lt;input type="text" v-focus.color="'red'"&gt;
+      Vue.directive('focus',{
+          inserted:(el,bindings)=&gt;{
+              let color = bindings.modifiers.color;
+              if(color){
+                  console.log('color')
+                  el.style.boxShadow = `1px 1px 2px ${bindings.value}`
+              }   
+              el.focus();
+          }
+      });
+</code></pre></li>
+</ul>
+</li>
+<li><p>clickoutside指令</p>
+<pre><code>&lt;div v-click-outside="change"&gt;
+  &lt;input type="text"  @focus="flag=true" &gt;
+  &lt;div v-show="flag"&gt;
+      contenter
+  &lt;/div&gt;
+&lt;/div&gt;
+let vm = new Vue({
+  el:'#app',
+  data:{
+      flag:false
+  },
+  methods:{
+      change(){
+          this.flag = false
+      }
+  },
+  directives:{
+      'click-outside'(el,bindings,vnode){
+          document.addEventListener('click',(e)=&gt;{
+              if(!el.contains(e.target,vnode)){
+                  let eventName = bindings.expression;
+                  vnode.context[eventName]()
+              }
+          })
+      }
+  }
+})
+</code></pre><h2 id="t20vue中的生命周期">vue中的生命周期 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t20vue%E4%B8%AD%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"> # </a></h2>
+</li>
+<li>beforeCreate
+在实例初始化之后，数据观测(data observer) 和 event/watcher 事件配置之前被调用。</li>
+<li>created
+实例已经创建完成之后被调用。在这一步，实例已完成以下的配置：数据观测(data observer)，属性和方法的运算， watch/event 事件回调。这里没有$el</li>
+<li>beforeMount
+在挂载开始之前被调用：相关的 render 函数首次被调用。</li>
+<li>mounted
+el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。</li>
+<li>beforeUpdate
+数据更新时调用，发生在虚拟 DOM 重新渲染和打补丁之前。</li>
+<li>updated
+由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。</li>
+<li>beforeDestroy
+实例销毁之前调用。在这一步，实例仍然完全可用。</li>
+<li>destroyed
+Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。 该钩子在服务器端渲染期间不被调用。</li>
+</ul>
+<h2 id="t21钩子函数中该做的事情">钩子函数中该做的事情 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t21%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0%E4%B8%AD%E8%AF%A5%E5%81%9A%E7%9A%84%E4%BA%8B%E6%83%85"> # </a></h2>
+<ul>
+<li>created
+实例已经创建完成，因为它是最早触发的原因可以进行一些数据，资源的请求。</li>
+<li>mounted
+实例已经挂载完成，可以进行一些DOM操作</li>
+<li>beforeUpdate
+可以在这个钩子中进一步地更改状态，这不会触发附加的重渲染过程。</li>
+<li>updated
+可以执行依赖于 DOM 的操作。然而在大多数情况下，你应该避免在此期间更改状态，因为这可能会导致更新无限循环。
+该钩子在服务器端渲染期间不被调用。</li>
+<li>destroyed
+可以执行一些优化操作,清空定时器，解除绑定事件</li>
+</ul>
+<p><img src="./66-1.vue-base_files/lifecycle.png" alt="">  </p>
+<h2 id="t22vue中的动画">vue中的动画 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t22vue%E4%B8%AD%E7%9A%84%E5%8A%A8%E7%94%BB"> # </a></h2>
+<p>vue中的动画就是从无到有或者从有到无产生的。有以下几个状态
+transition组件的应用</p>
+<pre><code>.v-enter-active,.v-leave-active {
+    transition: opacity 0.25s ease-out;
+}
+.v-enter, .v-leave-to {
+    opacity: 0;
+}
+</code></pre><p>切换isShow的显示或者隐藏就显示出效果啦~</p>
+<pre><code>&lt;button @click="toggle"&gt;toggle&lt;/button&gt;
+&lt;transition&gt;
+    &lt;span v-show="isShow"&gt;珠峰架构&lt;/span&gt;
+&lt;/transition&gt;
+</code></pre><blockquote>
+<p>默认的name是以v-开头，当然你可以自己指定name属性来修改前缀</p>
+</blockquote>
+<h2 id="t23使用animate.css设置动画">使用animate.css设置动画 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t23%E4%BD%BF%E7%94%A8animate.css%E8%AE%BE%E7%BD%AE%E5%8A%A8%E7%94%BB"> # </a></h2>
+<pre><code>.v-enter-active {
+    animation:zoomIn  2s linear
+}
+.v-leave-avitve{
+    animation:zoomOut 2s linear
+}
+</code></pre><p>直接修改激活时的样式</p>
+<pre><code>&lt;transition 
+    enter-active-class="zoomIn"
+    leave-active-class="zoomOut"
+&gt;
+    &lt;span class="animated" v-show="isShow"&gt;珠峰架构&lt;/span&gt;
+&lt;/transition&gt;
+</code></pre><h2 id="t24vue中js动画">vue中js动画 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t24vue%E4%B8%ADjs%E5%8A%A8%E7%94%BB"> # </a></h2>
+<pre><code>&lt;transition 
+    @before-enter="beforeEnter"
+    @enter="enter"
+    @after-enter="afterEnter"
+&gt;   
+    &lt;span class="animated" v-show="isShow"&gt;珠峰架构&lt;/span&gt;
+&lt;/transition&gt;
+</code></pre><p>对应的钩子有before-leave,leave,after-leave钩子函数,函数的参数为当前元素</p>
+<pre><code>beforeEnter(el){
+    el.style.color="red"
+},
+enter(el,done){
+    setTimeout(()=&gt;{
+        el.style.color = 'green'
+    },1000);
+    setTimeout(() =&gt; {
+        done();
+    }, 2000);
+},
+afterEnter(el){
+    el.style.color = 'blue';
+}
+</code></pre><h2 id="t25使用js动画库">使用js动画库 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t25%E4%BD%BF%E7%94%A8js%E5%8A%A8%E7%94%BB%E5%BA%93"> # </a></h2>
+<blockquote>
+<p><a href="https://github.com/julianshapiro/velocity">https://github.com/julianshapiro/velocity</a></p>
+</blockquote>
+<pre><code>&lt;script src="node_modules/velocity-animate/velocity.js"&gt;&lt;/script&gt;
+beforeEnter(el){
+    el.style.opacity = 0;
+},
+enter(el,done){
+    Velocity(el, {opacity: 1}, {duration: 2000, complete: done})
+},
+afterEnter(el){
+    el.style.color = 'blue';
+},
+leave(el,done){
+    Velocity(el, {opacity: 0}, {duration: 2000, complete: done})
+}
+</code></pre><h2 id="t26筛选动画">筛选动画 <a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html#t26%E7%AD%9B%E9%80%89%E5%8A%A8%E7%94%BB"> # </a></h2>
+<pre><code>&lt;div id="app"&gt;
+    &lt;input type="text" v-model="filterData"&gt;
+    &lt;transition-group  
+        enter-active-class="zoomInLeft" 
+        leave-active-class="zoomOutRight"
+    &gt;
+        &lt;div v-for="(l,index) in computedData" :key="l.title" class="animated"&gt;
+            {{l.title}}
+        &lt;/div&gt;
+    &lt;/transition-group&gt;  
+&lt;/div&gt;
+&lt;script src="./node_modules/vue/dist/vue.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+    let vm = new Vue({
+        el:'#app',
+        data:{
+            filterData:'',
+            dataList:[
+                {title:'标题1'},
+                {title:'标题2'},
+                {title:'标题4'},
+                {title:'标题3'}
+            ]
+        },
+        computed:{
+            computedData(){
+                return this.dataList.filter((item)=&gt;{
+                    return item.title.includes(this.filterData);
+                })
+            }
+        },
+    })
+&lt;/script&gt;
+</code></pre><list>
+    <li>{{</li>
+</list>
+
+
+
+<div>
+    <slot v-for="i in 5">
+
+    </slot>
+</div>
+
+
+<p>slot v-for i in 5</p>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./66-1.vue-base_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

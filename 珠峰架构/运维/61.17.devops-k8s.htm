@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./61.17.devops-k8s_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t01.%20Kubernetes%E4%BB%8B%E7%BB%8D">1. Kubernetes介绍</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t12.%20Kubernetes%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD">2. Kubernetes主要功能</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t23.%20%E5%9F%BA%E6%9C%AC%E5%AF%B9%E8%B1%A1%E6%A6%82%E5%BF%B5">3. 基本对象概念</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t34.%20%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1">4. 高层抽象</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t45.%20%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%92%8C%E7%BB%84%E4%BB%B6%E5%8A%9F%E8%83%BD">5. 系统架构和组件功能</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t55.1%20Master%E7%BB%84%E4%BB%B6">5.1 Master组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t65.2%20Node%E7%BB%84%E4%BB%B6">5.2 Node组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t75.3%20%E7%AC%AC%E4%B8%89%E6%96%B9%E6%9C%8D%E5%8A%A1">5.3 第三方服务</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t86.%20%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2">6. 集群部署</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t96.1%20%E7%8E%AF%E5%A2%83%E8%A7%84%E5%88%92">6.1 环境规划</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t106.2%20%E5%AE%89%E8%A3%85Docker">6.2 安装Docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t116.3%20%E8%87%AA%E7%AD%BETLS%E8%AF%81%E4%B9%A6">6.3 自签TLS证书</a></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. Kubernetes介绍">1. Kubernetes介绍 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t01.%20Kubernetes%E4%BB%8B%E7%BB%8D"> # </a></h2>
+<ul>
+<li>Kuberneters是Google在2014年6月开源的一个容器集群管理系统，使用Go语言开发，Kubernetes也叫k8s</li>
+<li>K8s是Google内部一个叫Borg的容器集群管理系统衍生了来的，Borg已经在Google大规模生产运行了十年之久</li>
+<li>K8s主要用于自动化部署、扩展和管理容器应用，提供了资源调试度、部署管理、服务发现、扩容缩容、监控等一整套功能</li>
+<li>2015年7月，K8s v 1.0正式发布，截止到2018年1月27日最稳定版本是v1.9.2</li>
+<li>k8s目标是让部署容器化应用简洁高效</li>
+<li>官网 <a href="http://www.kubernetes.io/">www.kubernetes.io</a></li>
+</ul>
+<h2 id="t12. Kubernetes主要功能">2. Kubernetes主要功能 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t12.%20Kubernetes%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD"> # </a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">数据卷</td>
+<td style="text-align:left">Pod中容器之间共享数据，可以使用数据卷</td>
+</tr>
+<tr>
+<td style="text-align:left">应用程序健康检查</td>
+<td style="text-align:left">容器内服务可能进程堵塞无法处理请求，可以设置监控检查策略保证应用健壮性</td>
+</tr>
+<tr>
+<td style="text-align:left">复制应用程序实例</td>
+<td style="text-align:left">控制器维护着Pod副本数量，保证一个Pod或一组同类的Pod数量始终可用</td>
+</tr>
+<tr>
+<td style="text-align:left">弹性伸缩</td>
+<td style="text-align:left">根据设定的指标(CPU利用率)自动绽放Pod副本数</td>
+</tr>
+<tr>
+<td style="text-align:left">服务发现</td>
+<td style="text-align:left">使用环境变量或DNS服务插件保证容器中程序发现Pod入口访问地址</td>
+</tr>
+<tr>
+<td style="text-align:left">负载均衡</td>
+<td style="text-align:left">一组Pod副本分配一个私有的集群IP地址，负载均衡转发到后端容器。在集群内部其它Pod可通过这个ClusterIP访问应用</td>
+</tr>
+<tr>
+<td style="text-align:left">滚动更新</td>
+<td style="text-align:left">更新服务不中断，一次更新一个Pod, 而不是删除整个服务</td>
+</tr>
+<tr>
+<td style="text-align:left">服务编排</td>
+<td style="text-align:left">通过文件描述部署服务，使得应用程序部署变的更高效</td>
+</tr>
+<tr>
+<td style="text-align:left">资源监控</td>
+<td style="text-align:left">Node节点组成cAdvisor资源收集工具，可通过Heapster汇总整个集群节点资源数据，然后存储到InfluxDB时序数据库，再由Grafana展示</td>
+</tr>
+<tr>
+<td style="text-align:left">提供认证和授权</td>
+<td style="text-align:left">支持角色访问控制(RBAC)认证授权等策略</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t23. 基本对象概念">3. 基本对象概念 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t23.%20%E5%9F%BA%E6%9C%AC%E5%AF%B9%E8%B1%A1%E6%A6%82%E5%BF%B5"> # </a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Pod</td>
+<td style="text-align:left">Pod是最小的部署单元，一个Pod有一个或多个容器组成，Pod中容器共享存储和网络，在同一个台Docker主机上运行</td>
+</tr>
+<tr>
+<td style="text-align:left">Service</td>
+<td style="text-align:left">Service是一个应用程序抽象，定义了Pod逻辑集合和访问这个Pod集合的策略。Service代理Pod集合对外表现是为一个访问入口，分配一个集群IP地址，来自这个IP的请求将负载均衡转发后端Pod中的容器。Service通过Label Selector选择一组Pod提供服务</td>
+</tr>
+<tr>
+<td style="text-align:left">Volume</td>
+<td style="text-align:left">数据卷，共享Pod中容器使用的数据</td>
+</tr>
+<tr>
+<td style="text-align:left">Namespace</td>
+<td style="text-align:left">命名空间将对象逻辑上分配到不同Namespace,可以是不同的项目、用户等区分管理，并设定控制策略，从而实现多租户。命名空间也称为虚拟集群</td>
+</tr>
+<tr>
+<td style="text-align:left">Label</td>
+<td style="text-align:left">标签用于区分对象(比如Pod、Service),键/值对存在; 每个对象可以有多个标签，通过标签关联对象</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t34. 高层抽象">4. 高层抽象 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t34.%20%E9%AB%98%E5%B1%82%E6%8A%BD%E8%B1%A1"> # </a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ReplicaSet</td>
+<td style="text-align:left">下一个Replication Controller,确保任何给定时间指定的Pod副本数量，并提供声明式更新等功能。RC与RS唯一区别就是label selector支持不同，RS支持新的基于集合的标签，RC仅支持基于等式的标签</td>
+</tr>
+<tr>
+<td style="text-align:left">Deployment</td>
+<td style="text-align:left">Deployment是一个更高层次的API对象，它管理ReplicaSets和Pod,并提供声明式更新等功能。官方建议使用Deployment管理ReplicaSets,而不是直接使用ReplicaSets,这就意味着可能永远不需要直接操作ReplicaSet对象</td>
+</tr>
+<tr>
+<td style="text-align:left">StatefulSet</td>
+<td style="text-align:left">StatefulSet适合持久性的应用程序，有唯一的网络标识符(IP),持续存储，有序的部署、扩展、删除和滚动更新</td>
+</tr>
+<tr>
+<td style="text-align:left">DaemonSet</td>
+<td style="text-align:left">DaemonSet确保所有(或一些)节点运行同一个Pod。当节点加入Kubernets集群中，Pod会被调度到该节点上运行，当节点从集群中移除时，DaemonSet的Pod会被删除。删除DaemonSet会清理它所有创建的Pod.</td>
+</tr>
+<tr>
+<td style="text-align:left">Job</td>
+<td style="text-align:left">一次性任务，任务完成后Pod销毁，不再重新启动新容器，还可以任务定时运行</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t45. 系统架构和组件功能">5. 系统架构和组件功能 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t45.%20%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%92%8C%E7%BB%84%E4%BB%B6%E5%8A%9F%E8%83%BD"> # </a></h2>
+<h3 id="t55.1 Master组件">5.1 Master组件 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t55.1%20Master%E7%BB%84%E4%BB%B6"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">kube-apiserver</td>
+<td style="text-align:left">Kubernetes API,集群的统一入口，各组件协调者，以HTTP API提供接口服务，所以对象资源的增删改查和监控操作都交给APIServer处理后再提交给Etcd存储</td>
+</tr>
+<tr>
+<td style="text-align:left">kube-controller-manager</td>
+<td style="text-align:left">处理集群中常规后台任务，一个资源对应一个控制器，而ControllerManager就是负责管理这些控制器的</td>
+</tr>
+<tr>
+<td style="text-align:left">kube-scheduler</td>
+<td style="text-align:left">根据调度算法为新创建的Pod选择一个Node节点</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t65.2 Node组件">5.2 Node组件 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t65.2%20Node%E7%BB%84%E4%BB%B6"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">kubelet</td>
+<td style="text-align:left">kubelet是Master在Node节点上的Agent,管理本机运行容器的生命周期，比如创建容器，Pod挂载数据卷、下载secret、获取容器和节点状态等工作。kubelet将每个Pod转换成一组容器</td>
+</tr>
+<tr>
+<td style="text-align:left">kube-proxy</td>
+<td style="text-align:left">在Node节点上实现Pod网络代理，维护网络规划 和四层负载均衡工作</td>
+</tr>
+<tr>
+<td style="text-align:left">docker或rocket/rkt</td>
+<td style="text-align:left">运行容器</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t75.3 第三方服务">5.3 第三方服务 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t75.3%20%E7%AC%AC%E4%B8%89%E6%96%B9%E6%9C%8D%E5%8A%A1"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">etcd</td>
+<td style="text-align:left">分布式键值存储系统，用于保持集群状态，比如Pod、Service等对象信息</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t86. 集群部署">6. 集群部署 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t86.%20%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"> # </a></h2>
+<ul>
+<li>环境规划</li>
+<li>安装Docker</li>
+<li>自签TLS证书</li>
+<li>部署Etcd集群</li>
+<li>部署Flannel网络</li>
+<li>创建Node节点<code>kubeconfig</code>文件</li>
+<li>获取K8S二进制包</li>
+<li>运行Master组件</li>
+<li>运行Node组件</li>
+<li>查询集群状态</li>
+<li>启动一个测试示例</li>
+<li>部署WebUI(Dashboard)</li>
+</ul>
+<h3 id="t96.1 环境规划">6.1 环境规划 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t96.1%20%E7%8E%AF%E5%A2%83%E8%A7%84%E5%88%92"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">软件</th>
+<th style="text-align:left">版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Linux操作系统</td>
+<td style="text-align:left">CentOS7.4_x64</td>
+</tr>
+<tr>
+<td style="text-align:left">Kubernetes</td>
+<td style="text-align:left">1.9</td>
+</tr>
+<tr>
+<td style="text-align:left">Docker</td>
+<td style="text-align:left">17.12-ce</td>
+</tr>
+<tr>
+<td style="text-align:left">Etcd</td>
+<td style="text-align:left">3.0</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">角色</th>
+<th style="text-align:left">IP</th>
+<th style="text-align:left">组件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">master</td>
+<td style="text-align:left">192.168.0.211</td>
+<td style="text-align:left">kube-apiserver、kube-container-manager、kube-scheduler、etcd</td>
+</tr>
+<tr>
+<td style="text-align:left">node01</td>
+<td style="text-align:left">192.168.0.212</td>
+<td style="text-align:left">kubelet、kube-proxy、docker、flannel、etcd</td>
+</tr>
+<tr>
+<td style="text-align:left">node02</td>
+<td style="text-align:left">192.168.0.213</td>
+<td style="text-align:left">kubelet、kube-proxy、docker、flannel、etcd</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">组件</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">kube-apiserver</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">kube-container-manager</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">kube-scheduler</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">kubelet、kube</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">kube-proxy</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">docker</td>
+<td style="text-align:left">容器</td>
+</tr>
+<tr>
+<td style="text-align:left">flannel</td>
+<td style="text-align:left">容器之间的跨主机通信</td>
+</tr>
+<tr>
+<td style="text-align:left">etcd</td>
+<td style="text-align:left">用于集群间通信</td>
+</tr>
+</tbody>
+</table>
+<p>关闭selinux
+vi /etc/selinux/config</p>
+<pre><code class="lang-js">SELINUX=disabled
+</code></pre>
+<h3 id="t106.2 安装Docker">6.2 安装Docker <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t106.2%20%E5%AE%89%E8%A3%85Docker"> # </a></h3>
+<p>cat /etc/docker/daemon.json</p>
+<pre><code class="lang-js">
+</code></pre>
+<h3 id="t116.3 自签TLS证书">6.3 自签TLS证书 <a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html#t116.3%20%E8%87%AA%E7%AD%BETLS%E8%AF%81%E4%B9%A6"> # </a></h3>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./61.17.devops-k8s_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

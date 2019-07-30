@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./66-11.vue-ssr_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t0%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93(Server%20Side%20Render)">什么是服务端渲染(Server Side Render)</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t1%E5%BC%80%E5%A7%8Bvue-ssr%E4%B9%8B%E6%97%85">开始vue-ssr之旅</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t2%E9%87%87%E7%94%A8%E6%A8%A1%E6%9D%BF%E6%B8%B2%E6%9F%93">采用模板渲染</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t3%E7%9B%AE%E5%BD%95%E5%88%9B%E5%BB%BA">目录创建</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t4%E9%80%9A%E8%BF%87webpack%E5%AE%9E%E7%8E%B0%E7%BC%96%E8%AF%91vue%E9%A1%B9%E7%9B%AE">通过webpack实现编译vue项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t5%E9%85%8D%E7%BD%AE%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%A4%A7%E5%8C%85%E5%92%8C%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%89%93%E5%8C%85">配置客户端大包和服务端打包</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t6%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE">服务端配置</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t7%E9%9B%86%E6%88%90%E8%B7%AF%E7%94%B1">集成路由</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t8%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A3%E6%96%87%E4%BB%B6">配置入口文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t9%E9%85%8D%E7%BD%AE%E7%BB%84%E4%BB%B6%E4%BF%A1%E6%81%AF">配置组件信息</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t10%E9%98%B2%E6%AD%A2%E5%88%B7%E6%96%B0%E9%A1%B5%E9%9D%A2%E4%B8%8D%E5%AD%98%E5%9C%A8">防止刷新页面不存在</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t11vuex%E9%85%8D%E7%BD%AE">vuex配置</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t12%E5%9C%A8%E5%90%8E%E7%AB%AF%E6%9B%B4%E6%96%B0vuex">在后端更新vuex</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t13%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9B%BF%E6%8D%A2store">在浏览器运行时替换store</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t14%E9%80%9A%E8%BF%87json%E9%85%8D%E7%BD%AEcreateBundleRenderer%E6%96%B9%E6%B3%95">通过json配置createBundleRenderer方法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t15%E7%AE%A1%E7%90%86vue-meta%E6%A0%87%E7%AD%BE">管理vue-meta标签</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t0什么是服务端渲染(Server Side Render)">什么是服务端渲染(Server Side Render) <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t0%E4%BB%80%E4%B9%88%E6%98%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93(Server%20Side%20Render)"> # </a></h2>
+<p>放在服务器进行就是服务器渲染，放在浏览器进行就是浏览器渲染</p>
+<ul>
+<li>客户端渲染不利于 SEO 搜索引擎优化</li>
+<li>服务端渲染是可以被爬虫抓取到的，客户端异步渲染是很难被爬虫抓取到的</li>
+<li>SSR直接将HTML字符串传递给浏览器。大大加快了首屏加载时间。</li>
+<li>SSR占用更多的CPU和内存资源</li>
+<li>一些常用的浏览器API可能无法正常使用</li>
+<li>在vue中只支持beforeCreate和created两个生命周期</li>
+</ul>
+<p><img src="./66-11.vue-ssr_files/ssr.png" alt=""></p>
+<h2 id="t1开始vue-ssr之旅">开始vue-ssr之旅 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t1%E5%BC%80%E5%A7%8Bvue-ssr%E4%B9%8B%E6%97%85"> # </a></h2>
+<pre><code>yarn add vue-server-renderer vue
+yarn add express
+</code></pre><p>createRenderer,创建一个渲染函数 renderToString, 渲染出一个字符串</p>
+<pre><code>let Vue = require('vue');
+let render = require('vue-server-renderer');
+let vm = new Vue({ 
+    data:{
+        msg:'jw',
+    },
+    template:('&lt;h1&gt;{{msg}}&lt;/h1&gt;')
+})
+let express = require('express');
+let app = express();
+app.get('/',async (req,res)=&gt;{
+    let code = await render.createRenderer().renderToString(vm);
+    res.send(`
+        &lt;!DOCTYPE html&gt;
+        &lt;html lang="en"&gt;
+        &lt;head&gt;
+            &lt;meta charset="UTF-8"&gt;
+            &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+            &lt;meta http-equiv="X-UA-Compatible" content="ie=edge"&gt;
+            &lt;title&gt;Document&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            ${code}
+        &lt;/body&gt;
+        &lt;/html&gt;
+    `)
+});
+app.listen(3000);
+</code></pre><h2 id="t2采用模板渲染">采用模板渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t2%E9%87%87%E7%94%A8%E6%A8%A1%E6%9D%BF%E6%B8%B2%E6%9F%93"> # </a></h2>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;&lt;title&gt;Hello&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;!--vue-ssr-outlet--&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>传入template 替换掉注释标签</p>
+<pre><code>llet Vue = require('vue');
+let fs = require('fs');
+let template = fs.readFileSync('template.html','utf8')
+let render = require('vue-server-renderer');
+let vm = new Vue({ 
+    data:{
+        msg:'jw',
+    },
+    template:('&lt;h1&gt;{{msg}}&lt;/h1&gt;')
+})
+let express = require('express');
+let app = express();
+app.get('/',async (req,res)=&gt;{
+    let code = await render.createRenderer({
+        template
+    }).renderToString(vm);
+    res.send(code);
+});
+app.listen(3000);
+</code></pre><h2 id="t3目录创建">目录创建 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t3%E7%9B%AE%E5%BD%95%E5%88%9B%E5%BB%BA"> # </a></h2>
+<pre><code>├── config
+│   ├── webpack.base.js
+│   ├── webpack.client.js
+│   └── webpack.server.js
+├── dist
+│   ├── client.bundle.js
+│   ├── index.html
+│   ├── index.ssr.html
+│   ├── server.bundle.js
+│   ├── vue-ssr-client-manifest.json
+│   └── vue-ssr-server-bundle.json
+├── package.json
+├── public
+│   ├── index.html
+│   └── index.ssr.html
+├── server.js
+├── src
+│   ├── App.vue
+│   ├── components
+│   │   ├── Bar.vue
+│   │   └── Foo.vue
+│   ├── entry-client.js
+│   ├── entry-server.js
+│   ├── main.js
+│   ├── router.js
+│   └── store.js
+├── webpack.config.js
+</code></pre><h2 id="t4通过webpack实现编译vue项目">通过webpack实现编译vue项目 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t4%E9%80%9A%E8%BF%87webpack%E5%AE%9E%E7%8E%B0%E7%BC%96%E8%AF%91vue%E9%A1%B9%E7%9B%AE"> # </a></h2>
+<p>安装插件</p>
+<pre><code>yarn add webpack webpack-cli webpack-dev-server vue-loader vue-style-loader css-loader html-webpack-plugin @babel/core @babel/preset-env babel-loader vue-template-compiler webpack-merge
+</code></pre><pre><code>let path = require('path');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+let VueLoaderPlugin = require('vue-loader/lib/plugin')
+module.exports = {
+    entry:'./src/main.js',
+    output:{
+        filename:'bundle.js',
+        path:path.resolve(__dirname)
+    },
+    module:{
+        rules:[
+            {test:/\.css/,use:['vue-style-loader','css-loader']},
+            {
+                test:/\.js/,
+                use:{
+                    loader:'babel-loader',
+                    options:{
+                        presets:['@babel/preset-env']
+                     },
+                },
+                exclude:/node_modules/,
+            },
+            {test:/\.vue/,use:'vue-loader'}
+        ]
+    },
+    plugins:[
+        new VueLoaderPlugin(),
+        new HtmlWebpackPlugin({
+            template:'./src/index.html'
+        })
+    ]
+}
+</code></pre><h2 id="t5配置客户端大包和服务端打包">配置客户端大包和服务端打包 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t5%E9%85%8D%E7%BD%AE%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%A4%A7%E5%8C%85%E5%92%8C%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%89%93%E5%8C%85"> # </a></h2>
+<ul>
+<li><p>webpack.base.js</p>
+<pre><code>let path = require('path');
+let VueLoaderPlugin = require('vue-loader/lib/plugin')
+module.exports = {
+  entry:'./src/main.js',
+  output:{
+      filename:'[name].bundle.js',
+      path:path.resolve(__dirname)
+  },
+  module:{
+      rules:[
+          {test:/\.css/,use:['vue-style-loader','css-loader']},
+          {
+              test:/\.js/,
+              use:{
+                  loader:'babel-loader',
+                  options:{
+                      presets:['@babel/preset-env']
+                   },
+              },
+              exclude:/node_modules/,
+          },
+          {test:/\.vue/,use:'vue-loader'}
+      ]
+  },
+  plugins:[
+      new VueLoaderPlugin()
+  ]
+}
+</code></pre></li>
+<li><p>webpack.client.js</p>
+</li>
+</ul>
+<pre><code>let path = require('path');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+let merge  = require('webpack-merge');
+let base = require('./webpack.base');
+module.exports = merge(base, {
+    entry:{
+        'client':path.resolve(__dirname,'../src/client.js')
+    },
+    plugins:[
+        new HtmlWebpackPlugin({
+            template:'./src/index.html'
+        })
+    ],
+});
+</code></pre><ul>
+<li>webpack.server.js</li>
+</ul>
+<pre><code>let path = require('path');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+let merge  = require('webpack-merge');
+let base = require('./webpack.base');
+
+module.exports =merge(base,{
+    target:'node', // 打包类型node
+    entry:{
+        server:path.resolve(__dirname,'../src/server.js')
+    },
+    output:{
+        libraryTarget: 'commonjs2' // 以commonjs规范导出
+    },  
+    plugins:[
+        new HtmlWebpackPlugin({
+            template:'./src/index.html',
+            excludeChunks:['server']
+        })
+    ]
+})
+</code></pre><h2 id="t6服务端配置">服务端配置 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t6%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE"> # </a></h2>
+<p>在App.vue上增加id="app"可以保证元素被正常激活</p>
+<pre><code>let express = require('express');
+let vueServerRenderer = require('vue-server-renderer');
+let path = require('path')
+let app = express();
+let fs = require('fs');
+
+let render = vueServerRenderer.createBundleRenderer(fs.readFileSync('./dist/server.bundle.js','utf8'),{
+    template:fs.readFileSync('./dist/index.ssr.html','utf8')
+});
+
+app.get('/',(req,res)=&gt;{
+    render.renderToString((err,html)=&gt;{
+        res.send(html);
+    })
+});
+
+app.use(express.static(path.join(__dirname,'dist')))
+app.listen(3000,()=&gt;{
+    console.log('server start 3000')
+});
+</code></pre><h2 id="t7集成路由">集成路由 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t7%E9%9B%86%E6%88%90%E8%B7%AF%E7%94%B1"> # </a></h2>
+<pre><code>import Vue from 'vue';
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
+import Bar from './components/Bar.vue';
+import Foo from './components/Foo.vue';
+export default ()=&gt;{
+    let router = new VueRouter({
+        mode:'history',
+        routes:[
+            {
+                path:'/', component:Bar,
+            },
+            {
+                path:'/foo',component:Foo
+            }
+        ]
+    });
+    return router
+}
+</code></pre><h3 id="t8配置入口文件">配置入口文件 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t8%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A3%E6%96%87%E4%BB%B6"> # </a></h3>
+<pre><code>import createRouter from './router';
+export default ()=&gt;{
+    let router = createRouter(); // 增加路由
+    let app = new Vue({
+        router,
+        render:(h)=&gt;h(App);
+    })
+    return {app,router}
+}
+</code></pre><h3 id="t9配置组件信息">配置组件信息 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t9%E9%85%8D%E7%BD%AE%E7%BB%84%E4%BB%B6%E4%BF%A1%E6%81%AF"> # </a></h3>
+<pre><code>&lt;template&gt;
+    &lt;div id="app"&gt;
+        &lt;router-link to="/"&gt; bar&lt;/router-link&gt;
+        &lt;router-link to="/foo"&gt; foo&lt;/router-link&gt;
+        &lt;router-view&gt;&lt;/router-view&gt;
+        {{$store.state.username}}
+    &lt;/div&gt;
+&lt;/template&gt;
+</code></pre><h3 id="t10防止刷新页面不存在">防止刷新页面不存在 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t10%E9%98%B2%E6%AD%A2%E5%88%B7%E6%96%B0%E9%A1%B5%E9%9D%A2%E4%B8%8D%E5%AD%98%E5%9C%A8"> # </a></h3>
+<pre><code>app.get('*',(req,res)=&gt;{
+    render.renderToString({url:req.url},(err,html)=&gt;{
+        res.send(html);
+    })
+});
+</code></pre><h2 id="t11vuex配置">vuex配置 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t11vuex%E9%85%8D%E7%BD%AE"> # </a></h2>
+<pre><code>import Vue from 'vue';
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
+export default ()=&gt;{
+    let store = new Vuex.Store({
+        state:{
+            username:'zf'
+        },
+        mutations:{
+            set_user(state){
+                state.username = 'hello;
+            }
+        },
+        actions:{
+            set_user({commit}){
+                return new Promise((resolve,reject)=&gt;{
+                    setTimeout(() =&gt; {
+                        commit('set_user');
+                        resolve();
+                    }, 1000);
+                })
+            }
+        }
+    });
+    return store
+}
+
+// 引用vuex
+import createRouter from './router';
+import createStore from './store'
+export default ()=&gt;{
+    let router = createRouter();
+    let store = createStore();
+    let app = new Vue({
+        router,
+        store,
+        render:(h)=&gt;h(App)
+    })
+    return {app,router,store}
+}
+
+</code></pre><h3 id="t12在后端更新vuex">在后端更新vuex <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t12%E5%9C%A8%E5%90%8E%E7%AB%AF%E6%9B%B4%E6%96%B0vuex"> # </a></h3>
+<pre><code>import createApp from './main';
+export default (context)=&gt;{
+    return new Promise((resolve)=&gt;{
+        let {app,router,store} = createApp();
+        router.push(context.url); // 默认访问到/a就跳转到/a
+        router.onReady(()=&gt;{
+            let matchs = router.getMatchedComponents(); // 获取路由匹配到的组件
+
+            Promise.all(matchs.map(component=&gt;{
+                if(component.asyncData){
+                    return component.asyncData(store);
+                }
+            })).then(()=&gt;{
+                context.state = store.state; // 将store挂载在window.__INITIAL_STATE__
+                resolve(app);
+
+            });
+        })
+    })
+}
+</code></pre><h3 id="t13在浏览器运行时替换store">在浏览器运行时替换store <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t13%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E6%97%B6%E6%9B%BF%E6%8D%A2store"> # </a></h3>
+<pre><code>// 在浏览器运行代码
+if(typeof window !== 'undefined' &amp;&amp; window.__INITIAL_STATE__){
+    store.replaceState(window.__INITIAL_STATE__);
+}
+</code></pre><h2 id="t14通过json配置createBundleRenderer方法">通过json配置createBundleRenderer方法 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t14%E9%80%9A%E8%BF%87json%E9%85%8D%E7%BD%AEcreateBundleRenderer%E6%96%B9%E6%B3%95"> # </a></h2>
+<p>实现热更新,自动增加preload和prefetch,以及可以使用sourceMap</p>
+<pre><code>const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
+const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
+const nodeExternals = require('webpack-node-externals');
+let template = fs.readFileSync('./dist/index.ssr.html','utf8');
+let manifest = require('./dist/vue-ssr-client-manifest.json');
+let bundle = require('./dist/vue-ssr-server-bundle.json');
+
+let render = vueServerRenderer.createBundleRenderer(bundle,{
+    template,
+    clientManifest:manifest
+})
+</code></pre><h2 id="t15管理vue-meta标签">管理vue-meta标签 <a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html#t15%E7%AE%A1%E7%90%86vue-meta%E6%A0%87%E7%AD%BE"> # </a></h2>
+<p>自己更方便的管理vue的meta标签</p>
+<pre><code>import Vue from 'vue'
+import Meta from 'vue-meta';
+
+Vue.use(Meta);
+
+// 将meta挂载在上下文中
+const meta = app.$meta()
+context.meta = meta;
+
+// 组件中配置
+metaInfo: {
+    title:'嘿嘿'
+}
+
+// 在模板中取值
+{{{ meta.inject().title.text() }}} 
+</code></pre>
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./66-11.vue-ssr_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

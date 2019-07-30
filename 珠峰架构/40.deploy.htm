@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)http://www.zhufengpeixun.cn/architecture/html/40.deploy.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./40.deploy_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t01.2%20%E8%B4%AD%E4%B9%B0%E5%9F%9F%E5%90%8D">1.2 购买域名</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t11.3%20%E4%BA%91%E4%B8%BB%E6%9C%BA">1.3 云主机</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t21.4%20%E8%B4%AD%E4%B9%B0%E9%98%BF%E9%87%8C%E4%BA%91">1.4 购买阿里云</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t31.5%20%E5%A4%87%E6%A1%88">1.5 备案</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t42%20%E6%9C%8D%E5%8A%A1%E5%99%A8">2 服务器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t52.1%20%20%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8">2.1  连接服务器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t62.2%20%20%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7">2.2  创建用户</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t72.3%20%E8%B5%8B%E4%BA%88%E6%9D%83%E9%99%90">2.3 赋予权限</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t82.4%20%E6%B7%BB%E5%8A%A0sudo%E6%9D%83%E9%99%90">2.4 添加sudo权限</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t92.5%20SSH%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95">2.5 SSH无密码登录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t102.5.1%20%20%E6%9C%AC%E5%9C%B0%E7%94%9F%E6%88%90%E5%85%AC%E9%92%A5%E5%92%8C%E7%A7%81%E9%92%A5">2.5.1  本地生成公钥和私钥</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t112.5.2%20%E5%BC%80%E5%90%AFssh%E4%BB%A3%E7%90%86">2.5.2 开启ssh代理</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t122.5.3%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE">2.5.3 服务器配置</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t132.5.4%20%E6%8A%8A%E6%9C%AC%E5%9C%B0%E7%9A%84%E5%85%AC%E9%92%A5%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%88%E6%9D%83%E6%96%87%E4%BB%B6%E4%B8%AD">2.5.4 把本地的公钥上传到服务器授权文件中</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t142.6%20%E5%A2%9E%E5%8A%A0%E5%AE%89%E5%85%A8%E7%AD%89%E7%BA%A7">2.6 增加安全等级</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t152.7%20%E9%85%8D%E7%BD%AE%E9%98%B2%E7%81%AB%E5%A2%99">2.7 配置防火墙</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t162.8%20%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6">2.8 安装软件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t172.9%20%E5%AE%89%E8%A3%85node">2.9 安装node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t182.10%20%E7%BC%96%E5%86%99node%E7%A8%8B%E5%BA%8F">2.10 编写node程序</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t192.11%20%E5%90%AF%E5%8A%A8%E7%A8%8B%E5%BA%8F">2.11 启动程序</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t202.12%20nginx">2.12 nginx</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t212.12.1%20%E5%AE%89%E8%A3%85">2.12.1 安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t222.12.2%20nginx%E5%91%BD%E4%BB%A4">2.12.2 nginx命令</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t232.12.3%20nginx%E9%85%8D%E7%BD%AE">2.12.3 nginx配置</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t242.12.4%20%E9%87%8D%E5%90%AFnginx">2.12.4 重启nginx</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t252.13%20mysql">2.13 mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t262.14%20%E5%85%8B%E9%9A%86%E9%A1%B9%E7%9B%AE">2.14 克隆项目</a></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <p>﻿##  1. 服务器部署步骤</p>
+<ol>
+<li>购买自己的域名</li>
+<li>域名备案</li>
+<li>购买服务器</li>
+<li>配置服务器应用环境</li>
+<li>安装配置服务器</li>
+<li>项目远程部署和发布与更新</li>
+</ol>
+<h3 id="t01.2 购买域名">1.2 购买域名 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t01.2%20%E8%B4%AD%E4%B9%B0%E5%9F%9F%E5%90%8D"> # </a></h3>
+<ul>
+<li><a href="https://dnspod.cloud.tencent.com/">腾讯云</a></li>
+<li><a href="https://wanwang.aliyun.com/">阿里云</a></li>
+<li><a href="https://cloud.baidu.com/product/bcd.html">百度云</a></li>
+<li><a href="https://www.22.cn/">爱名网</a></li>
+<li><a href="https://sg.godaddy.com/">godaddy</a></li>
+</ul>
+<h3 id="t11.3 云主机">1.3 云主机 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t11.3%20%E4%BA%91%E4%B8%BB%E6%9C%BA"> # </a></h3>
+<ul>
+<li><a href="https://www.aliyun.com/">阿里云 ECS</a></li>
+<li><a href="https://aws.amazon.com/cn/">亚马逊 AWS</a></li>
+<li><a href="https://cloud.baidu.com/">百度云</a></li>
+</ul>
+<h3 id="t21.4 购买阿里云">1.4 购买阿里云 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t21.4%20%E8%B4%AD%E4%B9%B0%E9%98%BF%E9%87%8C%E4%BA%91"> # </a></h3>
+<ul>
+<li><a href="https://ecs-buy.aliyun.com/wizard/#/postpay/cn-beijing">选择配置</a></li>
+<li>镜像 Ubuntu 16.04 64位</li>
+</ul>
+<h3 id="t31.5 备案">1.5 备案 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t31.5%20%E5%A4%87%E6%A1%88"> # </a></h3>
+<ul>
+<li><a href="https://beian.aliyun.com/">阿里云备案</a></li>
+<li><a href="https://bsn.console.aliyun.com/#/bsnManagement">备案服务号管理</a></li>
+</ul>
+<h2 id="t42 服务器">2 服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t42%20%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h2>
+<h3 id="t52.1  连接服务器">2.1  连接服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t52.1%20%20%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h3>
+<pre><code class="lang-js">ssh root@<span class="hljs-number">39.96</span><span class="hljs-number">.114</span><span class="hljs-number">.57</span>
+</code></pre>
+<h3 id="t62.2  创建用户">2.2  创建用户 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t62.2%20%20%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7"> # </a></h3>
+<pre><code class="lang-js">adduser juejin
+</code></pre>
+<h3 id="t72.3 赋予权限">2.3 赋予权限 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t72.3%20%E8%B5%8B%E4%BA%88%E6%9D%83%E9%99%90"> # </a></h3>
+<p>gpasswd命令是Linux下工作组文件/etc/group和/etc/gshadow管理工具。</p>
+<ul>
+<li>-a：添加用户到组</li>
+<li>-d：从组删除用户<pre><code class="lang-js">gpasswd -a juejin sudo 
+</code></pre>
+</li>
+</ul>
+<h3 id="t82.4 添加sudo权限">2.4 添加sudo权限 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t82.4%20%E6%B7%BB%E5%8A%A0sudo%E6%9D%83%E9%99%90"> # </a></h3>
+<p>Linux用户配置sudo权限(visudo),如果你用visudo来编辑这个文件，那么它会帮你自动做很多事情，比如说语法检查，加锁防止别人同时修改这个文件等等</p>
+<pre><code class="lang-js">sudo visudo
+</code></pre>
+<blockquote>
+<p>visudo其实是打开/etc/sudoers</p>
+</blockquote>
+<pre><code class="lang-js"># User privilege specification
+juejin  ALL=(ALL:ALL) ALL
+</code></pre>
+<ul>
+<li>1 "From ALL hosts juejin" 从任何机器登录，都可以应用接下来的规则</li>
+<li>2 "Run As ALL User",juejin可以以任何用户的身份运行一些命令</li>
+<li>3 "Run As All Groups" juejin可以以任何用户组的身份运行一些命令</li>
+<li>4 前面的规定适用于任何命令</li>
+</ul>
+<blockquote>
+<p>juejin这个用户可以从任何机器登录，以任何用户和用户组的身份运行任何命令。
+保存并退出</p>
+<pre><code class="lang-js">Ctrl+X
+shift + y
+</code></pre>
+</blockquote>
+<h3 id="t92.5 SSH无密码登录">2.5 SSH无密码登录 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t92.5%20SSH%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95"> # </a></h3>
+<p>ssh 公钥认证是ssh认证的方式之一。通过公钥认证可实现ssh免密码登陆，git的ssh方式也是通过公钥进行认证的。</p>
+<h4 id="t102.5.1  本地生成公钥和私钥">2.5.1  本地生成公钥和私钥 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t102.5.1%20%20%E6%9C%AC%E5%9C%B0%E7%94%9F%E6%88%90%E5%85%AC%E9%92%A5%E5%92%8C%E7%A7%81%E9%92%A5"> # </a></h4>
+<pre><code class="lang-js">ssh-keygen --help
+cd ~/.ssh
+ssh-keygen -t rsa -b 4096
+</code></pre>
+<ul>
+<li>-t 指定加密方式</li>
+<li>-b 字节数</li>
+</ul>
+<h4 id="t112.5.2 开启ssh代理">2.5.2 开启ssh代理 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t112.5.2%20%E5%BC%80%E5%90%AFssh%E4%BB%A3%E7%90%86"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-built_in">eval</span> <span class="hljs-string">"$(ssh-agent -s)"</span>
+ssh-add ~<span class="hljs-regexp">/.ssh/i</span>d_rsa
+</code></pre>
+<h4 id="t122.5.3 服务器配置">2.5.3 服务器配置 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t122.5.3%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-built_in">eval</span> <span class="hljs-string">"$(ssh-agent -s)"</span>
+ssh-add ~<span class="hljs-regexp">/.ssh/i</span>d_rsa
+ssh-keygen -t rsa -b <span class="hljs-number">4096</span>
+</code></pre>
+<h4 id="t132.5.4 把本地的公钥上传到服务器授权文件中">2.5.4 把本地的公钥上传到服务器授权文件中 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t132.5.4%20%E6%8A%8A%E6%9C%AC%E5%9C%B0%E7%9A%84%E5%85%AC%E9%92%A5%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%88%E6%9D%83%E6%96%87%E4%BB%B6%E4%B8%AD"> # </a></h4>
+<pre><code class="lang-js">vi ~<span class="hljs-regexp">/.ssh/</span>authorized_keys
+chmod <span class="hljs-number">600</span> ~<span class="hljs-regexp">/.ssh/</span>authorized_keys
+sudo service ssh restart
+</code></pre>
+<h3 id="t142.6 增加安全等级">2.6 增加安全等级 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t142.6%20%E5%A2%9E%E5%8A%A0%E5%AE%89%E5%85%A8%E7%AD%89%E7%BA%A7"> # </a></h3>
+<pre><code class="lang-js">sudo vi /etc/ssh/sshd_config
+     vi /etc/ssh/sshd_config
+</code></pre>
+<pre><code class="lang-js">Port <span class="hljs-number">2222</span>
+AllowUsers juejin
+
+PermitRootLogin yes
+PasswordAuthentication yes
+</code></pre>
+<pre><code class="lang-js">sudo service ssh restart
+/etc/init.d/ssh restart
+lsof -i:<span class="hljs-number">2222</span>
+</code></pre>
+<pre><code class="lang-js">ssh -p <span class="hljs-number">2222</span> juejin@<span class="hljs-number">39.96</span><span class="hljs-number">.114</span><span class="hljs-number">.57</span>
+</code></pre>
+<h3 id="t152.7 配置防火墙">2.7 配置防火墙 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t152.7%20%E9%85%8D%E7%BD%AE%E9%98%B2%E7%81%AB%E5%A2%99"> # </a></h3>
+<h3 id="t162.8 安装软件">2.8 安装软件 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t162.8%20%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6"> # </a></h3>
+<pre><code class="lang-js">sudo apt-get update
+sudo apt-get install wget curl git
+</code></pre>
+<h3 id="t172.9 安装node">2.9 安装node <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t172.9%20%E5%AE%89%E8%A3%85node"> # </a></h3>
+<ul>
+<li><a href="https://github.com/creationix/nvm/blob/master/README.md">nvm</a><pre><code class="lang-js">wget -qO- https:<span class="hljs-comment">//raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash</span>
+nvm install stable
+node -v
+npm i cnpm -g
+npm i nrm -g
+</code></pre>
+</li>
+</ul>
+<h3 id="t182.10 编写node程序">2.10 编写node程序 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t182.10%20%E7%BC%96%E5%86%99node%E7%A8%8B%E5%BA%8F"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
+
+<span class="hljs-keyword">const</span> hostname = <span class="hljs-string">'39.96.114.57'</span>;
+<span class="hljs-keyword">const</span> port = <span class="hljs-number">3000</span>;
+
+<span class="hljs-keyword">const</span> server = http.createServer(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  res.statusCode = <span class="hljs-number">200</span>;
+  res.setHeader(<span class="hljs-string">'Content-Type'</span>, <span class="hljs-string">'text/plain'</span>);
+  res.end(<span class="hljs-string">'Hello World\n'</span>);
+});
+
+server.listen(port, hostname, () =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Server running at http://<span class="hljs-subst">${hostname}</span>:<span class="hljs-subst">${port}</span>/`</span>);
+});
+
+</code></pre>
+<h3 id="t192.11 启动程序">2.11 启动程序 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t192.11%20%E5%90%AF%E5%8A%A8%E7%A8%8B%E5%BA%8F"> # </a></h3>
+<p>强大的进程管理器，进程异常退出时pm2会尝试重启</p>
+<pre><code class="lang-js">npm install pm2 -g
+</code></pre>
+<p>用pm2启动node
+|命令|用途|
+|:----|:----|
+|pm2 start app.js --name "crawl"|启动应用|
+|pm2 list|查看所有应用|
+|pm2 restart crawl|重启应用|
+|pm2 stop crawl|停止应用|
+|pm2 delete crawl|删除应用|</p>
+<pre><code class="lang-js">node app.js
+pm2 start app.js --name <span class="hljs-string">'juejin'</span>
+</code></pre>
+<h3 id="t202.12 nginx">2.12 nginx <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t202.12%20nginx"> # </a></h3>
+<p>Nginx是一个高性能的HTTP和反向代理服务器</p>
+<h4 id="t212.12.1 安装">2.12.1 安装 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t212.12.1%20%E5%AE%89%E8%A3%85"> # </a></h4>
+<pre><code class="lang-js">apt-get install nginx
+</code></pre>
+<h4 id="t222.12.2 nginx命令">2.12.2 nginx命令 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t222.12.2%20nginx%E5%91%BD%E4%BB%A4"> # </a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">启动nginx</td>
+<td style="text-align:left">nginx -c /etc/nginx/nginx.conf</td>
+</tr>
+<tr>
+<td style="text-align:left">关闭 nginx</td>
+<td style="text-align:left">nginx -s stop</td>
+</tr>
+<tr>
+<td style="text-align:left">重读配置文件</td>
+<td style="text-align:left">nginx -s reload kill -HUP nginx</td>
+</tr>
+<tr>
+<td style="text-align:left">常用命令</td>
+<td style="text-align:left">service nginx {start</td>
+<td>stop</td>
+<td>status</td>
+<td>restart</td>
+<td>reload</td>
+<td>configtest</td>
+<td>}</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t232.12.3 nginx配置">2.12.3 nginx配置 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t232.12.3%20nginx%E9%85%8D%E7%BD%AE"> # </a></h4>
+<pre><code class="lang-js">cd /etc/nginx/sites-enabled
+sudo vi juejin.conf
+</code></pre>
+<pre><code class="lang-js">upstream juejin{
+    server <span class="hljs-number">39.96</span><span class="hljs-number">.114</span><span class="hljs-number">.57</span>:<span class="hljs-number">3000</span>;
+}
+server {
+    listen <span class="hljs-number">80</span>;
+    server_name <span class="hljs-number">39.96</span><span class="hljs-number">.114</span><span class="hljs-number">.57</span>;
+    location / {
+        proxy_pass http:<span class="hljs-comment">//juejin;</span>
+    }
+}
+</code></pre>
+<h4 id="t242.12.4 重启nginx">2.12.4 重启nginx <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t242.12.4%20%E9%87%8D%E5%90%AFnginx"> # </a></h4>
+<pre><code class="lang-js"> sudo nginx -s reload
+</code></pre>
+<h3 id="t252.13 mysql">2.13 mysql <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t252.13%20mysql"> # </a></h3>
+<p>安装mysql</p>
+<pre><code class="lang-js">sudo apt-get install mysql-server
+apt install mysql-client
+apt install libmysqlclient-dev
+</code></pre>
+<ul>
+<li><a href="https://www.cnblogs.com/roadofstudy/p/7446690.html">root用户重置密码问题</a><h3 id="t262.14 克隆项目">2.14 克隆项目 <a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html#t262.14%20%E5%85%8B%E9%9A%86%E9%A1%B9%E7%9B%AE"> # </a></h3>
+</li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./40.deploy_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

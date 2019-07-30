@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./63.1.redux_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t01.%20Redux%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF">1. Redux应用场景</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t12.%20Redux%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3">2. Redux设计思想</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t23.%20Redux%E4%B8%89%E5%A4%A7%E5%8E%9F%E5%88%99">3. Redux三大原则</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t34.%20%E5%8E%9F%E7%94%9F%E8%AE%A1%E6%95%B0%E5%99%A8">4. 原生计数器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t44.1%20index.html">4.1 index.html</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t54.2%20index.js">4.2 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t64.3%20redux">4.3 redux</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t74.3.1%20index.js">4.3.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t84.3.2%20createStore.js">4.3.2 createStore.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t94.3.3%20isPlainObject.js">4.3.3 isPlainObject.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t104.3.4%20actionTypes.js">4.3.4 actionTypes.js</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t115.%20React%E8%AE%A1%E6%95%B0%E5%99%A8">5. React计数器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t126.%20bindActionCreator">6. bindActionCreator</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t136.1%20Counter.js">6.1 Counter.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t146.2%20bindActionCreator.js">6.2 bindActionCreator.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t157.%20combineReducers">7. combineReducers</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t167.1%20src/index.js">7.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t177.2%20redux/index.js">7.2 redux/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t187.3%20combineReducers.js">7.3 combineReducers.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t197.4%20store\index.js">7.4 store\index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t207.5%20action-types.js">7.5 action-types.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t217.6%20%20actions">7.6  actions</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t227.6.1%20counter1.js">7.6.1 counter1.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t237.6.2%20counter2.js">7.6.2 counter2.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t247.7%20%20reducers">7.7  reducers</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t257.7.1%20%20index.js">7.7.1  index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t267.7.2%20%20counter1.js">7.7.2  counter1.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t277.7.3%20%20counter2.js">7.7.3  counter2.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t287.8%20Component">7.8 Component</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t297.8.1%20Counter1.js">7.8.1 Counter1.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t307.8.2%20%20Counter2.js">7.8.2  Counter2.js</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t318.%20react-redux">8. react-redux</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t328.1%20src/index.js">8.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t338.2%20Counter.js">8.2 Counter.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t348.3%20react-redux\index.js">8.3 react-redux\index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t358.4%20react-redux\Provider.js">8.4 react-redux\Provider.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t368.5%20react-redux\connect.js">8.5 react-redux\connect.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t378.6%20react-redux\Context.js">8.6 react-redux\Context.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t38%E9%99%84%E5%BD%95">附录</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. Redux应用场景">1. Redux应用场景 <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t01.%20Redux%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"> # </a></h2>
+<ul>
+<li>随着 JavaScript 单页应用开发日趋复杂,管理不断变化的 state 非常困难</li>
+<li>Redux的出现就是为了解决state里的数据问题</li>
+<li>在React中，数据在组件中是单向流动的</li>
+<li>数据从一个方向父组件流向子组件(通过props)，由于这个特征，两个非父子关系的组件（或者称作兄弟组件）之间的通信就比较麻烦</li>
+</ul>
+<p><img src="./63.1.redux_files/redux-wrong.png" alt="redux-wrong"></p>
+<h2 id="t12. Redux设计思想">2. Redux设计思想 <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t12.%20Redux%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"> # </a></h2>
+<ul>
+<li>Redux是将整个应用状态存储到到一个地方，称为store</li>
+<li>里面保存一棵状态树state tree</li>
+<li>组件可以派发dispatch行为action给store,而不是直接通知其它组件</li>
+<li>其它组件可以通过订阅store中的状态(state)来刷新自己的视图</li>
+</ul>
+<p><img src="./63.1.redux_files/redux-flow.png" alt="redux-flow"></p>
+<h2 id="t23. Redux三大原则">3. Redux三大原则 <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t23.%20Redux%E4%B8%89%E5%A4%A7%E5%8E%9F%E5%88%99"> # </a></h2>
+<ul>
+<li>整个应用的 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 store 中</li>
+<li>State 是只读的，惟一改变 state 的方法就是触发 action，action 是一个用于描述已发生事件的普通对象 使用纯函数来执行修改，为了描述action如何改变state tree ，你需要编写 reducers</li>
+<li>单一数据源的设计让React的组件之间的通信更加方便，同时也便于状态的统一管理</li>
+</ul>
+<h2 id="t34. 原生计数器">4. 原生计数器 <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t34.%20%E5%8E%9F%E7%94%9F%E8%AE%A1%E6%95%B0%E5%99%A8"> # </a></h2>
+<p><a href="https://github.com/reduxjs/redux">redux</a></p>
+<h3 id="t44.1 index.html">4.1 index.html <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t44.1%20index.html"> # </a></h3>
+<pre><code class="lang-html">    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"counter"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"counter-value"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"increment-btn"</span>&gt;</span>+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"decrement-btn"</span>&gt;</span>-<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<h3 id="t54.2 index.js">4.2 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t54.2%20index.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> {createStore} <span class="hljs-keyword">from</span> <span class="hljs-string">'redux'</span>;
+<span class="hljs-keyword">let</span> counterValue = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'counter-value'</span>);
+<span class="hljs-keyword">let</span> incrementBtn = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'increment-btn'</span>);
+<span class="hljs-keyword">let</span> decrementBtn = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'decrement-btn'</span>);
+
+<span class="hljs-keyword">const</span> INCREMENT=<span class="hljs-string">'INCREMENT'</span>;
+<span class="hljs-keyword">const</span> DECREMENT = <span class="hljs-string">'DECREMENT'</span>;
+<span class="hljs-keyword">let</span> initState = <span class="hljs-number">0</span>;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reducer</span>(<span class="hljs-params">state=initState,action</span>)</span>{
+    <span class="hljs-keyword">switch</span>(action.type){
+        <span class="hljs-keyword">case</span> INCREMENT:
+            <span class="hljs-keyword">return</span> state + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">case</span> DECREMENT:
+            <span class="hljs-keyword">return</span> state - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> state;
+    }
+}
+<span class="hljs-keyword">let</span> store=createStore(reducer);
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+    counterValue.innerHTML=store.getState();
+}
+store.subscribe(render);
+render();
+incrementBtn.addEventListener(<span class="hljs-string">'click'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    store.dispatch({<span class="hljs-attr">type</span>:INCREMENT});
+});
+decrementBtn.addEventListener(<span class="hljs-string">'click'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    store.dispatch({<span class="hljs-attr">type</span>:DECREMENT});
+});
+</code></pre>
+<h3 id="t64.3 redux">4.3 redux <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t64.3%20redux"> # </a></h3>
+<h4 id="t74.3.1 index.js">4.3.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t74.3.1%20index.js"> # </a></h4>
+<p>src\redux\index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> createStore <span class="hljs-keyword">from</span> <span class="hljs-string">'./createStore'</span>
+<span class="hljs-keyword">export</span> {
+    createStore
+}
+</code></pre>
+<h4 id="t84.3.2 createStore.js">4.3.2 createStore.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t84.3.2%20createStore.js"> # </a></h4>
+<p>src\redux\createStore.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> ActionTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'./utils/actionTypes'</span>
+<span class="hljs-keyword">import</span> isPlainObject <span class="hljs-keyword">from</span> <span class="hljs-string">'./utils/isPlainObject'</span>
+<span class="hljs-comment">/**
+ * 创建一个存放状态对象的Redux仓库
+ * @param {*} reducer  通过传入当前状态树和动作返回下一个状态树的一个函数
+ * @param {*} preloadedState  初始状态
+ */</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createStore</span>(<span class="hljs-params">reducer, preloadedState</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> reducer !== <span class="hljs-string">'function'</span>) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Expected the reducer to be a function.'</span>)
+  }
+
+  <span class="hljs-keyword">let</span> currentReducer = reducer         <span class="hljs-comment">//当前的reducer</span>
+  <span class="hljs-keyword">let</span> currentState = preloadedState    <span class="hljs-comment">//当前的状态</span>
+  <span class="hljs-keyword">let</span> currentListeners = []            <span class="hljs-comment">//当前的监听数组</span>
+
+  <span class="hljs-comment">//读取仓库中状态树中的状态</span>
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getState</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> currentState
+  }
+
+  <span class="hljs-comment">//增加一个状态变化监听函数。它将在每次动作被派发的时候调用</span>
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">subscribe</span>(<span class="hljs-params">listener</span>) </span>{
+    <span class="hljs-keyword">let</span> isSubscribed = <span class="hljs-literal">true</span>
+    currentListeners.push(listener)<span class="hljs-comment">//向新的数组中添加监听函数</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unsubscribe</span>(<span class="hljs-params"></span>) </span>{<span class="hljs-comment">//返回一个取消监听函数</span>
+      <span class="hljs-keyword">if</span> (!isSubscribed) {<span class="hljs-comment">//如果已经取消了，则直接返回</span>
+        <span class="hljs-keyword">return</span>
+      }
+      isSubscribed = <span class="hljs-literal">false</span>
+      <span class="hljs-keyword">const</span> index = currentListeners.indexOf(listener)
+      currentListeners.splice(index, <span class="hljs-number">1</span>)<span class="hljs-comment">//删除此函数</span>
+    }
+  }
+
+  <span class="hljs-comment">//派发一个动作，它是唯一能触发状态更新的方法</span>
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">dispatch</span>(<span class="hljs-params">action</span>) </span>{
+      <span class="hljs-comment">//如果不是纯对象，就报错</span>
+    <span class="hljs-keyword">if</span> (!isPlainObject(action)) {
+      <span class="hljs-comment">//动作必须是一个纯对象，使用自定义中间件实现异步动作  </span>
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">`动作必须是一个纯对象，如果想进行异步操作请使用中间件`</span>);
+    }
+    <span class="hljs-comment">//如果动作类型是undefined也报一个错误，动作不能有一个未定义的type属性 </span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> action.type === <span class="hljs-string">'undefined'</span>) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">`动作不能一个值为undefined的type属性`</span>);
+    }
+
+    currentState = currentReducer(currentState, action);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; currentListeners.length; i++) {
+      <span class="hljs-keyword">const</span> listener = currentListeners[i]
+      listener()
+    }
+
+    <span class="hljs-keyword">return</span> action <span class="hljs-comment">//返回派发的动作</span>
+  }
+
+  <span class="hljs-comment">//当一个仓库被创建的时候，会派发一个INIT动作，以便让reducer返回初始值，这个可以高效的填充初始状态树</span>
+  dispatch({ <span class="hljs-attr">type</span>: ActionTypes.INIT })
+
+  <span class="hljs-keyword">return</span> {
+    dispatch,
+    subscribe,
+    getState
+  }
+}
+</code></pre>
+<h4 id="t94.3.3 isPlainObject.js">4.3.3 isPlainObject.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t94.3.3%20isPlainObject.js"> # </a></h4>
+<p>src\redux\utils\isPlainObject.js</p>
+<pre><code class="lang-js"><span class="hljs-comment">/**
+ * @param {any} obj The object to inspect.要检查的对象
+ * @returns {boolean} True if the argument appears to be a plain object. 如果参数是一个简单对象的话返回true
+ */</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isPlainObject</span>(<span class="hljs-params">obj</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> obj !== <span class="hljs-string">'object'</span> || obj === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+
+    <span class="hljs-keyword">let</span> proto = obj
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">Object</span>.getPrototypeOf(proto) !== <span class="hljs-literal">null</span>) {
+      proto = <span class="hljs-built_in">Object</span>.getPrototypeOf(proto)
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.getPrototypeOf(obj) === proto
+  }
+</code></pre>
+<h4 id="t104.3.4 actionTypes.js">4.3.4 actionTypes.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t104.3.4%20actionTypes.js"> # </a></h4>
+<p>src\redux\utils\actionTypes.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> randomString = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
+  <span class="hljs-built_in">Math</span>.random()
+    .toString(<span class="hljs-number">36</span>)
+    .substring(<span class="hljs-number">7</span>)
+    .split(<span class="hljs-string">''</span>)
+    .join(<span class="hljs-string">'.'</span>)
+
+<span class="hljs-keyword">const</span> ActionTypes = {
+  <span class="hljs-attr">INIT</span>: <span class="hljs-string">`@@redux/INIT<span class="hljs-subst">${randomString()}</span>`</span>
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> ActionTypes
+</code></pre>
+<h2 id="t115. React计数器">5. React计数器 <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t115.%20React%E8%AE%A1%E6%95%B0%E5%99%A8"> # </a></h2>
+<ul>
+<li>使用React实现一个计数器</li>
+</ul>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { createStore } <span class="hljs-keyword">from</span> <span class="hljs-string">'../redux'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = { <span class="hljs-attr">value</span>: <span class="hljs-number">0</span> };
+    }
+    componentDidMount() {
+        <span class="hljs-keyword">this</span>.unsubscribe = store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">value</span>: store.getState() }));
+    }
+    componentWillUnmount() {
+        <span class="hljs-keyword">this</span>.unsubscribe();
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{this.state.value}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> store.dispatch({ type: 'INCREMENT' })}&gt;+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> store.dispatch({ type: 'DECREMENT' })}&gt;-<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{</span>
+                    () =&gt;</span> {
+                        setTimeout(() =&gt; {
+                            store.dispatch({ type: 'INCREMENT' })
+                        }, 1000);
+                    }
+                }&gt;1秒后加1<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        )
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reducer</span>(<span class="hljs-params">state=<span class="hljs-number">0</span>,action</span>)</span>{
+    <span class="hljs-keyword">switch</span>(action.type){
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'INCREMENT'</span>:
+            <span class="hljs-keyword">return</span> state + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'DECREMENT'</span>:
+            <span class="hljs-keyword">return</span> state - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> state;
+    }
+}
+<span class="hljs-keyword">const</span> store = createStore(reducer,<span class="hljs-number">0</span>);
+</code></pre>
+<h2 id="t126. bindActionCreator">6. bindActionCreator <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t126.%20bindActionCreator"> # </a></h2>
+<h3 id="t136.1 Counter.js">6.1 Counter.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t136.1%20Counter.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> { createStore,bindActionCreators } <span class="hljs-keyword">from</span> <span class="hljs-string">'../redux'</span>;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reducer</span>(<span class="hljs-params">state=<span class="hljs-number">0</span>,action</span>)</span>{
+    <span class="hljs-keyword">switch</span>(action.type){
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'INCREMENT'</span>:
+            <span class="hljs-keyword">return</span> state + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'DECREMENT'</span>:
+            <span class="hljs-keyword">return</span> state - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> state;
+    }
+}
+<span class="hljs-keyword">const</span> store = createStore(reducer,<span class="hljs-number">0</span>);
+<span class="hljs-keyword">const</span> actions = {
+    increment(){
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">type</span>:<span class="hljs-string">'INCREMENT'</span>};
+    },
+    decrement(){
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">type</span>:<span class="hljs-string">'DECREMENT'</span>};
+    }
+};
+<span class="hljs-keyword">const</span> boundActions = bindActionCreators(actions,store.dispatch);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = { <span class="hljs-attr">value</span>: <span class="hljs-number">0</span> };
+    }
+    componentDidMount() {
+        <span class="hljs-keyword">this</span>.unsubscribe = store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">value</span>: store.getState() }));
+    }
+    componentWillUnmount() {
+        <span class="hljs-keyword">this</span>.unsubscribe();
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{this.state.value}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{boundActions.increment}</span>&gt;</span>+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{boundActions.decrement}</span>&gt;</span>-<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        )
+    }
+}
+
+
+</code></pre>
+<h3 id="t146.2 bindActionCreator.js">6.2 bindActionCreator.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t146.2%20bindActionCreator.js"> # </a></h3>
+<p>bindActionCreator</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindActionCreator</span>(<span class="hljs-params">actionCreator, dispatch</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">return</span> dispatch(actionCreator.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>))
+    }
+  }
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindActionCreators</span>(<span class="hljs-params">actionCreators, dispatch</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> actionCreators === <span class="hljs-string">'function'</span>) {
+        <span class="hljs-keyword">return</span> bindActionCreator(actionCreators, dispatch)
+    }
+    <span class="hljs-keyword">const</span> boundActionCreators = {}
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">in</span> actionCreators) {
+        <span class="hljs-keyword">const</span> actionCreator = actionCreators[key]
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> actionCreator === <span class="hljs-string">'function'</span>) {
+            boundActionCreators[key] = bindActionCreator(actionCreator, dispatch)
+        }
+    }
+    <span class="hljs-keyword">return</span> boundActionCreators
+}
+</code></pre>
+<h2 id="t157. combineReducers">7. combineReducers <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t157.%20combineReducers"> # </a></h2>
+<h3 id="t167.1 src/index.js">7.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t167.1%20src/index.js"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> Counter1 <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Counter1'</span>;
+<span class="hljs-keyword">import</span> Counter2 <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Counter2'</span>;
+ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Counter1</span>/&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">hr</span>/&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Counter2</span>/&gt;</span><span class="hljs-tag">&lt;/&gt;</span>,document.getElementById('root'));
+</span></code></pre>
+<h3 id="t177.2 redux/index.js">7.2 redux/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t177.2%20redux/index.js"> # </a></h3>
+<p>src\redux\index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> createStore <span class="hljs-keyword">from</span> <span class="hljs-string">'./createStore'</span>
+<span class="hljs-keyword">import</span> bindActionCreators <span class="hljs-keyword">from</span> <span class="hljs-string">'./bindActionCreators'</span>
+<span class="hljs-keyword">import</span> combineReducers <span class="hljs-keyword">from</span> <span class="hljs-string">'./combineReducers'</span>
+<span class="hljs-keyword">export</span> {
+    createStore,
+    bindActionCreators,
+    combineReducers
+}
+</code></pre>
+<h3 id="t187.3 combineReducers.js">7.3 combineReducers.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t187.3%20combineReducers.js"> # </a></h3>
+<p>src\redux\combineReducers.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">combineReducers</span>(<span class="hljs-params">reducers</span>) </span>{
+    <span class="hljs-keyword">const</span> reducerKeys = <span class="hljs-built_in">Object</span>.keys(reducers)
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">combination</span>(<span class="hljs-params">state = {}, action</span>) </span>{
+        <span class="hljs-keyword">let</span> hasChanged = <span class="hljs-literal">false</span>
+        <span class="hljs-keyword">const</span> nextState = {}
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; reducerKeys.length; i++) {
+            <span class="hljs-keyword">const</span> key = reducerKeys[i]
+            <span class="hljs-keyword">const</span> reducer = reducers[key]
+            <span class="hljs-keyword">const</span> previousStateForKey = state[key]
+            <span class="hljs-keyword">const</span> nextStateForKey = reducer(previousStateForKey, action)
+            nextState[key] = nextStateForKey
+            hasChanged = hasChanged || nextStateForKey !== previousStateForKey
+        }
+        <span class="hljs-keyword">return</span> hasChanged ? nextState : state
+    }
+}
+</code></pre>
+<h3 id="t197.4 store\index.js">7.4 store\index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t197.4%20store\index.js"> # </a></h3>
+<p>src\store\index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> { createStore } <span class="hljs-keyword">from</span> <span class="hljs-string">'../redux'</span>;
+<span class="hljs-keyword">import</span> reducer <span class="hljs-keyword">from</span> <span class="hljs-string">'./reducers'</span>;
+<span class="hljs-keyword">const</span> store = createStore(reducer,{<span class="hljs-attr">counter1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">counter2</span>:<span class="hljs-number">0</span>});
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> store ;
+</code></pre>
+<h3 id="t207.5 action-types.js">7.5 action-types.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t207.5%20action-types.js"> # </a></h3>
+<p>src\store\action-types.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> INCREMENT1 = <span class="hljs-string">'INCREMENT1'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> DECREMENT1 = <span class="hljs-string">'DECREMENT1'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> INCREMENT2 = <span class="hljs-string">'INCREMENT2'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> DECREMENT2 = <span class="hljs-string">'DECREMENT2'</span>;
+</code></pre>
+<h3 id="t217.6  actions">7.6  actions <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t217.6%20%20actions"> # </a></h3>
+<h4 id="t227.6.1 counter1.js">7.6.1 counter1.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t227.6.1%20counter1.js"> # </a></h4>
+<p>src\store\actions\counter1.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> types <span class="hljs-keyword">from</span> <span class="hljs-string">'../action-types'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+    increment1(){
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">type</span>:types.INCREMENT1};
+    },
+    decrement1(){
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">type</span>:types.DECREMENT1};
+    }
+}
+</code></pre>
+<h4 id="t237.6.2 counter2.js">7.6.2 counter2.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t237.6.2%20counter2.js"> # </a></h4>
+<p>src\store\actions\counter2.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> types <span class="hljs-keyword">from</span> <span class="hljs-string">'../action-types'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+    increment2(){
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">type</span>:types.INCREMENT2};
+    },
+    decrement2(){
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">type</span>:types.DECREMENT2};
+    }
+}
+</code></pre>
+<h3 id="t247.7  reducers">7.7  reducers <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t247.7%20%20reducers"> # </a></h3>
+<h4 id="t257.7.1  index.js">7.7.1  index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t257.7.1%20%20index.js"> # </a></h4>
+<p>src\store\reducers\index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> {combineReducers} <span class="hljs-keyword">from</span> <span class="hljs-string">'../../redux'</span>;
+<span class="hljs-keyword">import</span> counter1 <span class="hljs-keyword">from</span> <span class="hljs-string">'./counter1'</span>;
+<span class="hljs-keyword">import</span> counter2 <span class="hljs-keyword">from</span> <span class="hljs-string">'./counter2'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> combineReducers({
+    counter1,
+    counter2
+});
+</code></pre>
+<h4 id="t267.7.2  counter1.js">7.7.2  counter1.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t267.7.2%20%20counter1.js"> # </a></h4>
+<p>src/store/reducers/counter1.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> types <span class="hljs-keyword">from</span> <span class="hljs-string">'../action-types'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">state=<span class="hljs-number">0</span>,action</span>)</span>{
+    <span class="hljs-keyword">switch</span>(action.type){
+        <span class="hljs-keyword">case</span> types.INCREMENT1:
+            <span class="hljs-keyword">return</span> state + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">case</span> types.DECREMENT1:
+            <span class="hljs-keyword">return</span> state - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> state;
+    }
+}
+</code></pre>
+<h4 id="t277.7.3  counter2.js">7.7.3  counter2.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t277.7.3%20%20counter2.js"> # </a></h4>
+<p>src/store/reducers/counter2.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> types <span class="hljs-keyword">from</span> <span class="hljs-string">'../action-types'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">state=<span class="hljs-number">0</span>,action</span>)</span>{
+    <span class="hljs-keyword">switch</span>(action.type){
+        <span class="hljs-keyword">case</span> types.INCREMENT2:
+            <span class="hljs-keyword">return</span> state + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">case</span> types.DECREMENT2:
+            <span class="hljs-keyword">return</span> state - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-keyword">return</span> state;
+    }
+}
+</code></pre>
+<h3 id="t287.8 Component">7.8 Component <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t287.8%20Component"> # </a></h3>
+<h4 id="t297.8.1 Counter1.js">7.8.1 Counter1.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t297.8.1%20Counter1.js"> # </a></h4>
+<p>src\components\Counter1.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> actions <span class="hljs-keyword">from</span> <span class="hljs-string">'../store/actions/counter1'</span>;
+<span class="hljs-keyword">import</span> store <span class="hljs-keyword">from</span> <span class="hljs-string">'../store'</span>;
+<span class="hljs-keyword">import</span> {bindActionCreators} <span class="hljs-keyword">from</span> <span class="hljs-string">'../redux'</span>;
+<span class="hljs-keyword">const</span> boundActions = bindActionCreators(actions,store.dispatch);
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">value</span>:<span class="hljs-number">0</span>}
+    }
+    componentDidMount() {
+        <span class="hljs-keyword">this</span>.unsubscribe = store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">value</span>: store.getState().counter1 }));
+    }
+    componentWillUnmount() {
+        <span class="hljs-keyword">this</span>.unsubscribe();
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{this.state.value}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{boundActions.increment1}</span>&gt;</span>+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{boundActions.decrement1}</span>&gt;</span>-<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        )
+    }
+}
+</code></pre>
+<h4 id="t307.8.2  Counter2.js">7.8.2  Counter2.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t307.8.2%20%20Counter2.js"> # </a></h4>
+<p>src\components\Counter2.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> actions <span class="hljs-keyword">from</span> <span class="hljs-string">'../store/actions/counter2'</span>;
+<span class="hljs-keyword">import</span> store <span class="hljs-keyword">from</span> <span class="hljs-string">'../store'</span>;
+<span class="hljs-keyword">import</span> {bindActionCreators} <span class="hljs-keyword">from</span> <span class="hljs-string">'../redux'</span>;
+<span class="hljs-keyword">const</span> boundActions = bindActionCreators(actions,store.dispatch);
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">value</span>:<span class="hljs-number">0</span>}
+    }
+    componentDidMount() {
+        <span class="hljs-keyword">this</span>.unsubscribe = store.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">this</span>.setState({ <span class="hljs-attr">value</span>: store.getState().counter2 }));
+    }
+    componentWillUnmount() {
+        <span class="hljs-keyword">this</span>.unsubscribe();
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{this.state.value}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{boundActions.increment2}</span>&gt;</span>+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{boundActions.decrement2}</span>&gt;</span>-<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        )
+    }
+}
+</code></pre>
+<h2 id="t318. react-redux">8. react-redux <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t318.%20react-redux"> # </a></h2>
+<h3 id="t328.1 src/index.js">8.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t328.1%20src/index.js"> # </a></h3>
+<p>src/index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> Counter1 <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Counter1'</span>;
+<span class="hljs-keyword">import</span> Counter2 <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Counter2'</span>;
+<span class="hljs-keyword">import</span> store <span class="hljs-keyword">from</span> <span class="hljs-string">'./store'</span>;
+<span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'./react-redux'</span>;
+ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Provider</span> <span class="hljs-attr">store</span>=<span class="hljs-string">{store}</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Counter1</span>/&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">hr</span>/&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Counter2</span>/&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">Provider</span>&gt;</span></span>,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+</code></pre>
+<h3 id="t338.2 Counter.js">8.2 Counter.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t338.2%20Counter.js"> # </a></h3>
+<p>src/components/Counter.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> actions <span class="hljs-keyword">from</span> <span class="hljs-string">'../store/actions/counter1'</span>;
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'../react-redux'</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props);
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+            <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{this.props.value}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.props.increment}</span>&gt;</span>+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.props.decrement}</span>&gt;</span>-<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+        )
+    }
+}
+
+<span class="hljs-keyword">let</span> mapStateToProps = <span class="hljs-function"><span class="hljs-params">state</span>=&gt;</span>({<span class="hljs-attr">value</span>:state.counter});
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> connect(
+    mapStateToProps,
+    actions
+)(Counter)
+
+</code></pre>
+<h3 id="t348.3 react-redux\index.js">8.3 react-redux\index.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t348.3%20react-redux\index.js"> # </a></h3>
+<p>src\react-redux\index.js
+<a href="https://github.com/reduxjs/react-redux/blob/master/src/index.js">react-redux</a></p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> Provider <span class="hljs-keyword">from</span> <span class="hljs-string">'./Provider'</span>;
+<span class="hljs-keyword">import</span> connect <span class="hljs-keyword">from</span> <span class="hljs-string">'./connect'</span>;
+<span class="hljs-keyword">export</span> {
+    Provider,
+    connect
+}
+</code></pre>
+<h3 id="t358.4 react-redux\Provider.js">8.4 react-redux\Provider.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t358.4%20react-redux\Provider.js"> # </a></h3>
+<p>src\react-redux\Provider.js
+<a href="https://github.com/reduxjs/react-redux/blob/master/src/components/Provider.js">Provider.js</a></p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { Component } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+<span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>
+<span class="hljs-keyword">import</span> { ReactReduxContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'./Context'</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Provider</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">static</span> propTypes = {
+        <span class="hljs-attr">store</span>: PropTypes.shape({
+          <span class="hljs-attr">subscribe</span>: PropTypes.func.isRequired,
+          <span class="hljs-attr">dispatch</span>: PropTypes.func.isRequired,
+          <span class="hljs-attr">getState</span>: PropTypes.func.isRequired
+        }),
+        <span class="hljs-attr">children</span>: PropTypes.any
+    }
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">super</span>(props)
+    }
+    render() {
+        <span class="hljs-keyword">return</span> (
+          <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">ReactReduxContext.Provider</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{{store:this.props.store}}</span>&gt;</span>
+            {this.props.children}
+          <span class="hljs-tag">&lt;/<span class="hljs-name">ReactReduxContext.Provider</span>&gt;</span>
+        )
+      }
+}
+</span></code></pre>
+<h3 id="t368.5 react-redux\connect.js">8.5 react-redux\connect.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t368.5%20react-redux\connect.js"> # </a></h3>
+<p>src\react-redux\connect.js
+<a href="https://github.com/reduxjs/react-redux/blob/master/src/connect/connect.js">connect.js</a></p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {bindActionCreators} <span class="hljs-keyword">from</span> <span class="hljs-string">'../redux'</span>;
+<span class="hljs-keyword">import</span> { ReactReduxContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'./Context'</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">mapStateToProps,mapDispatchToProps</span>)</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">wrapWithConnect</span>(<span class="hljs-params">WrappedComponent</span>) </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-class"><span class="hljs-keyword">class</span>  <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
+            <span class="hljs-keyword">static</span> contextType = ReactReduxContext;
+            <span class="hljs-keyword">constructor</span>(props,context){
+                <span class="hljs-keyword">super</span>(props);
+                <span class="hljs-keyword">this</span>.state = mapStateToProps(context.store.getState());
+            }
+            componentDidMount(){
+                <span class="hljs-keyword">this</span>.unsubscribe = <span class="hljs-keyword">this</span>.context.store.subscribe(
+                    <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span><span class="hljs-keyword">this</span>.setState(mapStateToProps(<span class="hljs-keyword">this</span>.context.store.getState()))
+                );
+            }
+            componentWillUnmount(){
+                <span class="hljs-keyword">this</span>.unsubscribe();
+            }
+            render(){
+                <span class="hljs-keyword">let</span> actions = bindActionCreators(mapDispatchToProps,<span class="hljs-keyword">this</span>.context.store.dispatch);
+                <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">WrappedComponent</span> {<span class="hljs-attr">...this.state</span>} {<span class="hljs-attr">...actions</span>}/&gt;</span>
+            }
+        }
+    }
+}
+</span></code></pre>
+<h3 id="t378.6 react-redux\Context.js">8.6 react-redux\Context.js <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t378.6%20react-redux\Context.js"> # </a></h3>
+<p>src\react-redux\Context.js
+<a href="https://github.com/reduxjs/react-redux/blob/master/src/components/Context.js">Context.js</a></p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> ReactReduxContext = React.createContext(<span class="hljs-literal">null</span>)
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> ReactReduxContext
+</code></pre>
+<h2 id="t38附录">附录 <a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html#t38%E9%99%84%E5%BD%95"> # </a></h2>
+<ul>
+<li><a href="https://gitee.com/zhufengpeixun/learn-redux">learn-redux</a></li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./63.1.redux_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

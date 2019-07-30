@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)http://www.zhufengpeixun.cn/architecture/html/60.react.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./60.react_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t01.%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">1.初始化项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t12.%20%E5%88%9D%E6%AC%A1%E6%B8%B2%E6%9F%93">2. 初次渲染</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t22.1%20%E4%BD%BF%E7%94%A8">2.1 使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t32.2%20%E5%AE%9E%E7%8E%B0">2.2 实现</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t43.%20DOM%E7%BB%84%E4%BB%B6">3. DOM组件</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t53.1%20%E4%BD%BF%E7%94%A8">3.1 使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t63.2%20%E5%AE%9E%E7%8E%B0">3.2 实现</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t74.%20%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E6%B8%B2%E6%9F%93">4. 自定义组件渲染</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t84.1%20%E4%BD%BF%E7%94%A8">4.1 使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t94.2%20%E5%AE%9E%E7%8E%B0">4.2 实现</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t105.%20setState">5. setState</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t114.1%20%E4%BD%BF%E7%94%A8">4.1 使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t124.2%20%E5%AE%9E%E7%8E%B0">4.2 实现</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t136.%20%E5%87%8F%E5%B0%91move%E6%93%8D%E4%BD%9C">6. 减少move操作</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t146.1%20%E7%94%A8%E6%B3%95">6.1 用法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t156.2%20%E5%AE%9E%E7%8E%B0">6.2 实现</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t167.%20todos">7. todos</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t177.1%20%E4%BD%BF%E7%94%A8">7.1 使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t187.2%20%E5%AE%9E%E7%8E%B0">7.2 实现</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t198.%20key%E7%9A%84%E4%BC%98%E5%8C%96">8. key的优化</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t208.1%20%E4%BD%BF%E7%94%A8">8.1 使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t218.2%20%E4%BC%98%E5%8C%96">8.2 优化</a></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01.初始化项目">1.初始化项目 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t01.%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"> # </a></h2>
+<pre><code class="lang-js">create-react-app zreact
+cd zreact
+</code></pre>
+<h2 id="t12. 初次渲染">2. 初次渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t12.%20%E5%88%9D%E6%AC%A1%E6%B8%B2%E6%9F%93"> # </a></h2>
+<h3 id="t22.1 使用">2.1 使用 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t22.1%20%E4%BD%BF%E7%94%A8"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+React.render(<span class="hljs-string">'hello'</span>,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"root"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"root"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">data-reactid</span>=<span class="hljs-string">"0"</span>&gt;</span>hello<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<h3 id="t32.2 实现">2.2 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t32.2%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
+<ul>
+<li><code>render</code> 负责调度整个流程</li>
+<li>调用 <code>instantiateReactComponent</code> 生成一个对应 <code>component</code> 类型的实例对象</li>
+<li>再调用对象的 <code>mountComponent</code> 返回 <code>dom</code>，最后再写到 <code>container</code> 节点中</li>
+</ul>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-keyword">const</span> React = {
+    <span class="hljs-attr">nextReactRootIndex</span>:<span class="hljs-number">0</span>,
+    render
+}
+<span class="hljs-comment">/**
+ * React.render 作为入口接受一个React元素和浏览器中的DOM负责调用渲染
+ * nextReactRootIndex 为每个 component 的生成唯一标识
+ * @param {*} element React元素
+ * @param {*} container 目标容器的DOM节点
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element,container</span>)</span>{
+    <span class="hljs-comment">//instantiateReactComponent 用来根据 element 的类型,返回一个 component 的实例,是一个工厂函数</span>
+    <span class="hljs-keyword">let</span> componentInstance = instantiateReactComponent(element);
+    <span class="hljs-comment">//mountComponent方法用于对组件的渲染,返回组件的DOM结构</span>
+    <span class="hljs-keyword">let</span> markup = componentInstance.mountComponent(React.nextReactRootIndex++);
+    <span class="hljs-comment">//把组装好的DOM放入container容器中</span>
+    $(container).html(markup);
+    <span class="hljs-comment">//触发装载完成事件</span>
+    $(<span class="hljs-built_in">document</span>).trigger(<span class="hljs-string">"mountReady"</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">instantiateReactComponent</span>(<span class="hljs-params">element</span>)</span>{
+   <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'string'</span> || <span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'number'</span>){
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMTextComponent(element);
+   }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactComponent</span></span>{}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMTextComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ReactComponent</span></span>{
+    <span class="hljs-keyword">constructor</span>(text){
+        <span class="hljs-keyword">super</span>();
+        <span class="hljs-keyword">this</span>.text = text;
+    }
+    mountComponent(rootID){
+        <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;span data-reactid="<span class="hljs-subst">${rootID}</span>"&gt;<span class="hljs-subst">${<span class="hljs-keyword">this</span>.text}</span>&lt;/span&gt;`</span>;
+    }
+}
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span>  React;
+</code></pre>
+<h2 id="t43. DOM组件">3. DOM组件 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t43.%20DOM%E7%BB%84%E4%BB%B6"> # </a></h2>
+<h3 id="t53.1 使用">3.1 使用 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t53.1%20%E4%BD%BF%E7%94%A8"> # </a></h3>
+<p>src\index.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hello</span>(<span class="hljs-params"></span>)</span>{
+    alert(<span class="hljs-string">'hello'</span>)
+}
+<span class="hljs-keyword">let</span> element = React.createElement(<span class="hljs-string">'div'</span>,{<span class="hljs-attr">id</span>:<span class="hljs-string">'zhufeng'</span>,<span class="hljs-attr">onclick</span>:hello},<span class="hljs-string">'click'</span>);
+React.render(element,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+</code></pre>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">data-reactid</span>=<span class="hljs-string">"0"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"zhufeng"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">data-reactid</span>=<span class="hljs-string">"0.0"</span>&gt;</span>click<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+<h3 id="t63.2 实现">3.2 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t63.2%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-keyword">const</span> React = {
+    <span class="hljs-attr">nextReactRootIndex</span>:<span class="hljs-number">0</span>,
+    render,
+    createElement
+}
+<span class="hljs-comment">/**
+ * React.render 作为入口接受一个React元素和浏览器中的DOM负责调用渲染
+ * nextReactRootIndex 为每个 component 的生成唯一标识
+ * @param {*} element React元素
+ * @param {*} container 目标容器的DOM节点
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element,container</span>)</span>{
+    <span class="hljs-comment">//instantiateReactComponent 用来根据 element 的类型,返回一个 component 的实例,是一个工厂函数</span>
+    <span class="hljs-keyword">let</span> componentInstance = instantiateReactComponent(element);
+    <span class="hljs-comment">//mountComponent方法用于对组件的渲染,返回组件的DOM结构</span>
+    <span class="hljs-keyword">let</span> markup = componentInstance.mountComponent(React.nextReactRootIndex++);
+    <span class="hljs-comment">//把组装好的DOM放入container容器中</span>
+    $(container).html(markup);
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactElement</span></span>{
+    <span class="hljs-keyword">constructor</span>(type,props){
+        <span class="hljs-keyword">this</span>.type = type;
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+}
+<span class="hljs-comment">/**
+ * 创建虚拟DOM节点
+ * @param {} type 
+ * @param {*} props 
+ * @param  {...any} children 
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElement</span>(<span class="hljs-params">type,props={},...children</span>)</span>{
+    props.children  = children;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactElement(type,props);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">instantiateReactComponent</span>(<span class="hljs-params">element</span>)</span>{
+   <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'string'</span> || <span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'number'</span>){
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMTextComponent(element);
+   }
+   <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'object'</span> || <span class="hljs-keyword">typeof</span> element.type == <span class="hljs-string">'string'</span>){
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMComponent(element);
+   }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactComponent</span></span>{}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMTextComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ReactComponent</span></span>{
+    <span class="hljs-keyword">constructor</span>(text){
+        <span class="hljs-keyword">super</span>();
+        <span class="hljs-keyword">this</span>.text = text;
+    }
+    mountComponent(rootID){
+        <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;span data-reactid="<span class="hljs-subst">${rootID}</span>"&gt;<span class="hljs-subst">${<span class="hljs-keyword">this</span>.text}</span>&lt;/span&gt;`</span>;
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ReactComponent</span></span>{
+    <span class="hljs-keyword">constructor</span>(element){
+        <span class="hljs-keyword">super</span>();
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID){
+        <span class="hljs-keyword">let</span> {type,props} = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-keyword">var</span> tagOpen = <span class="hljs-string">`&lt;<span class="hljs-subst">${<span class="hljs-keyword">this</span>.element.type}</span> data-reactid=<span class="hljs-subst">${rootID}</span> `</span>;
+        <span class="hljs-keyword">var</span> tagClose = <span class="hljs-string">`&lt;/<span class="hljs-subst">${<span class="hljs-keyword">this</span>.element.type}</span>&gt;`</span>;
+        <span class="hljs-keyword">let</span> content = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> propKey <span class="hljs-keyword">in</span> props) {
+            <span class="hljs-keyword">if</span>(<span class="hljs-regexp">/on[A-Za-z]+/</span>.test(propKey)){
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                $(<span class="hljs-built_in">document</span>).delegate(
+                    <span class="hljs-string">`[data-reactid="<span class="hljs-subst">${rootID}</span>"]`</span>,
+                    <span class="hljs-string">`<span class="hljs-subst">${eventType}</span>.<span class="hljs-subst">${rootID}</span>`</span>,
+                     props[propKey]
+                );
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(propKey==<span class="hljs-string">'children'</span>){
+                <span class="hljs-keyword">let</span> children = props.children || [];
+                children.forEach(<span class="hljs-function">(<span class="hljs-params">child,idx</span>)=&gt;</span>{
+                    <span class="hljs-keyword">let</span> childComponentInstance = instantiateReactComponent(child);
+                    <span class="hljs-keyword">var</span> childMarkup = childComponentInstance.mountComponent(<span class="hljs-string">`<span class="hljs-subst">${rootID}</span>.<span class="hljs-subst">${idx}</span>`</span>);
+                    content+= <span class="hljs-string">``</span>+childMarkup;
+                });
+            }<span class="hljs-keyword">else</span> {
+                tagOpen +=  <span class="hljs-string">` <span class="hljs-subst">${propKey}</span>=<span class="hljs-subst">${props[propKey]}</span>`</span>;
+            }   
+        }
+        <span class="hljs-keyword">return</span> tagOpen + <span class="hljs-string">'&gt;'</span>+content+tagClose;
+    }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span>  React;
+</code></pre>
+<h2 id="t74. 自定义组件渲染">4. 自定义组件渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t74.%20%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E6%B8%B2%E6%9F%93"> # </a></h2>
+<h3 id="t84.1 使用">4.1 使用 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t84.1%20%E4%BD%BF%E7%94%A8"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
+    <span class="hljs-keyword">constructor</span>(props){
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">number</span>:<span class="hljs-number">0</span>};
+    }
+    componentWillMount(){
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'componentWillMount'</span>);
+    }
+    componentDidMount(){
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'componentDidMount'</span>);
+    }
+    handleClick(){
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">number</span>:<span class="hljs-keyword">this</span>.state.number + <span class="hljs-number">1</span>});
+    }
+    render(){
+        <span class="hljs-keyword">let</span> p = React.createElement(<span class="hljs-string">'p'</span>,{},<span class="hljs-keyword">this</span>.state.number);
+        <span class="hljs-keyword">let</span> button = React.createElement(<span class="hljs-string">'button'</span>,{<span class="hljs-attr">onClick</span>:<span class="hljs-keyword">this</span>.handleClick.bind(<span class="hljs-keyword">this</span>)},<span class="hljs-string">'+'</span>);
+        <span class="hljs-keyword">return</span> React.createElement(<span class="hljs-string">'div'</span>,{<span class="hljs-attr">id</span>:<span class="hljs-string">'counter'</span>},p,button);
+    }
+}
+<span class="hljs-keyword">let</span> counter = React.createElement(Counter);
+React.render(counter,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+</code></pre>
+<h3 id="t94.2 实现">4.2 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t94.2%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span></span>{
+    <span class="hljs-keyword">constructor</span>(props){
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+}
+
+<span class="hljs-keyword">const</span> React = {
+    <span class="hljs-attr">nextReactRootIndex</span>:<span class="hljs-number">0</span>,
+    render,
+    createElement,
+    Component
+}
+<span class="hljs-comment">/**
+ * React.render 作为入口接受一个React元素和浏览器中的DOM负责调用渲染
+ * nextReactRootIndex 为每个 component 的生成唯一标识
+ * @param {*} element React元素
+ * @param {*} container 目标容器的DOM节点
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element,container</span>)</span>{
+    <span class="hljs-comment">//instantiateReactComponent 用来根据 element 的类型,返回一个 component 的实例,是一个工厂函数</span>
+    <span class="hljs-keyword">let</span> componentInstance = instantiateReactComponent(element);
+    <span class="hljs-comment">//mountComponent方法用于对组件的渲染,返回组件的DOM结构</span>
+    <span class="hljs-keyword">let</span> markup = componentInstance.mountComponent(React.nextReactRootIndex++);
+    <span class="hljs-comment">//把组装好的DOM放入container容器中</span>
+    $(container).html(markup);
+    $(<span class="hljs-built_in">document</span>).trigger(<span class="hljs-string">"mounted"</span>);
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactElement</span></span>{
+    <span class="hljs-keyword">constructor</span>(type,props){
+        <span class="hljs-keyword">this</span>.type = type;
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+}
+<span class="hljs-comment">/**
+ * 创建虚拟DOM节点
+ * @param {} type 
+ * @param {*} props 
+ * @param  {...any} children 
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElement</span>(<span class="hljs-params">type,props={},...children</span>)</span>{
+    props.children  = children;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactElement(type,props);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">instantiateReactComponent</span>(<span class="hljs-params">element</span>)</span>{
+   <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'string'</span> || <span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'number'</span>){
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMTextComponent(element);
+   }
+   <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'object'</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type == <span class="hljs-string">'string'</span>){
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMComponent(element);
+   }
+   <span class="hljs-comment">// 自定义的元素节点</span>
+   <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type === <span class="hljs-string">"function"</span>) {
+    <span class="hljs-comment">// 注意这里，使用新的component,专门针对自定义元素</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactCompositeComponent(element);
+  }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactCompositeComponent</span></span>{
+    <span class="hljs-keyword">constructor</span>(element){
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID){
+        <span class="hljs-keyword">let</span> {type,props} = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-keyword">let</span> instance = <span class="hljs-keyword">new</span> type(props);
+        <span class="hljs-keyword">if</span>(instance.componentWillMount){
+            instance.componentWillMount();
+        }
+        <span class="hljs-keyword">let</span> renderedElement = instance.render();
+        <span class="hljs-keyword">var</span> renderedComponentInstance = instantiateReactComponent(renderedElement);
+        <span class="hljs-keyword">var</span> renderedMarkup = renderedComponentInstance.mountComponent(rootID);
+        $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">"mounted"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+            instance.componentDidMount &amp;&amp; instance.componentDidMount();
+        });
+        <span class="hljs-keyword">return</span> renderedMarkup;
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMTextComponent</span></span>{
+    <span class="hljs-keyword">constructor</span>(text){
+        <span class="hljs-keyword">this</span>.text = text;
+    }
+    mountComponent(rootID){
+        <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;span data-reactid="<span class="hljs-subst">${rootID}</span>"&gt;<span class="hljs-subst">${<span class="hljs-keyword">this</span>.text}</span>&lt;/span&gt;`</span>;
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element){
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID){
+        <span class="hljs-keyword">let</span> {type,props} = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-keyword">var</span> tagOpen = <span class="hljs-string">`&lt;<span class="hljs-subst">${type}</span> data-reactid=<span class="hljs-subst">${rootID}</span> `</span>;
+        <span class="hljs-keyword">var</span> tagClose = <span class="hljs-string">`&lt;/<span class="hljs-subst">${type}</span>&gt;`</span>;
+        <span class="hljs-keyword">let</span> content = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> propKey <span class="hljs-keyword">in</span> props) {
+            <span class="hljs-keyword">if</span>(<span class="hljs-regexp">/on[A-Za-z]+/</span>.test(propKey)){
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                $(<span class="hljs-built_in">document</span>).delegate(
+                    <span class="hljs-string">`[data-reactid="<span class="hljs-subst">${rootID}</span>"]`</span>,
+                    <span class="hljs-string">`<span class="hljs-subst">${eventType}</span>.<span class="hljs-subst">${rootID}</span>`</span>,
+                     props[propKey]
+                );
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(propKey===<span class="hljs-string">'children'</span>){
+                <span class="hljs-keyword">let</span> children = props.children || [];
+                children.forEach(<span class="hljs-function">(<span class="hljs-params">child,idx</span>)=&gt;</span>{
+                    <span class="hljs-keyword">let</span> childComponentInstance = instantiateReactComponent(child);
+                    <span class="hljs-keyword">var</span> childMarkup = childComponentInstance.mountComponent(<span class="hljs-string">`<span class="hljs-subst">${rootID}</span>.<span class="hljs-subst">${idx}</span>`</span>);
+                    content+= <span class="hljs-string">` `</span>+childMarkup;
+                });
+            }<span class="hljs-keyword">else</span> {
+                tagOpen +=  <span class="hljs-string">` <span class="hljs-subst">${propKey}</span>=<span class="hljs-subst">${props[propKey]}</span>`</span>;
+            }   
+        }
+        <span class="hljs-keyword">return</span> tagOpen + <span class="hljs-string">'&gt;'</span>+content+tagClose;
+    }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span>  React;
+</code></pre>
+<h2 id="t105. setState">5. setState <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t105.%20setState"> # </a></h2>
+<h3 id="t114.1 使用">4.1 使用 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t114.1%20%E4%BD%BF%E7%94%A8"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
+    <span class="hljs-keyword">constructor</span>(props){
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">number</span>:<span class="hljs-number">0</span>};
+    }
+    componentWillMount(){
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'componentWillMount'</span>);
+    }
+    componentDidMount(){
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'componentDidMount'</span>);
+    }
+    handleClick(){
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">number</span>:<span class="hljs-keyword">this</span>.state.number + <span class="hljs-number">1</span>});
+    }
+    render(){
+        <span class="hljs-keyword">let</span> p = React.createElement(<span class="hljs-string">'p'</span>,{},<span class="hljs-keyword">this</span>.state.number);
+        <span class="hljs-keyword">let</span> button = React.createElement(<span class="hljs-string">'button'</span>,{<span class="hljs-attr">onClick</span>:<span class="hljs-keyword">this</span>.handleClick.bind(<span class="hljs-keyword">this</span>)},<span class="hljs-string">'+'</span>);
+        <span class="hljs-keyword">return</span> React.createElement(<span class="hljs-string">'div'</span>,{<span class="hljs-attr">id</span>:<span class="hljs-string">'counter'</span>},p,button);
+    }
+}
+<span class="hljs-keyword">let</span> counter = React.createElement(Counter);
+React.render(counter,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+
+</code></pre>
+<h3 id="t124.2 实现">4.2 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t124.2%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-comment">// 差异更新的几种类型</span>
+<span class="hljs-keyword">var</span> UPDATE_TYPES = {
+    <span class="hljs-attr">MOVE_EXISTING</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">REMOVE_NODE</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">INSERT_MARKUP</span>: <span class="hljs-number">3</span>
+};
+<span class="hljs-comment">// 全局的更新深度标识</span>
+<span class="hljs-keyword">var</span> updateDepth = <span class="hljs-number">0</span>;
+<span class="hljs-comment">// 全局的更新队列，所有的差异都存在这里</span>
+<span class="hljs-keyword">var</span> diffQueue = [];
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+    setState(newState) {
+        <span class="hljs-comment">// setState 主要调用了对应的receivePropsAndState 来实现更新,所有的挂载，更新都应该交给对应的 component 来管理</span>
+        <span class="hljs-keyword">debugger</span>;
+        <span class="hljs-keyword">this</span>.reactCompositeInstance.receiveComponent(<span class="hljs-literal">null</span>, newState);
+    }
+}
+
+<span class="hljs-keyword">const</span> React = {
+    <span class="hljs-attr">nextReactRootIndex</span>: <span class="hljs-number">0</span>,
+    render,
+    createElement,
+    Component
+}
+<span class="hljs-comment">/**
+ * React.render 作为入口接受一个React元素和浏览器中的DOM负责调用渲染
+ * nextReactRootIndex 为每个 component 的生成唯一标识
+ * @param {*} element React元素
+ * @param {*} container 目标容器的DOM节点
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element, container</span>) </span>{
+    <span class="hljs-comment">//instantiateReactComponent 用来根据 element 的类型,返回一个 component 的实例,是一个工厂函数</span>
+    <span class="hljs-keyword">let</span> componentInstance = instantiateReactComponent(element);
+    <span class="hljs-comment">//mountComponent方法用于对组件的渲染,返回组件的DOM结构</span>
+    <span class="hljs-keyword">let</span> markup = componentInstance.mountComponent(React.nextReactRootIndex++);
+    <span class="hljs-comment">//把组装好的DOM放入container容器中</span>
+    $(container).html(markup);
+    $(<span class="hljs-built_in">document</span>).trigger(<span class="hljs-string">"mounted"</span>);
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactElement</span> </span>{
+    <span class="hljs-keyword">constructor</span>(type, props) {
+        <span class="hljs-keyword">this</span>.type = type;
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+}
+<span class="hljs-comment">/**
+ * 创建虚拟DOM节点
+ * @param {} type 
+ * @param {*} props 
+ * @param  {...any} children 
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElement</span>(<span class="hljs-params">type, props = {}, ...children</span>) </span>{
+    props.children = children;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactElement(type, props);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">instantiateReactComponent</span>(<span class="hljs-params">element</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'string'</span> || <span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'number'</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMTextComponent(element);
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'object'</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type == <span class="hljs-string">'string'</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMComponent(element);
+    }
+    <span class="hljs-comment">// 自定义的元素节点</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type === <span class="hljs-string">"function"</span>) {
+        <span class="hljs-comment">// 注意这里，使用新的component,专门针对自定义元素</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactCompositeComponent(element);
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactCompositeComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">let</span> {
+            type,
+            props
+        } = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-comment">//创建Counter组件的实例</span>
+        <span class="hljs-keyword">let</span> componentInstance = <span class="hljs-keyword">this</span>.componentInstance = <span class="hljs-keyword">new</span> type(props);
+        <span class="hljs-comment">//创建一个指针指向当前ReactCompositeComponent实例</span>
+        componentInstance.reactCompositeInstance = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (componentInstance.componentWillMount) {
+            componentInstance.componentWillMount();
+        }
+        <span class="hljs-keyword">let</span> renderedElement = componentInstance.render();
+        <span class="hljs-keyword">this</span>.renderedComponentInstance = instantiateReactComponent(renderedElement);
+        <span class="hljs-keyword">var</span> renderedMarkup = <span class="hljs-keyword">this</span>.renderedComponentInstance.mountComponent(rootID);
+        $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">"mounted"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            componentInstance.componentDidMount &amp;&amp; componentInstance.componentDidMount();
+        });
+        <span class="hljs-keyword">return</span> renderedMarkup;
+    }
+    receiveComponent(nextElement, newState) {
+        <span class="hljs-comment">//如果接收了新的元素，就使用最新的element Counter 这是虚拟DOM</span>
+        <span class="hljs-keyword">this</span>.element = nextElement || <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-comment">//把新的状态合并到老的实例的状态上 instance=couter</span>
+        <span class="hljs-keyword">let</span> nextState = <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>.componentInstance.state, newState);
+        <span class="hljs-comment">//新的属性</span>
+        <span class="hljs-keyword">var</span> nextProps = <span class="hljs-keyword">this</span>.element.props;
+        <span class="hljs-comment">//给组件重新赋新的状态</span>
+        <span class="hljs-keyword">this</span>.componentInstance.state = nextState;
+        <span class="hljs-keyword">if</span> (
+            <span class="hljs-keyword">this</span>.componentInstance.shouldComponentUpdate &amp;&amp;
+            <span class="hljs-keyword">this</span>.componentInstance.shouldComponentUpdate(nextProps, nextState) === <span class="hljs-literal">false</span>
+        ) {
+            <span class="hljs-comment">// 如果实例的 shouldComponentUpdate 返回 false，则不需要继续往下执行更新</span>
+            <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.componentInstance.componentWillUpdate) 
+            <span class="hljs-keyword">this</span>.componentInstance.componentWillUpdate(nextProps, nextState);
+        <span class="hljs-comment">//获取老的组件实例</span>
+        <span class="hljs-keyword">let</span> prevRenderedComponentInstance = <span class="hljs-keyword">this</span>.renderedComponentInstance;
+        <span class="hljs-comment">//获取老的虚拟DOM</span>
+        <span class="hljs-keyword">let</span> prevRenderedElement = prevRenderedComponentInstance.element;
+        <span class="hljs-comment">// 通过新的状态对象重新执行render拿到对应的新element</span>
+        <span class="hljs-keyword">var</span> nextRenderedElement = <span class="hljs-keyword">this</span>.componentInstance.render();
+        <span class="hljs-comment">//判断是需要更新还是直接就重新渲染</span>
+        <span class="hljs-keyword">if</span> (shouldUpdateReactComponent(prevRenderedElement, nextRenderedElement)) {
+            <span class="hljs-comment">//如果需要更新，就继续调用子节点的receiveComponent的方法，传入新的element更新子节点。</span>
+            prevRenderedComponentInstance.receiveComponent(nextRenderedElement);
+            <span class="hljs-keyword">this</span>.componentInstance.componentDidUpdate &amp;&amp; <span class="hljs-keyword">this</span>.componentInstance.componentDidUpdate();
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">//如果发现完全是不同的两种element，那就干脆重新渲染了</span>
+            <span class="hljs-comment">//重新new一个对应的component，</span>
+            <span class="hljs-keyword">this</span>._renderedComponent = <span class="hljs-keyword">this</span>._instantiateReactComponent(nextRenderedElement);
+            <span class="hljs-comment">//重新生成对应的元素内容</span>
+            <span class="hljs-keyword">let</span> nextMarkup = <span class="hljs-keyword">this</span>._renderedComponent.mountComponent(<span class="hljs-keyword">this</span>.rootID);
+            <span class="hljs-comment">//替换整个节点</span>
+            $(<span class="hljs-string">'[data-reactid="'</span> + <span class="hljs-keyword">this</span>.rootID + <span class="hljs-string">'"]'</span>).replaceWith(nextMarkup);
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">shouldUpdateReactComponent</span>(<span class="hljs-params">prevElement, nextElement</span>) </span>{
+    <span class="hljs-keyword">if</span> (prevElement != <span class="hljs-literal">null</span> &amp;&amp; nextElement != <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">let</span> prevType = <span class="hljs-keyword">typeof</span> prevElement;
+        <span class="hljs-keyword">let</span> nextType = <span class="hljs-keyword">typeof</span> nextElement;
+        <span class="hljs-keyword">if</span> (prevType === <span class="hljs-string">'string'</span> || prevType === <span class="hljs-string">'number'</span>) {
+            <span class="hljs-keyword">return</span> nextType === <span class="hljs-string">'string'</span> || nextType === <span class="hljs-string">'number'</span>;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> nextType === <span class="hljs-string">'object'</span> &amp;&amp; prevElement.type === nextElement.type;
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMTextComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;span data-reactid="<span class="hljs-subst">${rootID}</span>"&gt;<span class="hljs-subst">${<span class="hljs-keyword">this</span>.element}</span>&lt;/span&gt;`</span>;
+    }
+    receiveComponent(newElement) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.element != newElement) {
+            <span class="hljs-keyword">this</span>.element = newElement;
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).html(<span class="hljs-keyword">this</span>.element);
+        }
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">let</span> {
+            type,
+            props
+        } = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-keyword">var</span> tagOpen = <span class="hljs-string">`&lt;<span class="hljs-subst">${type}</span> data-reactid=<span class="hljs-subst">${rootID}</span> `</span>;
+        <span class="hljs-keyword">var</span> tagClose = <span class="hljs-string">`&lt;/<span class="hljs-subst">${type}</span>&gt;`</span>;
+        <span class="hljs-keyword">let</span> content = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">var</span> childrenInstances = []; <span class="hljs-comment">//用于保存所有的子节点的componet实例，以后会用到</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> propKey <span class="hljs-keyword">in</span> props) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/on[A-Za-z]+/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                $(<span class="hljs-built_in">document</span>).delegate(
+                    <span class="hljs-string">`[data-reactid="<span class="hljs-subst">${rootID}</span>"]`</span>,
+                    <span class="hljs-string">`<span class="hljs-subst">${eventType}</span>.<span class="hljs-subst">${rootID}</span>`</span>,
+                    props[propKey]
+                );
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (propKey === <span class="hljs-string">'children'</span>) {
+                <span class="hljs-keyword">let</span> children = props.children || [];
+                children.forEach(<span class="hljs-function">(<span class="hljs-params">child, idx</span>) =&gt;</span> {
+                    <span class="hljs-keyword">let</span> childComponentInstance = instantiateReactComponent(child);
+                    childComponentInstance._mountIndex = idx;
+                    childrenInstances.push(childComponentInstance);
+                    <span class="hljs-keyword">var</span> childMarkup = childComponentInstance.mountComponent(<span class="hljs-string">`<span class="hljs-subst">${rootID}</span>.<span class="hljs-subst">${idx}</span>`</span>);
+                    content += <span class="hljs-string">` `</span> + childMarkup;
+                });
+            } <span class="hljs-keyword">else</span> {
+                tagOpen += <span class="hljs-string">` <span class="hljs-subst">${propKey}</span>=<span class="hljs-subst">${props[propKey]}</span>`</span>;
+            }
+        }
+        <span class="hljs-keyword">this</span>._renderedChildren = childrenInstances;
+        <span class="hljs-keyword">return</span> tagOpen + <span class="hljs-string">'&gt;'</span> + content + tagClose;
+    }
+    receiveComponent(nextElement) {
+        <span class="hljs-keyword">var</span> lastProps = <span class="hljs-keyword">this</span>.element.props;
+        <span class="hljs-keyword">var</span> nextProps = nextElement.props;
+        <span class="hljs-comment">//需要单独的更新属性</span>
+        <span class="hljs-keyword">this</span>._updateDOMProperties(lastProps, nextProps);
+        <span class="hljs-comment">//再更新子节点</span>
+        <span class="hljs-keyword">this</span>._updateDOMChildren(nextElement.props.children);
+    }
+    _updateDOMProperties(lastProps, nextProps) {
+        <span class="hljs-comment">//遍历，当一个老的属性不在新的属性集合里时，需要删除掉。</span>
+        <span class="hljs-keyword">var</span> propKey;
+        <span class="hljs-keyword">for</span> (propKey <span class="hljs-keyword">in</span> lastProps) {
+            <span class="hljs-comment">//新的属性里有，或者propKey是在原型上的直接跳过。这样剩下的都是不在新属性集合里的。需要删除</span>
+            <span class="hljs-keyword">if</span> (nextProps.hasOwnProperty(propKey) || !lastProps.hasOwnProperty(propKey)) {
+                <span class="hljs-keyword">continue</span>;
+            }
+            <span class="hljs-comment">//对于那种特殊的，比如这里的事件监听的属性我们需要去掉监听</span>
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^on[A-Za-z]/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                <span class="hljs-comment">//针对当前的节点取消事件代理</span>
+                $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-keyword">continue</span>;
+            }
+
+            <span class="hljs-comment">//从dom上删除不需要的属性</span>
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).removeAttr(propKey);
+        }
+        <span class="hljs-comment">//对于新的属性，需要写到dom节点上</span>
+        <span class="hljs-keyword">for</span> (propKey <span class="hljs-keyword">in</span> nextProps) {
+            <span class="hljs-comment">//对于事件监听的属性我们需要特殊处理</span>
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^on[A-Za-z]/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                <span class="hljs-comment">//以前如果已经有，说明有了监听，需要先去掉</span>
+                lastProps[propKey] &amp;&amp; $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-comment">//针对当前的节点添加事件代理,以_rootNodeID为命名空间</span>
+                $(<span class="hljs-built_in">document</span>).delegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-keyword">continue</span>;
+            }
+
+            <span class="hljs-keyword">if</span> (propKey == <span class="hljs-string">'children'</span>) <span class="hljs-keyword">continue</span>;
+            <span class="hljs-comment">//添加新的属性，或者是更新老的同名属性</span>
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).prop(propKey, nextProps[propKey])
+        }
+
+    }
+    _updateDOMChildren(nextChildrenElements) {
+        updateDepth++;
+        <span class="hljs-comment">// _diff用来递归找出差别,组装差异对象,添加到更新队列diffQueue。</span>
+        <span class="hljs-keyword">this</span>._diff(diffQueue, nextChildrenElements);
+        updateDepth--;
+        <span class="hljs-keyword">if</span> (updateDepth == <span class="hljs-number">0</span>) {
+            <span class="hljs-comment">// 在需要的时候调用patch，执行具体的dom操作</span>
+            <span class="hljs-keyword">this</span>._patch(diffQueue);
+            diffQueue = [];
+        }
+    }
+    <span class="hljs-comment">//diff内部也会递归调用子节点的receiveComponent</span>
+    <span class="hljs-comment">//于是当某个子节点也是浏览器普通节点，就也会走_updateDOMChildren这一步</span>
+    <span class="hljs-comment">//_diff用来递归找出差别,组装差异对象,添加到更新队列diffQueue。</span>
+    _diff(diffQueue, nextChildrenElements) {
+        <span class="hljs-comment">//拿到之前的子节点的 component类型对象的集合,这个是在刚开始渲染时赋值的</span>
+        <span class="hljs-comment">//_renderedChildren 本来是数组，我们搞成map key是索引，值是元素</span>
+        <span class="hljs-keyword">let</span> prevChildren = <span class="hljs-keyword">this</span>.flattenChildren(<span class="hljs-keyword">this</span>._renderedChildren);
+        <span class="hljs-comment">//生成新的子节点的component对象集合，这里注意，会复用老的component对象</span>
+        <span class="hljs-keyword">var</span> nextChildren = <span class="hljs-keyword">this</span>.generateComponentChildren(
+            prevChildren,
+            nextChildrenElements
+        );
+        <span class="hljs-comment">//重新赋值_renderedChildren</span>
+        <span class="hljs-keyword">this</span>._renderedChildren = [];
+        $.each(nextChildren,  (key, instance) =&gt; {
+            <span class="hljs-keyword">this</span>._renderedChildren.push(instance);
+        });
+        <span class="hljs-keyword">let</span> nextIndex = <span class="hljs-number">0</span>; <span class="hljs-comment">//代表到达的新的节点的index</span>
+        <span class="hljs-comment">//通过对比两个集合的差异，组装差异节点添加到队列中</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> nextChildren) {
+            <span class="hljs-comment">//先获取老节点</span>
+            <span class="hljs-keyword">let</span> prevChild = prevChildren &amp;&amp; prevChildren[name];
+            <span class="hljs-comment">//再获取新节点</span>
+            <span class="hljs-keyword">var</span> nextChild = nextChildren[name];
+            <span class="hljs-comment">//相同的话，说明是使用的同一个component,所以我们需要做移动的操作</span>
+            <span class="hljs-keyword">if</span> (prevChild === nextChild) {
+                <span class="hljs-comment">//添加差异对象，类型：MOVE_EXISTING</span>
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.MOVE_EXISTING,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: nextIndex
+                })
+            } <span class="hljs-keyword">else</span> { <span class="hljs-comment">//如果不相同，说明是新增加的节点</span>
+                <span class="hljs-comment">//但是如果老的还存在，就是element不同，但是component一样。我们需要把它对应的老的element删除。</span>
+                <span class="hljs-keyword">if</span> (prevChild) {
+                    <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                    diffQueue.push({
+                        <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                        <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                        <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                        <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                        <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                    })
+
+                    <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听，通过命名空间全部清空</span>
+                    <span class="hljs-keyword">if</span> (prevChild.rootID) {
+                        $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                    }
+                }
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.INSERT_MARKUP,
+                    <span class="hljs-attr">fromIndex</span>: <span class="hljs-literal">null</span>,
+                    <span class="hljs-attr">toIndex</span>: nextIndex,
+                    <span class="hljs-attr">markup</span>: nextChild.mountComponent() <span class="hljs-comment">//新增的节点，多一个此属性，表示新节点的dom内容</span>
+                })
+            }
+            <span class="hljs-comment">//更新mount的index</span>
+            nextChild._mountIndex = nextIndex;
+            nextIndex++;
+        }
+        <span class="hljs-comment">//对于老的节点里有，新的节点里没有的那些，也全都删除掉</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> prevChildren) {
+            <span class="hljs-keyword">if</span> (prevChildren.hasOwnProperty(name) &amp;&amp; !(nextChildren &amp;&amp; nextChildren.hasOwnProperty(name))) {
+                <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                <span class="hljs-keyword">let</span> prevChild = prevChildren[name];
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                })
+                <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听</span>
+                <span class="hljs-keyword">if</span> (prevChildren[name].rootID) {
+                    $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                }
+            }
+        }
+
+    }
+    _patch(diffQueue) {
+        <span class="hljs-keyword">var</span> initialChildren = {};
+        <span class="hljs-keyword">var</span> deleteChildren = [];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; diffQueue.length; i++) {
+            <span class="hljs-keyword">let</span> update = diffQueue[i];
+            <span class="hljs-keyword">if</span> (update.type === UPDATE_TYPES.MOVE_EXISTING || update.type === UPDATE_TYPES.REMOVE_NODE) {
+                <span class="hljs-keyword">var</span> updatedIndex = update.fromIndex;
+                <span class="hljs-keyword">var</span> updatedChild = $(update.parentNode.children().get(updatedIndex));
+                <span class="hljs-keyword">var</span> parentId = update.parentId;
+                <span class="hljs-comment">//所有需要更新的节点都保存下来，方便后面使用</span>
+                initialChildren[parentId] = initialChildren[parentId] || [];
+                <span class="hljs-comment">//使用parentID作为简易命名空间</span>
+                initialChildren[parentId][updatedIndex] = updatedChild;
+                <span class="hljs-comment">//所有需要修改的节点先删除,对于move的，后面再重新插入到正确的位置即可</span>
+                deleteChildren.push(updatedChild)
+            }
+        }
+
+        <span class="hljs-comment">//删除所有需要先删除的</span>
+        $.each(deleteChildren, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, child</span>) </span>{
+            $(child).remove();
+        })
+
+
+        <span class="hljs-comment">//再遍历一次，这次处理新增的节点，还有修改的节点这里也要重新插入</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k = <span class="hljs-number">0</span>; k &lt; diffQueue.length; k++) {
+            <span class="hljs-keyword">let</span> update = diffQueue[k];
+            <span class="hljs-keyword">switch</span> (update.type) {
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.INSERT_MARKUP:
+                    <span class="hljs-keyword">this</span>.insertChildAt(update.parentNode, $(update.markup), update.toIndex);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.MOVE_EXISTING:
+                    <span class="hljs-keyword">this</span>.insertChildAt(update.parentNode, initialChildren[update.parentId][update.fromIndex], update.toIndex);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.REMOVE_NODE:
+                    <span class="hljs-comment">// 什么都不需要做，因为上面已经帮忙删除掉了</span>
+                    <span class="hljs-keyword">break</span>;
+            }
+        }
+    }
+    insertChildAt(parentNode, childNode, index) {
+        <span class="hljs-keyword">var</span> beforeChild = parentNode.children().get(index);
+        beforeChild ? childNode.insertBefore(beforeChild) : childNode.appendTo(parentNode);
+    }
+    <span class="hljs-comment">//普通的children是一个数组，此方法把它转换成一个map</span>
+    <span class="hljs-comment">//key就是element的key,如果是text节点或者element创建时并没有传入key,就直接用在数组里的index标识</span>
+    flattenChildren(componentChildren) {
+        <span class="hljs-keyword">let</span> childMap = {};
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; componentChildren.length; i++) {
+            childMap[i.toString(<span class="hljs-number">36</span>)] = componentChildren[i];
+        }
+        <span class="hljs-keyword">return</span> childMap;
+    }
+    <span class="hljs-comment">//主要用来生成子节点elements的component集合</span>
+    <span class="hljs-comment">//这边有个判断逻辑，如果发现是更新，就会继续使用以前的componentInstance,调用对应的receiveComponent</span>
+    <span class="hljs-comment">//如果是新的节点，就会重新生成一个新的componentInstance，</span>
+    generateComponentChildren(prevChildren, nextChildrenElements = []) {
+        <span class="hljs-keyword">let</span> nextChildren = {};
+        <span class="hljs-comment">//循环新元素数组</span>
+        $.each(nextChildrenElements, (index, nextElement) =&gt; {
+            <span class="hljs-comment">//获取新的名称</span>
+            <span class="hljs-keyword">let</span> name = index;
+            <span class="hljs-comment">//获取老的节点</span>
+            <span class="hljs-keyword">let</span> prevChild = prevChildren &amp;&amp; prevChildren[name];
+            <span class="hljs-comment">//获取老的节点对应的元素</span>
+            <span class="hljs-keyword">let</span> prevElement = prevChild &amp;&amp; prevChild.element;
+            <span class="hljs-keyword">if</span> (shouldUpdateReactComponent(prevElement, nextElement)) {
+                <span class="hljs-comment">//更新的话直接递归调用子节点的receiveComponent就好了</span>
+                prevChild.receiveComponent(nextElement);
+                <span class="hljs-comment">//然后继续使用老的component</span>
+                nextChildren[name] = prevChild;
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-comment">//对于没有老的，那就重新新增一个，重新生成一个component</span>
+                <span class="hljs-keyword">var</span> nextChildInstance = instantiateReactComponent(nextElement);
+                <span class="hljs-comment">//使用新的component</span>
+                nextChildren[name] = nextChildInstance;
+            }
+        });
+        <span class="hljs-keyword">return</span> nextChildren;
+    }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> React;
+</code></pre>
+<h2 id="t136. 减少move操作">6. 减少move操作 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t136.%20%E5%87%8F%E5%B0%91move%E6%93%8D%E4%BD%9C"> # </a></h2>
+<h3 id="t146.1 用法">6.1 用法 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t146.1%20%E7%94%A8%E6%B3%95"> # </a></h3>
+<h3 id="t156.2 实现">6.2 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t156.2%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
+<pre><code class="lang-js"> _diff(diffQueue, nextChildrenElements) {
+        <span class="hljs-comment">//拿到之前的子节点的 component类型对象的集合,这个是在刚开始渲染时赋值的</span>
+        <span class="hljs-comment">//_renderedChildren 本来是数组，我们搞成map key是索引，值是元素</span>
+        <span class="hljs-keyword">let</span> prevChildren = <span class="hljs-keyword">this</span>.flattenChildren(<span class="hljs-keyword">this</span>._renderedChildren);
+        <span class="hljs-comment">//生成新的子节点的component对象集合，这里注意，会复用老的component对象</span>
+        <span class="hljs-keyword">var</span> nextChildren = <span class="hljs-keyword">this</span>.generateComponentChildren(
+            prevChildren,
+            nextChildrenElements
+        );
+        <span class="hljs-comment">//重新赋值_renderedChildren</span>
+        <span class="hljs-keyword">this</span>._renderedChildren = [];
+        $.each(nextChildren,  (key, instance) =&gt; {
+            <span class="hljs-keyword">this</span>._renderedChildren.push(instance);
+        });
+        <span class="hljs-keyword">let</span> lastIndex = <span class="hljs-number">0</span>;<span class="hljs-comment">//代表访问的最后一次的老的集合的位置</span>
+        <span class="hljs-keyword">let</span> nextIndex = <span class="hljs-number">0</span>; <span class="hljs-comment">//代表到达的新的节点的index</span>
+        <span class="hljs-comment">//通过对比两个集合的差异，组装差异节点添加到队列中</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> nextChildren) {
+            <span class="hljs-comment">//先获取老节点</span>
+            <span class="hljs-keyword">let</span> prevChild = prevChildren &amp;&amp; prevChildren[name];
+            <span class="hljs-comment">//再获取新节点</span>
+            <span class="hljs-keyword">var</span> nextChild = nextChildren[name];
+            <span class="hljs-comment">//相同的话，说明是使用的同一个component,所以我们需要做移动的操作</span>
+            <span class="hljs-keyword">if</span> (prevChild === nextChild) {
+                <span class="hljs-comment">//添加差异对象，类型：MOVE_EXISTING</span>
+                prevChild._mountIndex &lt; lastIndex &amp;&amp; diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.MOVE_EXISTING,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: nextIndex
+                })
+                lastIndex = <span class="hljs-built_in">Math</span>.max(prevChild._mountIndex, lastIndex);
+            } <span class="hljs-keyword">else</span> { <span class="hljs-comment">//如果不相同，说明是新增加的节点</span>
+                <span class="hljs-comment">//但是如果老的还存在，就是element不同，但是component一样。我们需要把它对应的老的element删除。</span>
+                <span class="hljs-keyword">if</span> (prevChild) {
+                    <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                    diffQueue.push({
+                        <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                        <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                        <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                        <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                        <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                    })
+
+                    <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听，通过命名空间全部清空</span>
+                    <span class="hljs-keyword">if</span> (prevChild.rootID) {
+                        $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                    }
+                }
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.INSERT_MARKUP,
+                    <span class="hljs-attr">fromIndex</span>: <span class="hljs-literal">null</span>,
+                    <span class="hljs-attr">toIndex</span>: nextIndex,
+                    <span class="hljs-attr">markup</span>: nextChild.mountComponent() <span class="hljs-comment">//新增的节点，多一个此属性，表示新节点的dom内容</span>
+                })
+                lastIndex = <span class="hljs-built_in">Math</span>.max(prevChild._mountIndex, lastIndex);
+            }
+            <span class="hljs-comment">//更新mount的index</span>
+            nextChild._mountIndex = nextIndex;
+            nextIndex++;
+        }
+        <span class="hljs-comment">//对于老的节点里有，新的节点里没有的那些，也全都删除掉</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> prevChildren) {
+            <span class="hljs-keyword">if</span> (prevChildren.hasOwnProperty(name) &amp;&amp; !(nextChildren &amp;&amp; nextChildren.hasOwnProperty(name))) {
+                <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                <span class="hljs-keyword">let</span> prevChild = prevChildren[name];
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                })
+                <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听</span>
+                <span class="hljs-keyword">if</span> (prevChildren[name].rootID) {
+                    $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                }
+            }
+        }
+
+    }
+</code></pre>
+<h2 id="t167. todos">7. todos <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t167.%20todos"> # </a></h2>
+<h3 id="t177.1 使用">7.1 使用 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t177.1%20%E4%BD%BF%E7%94%A8"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
+    <span class="hljs-keyword">constructor</span>(props){
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">list</span>:[],<span class="hljs-attr">text</span>:<span class="hljs-string">''</span>};
+    }
+    add(){
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">list</span>:[...this.state.list,<span class="hljs-keyword">this</span>.state.text],<span class="hljs-attr">text</span>:<span class="hljs-string">''</span>});
+    }
+    onChange(event) {
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">text</span>: event.target.value});
+    }
+    onDel(index) {
+        <span class="hljs-keyword">this</span>.state.list.splice(index,<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">list</span>: <span class="hljs-keyword">this</span>.state.list});
+    }
+    render(){
+        <span class="hljs-keyword">var</span> createItem = <span class="hljs-function">(<span class="hljs-params">itemText,index</span>)=&gt;</span> {
+            <span class="hljs-keyword">return</span> React.createElement(<span class="hljs-string">"div"</span>, {}, itemText,React.createElement(<span class="hljs-string">'button'</span>,{<span class="hljs-attr">onClick</span>: <span class="hljs-keyword">this</span>.onDel.bind(<span class="hljs-keyword">this</span>,index)},<span class="hljs-string">'X'</span>));
+        };
+
+        <span class="hljs-keyword">var</span> lists = <span class="hljs-keyword">this</span>.state.list.map(createItem);
+        <span class="hljs-keyword">var</span> input = React.createElement(<span class="hljs-string">"input"</span>, {<span class="hljs-attr">onKeyup</span>: <span class="hljs-keyword">this</span>.onChange.bind(<span class="hljs-keyword">this</span>),<span class="hljs-attr">value</span>: <span class="hljs-keyword">this</span>.state.text});
+        <span class="hljs-keyword">var</span> button = React.createElement(<span class="hljs-string">"button"</span>, {<span class="hljs-attr">onClick</span>: <span class="hljs-keyword">this</span>.add.bind(<span class="hljs-keyword">this</span>)}, <span class="hljs-string">'Add'</span>)
+        <span class="hljs-keyword">return</span> React.createElement(<span class="hljs-string">'div'</span>,{},input,button,...lists);
+    }
+}
+<span class="hljs-keyword">let</span> todos = React.createElement(Todos);
+React.render(todos,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+
+</code></pre>
+<h3 id="t187.2 实现">7.2 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t187.2%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-comment">// 差异更新的几种类型</span>
+<span class="hljs-keyword">var</span> UPDATE_TYPES = {
+    <span class="hljs-attr">MOVE_EXISTING</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">REMOVE_NODE</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">INSERT_MARKUP</span>: <span class="hljs-number">3</span>
+};
+<span class="hljs-comment">// 全局的更新深度标识</span>
+<span class="hljs-keyword">var</span> updateDepth = <span class="hljs-number">0</span>;
+<span class="hljs-comment">// 全局的更新队列，所有的差异都存在这里</span>
+<span class="hljs-keyword">var</span> diffQueue = [];
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+    setState(newState) {
+        <span class="hljs-comment">// setState 主要调用了对应的receivePropsAndState 来实现更新,所有的挂载，更新都应该交给对应的 component 来管理</span>
+
+        <span class="hljs-keyword">this</span>.reactCompositeInstance.receiveComponent(<span class="hljs-literal">null</span>, newState);
+    }
+}
+
+<span class="hljs-keyword">const</span> React = {
+    <span class="hljs-attr">nextReactRootIndex</span>: <span class="hljs-number">0</span>,
+    render,
+    createElement,
+    Component
+}
+<span class="hljs-comment">/**
+ * React.render 作为入口接受一个React元素和浏览器中的DOM负责调用渲染
+ * nextReactRootIndex 为每个 component 的生成唯一标识
+ * @param {*} element React元素
+ * @param {*} container 目标容器的DOM节点
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element, container</span>) </span>{
+    <span class="hljs-comment">//instantiateReactComponent 用来根据 element 的类型,返回一个 component 的实例,是一个工厂函数</span>
+    <span class="hljs-keyword">let</span> componentInstance = instantiateReactComponent(element);
+    <span class="hljs-comment">//mountComponent方法用于对组件的渲染,返回组件的DOM结构</span>
+    <span class="hljs-keyword">let</span> markup = componentInstance.mountComponent(React.nextReactRootIndex++);
+    <span class="hljs-comment">//把组装好的DOM放入container容器中</span>
+    $(container).html(markup);
+    $(<span class="hljs-built_in">document</span>).trigger(<span class="hljs-string">"mounted"</span>);
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactElement</span> </span>{
+    <span class="hljs-keyword">constructor</span>(type, props) {
+        <span class="hljs-keyword">this</span>.type = type;
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+}
+<span class="hljs-comment">/**
+ * 创建虚拟DOM节点
+ * @param {} type 
+ * @param {*} props 
+ * @param  {...any} children 
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElement</span>(<span class="hljs-params">type, props = {}, ...children</span>) </span>{
+    props.children = children;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactElement(type, props);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">instantiateReactComponent</span>(<span class="hljs-params">element</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'string'</span> || <span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'number'</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMTextComponent(element);
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'object'</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type == <span class="hljs-string">'string'</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMComponent(element);
+    }
+    <span class="hljs-comment">// 自定义的元素节点</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type === <span class="hljs-string">"function"</span>) {
+        <span class="hljs-comment">// 注意这里，使用新的component,专门针对自定义元素</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactCompositeComponent(element);
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactCompositeComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">let</span> {
+            type,
+            props
+        } = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-comment">//创建Counter组件的实例</span>
+        <span class="hljs-keyword">let</span> componentInstance = <span class="hljs-keyword">this</span>.componentInstance = <span class="hljs-keyword">new</span> type(props);
+        <span class="hljs-comment">//创建一个指针指向当前ReactCompositeComponent实例</span>
+        componentInstance.reactCompositeInstance = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (componentInstance.componentWillMount) {
+            componentInstance.componentWillMount();
+        }
+        <span class="hljs-keyword">let</span> renderedElement = componentInstance.render();
+        <span class="hljs-keyword">this</span>.renderedComponentInstance = instantiateReactComponent(renderedElement);
+        <span class="hljs-keyword">var</span> renderedMarkup = <span class="hljs-keyword">this</span>.renderedComponentInstance.mountComponent(rootID);
+        $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">"mounted"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            componentInstance.componentDidMount &amp;&amp; componentInstance.componentDidMount();
+        });
+        <span class="hljs-keyword">return</span> renderedMarkup;
+    }
+    receiveComponent(nextElement, newState) {
+        <span class="hljs-comment">//如果接收了新的元素，就使用最新的element Counter 这是虚拟DOM</span>
+        <span class="hljs-keyword">this</span>.element = nextElement || <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-comment">//把新的状态合并到老的实例的状态上 instance=couter</span>
+        <span class="hljs-keyword">let</span> nextState = <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>.componentInstance.state, newState);
+        <span class="hljs-comment">//新的属性</span>
+        <span class="hljs-keyword">var</span> nextProps = <span class="hljs-keyword">this</span>.element.props;
+        <span class="hljs-comment">//给组件重新赋新的状态</span>
+        <span class="hljs-keyword">this</span>.componentInstance.state = nextState;
+        <span class="hljs-keyword">if</span> (
+            <span class="hljs-keyword">this</span>.componentInstance.shouldComponentUpdate &amp;&amp;
+            <span class="hljs-keyword">this</span>.componentInstance.shouldComponentUpdate(nextProps, nextState) === <span class="hljs-literal">false</span>
+        ) {
+            <span class="hljs-comment">// 如果实例的 shouldComponentUpdate 返回 false，则不需要继续往下执行更新</span>
+            <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.componentInstance.componentWillUpdate) 
+            <span class="hljs-keyword">this</span>.componentInstance.componentWillUpdate(nextProps, nextState);
+        <span class="hljs-comment">//获取老的组件实例</span>
+        <span class="hljs-keyword">let</span> prevRenderedComponentInstance = <span class="hljs-keyword">this</span>.renderedComponentInstance;
+        <span class="hljs-comment">//获取老的虚拟DOM</span>
+        <span class="hljs-keyword">let</span> prevRenderedElement = prevRenderedComponentInstance.element;
+        <span class="hljs-comment">// 通过新的状态对象重新执行render拿到对应的新element</span>
+        <span class="hljs-keyword">var</span> nextRenderedElement = <span class="hljs-keyword">this</span>.componentInstance.render();
+        <span class="hljs-comment">//判断是需要更新还是直接就重新渲染</span>
+        <span class="hljs-keyword">if</span> (shouldUpdateReactComponent(prevRenderedElement, nextRenderedElement)) {
+            <span class="hljs-comment">//如果需要更新，就继续调用子节点的receiveComponent的方法，传入新的element更新子节点。</span>
+            prevRenderedComponentInstance.receiveComponent(nextRenderedElement);
+            <span class="hljs-keyword">this</span>.componentInstance.componentDidUpdate &amp;&amp; <span class="hljs-keyword">this</span>.componentInstance.componentDidUpdate();
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">//如果发现完全是不同的两种element，那就干脆重新渲染了</span>
+            <span class="hljs-comment">//重新new一个对应的component，</span>
+            <span class="hljs-keyword">this</span>._renderedComponent = <span class="hljs-keyword">this</span>._instantiateReactComponent(nextRenderedElement);
+            <span class="hljs-comment">//重新生成对应的元素内容</span>
+            <span class="hljs-keyword">let</span> nextMarkup = <span class="hljs-keyword">this</span>._renderedComponent.mountComponent(<span class="hljs-keyword">this</span>.rootID);
+            <span class="hljs-comment">//替换整个节点</span>
+            $(<span class="hljs-string">'[data-reactid="'</span> + <span class="hljs-keyword">this</span>.rootID + <span class="hljs-string">'"]'</span>).replaceWith(nextMarkup);
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">shouldUpdateReactComponent</span>(<span class="hljs-params">prevElement, nextElement</span>) </span>{
+    <span class="hljs-keyword">if</span> (prevElement != <span class="hljs-literal">null</span> &amp;&amp; nextElement != <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">let</span> prevType = <span class="hljs-keyword">typeof</span> prevElement;
+        <span class="hljs-keyword">let</span> nextType = <span class="hljs-keyword">typeof</span> nextElement;
+        <span class="hljs-keyword">if</span> (prevType === <span class="hljs-string">'string'</span> || prevType === <span class="hljs-string">'number'</span>) {
+            <span class="hljs-keyword">return</span> nextType === <span class="hljs-string">'string'</span> || nextType === <span class="hljs-string">'number'</span>;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> nextType === <span class="hljs-string">'object'</span> &amp;&amp; prevElement.type === nextElement.type;
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMTextComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;span data-reactid="<span class="hljs-subst">${rootID}</span>"&gt;<span class="hljs-subst">${<span class="hljs-keyword">this</span>.element}</span>&lt;/span&gt;`</span>;
+    }
+    receiveComponent(newElement) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.element != newElement) {
+            <span class="hljs-keyword">this</span>.element = newElement;
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).html(<span class="hljs-keyword">this</span>.element);
+        }
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">let</span> {
+            type,
+            props
+        } = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-keyword">var</span> tagOpen = <span class="hljs-string">`&lt;<span class="hljs-subst">${type}</span> data-reactid=<span class="hljs-subst">${rootID}</span> `</span>;
+        <span class="hljs-keyword">var</span> tagClose = <span class="hljs-string">`&lt;/<span class="hljs-subst">${type}</span>&gt;`</span>;
+        <span class="hljs-keyword">let</span> content = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">var</span> childrenInstances = []; <span class="hljs-comment">//用于保存所有的子节点的componet实例，以后会用到</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> propKey <span class="hljs-keyword">in</span> props) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/on[A-Za-z]+/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                $(<span class="hljs-built_in">document</span>).delegate(
+                    <span class="hljs-string">`[data-reactid="<span class="hljs-subst">${rootID}</span>"]`</span>,
+                    <span class="hljs-string">`<span class="hljs-subst">${eventType}</span>.<span class="hljs-subst">${rootID}</span>`</span>,
+                    props[propKey]
+                );
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (propKey === <span class="hljs-string">'children'</span>) {
+                <span class="hljs-keyword">let</span> children = props.children || [];
+                children.forEach(<span class="hljs-function">(<span class="hljs-params">child, idx</span>) =&gt;</span> {
+                    <span class="hljs-keyword">let</span> childComponentInstance = instantiateReactComponent(child);
+                    childComponentInstance._mountIndex = idx;
+                    childrenInstances.push(childComponentInstance);
+                    <span class="hljs-keyword">var</span> childMarkup = childComponentInstance.mountComponent(<span class="hljs-string">`<span class="hljs-subst">${rootID}</span>.<span class="hljs-subst">${idx}</span>`</span>);
+                    content += <span class="hljs-string">` `</span> + childMarkup;
+                });
+            } <span class="hljs-keyword">else</span> {
+                tagOpen += <span class="hljs-string">` <span class="hljs-subst">${propKey}</span>=<span class="hljs-subst">${props[propKey]}</span>`</span>;
+            }
+        }
+        <span class="hljs-keyword">this</span>._renderedChildren = childrenInstances;
+        <span class="hljs-keyword">return</span> tagOpen + <span class="hljs-string">'&gt;'</span> + content + tagClose;
+    }
+    receiveComponent(nextElement) {
+        <span class="hljs-keyword">var</span> lastProps = <span class="hljs-keyword">this</span>.element.props;
+        <span class="hljs-keyword">var</span> nextProps = nextElement.props;
+        <span class="hljs-comment">//需要单独的更新属性</span>
+        <span class="hljs-keyword">this</span>._updateDOMProperties(lastProps, nextProps);
+        <span class="hljs-comment">//再更新子节点</span>
+        <span class="hljs-keyword">this</span>._updateDOMChildren(nextElement.props.children);
+    }
+    _updateDOMProperties(lastProps, nextProps) {
+        <span class="hljs-comment">//遍历，当一个老的属性不在新的属性集合里时，需要删除掉。</span>
+        <span class="hljs-keyword">var</span> propKey;
+        <span class="hljs-keyword">for</span> (propKey <span class="hljs-keyword">in</span> lastProps) {
+            <span class="hljs-comment">//新的属性里有，或者propKey是在原型上的直接跳过。这样剩下的都是不在新属性集合里的。需要删除</span>
+            <span class="hljs-keyword">if</span> (nextProps.hasOwnProperty(propKey) || !lastProps.hasOwnProperty(propKey)) {
+                <span class="hljs-keyword">continue</span>;
+            }
+            <span class="hljs-comment">//对于那种特殊的，比如这里的事件监听的属性我们需要去掉监听</span>
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^on[A-Za-z]/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                <span class="hljs-comment">//针对当前的节点取消事件代理</span>
+                $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-keyword">continue</span>;
+            }
+
+            <span class="hljs-comment">//从dom上删除不需要的属性</span>
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).removeAttr(propKey);
+        }
+        <span class="hljs-comment">//对于新的属性，需要写到dom节点上</span>
+        <span class="hljs-keyword">for</span> (propKey <span class="hljs-keyword">in</span> nextProps) {
+            <span class="hljs-comment">//对于事件监听的属性我们需要特殊处理</span>
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^on[A-Za-z]/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                <span class="hljs-comment">//以前如果已经有，说明有了监听，需要先去掉</span>
+                lastProps[propKey] &amp;&amp; $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-comment">//针对当前的节点添加事件代理,以_rootNodeID为命名空间</span>
+                $(<span class="hljs-built_in">document</span>).delegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-keyword">continue</span>;
+            }
+
+            <span class="hljs-keyword">if</span> (propKey == <span class="hljs-string">'children'</span>) <span class="hljs-keyword">continue</span>;
+            <span class="hljs-comment">//添加新的属性，或者是更新老的同名属性</span>
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).prop(propKey, nextProps[propKey])
+        }
+
+    }
+    _updateDOMChildren(nextChildrenElements) {
+        updateDepth++;
+        <span class="hljs-comment">// _diff用来递归找出差别,组装差异对象,添加到更新队列diffQueue。</span>
+        <span class="hljs-keyword">this</span>._diff(diffQueue, nextChildrenElements);
+        updateDepth--;
+        <span class="hljs-keyword">if</span> (updateDepth == <span class="hljs-number">0</span>) {
+            <span class="hljs-comment">// 在需要的时候调用patch，执行具体的dom操作</span>
+            <span class="hljs-keyword">this</span>._patch(diffQueue);
+            diffQueue = [];
+        }
+    }
+    <span class="hljs-comment">//diff内部也会递归调用子节点的receiveComponent</span>
+    <span class="hljs-comment">//于是当某个子节点也是浏览器普通节点，就也会走_updateDOMChildren这一步</span>
+    <span class="hljs-comment">//_diff用来递归找出差别,组装差异对象,添加到更新队列diffQueue。</span>
+    _diff(diffQueue, nextChildrenElements) {
+        <span class="hljs-comment">//拿到之前的子节点的 component类型对象的集合,这个是在刚开始渲染时赋值的</span>
+        <span class="hljs-comment">//_renderedChildren 本来是数组，我们搞成map key是索引，值是元素</span>
+        <span class="hljs-keyword">let</span> prevChildren = <span class="hljs-keyword">this</span>.flattenChildren(<span class="hljs-keyword">this</span>._renderedChildren);
+        <span class="hljs-comment">//生成新的子节点的component对象集合，这里注意，会复用老的component对象</span>
+        <span class="hljs-keyword">var</span> nextChildren = <span class="hljs-keyword">this</span>.generateComponentChildren(
+            prevChildren,
+            nextChildrenElements
+        );
+        <span class="hljs-comment">//重新赋值_renderedChildren</span>
+        <span class="hljs-keyword">this</span>._renderedChildren = [];
+        $.each(nextChildren,  (key, instance) =&gt; {
+            <span class="hljs-keyword">this</span>._renderedChildren.push(instance);
+        });
+        <span class="hljs-keyword">let</span> lastIndex = <span class="hljs-number">0</span>;<span class="hljs-comment">//代表访问的最后一次的老的集合的位置</span>
+        <span class="hljs-keyword">let</span> nextIndex = <span class="hljs-number">0</span>; <span class="hljs-comment">//代表到达的新的节点的index</span>
+        <span class="hljs-comment">//通过对比两个集合的差异，组装差异节点添加到队列中</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> nextChildren) {
+            <span class="hljs-comment">//先获取老节点</span>
+            <span class="hljs-keyword">let</span> prevChild = prevChildren &amp;&amp; prevChildren[name];
+            <span class="hljs-comment">//再获取新节点</span>
+            <span class="hljs-keyword">var</span> nextChild = nextChildren[name];
+            <span class="hljs-comment">//相同的话，说明是使用的同一个component,所以我们需要做移动的操作</span>
+            <span class="hljs-keyword">if</span> (prevChild === nextChild) {
+                <span class="hljs-comment">//添加差异对象，类型：MOVE_EXISTING</span>
+                prevChild._mountIndex &lt; lastIndex &amp;&amp; diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.MOVE_EXISTING,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: nextIndex
+                })
+                lastIndex = <span class="hljs-built_in">Math</span>.max(prevChild._mountIndex, lastIndex);
+            } <span class="hljs-keyword">else</span> { <span class="hljs-comment">//如果不相同，说明是新增加的节点</span>
+                <span class="hljs-comment">//但是如果老的还存在，就是element不同，但是component一样。我们需要把它对应的老的element删除。</span>
+                <span class="hljs-keyword">if</span> (prevChild) {
+                    <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                    diffQueue.push({
+                        <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                        <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                        <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                        <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                        <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                    })
+
+                    <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听，通过命名空间全部清空</span>
+                    <span class="hljs-keyword">if</span> (prevChild.rootID) {
+                        $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                    }
+                    lastIndex = <span class="hljs-built_in">Math</span>.max(prevChild._mountIndex, lastIndex);
+                }
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.INSERT_MARKUP,
+                    <span class="hljs-attr">fromIndex</span>: <span class="hljs-literal">null</span>,
+                    <span class="hljs-attr">toIndex</span>: nextIndex,
+                    <span class="hljs-attr">markup</span>: nextChild.mountComponent(<span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>.<span class="hljs-subst">${nextIndex}</span>`</span>) <span class="hljs-comment">//新增的节点，多一个此属性，表示新节点的dom内容</span>
+                })
+
+            }
+            <span class="hljs-comment">//更新mount的index</span>
+            nextChild._mountIndex = nextIndex;
+            nextIndex++;
+        }
+        <span class="hljs-comment">//对于老的节点里有，新的节点里没有的那些，也全都删除掉</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> prevChildren) {
+            <span class="hljs-keyword">if</span> (prevChildren.hasOwnProperty(name) &amp;&amp; !(nextChildren &amp;&amp; nextChildren.hasOwnProperty(name))) {
+                <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                <span class="hljs-keyword">let</span> prevChild = prevChildren[name];
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                })
+                <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听</span>
+                <span class="hljs-keyword">if</span> (prevChildren[name].rootID) {
+                    $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                }
+            }
+        }
+
+    }
+    _patch(diffQueue) {
+        <span class="hljs-keyword">var</span> initialChildren = {};
+        <span class="hljs-keyword">var</span> deleteChildren = [];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; diffQueue.length; i++) {
+            <span class="hljs-keyword">let</span> update = diffQueue[i];
+            <span class="hljs-keyword">if</span> (update.type === UPDATE_TYPES.MOVE_EXISTING || update.type === UPDATE_TYPES.REMOVE_NODE) {
+                <span class="hljs-keyword">var</span> updatedIndex = update.fromIndex;
+                <span class="hljs-keyword">var</span> updatedChild = $(update.parentNode.children().get(updatedIndex));
+                <span class="hljs-keyword">var</span> parentId = update.parentId;
+                <span class="hljs-comment">//所有需要更新的节点都保存下来，方便后面使用</span>
+                initialChildren[parentId] = initialChildren[parentId] || [];
+                <span class="hljs-comment">//使用parentID作为简易命名空间</span>
+                initialChildren[parentId][updatedIndex] = updatedChild;
+                <span class="hljs-comment">//所有需要修改的节点先删除,对于move的，后面再重新插入到正确的位置即可</span>
+                deleteChildren.push(updatedChild)
+            }
+        }
+
+        <span class="hljs-comment">//删除所有需要先删除的</span>
+        $.each(deleteChildren, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, child</span>) </span>{
+            $(child).remove();
+        })
+
+
+        <span class="hljs-comment">//再遍历一次，这次处理新增的节点，还有修改的节点这里也要重新插入</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k = <span class="hljs-number">0</span>; k &lt; diffQueue.length; k++) {
+            <span class="hljs-keyword">let</span> update = diffQueue[k];
+            <span class="hljs-keyword">switch</span> (update.type) {
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.INSERT_MARKUP:
+                    <span class="hljs-keyword">this</span>.insertChildAt(update.parentNode, $(update.markup), update.toIndex);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.MOVE_EXISTING:
+                    <span class="hljs-keyword">this</span>.insertChildAt(update.parentNode, initialChildren[update.parentId][update.fromIndex], update.toIndex);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.REMOVE_NODE:
+                    <span class="hljs-comment">// 什么都不需要做，因为上面已经帮忙删除掉了</span>
+                    <span class="hljs-keyword">break</span>;
+            }
+        }
+    }
+    insertChildAt(parentNode, childNode, index) {
+        <span class="hljs-keyword">var</span> beforeChild = parentNode.children().get(index);
+        beforeChild ? childNode.insertBefore(beforeChild) : childNode.appendTo(parentNode);
+    }
+    <span class="hljs-comment">//普通的children是一个数组，此方法把它转换成一个map</span>
+    <span class="hljs-comment">//key就是element的key,如果是text节点或者element创建时并没有传入key,就直接用在数组里的index标识</span>
+    flattenChildren(componentChildren) {
+        <span class="hljs-keyword">let</span> childMap = {};
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; componentChildren.length; i++) {
+            childMap[i.toString(<span class="hljs-number">36</span>)] = componentChildren[i];
+        }
+        <span class="hljs-keyword">return</span> childMap;
+    }
+    <span class="hljs-comment">//主要用来生成子节点elements的component集合</span>
+    <span class="hljs-comment">//这边有个判断逻辑，如果发现是更新，就会继续使用以前的componentInstance,调用对应的receiveComponent</span>
+    <span class="hljs-comment">//如果是新的节点，就会重新生成一个新的componentInstance，</span>
+    generateComponentChildren(prevChildren, nextChildrenElements = []) {
+        <span class="hljs-keyword">let</span> nextChildren = {};
+        <span class="hljs-comment">//循环新元素数组</span>
+        $.each(nextChildrenElements, (index, nextElement) =&gt; {
+            <span class="hljs-comment">//获取新的名称</span>
+            <span class="hljs-keyword">let</span> name = index;
+            <span class="hljs-comment">//获取老的节点</span>
+            <span class="hljs-keyword">let</span> prevChild = prevChildren &amp;&amp; prevChildren[name];
+            <span class="hljs-comment">//获取老的节点对应的元素</span>
+            <span class="hljs-keyword">let</span> prevElement = prevChild &amp;&amp; prevChild.element;
+            <span class="hljs-keyword">if</span> (shouldUpdateReactComponent(prevElement, nextElement)) {
+                <span class="hljs-comment">//更新的话直接递归调用子节点的receiveComponent就好了</span>
+                prevChild.receiveComponent(nextElement);
+                <span class="hljs-comment">//然后继续使用老的component</span>
+                nextChildren[name] = prevChild;
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-comment">//对于没有老的，那就重新新增一个，重新生成一个component</span>
+                <span class="hljs-keyword">var</span> nextChildInstance = instantiateReactComponent(nextElement);
+                <span class="hljs-comment">//使用新的component</span>
+                nextChildren[name] = nextChildInstance;
+            }
+        });
+        <span class="hljs-keyword">return</span> nextChildren;
+    }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> React;
+</code></pre>
+<h2 id="t198. key的优化">8. key的优化 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t198.%20key%E7%9A%84%E4%BC%98%E5%8C%96"> # </a></h2>
+<h3 id="t208.1 使用">8.1 使用 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t208.1%20%E4%BD%BF%E7%94%A8"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
+    <span class="hljs-keyword">constructor</span>(props){
+        <span class="hljs-keyword">super</span>(props);
+        <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">list</span>:[],<span class="hljs-attr">text</span>:<span class="hljs-string">''</span>};
+    }
+    add(){
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">list</span>:[...this.state.list,{<span class="hljs-attr">id</span>:<span class="hljs-built_in">Date</span>.now(),<span class="hljs-attr">text</span>:<span class="hljs-keyword">this</span>.state.text}],<span class="hljs-attr">text</span>:<span class="hljs-string">''</span>});
+    }
+    onChange(event) {
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">text</span>: event.target.value});
+    }
+    onDel(index) {
+        <span class="hljs-keyword">this</span>.state.list.splice(index,<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">list</span>: <span class="hljs-keyword">this</span>.state.list});
+    }
+    onSwitch(){
+        <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">list</span>: [<span class="hljs-keyword">this</span>.state.list[<span class="hljs-number">1</span>],<span class="hljs-keyword">this</span>.state.list[<span class="hljs-number">0</span>],...this.state.list.slice(<span class="hljs-number">2</span>)]});
+    }
+    render(){
+        <span class="hljs-keyword">var</span> createItem = <span class="hljs-function">(<span class="hljs-params">item,index</span>)=&gt;</span> {
+            <span class="hljs-keyword">return</span> React.createElement(<span class="hljs-string">"div"</span>, {<span class="hljs-attr">key</span>:item.id}, item.text,React.createElement(<span class="hljs-string">'button'</span>,{<span class="hljs-attr">onClick</span>: <span class="hljs-keyword">this</span>.onDel.bind(<span class="hljs-keyword">this</span>,index)},<span class="hljs-string">'删除'</span>));
+        };
+
+        <span class="hljs-keyword">var</span> lists = <span class="hljs-keyword">this</span>.state.list.map(createItem);
+        <span class="hljs-keyword">var</span> input = React.createElement(<span class="hljs-string">"input"</span>, {<span class="hljs-attr">onKeyup</span>: <span class="hljs-keyword">this</span>.onChange.bind(<span class="hljs-keyword">this</span>),<span class="hljs-attr">value</span>: <span class="hljs-keyword">this</span>.state.text});
+        <span class="hljs-keyword">var</span> Add = React.createElement(<span class="hljs-string">"button"</span>, {<span class="hljs-attr">onClick</span>: <span class="hljs-keyword">this</span>.add.bind(<span class="hljs-keyword">this</span>)}, <span class="hljs-string">'Add'</span>);
+        <span class="hljs-keyword">var</span> Switch = React.createElement(<span class="hljs-string">"button"</span>, {<span class="hljs-attr">onClick</span>: <span class="hljs-keyword">this</span>.onSwitch.bind(<span class="hljs-keyword">this</span>)}, <span class="hljs-string">'Switch'</span>)
+        <span class="hljs-keyword">return</span> React.createElement(<span class="hljs-string">'div'</span>,{},input,Add,Switch,...lists);
+    }
+}
+<span class="hljs-keyword">let</span> todos = React.createElement(Todos);
+React.render(todos,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
+
+</code></pre>
+<h3 id="t218.2 优化">8.2 优化 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html#t218.2%20%E4%BC%98%E5%8C%96"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+<span class="hljs-comment">// 差异更新的几种类型</span>
+<span class="hljs-keyword">var</span> UPDATE_TYPES = {
+    <span class="hljs-attr">MOVE_EXISTING</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">REMOVE_NODE</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">INSERT_MARKUP</span>: <span class="hljs-number">3</span>
+};
+<span class="hljs-comment">// 全局的更新深度标识</span>
+<span class="hljs-keyword">var</span> updateDepth = <span class="hljs-number">0</span>;
+<span class="hljs-comment">// 全局的更新队列，所有的差异都存在这里</span>
+<span class="hljs-keyword">var</span> diffQueue = [];
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span> </span>{
+    <span class="hljs-keyword">constructor</span>(props) {
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+    setState(newState) {
+        <span class="hljs-comment">// setState 主要调用了对应的receivePropsAndState 来实现更新,所有的挂载，更新都应该交给对应的 component 来管理</span>
+
+        <span class="hljs-keyword">this</span>.reactCompositeInstance.receiveComponent(<span class="hljs-literal">null</span>, newState);
+    }
+}
+
+<span class="hljs-keyword">const</span> React = {
+    <span class="hljs-attr">nextReactRootIndex</span>: <span class="hljs-number">0</span>,
+    render,
+    createElement,
+    Component
+}
+<span class="hljs-comment">/**
+ * React.render 作为入口接受一个React元素和浏览器中的DOM负责调用渲染
+ * nextReactRootIndex 为每个 component 的生成唯一标识
+ * @param {*} element React元素
+ * @param {*} container 目标容器的DOM节点
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element, container</span>) </span>{
+    <span class="hljs-comment">//instantiateReactComponent 用来根据 element 的类型,返回一个 component 的实例,是一个工厂函数</span>
+    <span class="hljs-keyword">let</span> componentInstance = instantiateReactComponent(element);
+    <span class="hljs-comment">//mountComponent方法用于对组件的渲染,返回组件的DOM结构</span>
+    <span class="hljs-keyword">let</span> markup = componentInstance.mountComponent(React.nextReactRootIndex++);
+    <span class="hljs-comment">//把组装好的DOM放入container容器中</span>
+    $(container).html(markup);
+    $(<span class="hljs-built_in">document</span>).trigger(<span class="hljs-string">"mounted"</span>);
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactElement</span> </span>{
+    <span class="hljs-keyword">constructor</span>(type, props) {
+        <span class="hljs-keyword">this</span>.type = type;
+        <span class="hljs-keyword">this</span>.key = props.key;
+        <span class="hljs-keyword">this</span>.props = props;
+    }
+}
+<span class="hljs-comment">/**
+ * 创建虚拟DOM节点
+ * @param {} type 
+ * @param {*} props 
+ * @param  {...any} children 
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElement</span>(<span class="hljs-params">type, props = {}, ...children</span>) </span>{
+    props.children = children;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactElement(type, props);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">instantiateReactComponent</span>(<span class="hljs-params">element</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'string'</span> || <span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'number'</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMTextComponent(element);
+    }
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'object'</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type == <span class="hljs-string">'string'</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactDOMComponent(element);
+    }
+    <span class="hljs-comment">// 自定义的元素节点</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> element === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> element.type === <span class="hljs-string">"function"</span>) {
+        <span class="hljs-comment">// 注意这里，使用新的component,专门针对自定义元素</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ReactCompositeComponent(element);
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactCompositeComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">let</span> {
+            type,
+            props
+        } = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-comment">//创建Counter组件的实例</span>
+        <span class="hljs-keyword">let</span> componentInstance = <span class="hljs-keyword">this</span>.componentInstance = <span class="hljs-keyword">new</span> type(props);
+        <span class="hljs-comment">//创建一个指针指向当前ReactCompositeComponent实例</span>
+        componentInstance.reactCompositeInstance = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (componentInstance.componentWillMount) {
+            componentInstance.componentWillMount();
+        }
+        <span class="hljs-keyword">let</span> renderedElement = componentInstance.render();
+        <span class="hljs-keyword">this</span>.renderedComponentInstance = instantiateReactComponent(renderedElement);
+        <span class="hljs-keyword">var</span> renderedMarkup = <span class="hljs-keyword">this</span>.renderedComponentInstance.mountComponent(rootID);
+        $(<span class="hljs-built_in">document</span>).on(<span class="hljs-string">"mounted"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            componentInstance.componentDidMount &amp;&amp; componentInstance.componentDidMount();
+        });
+        <span class="hljs-keyword">return</span> renderedMarkup;
+    }
+    receiveComponent(nextElement, newState) {
+        <span class="hljs-comment">//如果接收了新的元素，就使用最新的element Counter 这是虚拟DOM</span>
+        <span class="hljs-keyword">this</span>.element = nextElement || <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-comment">//把新的状态合并到老的实例的状态上 instance=couter</span>
+        <span class="hljs-keyword">let</span> nextState = <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>.componentInstance.state, newState);
+        <span class="hljs-comment">//新的属性</span>
+        <span class="hljs-keyword">var</span> nextProps = <span class="hljs-keyword">this</span>.element.props;
+        <span class="hljs-comment">//给组件重新赋新的状态</span>
+        <span class="hljs-keyword">this</span>.componentInstance.state = nextState;
+        <span class="hljs-keyword">if</span> (
+            <span class="hljs-keyword">this</span>.componentInstance.shouldComponentUpdate &amp;&amp;
+            <span class="hljs-keyword">this</span>.componentInstance.shouldComponentUpdate(nextProps, nextState) === <span class="hljs-literal">false</span>
+        ) {
+            <span class="hljs-comment">// 如果实例的 shouldComponentUpdate 返回 false，则不需要继续往下执行更新</span>
+            <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.componentInstance.componentWillUpdate) 
+            <span class="hljs-keyword">this</span>.componentInstance.componentWillUpdate(nextProps, nextState);
+        <span class="hljs-comment">//获取老的组件实例</span>
+        <span class="hljs-keyword">let</span> prevRenderedComponentInstance = <span class="hljs-keyword">this</span>.renderedComponentInstance;
+        <span class="hljs-comment">//获取老的虚拟DOM</span>
+        <span class="hljs-keyword">let</span> prevRenderedElement = prevRenderedComponentInstance.element;
+        <span class="hljs-comment">// 通过新的状态对象重新执行render拿到对应的新element</span>
+        <span class="hljs-keyword">var</span> nextRenderedElement = <span class="hljs-keyword">this</span>.componentInstance.render();
+        <span class="hljs-comment">//判断是需要更新还是直接就重新渲染</span>
+        <span class="hljs-keyword">if</span> (shouldUpdateReactComponent(prevRenderedElement, nextRenderedElement)) {
+            <span class="hljs-comment">//如果需要更新，就继续调用子节点的receiveComponent的方法，传入新的element更新子节点。</span>
+            prevRenderedComponentInstance.receiveComponent(nextRenderedElement);
+            <span class="hljs-keyword">this</span>.componentInstance.componentDidUpdate &amp;&amp; <span class="hljs-keyword">this</span>.componentInstance.componentDidUpdate();
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">//如果发现完全是不同的两种element，那就干脆重新渲染了</span>
+            <span class="hljs-comment">//重新new一个对应的component，</span>
+            <span class="hljs-keyword">this</span>._renderedComponent = <span class="hljs-keyword">this</span>._instantiateReactComponent(nextRenderedElement);
+            <span class="hljs-comment">//重新生成对应的元素内容</span>
+            <span class="hljs-keyword">let</span> nextMarkup = <span class="hljs-keyword">this</span>._renderedComponent.mountComponent(<span class="hljs-keyword">this</span>.rootID);
+            <span class="hljs-comment">//替换整个节点</span>
+            $(<span class="hljs-string">'[data-reactid="'</span> + <span class="hljs-keyword">this</span>.rootID + <span class="hljs-string">'"]'</span>).replaceWith(nextMarkup);
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">shouldUpdateReactComponent</span>(<span class="hljs-params">prevElement, nextElement</span>) </span>{
+    <span class="hljs-keyword">if</span> (prevElement != <span class="hljs-literal">null</span> &amp;&amp; nextElement != <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">let</span> prevType = <span class="hljs-keyword">typeof</span> prevElement;
+        <span class="hljs-keyword">let</span> nextType = <span class="hljs-keyword">typeof</span> nextElement;
+        <span class="hljs-keyword">if</span> (prevType === <span class="hljs-string">'string'</span> || prevType === <span class="hljs-string">'number'</span>) {
+            <span class="hljs-keyword">return</span> nextType === <span class="hljs-string">'string'</span> || nextType === <span class="hljs-string">'number'</span>;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> nextType === <span class="hljs-string">'object'</span> &amp;&amp; prevElement.type === nextElement.type;
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMTextComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;span data-reactid="<span class="hljs-subst">${rootID}</span>"&gt;<span class="hljs-subst">${<span class="hljs-keyword">this</span>.element}</span>&lt;/span&gt;`</span>;
+    }
+    receiveComponent(newElement) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.element != newElement) {
+            <span class="hljs-keyword">this</span>.element = newElement;
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).html(<span class="hljs-keyword">this</span>.element);
+        }
+    }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactDOMComponent</span> </span>{
+    <span class="hljs-keyword">constructor</span>(element) {
+        <span class="hljs-keyword">this</span>.element = element;
+    }
+    mountComponent(rootID) {
+        <span class="hljs-keyword">this</span>.rootID = rootID;
+        <span class="hljs-keyword">let</span> {
+            type,
+            props
+        } = <span class="hljs-keyword">this</span>.element;
+        <span class="hljs-keyword">var</span> tagOpen = <span class="hljs-string">`&lt;<span class="hljs-subst">${type}</span> data-reactid=<span class="hljs-subst">${rootID}</span> `</span>;
+        <span class="hljs-keyword">var</span> tagClose = <span class="hljs-string">`&lt;/<span class="hljs-subst">${type}</span>&gt;`</span>;
+        <span class="hljs-keyword">let</span> content = <span class="hljs-string">''</span>;
+        <span class="hljs-keyword">var</span> childrenInstances = []; <span class="hljs-comment">//用于保存所有的子节点的componet实例，以后会用到</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> propKey <span class="hljs-keyword">in</span> props) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/on[A-Za-z]+/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                $(<span class="hljs-built_in">document</span>).delegate(
+                    <span class="hljs-string">`[data-reactid="<span class="hljs-subst">${rootID}</span>"]`</span>,
+                    <span class="hljs-string">`<span class="hljs-subst">${eventType}</span>.<span class="hljs-subst">${rootID}</span>`</span>,
+                    props[propKey]
+                );
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (propKey === <span class="hljs-string">'children'</span>) {
+                <span class="hljs-keyword">let</span> children = props.children || [];
+                children.forEach(<span class="hljs-function">(<span class="hljs-params">child, idx</span>) =&gt;</span> {
+                    <span class="hljs-keyword">let</span> childComponentInstance = instantiateReactComponent(child);
+                    childComponentInstance._mountIndex = idx;
+                    childrenInstances.push(childComponentInstance);
+                    <span class="hljs-keyword">var</span> childMarkup = childComponentInstance.mountComponent(<span class="hljs-string">`<span class="hljs-subst">${rootID}</span>.<span class="hljs-subst">${idx}</span>`</span>);
+                    content += <span class="hljs-string">` `</span> + childMarkup;
+                });
+            } <span class="hljs-keyword">else</span> {
+                tagOpen += <span class="hljs-string">` <span class="hljs-subst">${propKey}</span>=<span class="hljs-subst">${props[propKey]}</span>`</span>;
+            }
+        }
+        <span class="hljs-keyword">this</span>._renderedChildren = childrenInstances;
+        <span class="hljs-keyword">return</span> tagOpen + <span class="hljs-string">'&gt;'</span> + content + tagClose;
+    }
+    receiveComponent(nextElement) {
+        <span class="hljs-keyword">var</span> lastProps = <span class="hljs-keyword">this</span>.element.props;
+        <span class="hljs-keyword">var</span> nextProps = nextElement.props;
+        <span class="hljs-comment">//需要单独的更新属性</span>
+        <span class="hljs-keyword">this</span>._updateDOMProperties(lastProps, nextProps);
+        <span class="hljs-comment">//再更新子节点</span>
+        <span class="hljs-keyword">this</span>._updateDOMChildren(nextElement.props.children);
+    }
+    _updateDOMProperties(lastProps, nextProps) {
+        <span class="hljs-comment">//遍历，当一个老的属性不在新的属性集合里时，需要删除掉。</span>
+        <span class="hljs-keyword">var</span> propKey;
+        <span class="hljs-keyword">for</span> (propKey <span class="hljs-keyword">in</span> lastProps) {
+            <span class="hljs-comment">//新的属性里有，或者propKey是在原型上的直接跳过。这样剩下的都是不在新属性集合里的。需要删除</span>
+            <span class="hljs-keyword">if</span> (nextProps.hasOwnProperty(propKey) || !lastProps.hasOwnProperty(propKey)) {
+                <span class="hljs-keyword">continue</span>;
+            }
+            <span class="hljs-comment">//对于那种特殊的，比如这里的事件监听的属性我们需要去掉监听</span>
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^on[A-Za-z]/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                <span class="hljs-comment">//针对当前的节点取消事件代理</span>
+                $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-keyword">continue</span>;
+            }
+
+            <span class="hljs-comment">//从dom上删除不需要的属性</span>
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).removeAttr(propKey);
+        }
+        <span class="hljs-comment">//对于新的属性，需要写到dom节点上</span>
+        <span class="hljs-keyword">for</span> (propKey <span class="hljs-keyword">in</span> nextProps) {
+            <span class="hljs-comment">//对于事件监听的属性我们需要特殊处理</span>
+            <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^on[A-Za-z]/</span>.test(propKey)) {
+                <span class="hljs-keyword">var</span> eventType = propKey.slice(<span class="hljs-number">2</span>).toLowerCase();
+                <span class="hljs-comment">//以前如果已经有，说明有了监听，需要先去掉</span>
+                lastProps[propKey] &amp;&amp; $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-comment">//针对当前的节点添加事件代理,以_rootNodeID为命名空间</span>
+                $(<span class="hljs-built_in">document</span>).delegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>, eventType, lastProps[propKey]);
+                <span class="hljs-keyword">continue</span>;
+            }
+
+            <span class="hljs-keyword">if</span> (propKey == <span class="hljs-string">'children'</span>) <span class="hljs-keyword">continue</span>;
+            <span class="hljs-comment">//添加新的属性，或者是更新老的同名属性</span>
+            $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>).prop(propKey, nextProps[propKey])
+        }
+
+    }
+    _updateDOMChildren(nextChildrenElements) {
+        updateDepth++;
+        <span class="hljs-comment">// _diff用来递归找出差别,组装差异对象,添加到更新队列diffQueue。</span>
+        <span class="hljs-keyword">this</span>._diff(diffQueue, nextChildrenElements);
+        updateDepth--;
+        <span class="hljs-keyword">if</span> (updateDepth == <span class="hljs-number">0</span>) {
+            <span class="hljs-comment">// 在需要的时候调用patch，执行具体的dom操作</span>
+            <span class="hljs-keyword">this</span>._patch(diffQueue);
+            diffQueue = [];
+        }
+    }
+    <span class="hljs-comment">//diff内部也会递归调用子节点的receiveComponent</span>
+    <span class="hljs-comment">//于是当某个子节点也是浏览器普通节点，就也会走_updateDOMChildren这一步</span>
+    <span class="hljs-comment">//_diff用来递归找出差别,组装差异对象,添加到更新队列diffQueue。</span>
+    _diff(diffQueue, nextChildrenElements) {
+        <span class="hljs-comment">//拿到之前的子节点的 component类型对象的集合,这个是在刚开始渲染时赋值的</span>
+        <span class="hljs-comment">//_renderedChildren 本来是数组，我们搞成map key是索引，值是元素</span>
+        <span class="hljs-keyword">let</span> prevChildren = <span class="hljs-keyword">this</span>.flattenChildren(<span class="hljs-keyword">this</span>._renderedChildren);
+        <span class="hljs-comment">//生成新的子节点的component对象集合，这里注意，会复用老的component对象</span>
+        <span class="hljs-keyword">var</span> nextChildren = <span class="hljs-keyword">this</span>.generateComponentChildren(
+            prevChildren,
+            nextChildrenElements
+        );
+        <span class="hljs-comment">//重新赋值_renderedChildren</span>
+        <span class="hljs-keyword">this</span>._renderedChildren = [];
+        $.each(nextChildren,  (key, instance) =&gt; {
+            <span class="hljs-keyword">this</span>._renderedChildren.push(instance);
+        });
+        <span class="hljs-keyword">let</span> lastIndex = <span class="hljs-number">0</span>;<span class="hljs-comment">//代表访问的最后一次的老的集合的位置</span>
+        <span class="hljs-keyword">let</span> nextIndex = <span class="hljs-number">0</span>; <span class="hljs-comment">//代表到达的新的节点的index</span>
+        <span class="hljs-comment">//通过对比两个集合的差异，组装差异节点添加到队列中</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> nextChildren) {
+            <span class="hljs-comment">//先获取老节点</span>
+            <span class="hljs-keyword">let</span> prevChild = prevChildren &amp;&amp; prevChildren[name];
+            <span class="hljs-comment">//再获取新节点</span>
+            <span class="hljs-keyword">var</span> nextChild = nextChildren[name];
+            <span class="hljs-comment">//相同的话，说明是使用的同一个component,所以我们需要做移动的操作</span>
+            <span class="hljs-keyword">if</span> (prevChild === nextChild) {
+                <span class="hljs-comment">//添加差异对象，类型：MOVE_EXISTING</span>
+                prevChild._mountIndex &lt; lastIndex &amp;&amp; diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.MOVE_EXISTING,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: nextIndex
+                })
+                lastIndex = <span class="hljs-built_in">Math</span>.max(prevChild._mountIndex, lastIndex);
+            } <span class="hljs-keyword">else</span> { <span class="hljs-comment">//如果不相同，说明是新增加的节点</span>
+                <span class="hljs-comment">//但是如果老的还存在，就是element不同，但是component一样。我们需要把它对应的老的element删除。</span>
+                <span class="hljs-keyword">if</span> (prevChild) {
+                    <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                    diffQueue.push({
+                        <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                        <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid='<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>']`</span>),
+                        <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                        <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                        <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                    })
+
+                    <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听，通过命名空间全部清空</span>
+                    <span class="hljs-keyword">if</span> (prevChild.rootID) {
+                        $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                    }
+                    lastIndex = <span class="hljs-built_in">Math</span>.max(prevChild._mountIndex, lastIndex);
+                }
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.INSERT_MARKUP,
+                    <span class="hljs-attr">fromIndex</span>: <span class="hljs-literal">null</span>,
+                    <span class="hljs-attr">toIndex</span>: nextIndex,
+                    <span class="hljs-attr">markup</span>: nextChild.mountComponent(<span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>.<span class="hljs-subst">${nextIndex}</span>`</span>) <span class="hljs-comment">//新增的节点，多一个此属性，表示新节点的dom内容</span>
+                })
+
+            }
+            <span class="hljs-comment">//更新mount的index</span>
+            nextChild._mountIndex = nextIndex;
+            nextIndex++;
+        }
+        <span class="hljs-comment">//对于老的节点里有，新的节点里没有的那些，也全都删除掉</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> name <span class="hljs-keyword">in</span> prevChildren) {
+            <span class="hljs-keyword">if</span> (prevChildren.hasOwnProperty(name) &amp;&amp; !(nextChildren &amp;&amp; nextChildren.hasOwnProperty(name))) {
+                <span class="hljs-comment">//添加差异对象，类型：REMOVE_NODE</span>
+                <span class="hljs-keyword">let</span> prevChild = prevChildren[name];
+                diffQueue.push({
+                    <span class="hljs-attr">parentId</span>: <span class="hljs-keyword">this</span>.rootID,
+                    <span class="hljs-attr">parentNode</span>: $(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>),
+                    <span class="hljs-attr">type</span>: UPDATE_TYPES.REMOVE_NODE,
+                    <span class="hljs-attr">fromIndex</span>: prevChild._mountIndex,
+                    <span class="hljs-attr">toIndex</span>: <span class="hljs-literal">null</span>
+                })
+                <span class="hljs-comment">//如果以前已经渲染过了，记得先去掉以前所有的事件监听</span>
+                <span class="hljs-keyword">if</span> (prevChildren[name].rootID) {
+                    $(<span class="hljs-built_in">document</span>).undelegate(<span class="hljs-string">`[data-reactid="<span class="hljs-subst">${<span class="hljs-keyword">this</span>.rootID}</span>"]`</span>);
+                }
+            }
+        }
+
+    }
+    _patch(diffQueue) {
+        <span class="hljs-keyword">var</span> initialChildren = {};
+        <span class="hljs-keyword">var</span> deleteChildren = [];
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; diffQueue.length; i++) {
+            <span class="hljs-keyword">let</span> update = diffQueue[i];
+            <span class="hljs-keyword">if</span> (update.type === UPDATE_TYPES.MOVE_EXISTING || update.type === UPDATE_TYPES.REMOVE_NODE) {
+                <span class="hljs-keyword">var</span> updatedIndex = update.fromIndex;
+                <span class="hljs-keyword">var</span> updatedChild = $(update.parentNode.children().get(updatedIndex));
+                <span class="hljs-keyword">var</span> parentId = update.parentId;
+                <span class="hljs-comment">//所有需要更新的节点都保存下来，方便后面使用</span>
+                initialChildren[parentId] = initialChildren[parentId] || [];
+                <span class="hljs-comment">//使用parentID作为简易命名空间</span>
+                initialChildren[parentId][updatedIndex] = updatedChild;
+                <span class="hljs-comment">//所有需要修改的节点先删除,对于move的，后面再重新插入到正确的位置即可</span>
+                deleteChildren.push(updatedChild)
+            }
+        }
+
+        <span class="hljs-comment">//删除所有需要先删除的</span>
+        $.each(deleteChildren, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">index, child</span>) </span>{
+            $(child).remove();
+        })
+
+
+        <span class="hljs-comment">//再遍历一次，这次处理新增的节点，还有修改的节点这里也要重新插入</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k = <span class="hljs-number">0</span>; k &lt; diffQueue.length; k++) {
+            <span class="hljs-keyword">let</span> update = diffQueue[k];
+            <span class="hljs-keyword">switch</span> (update.type) {
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.INSERT_MARKUP:
+                    <span class="hljs-keyword">this</span>.insertChildAt(update.parentNode, $(update.markup), update.toIndex);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.MOVE_EXISTING:
+                    <span class="hljs-keyword">this</span>.insertChildAt(update.parentNode, initialChildren[update.parentId][update.fromIndex], update.toIndex);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> UPDATE_TYPES.REMOVE_NODE:
+                    <span class="hljs-comment">// 什么都不需要做，因为上面已经帮忙删除掉了</span>
+                    <span class="hljs-keyword">break</span>;
+            }
+        }
+    }
+    insertChildAt(parentNode, childNode, index) {
+        <span class="hljs-keyword">var</span> beforeChild = parentNode.children().get(index);
+        beforeChild ? childNode.insertBefore(beforeChild) : childNode.appendTo(parentNode);
+    }
+    <span class="hljs-comment">//普通的children是一个数组，此方法把它转换成一个map</span>
+    <span class="hljs-comment">//key就是element的key,如果是text节点或者element创建时并没有传入key,就直接用在数组里的index标识</span>
+    flattenChildren(componentChildren) {
+        <span class="hljs-keyword">let</span> childMap = {};
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; componentChildren.length; i++) {
+            <span class="hljs-keyword">let</span> child = componentChildren[i];
+            childMap[child &amp;&amp; child.element &amp;&amp; child.element.key ? child.element.key : i.toString(<span class="hljs-number">36</span>)] = child;
+        }
+        <span class="hljs-keyword">return</span> childMap;
+    }
+    <span class="hljs-comment">//主要用来生成子节点elements的component集合</span>
+    <span class="hljs-comment">//这边有个判断逻辑，如果发现是更新，就会继续使用以前的componentInstance,调用对应的receiveComponent</span>
+    <span class="hljs-comment">//如果是新的节点，就会重新生成一个新的componentInstance，</span>
+    generateComponentChildren(prevChildren, nextChildrenElements = []) {
+        <span class="hljs-keyword">let</span> nextChildren = {};
+        <span class="hljs-comment">//循环新元素数组</span>
+        $.each(nextChildrenElements, (index, nextElement) =&gt; {
+            <span class="hljs-comment">//获取新的名称</span>
+            <span class="hljs-keyword">var</span> name = nextElement.key ? nextElement.key : index;
+            <span class="hljs-comment">//获取老的节点</span>
+            <span class="hljs-keyword">let</span> prevChild = prevChildren &amp;&amp; prevChildren[name];
+            <span class="hljs-comment">//获取老的节点对应的元素</span>
+            <span class="hljs-keyword">let</span> prevElement = prevChild &amp;&amp; prevChild.element;
+            <span class="hljs-keyword">if</span> (shouldUpdateReactComponent(prevElement, nextElement)) {
+                <span class="hljs-comment">//更新的话直接递归调用子节点的receiveComponent就好了</span>
+                prevChild.receiveComponent(nextElement);
+                <span class="hljs-comment">//然后继续使用老的component</span>
+                nextChildren[name] = prevChild;
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-comment">//对于没有老的，那就重新新增一个，重新生成一个component</span>
+                <span class="hljs-keyword">var</span> nextChildInstance = instantiateReactComponent(nextElement);
+                <span class="hljs-comment">//使用新的component</span>
+                nextChildren[name] = nextChildInstance;
+            }
+        });
+        <span class="hljs-keyword">return</span> nextChildren;
+    }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> React;
+</code></pre>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./60.react_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

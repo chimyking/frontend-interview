@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)http://www.zhufengpeixun.cn/architecture/html/22.cookie.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./22.cookie_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t01.%20cookie%E6%98%AF%E4%BB%80%E4%B9%88">1. cookie是什么</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t12.%20Cookie%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B">2. Cookie的处理流程</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t23.%20%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4">3. 使用步骤</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t33.1%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81cookie">3.1 服务器发送cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t43.2%20%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A5%E6%94%B6%E4%BF%9D%E5%AD%98cookie">3.2 客户端接收保存cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t53.3%20%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8F%91%E9%80%81cookie">3.3 客户端发送cookie</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t64.%20cookie%E9%87%8D%E8%A6%81%E5%B1%9E%E6%80%A7">4. cookie重要属性</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t75.%20%E5%9C%A8express%E4%B8%AD%E5%90%91%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8F%91%E9%80%81cookie">5. 在express中向客户端发送cookie</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t85.1%20%E8%AE%BE%E7%BD%AEcookie">5.1 设置cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t95.2%20%E8%8E%B7%E5%8F%96cookie">5.2 获取cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t105.3%20cookie%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90">5.3 cookie原理解析</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t116.%20%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6">6. 权限控制</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t127.cookie%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">7.cookie使用注意事项</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. cookie是什么">1. cookie是什么 <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t01.%20cookie%E6%98%AF%E4%BB%80%E4%B9%88"> # </a></h2>
+<ul>
+<li>HTTP1.0中协议是无状态的，但在WEB应用中，在多个请求之间共享会话是非常必要的，所以出现了Cookie</li>
+<li>cookie是为了辩别用户身份，进行会话跟踪而<em>存储在客户端</em>上的数据</li>
+</ul>
+<h2 id="t12. Cookie的处理流程">2. Cookie的处理流程 <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t12.%20Cookie%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"> # </a></h2>
+<p><img src="./22.cookie_files/cookies.png" class="img-responsive"></p>
+<h2 id="t23. 使用步骤">3. 使用步骤 <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t23.%20%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4"> # </a></h2>
+<h3 id="t33.1 服务器发送cookie">3.1 服务器发送cookie <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t33.1%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81cookie"> # </a></h3>
+<p>客户端第一次访问服务器的时候服务器通过响应头向客户端发送Cookie,属性之间用分号空格分隔</p>
+<pre><code class="lang-javascript">Set-Cookie:name=zfpx; Path=/
+</code></pre>
+<h3 id="t43.2 客户端接收保存cookie">3.2 客户端接收保存cookie <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t43.2%20%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A5%E6%94%B6%E4%BF%9D%E5%AD%98cookie"> # </a></h3>
+<p>客户端接收到Cookie之后保存在本地</p>
+<p><img src="./22.cookie_files/localcookie.jpg" class="img-responsive"></p>
+<h3 id="t53.3 客户端发送cookie">3.3 客户端发送cookie <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t53.3%20%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8F%91%E9%80%81cookie"> # </a></h3>
+<p>以后客户端再请求服务器的时候会把此Cookie发送到服务器端</p>
+<pre><code class="lang-javascript">Cookie:name=zfpx
+</code></pre>
+<h2 id="t64. cookie重要属性">4. cookie重要属性 <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t64.%20cookie%E9%87%8D%E8%A6%81%E5%B1%9E%E6%80%A7"> # </a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">name=value</td>
+<td style="text-align:left">键值对，可以设置要保存的 Key/Value</td>
+</tr>
+<tr>
+<td style="text-align:left">Domain</td>
+<td style="text-align:left">域名，默认是当前域名</td>
+</tr>
+<tr>
+<td style="text-align:left">maxAge</td>
+<td style="text-align:left">最大失效时间(毫秒),设置在多少后失效</td>
+</tr>
+<tr>
+<td style="text-align:left">secure</td>
+<td style="text-align:left">当 secure 值为 true 时，cookie 在 HTTP 中是无效，在 HTTPS 中才有效</td>
+</tr>
+<tr>
+<td style="text-align:left">Path</td>
+<td style="text-align:left">表示 cookie 影响到的路，如 path=/。如果路径不能匹配时，浏览器则不发送这个Cookie</td>
+</tr>
+<tr>
+<td style="text-align:left">Expires</td>
+<td style="text-align:left">过期时间(秒)，在设置的某个时间点后该 Cookie 就会失效，如 expires=Money, 05-Dec-11 11:11:11 GMT</td>
+</tr>
+<tr>
+<td style="text-align:left">httpOnly</td>
+<td style="text-align:left">如果在COOKIE中设置了<code>httpOnly</code>属性，则通过程序(JS脚本)将无法读取到COOKIE信息，防止XSS攻击产生</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t75. 在express中向客户端发送cookie">5. 在express中向客户端发送cookie <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t75.%20%E5%9C%A8express%E4%B8%AD%E5%90%91%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8F%91%E9%80%81cookie"> # </a></h2>
+<h3 id="t85.1 设置cookie">5.1 设置cookie <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t85.1%20%E8%AE%BE%E7%BD%AEcookie"> # </a></h3>
+<pre><code class="lang-js"> res.cookie(name,value,[,options]);
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">chrome对应属性</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">domain</td>
+<td style="text-align:left">Domain</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">域名，默认是当前域名</td>
+<td style="text-align:left">{domain:'a.zfpx.cn'}</td>
+</tr>
+<tr>
+<td style="text-align:left">path</td>
+<td style="text-align:left">Path</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">路径，默认是/</td>
+<td style="text-align:left">{path:'/visit'}</td>
+</tr>
+<tr>
+<td style="text-align:left">expires</td>
+<td style="text-align:left">Expires</td>
+<td style="text-align:left">Date</td>
+<td style="text-align:left">过期时间，如果没以有指定或为0表示当前会话有效</td>
+<td style="text-align:left">{expires:new Date(Date.now()+20*1000)}</td>
+</tr>
+<tr>
+<td style="text-align:left">maxAge</td>
+<td style="text-align:left">Max-Age</td>
+<td style="text-align:left">Number</td>
+<td style="text-align:left">有效时间(单位是毫秒)</td>
+<td style="text-align:left">{maxAge:20*1000}</td>
+</tr>
+<tr>
+<td style="text-align:left">httpOnly</td>
+<td style="text-align:left">HTTP</td>
+<td style="text-align:left">Boolean</td>
+<td style="text-align:left">不能通过浏览器javascript访问</td>
+<td style="text-align:left">{httpOnly:true}</td>
+</tr>
+<tr>
+<td style="text-align:left">secure</td>
+<td style="text-align:left">Secure</td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">只通过https协议访问</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t95.2 获取cookie">5.2 获取cookie <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t95.2%20%E8%8E%B7%E5%8F%96cookie"> # </a></h3>
+<p>使用cookie-parser中间件</p>
+<pre><code class="lang-js">$ npm install cookie-parser --save
+</code></pre>
+<pre><code class="lang-js">app.use(<span class="hljs-built_in">require</span>(<span class="hljs-string">'cookie-parser'</span>)());    <span class="hljs-comment">//使用中间件</span>
+response.cookie(key,value)              <span class="hljs-comment">//在响应中向客户端设置cookie</span>
+request.cookies                         <span class="hljs-comment">//获取请求中的cookie对象</span>
+response.clearCookie(<span class="hljs-string">'username'</span>)        <span class="hljs-comment">//清除cookie</span>
+</code></pre>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> cookieParser = <span class="hljs-built_in">require</span>(<span class="hljs-string">'cookie-parser'</span>);
+<span class="hljs-keyword">var</span> app = express();
+<span class="hljs-comment">/**
+ * 如果要加密的话 cookieParser里要指定密码，而且signed要等于true res.cookie('name','zfpx',{signed:true});
+ */</span>
+app.use(cookieParser(<span class="hljs-string">'zfpx'</span>));
+app.get(<span class="hljs-string">'/write'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{
+    <span class="hljs-comment">//1.普通设置</span>
+    <span class="hljs-comment">//res.cookie('name','value');</span>
+
+    <span class="hljs-comment">//2.设置域名</span>
+    <span class="hljs-comment">//res.cookie('name','zfpx',{domain:'a.zfpx.cn'});</span>
+
+    <span class="hljs-comment">//3.设置路径</span>
+    <span class="hljs-comment">//res.cookie('name','zfpx',{path:'/visit'});</span>
+
+    <span class="hljs-comment">//4.过期时间</span>
+    <span class="hljs-comment">//res.cookie('name','zfpx',{expires:new Date(Date.now()+20*1000)});//毫秒</span>
+    <span class="hljs-comment">//res.cookie('name','zfpx',{maxAge:20*1000});//过期时间 毫秒</span>
+
+    <span class="hljs-comment">//httpOnly true还是false无意义 document.cookie取不到</span>
+    <span class="hljs-comment">//res.cookie('name','zfpx',{httpOnly:true});</span>
+    res.cookie(<span class="hljs-string">'age'</span>,<span class="hljs-string">'123'</span>,{<span class="hljs-attr">signed</span>:<span class="hljs-literal">true</span>});
+    res.end(<span class="hljs-string">'ok'</span>);
+});
+
+app.get(<span class="hljs-string">'/read'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(req.signedCookies);
+    res.send(req.cookies);
+});
+
+<span class="hljs-comment">//记录这是客户端的第几次访问</span>
+app.get(<span class="hljs-string">'/visit'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{
+    res.cookie(<span class="hljs-string">'count'</span>,<span class="hljs-built_in">isNaN</span>(req.cookies.count)?<span class="hljs-number">0</span>:<span class="hljs-built_in">parseInt</span>(req.cookies.count)+<span class="hljs-number">1</span>);
+    res.send(req.cookies);
+});
+
+
+app.listen(<span class="hljs-number">9090</span>);
+</code></pre>
+<h3 id="t105.3 cookie原理解析">5.3 cookie原理解析 <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t105.3%20cookie%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90"> # </a></h3>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cookieParser</span>(<span class="hljs-params">secret</span>)</span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cookieParser</span>(<span class="hljs-params">req, res, next</span>)</span>{
+    req.secret = secret;  
+    <span class="hljs-keyword">if</span> (!req.headers.cookie) {
+        <span class="hljs-keyword">return</span> next();
+    }
+    req.cookies =  <span class="hljs-built_in">require</span>(<span class="hljs-string">'querystring'</span>).parse(req.headers.cookie,<span class="hljs-string">'; '</span>,<span class="hljs-string">'='</span>);
+    <span class="hljs-keyword">if</span>(req.secret){
+        req.signedCookies = {};
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> attr <span class="hljs-keyword">in</span> req.cookies){
+                <span class="hljs-keyword">let</span> val = req.cookies[attr];
+                req.signedCookies[attr] = unsign(val, secret);
+            }
+        }
+    }
+    next();
+  }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cookie</span>(<span class="hljs-params">name, val, options</span>) </span>{
+    <span class="hljs-keyword">var</span> opt = options || {};
+    val = <span class="hljs-built_in">encodeURIComponent</span>(val);
+    <span class="hljs-keyword">if</span>(opt.secret){
+        <span class="hljs-keyword">var</span> secret = <span class="hljs-keyword">this</span>.req.secret;
+        val = sign(val,<span class="hljs-keyword">this</span>.secret);
+    }
+
+    <span class="hljs-keyword">var</span> pairs = [name + <span class="hljs-string">'='</span> + value];
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-literal">null</span> != opt.maxAge) {
+        <span class="hljs-keyword">var</span> maxAge = opt.maxAge - <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">isNaN</span>(maxAge)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'maxAge should be a Number'</span>);
+        pairs.push(<span class="hljs-string">'Max-Age='</span> + <span class="hljs-built_in">Math</span>.floor(maxAge));
+    }
+
+    <span class="hljs-keyword">if</span> (opt.domain) {
+        pairs.push(<span class="hljs-string">'Domain='</span> + opt.domain);
+    }
+
+    <span class="hljs-keyword">if</span> (opt.path) {
+        pairs.push(<span class="hljs-string">'Path='</span> + opt.path);
+    }
+
+    <span class="hljs-keyword">if</span> (opt.expires) pairs.push(<span class="hljs-string">'Expires='</span> + opt.expires.toUTCString());
+    <span class="hljs-keyword">if</span> (opt.httpOnly) pairs.push(<span class="hljs-string">'HttpOnly=true'</span>);
+    <span class="hljs-keyword">if</span> (opt.secure) pairs.push(<span class="hljs-string">'Secure=true'</span>);
+
+    <span class="hljs-keyword">return</span> pairs.join(<span class="hljs-string">'; '</span>);
+}
+
+<span class="hljs-keyword">var</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">'crypto'</span>);
+exports.sign = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">val, secret</span>)</span>{
+  <span class="hljs-keyword">return</span> val + <span class="hljs-string">'.'</span> + crypto
+    .createHmac(<span class="hljs-string">'sha256'</span>, secret)
+    .update(val)
+    .digest(<span class="hljs-string">'base64'</span>)
+    .replace(<span class="hljs-regexp">/\=+$/</span>, <span class="hljs-string">''</span>);
+};
+
+exports.unsign = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">val, secret</span>)</span>{
+  <span class="hljs-keyword">var</span> str = val.slice(<span class="hljs-number">0</span>, val.lastIndexOf(<span class="hljs-string">'.'</span>))
+    , mac = exports.sign(str, secret);
+  <span class="hljs-keyword">return</span> mac == val ? str : <span class="hljs-literal">false</span>;
+};
+
+</code></pre>
+<h2 id="t116. 权限控制">6. 权限控制 <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t116.%20%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"> # </a></h2>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">var</span> cookieParser = <span class="hljs-built_in">require</span>(<span class="hljs-string">'cookie-parser'</span>);
+<span class="hljs-keyword">var</span> app = express();
+app.set(<span class="hljs-string">'view engine'</span>,<span class="hljs-string">'html'</span>);
+app.engine(<span class="hljs-string">'html'</span>,<span class="hljs-built_in">require</span>(<span class="hljs-string">'ejs'</span>).__express);
+app.set(<span class="hljs-string">'views'</span>,__dirname);
+
+app.use(cookieParser());
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkUser</span>(<span class="hljs-params">req,res,next</span>)</span>{
+    <span class="hljs-keyword">if</span>(req.cookies &amp;&amp; req.cookies.username)
+      next();
+    <span class="hljs-keyword">else</span>
+      res.redirect(<span class="hljs-string">'/'</span>);
+}
+
+<span class="hljs-comment">//进入登录页</span>
+app.get(<span class="hljs-string">'/'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{
+    res.render(<span class="hljs-string">'index'</span>);
+});
+
+<span class="hljs-comment">//登录</span>
+app.get(<span class="hljs-string">'/login'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{
+    res.cookie(<span class="hljs-string">'username'</span>,req.query.username,{<span class="hljs-attr">httpOnly</span>:<span class="hljs-literal">true</span>});
+    res.redirect(<span class="hljs-string">'/user'</span>);
+});
+
+<span class="hljs-comment">//用户页面</span>
+app.get(<span class="hljs-string">'/user'</span>,checkUser,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{
+    res.render(<span class="hljs-string">'user'</span>,{<span class="hljs-attr">username</span>:req.cookies.username});
+});
+
+<span class="hljs-comment">//用户退出</span>
+app.get(<span class="hljs-string">'/logout'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req,res</span>)</span>{
+    res.clearCookie(<span class="hljs-string">'username'</span>);<span class="hljs-comment">//清除cookie</span>
+    res.redirect(<span class="hljs-string">'/'</span>);
+});
+
+app.listen(<span class="hljs-number">8080</span>);
+</code></pre>
+<h2 id="t127.cookie使用注意事项">7.cookie使用注意事项 <a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html#t127.cookie%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"> # </a></h2>
+<ul>
+<li>可能被客户端篡改，使用前验证合法性</li>
+<li>不要存储敏感数据，比如用户密码，账户余额</li>
+<li>使用httpOnly保证安全</li>
+<li>尽量减少cookie的体积</li>
+<li>设置正确的domain和path，减少数据传输</li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./22.cookie_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

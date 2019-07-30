@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)http://www.zhufengpeixun.cn/architecture/html/70-deploy.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./70-deploy_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t01.%20%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">1. 准备工作</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t12.%20%E9%85%8D%E7%BD%AEECS%E6%9C%8D%E5%8A%A1%E5%99%A8">2. 配置ECS服务器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t23.%20%E7%99%BB%E5%BD%95%E6%9C%8D%E5%8A%A1%E5%99%A8">3. 登录服务器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t33.1%20%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%99%BB%E5%BD%95">3.1 命令行登录</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t43.2%20SSH%E7%99%BB%E5%BD%95">3.2 SSH登录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t53.2.1%20%20%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7">3.2.1  新建用户</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t63.2.1%20%20%E6%8E%88%E4%B8%8Esudo%E6%9D%83%E9%99%90">3.2.1  授与sudo权限</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t73.3%20%E9%85%8D%E7%BD%AE%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95">3.3 配置无密码登录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t83.3.1%20%E5%AE%A2%E6%88%B7%E7%AB%AF">3.3.1 客户端</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t93.3.2%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF">3.3.2 服务器端</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t103.4%20%20%E4%BF%AE%E6%94%B9SSH%E7%AB%AF%E5%8F%A3">3.4  修改SSH端口</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t114.%20docker">4. docker</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t124.1%20%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8docker?">4.1 为什么使用docker?</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t134.2%20docker%E4%B8%AD%E7%9A%84%E6%A6%82%E5%BF%B5">4.2 docker中的概念</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t144.3%20%E5%B8%B8%E8%A7%81docker%E5%91%BD%E4%BB%A4">4.3 常见docker命令</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t154.4%20%E5%AE%89%E8%A3%85docker">4.4 安装docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t164.5%20%E5%90%AF%E5%8A%A8docker">4.5 启动docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t174.6%20%E6%9F%A5%E7%9C%8Bdocker%E7%89%88%E6%9C%AC">4.6 查看docker版本</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t184.7%20docker-compose">4.7 docker-compose</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t194.8%20%E9%98%BF%E9%87%8C%E4%BA%91%E5%8A%A0%E9%80%9F">4.8 阿里云加速</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t205.%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84">5.整体架构</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t215.1%20%E5%89%8D%E7%AB%AF%E6%9E%B6%E6%9E%84">5.1 前端架构</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t225.2%20%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84">5.2 后端架构</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t235.3%20mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9B%86%E7%BE%A4">5.3 mysql数据库集群</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t245.4%20mongodb%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9B%86%E7%BE%A4">5.4 mongodb数据库集群</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t255.4.1%20%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">5.4.1 主从复制</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t265.4.2%20%E5%89%AF%E6%9C%AC%E9%9B%86">5.4.2 副本集</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t275.4.3%20%E5%88%86%E7%89%87">5.4.3 分片</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t285.5%20redis%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9B%86%E7%BE%A4">5.5 redis数据库集群</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t296.mysql%E9%9B%86%E7%BE%A4">6.mysql集群</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t306.1%20%E5%AE%89%E8%A3%85%E9%9B%86%E7%BE%A4">6.1 安装集群</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t316.1.1%20%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F">6.1.1 下载镜像</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t326.1.2%20%E5%88%9B%E5%BB%BA%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C">6.1.2 创建内部网络</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t336.1.3%20%E5%88%9B%E5%BB%BAdocker%E5%8D%B7">6.1.3 创建docker卷</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t346.1.4%20%E5%88%9B%E5%BB%BApxc%E5%AE%B9%E5%99%A8">6.1.4 创建pxc容器</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t356.2%20%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">6.2 负载均衡</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t366.2.1%20%E5%AE%89%E8%A3%85haproxy%E9%95%9C%E5%83%8F">6.2.1 安装haproxy镜像</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t376.2.2%20%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">6.2.2 创建配置文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t386.2.3%20%E5%88%9B%E5%BB%BAhaproxy%E5%AE%B9%E5%99%A8">6.2.3 创建haproxy容器</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t396.3%20keepalived%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87">6.3 keepalived双机热备</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t406.3.1%20%E5%AE%89%E8%A3%85keepalived">6.3.1 安装keepalived</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t416.3.2%20haproxy2">6.3.2 haproxy2</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t427.%20%E5%B8%83%E7%BD%B2Egg.js">7. 布署Egg.js</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t437.1%20%E7%BC%96%E5%86%99%E9%A1%B9%E7%9B%AE">7.1 编写项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t447.2%20%E9%83%A8%E7%BD%B2%E9%A1%B9%E7%9B%AE">7.2 部署项目</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t457.2.1%20package.json">7.2.1 package.json</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t467.2.2%20Dockerfile">7.2.2 Dockerfile</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t477.2.3%20%E4%B8%8A%E4%BC%A0%E6%9C%8D%E5%8A%A1%E5%99%A8">7.2.3 上传服务器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t487.2.4%20%E7%BC%96%E8%AF%91docker%E9%95%9C%E5%83%8F">7.2.4 编译docker镜像</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t497.2.4%20%E5%90%AF%E5%8A%A8docker%E5%AE%B9%E5%99%A8">7.2.4 启动docker容器</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t508.%20%E5%B8%83%E7%BD%B2nginx">8. 布署nginx</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t518.1%20%E6%8B%89%E5%8F%96%E5%AE%98%E6%96%B9%E7%9A%84%E9%95%9C%E5%83%8F">8.1 拉取官方的镜像</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t528.2%20%E5%90%AF%E5%8A%A8nginx">8.2 启动nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t538.3%20%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95">8.3 创建目录</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t548.4%20%E6%8B%B7%E8%B4%9D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">8.4 拷贝配置文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t558.5%20%E9%83%A8%E7%BD%B2">8.5 部署</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t569.%20Ant%20Design%20Pro">9. Ant Design Pro</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t5710.mongodb%E9%9B%86%E7%BE%A4">10.mongodb集群</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t5810.1%20%E5%AE%B9%E5%99%A8">10.1 容器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t5910.2%20%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F">10.2 拉取镜像</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6010.2%20%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">10.2 集群配置文件</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6110.2.1%20Config-Server%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">10.2.1 Config-Server 配置文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6210.2.3%20Shard-Server%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">10.2.3 Shard-Server 配置文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6310.2.4%20Mongos%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">10.2.4 Mongos 配置文件</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6410.3%20%E5%90%AF%E5%8A%A8Docker%E5%AE%B9%E5%99%A8">10.3 启动Docker容器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6510.3.1%20%E5%90%AF%E5%8A%A83%E4%B8%AAConfig-Server%E5%AE%B9%E5%99%A8">10.3.1 启动3个Config-Server容器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6610.3.2%20%E5%90%AF%E5%8A%A83*3%E4%B8%AAShard-Server%E5%AE%B9%E5%99%A8">10.3.2 启动3*3个Shard-Server容器</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6710.3.2.1%20%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%88%86%E7%89%87%20-%20shard1">10.3.2.1 启动第一个分片 - shard1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6810.3.2.2%20%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%BA%8C%E4%B8%AA%E5%88%86%E7%89%87%20-%20shard2">10.3.2.2 启动第二个分片 - shard2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6910.3.2.3%20%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%B8%89%E4%B8%AA%E5%88%86%E7%89%87%20-%20shard3">10.3.2.3 启动第三个分片 - shard3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7010.3.2.4%20%E5%90%AF%E5%8A%A83%E4%B8%AAmongos%E6%9C%8D%E5%8A%A1%E5%99%A8">10.3.2.4 启动3个mongos服务器</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7110.4%20%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE">10.4 写入数据</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7211.%20redis%E9%9B%86%E7%BE%A4">11. redis集群</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7311.1%20RedisCluster">11.1 RedisCluster</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7411.2%20%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5">11.2 主从同步</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7511.3%20%E5%AE%9E%E6%93%8D">11.3 实操</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7611.3.1%20%E5%AE%89%E8%A3%85Redis%E9%95%9C%E5%83%8F">11.3.1 安装Redis镜像</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7711.3.2%20%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8">11.3.2 启动容器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7811.3.3%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">11.3.3 配置文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7911.3.4%20%E9%85%8D%E7%BD%AE%E9%9B%86%E7%BE%A4">11.3.4 配置集群</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8012.%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD">12.数据库备份</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8112.1%20mysql">12.1 mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8212.2%20mongodb%E5%A4%87%E4%BB%BD">12.2 mongodb备份</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8313.%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81">13.监控主机状态</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8413.1%20%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E9%A2%9C%E8%89%B2%E8%BE%93%E5%87%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0">13.1 定义一个颜色输出字符串函数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8513.2.%20%E6%89%B9%E9%87%8F%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7">13.2. 批量创建用户</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8613.3.%20%E6%A3%80%E6%9F%A5%E4%B8%BB%E6%9C%BA%E5%AD%98%E6%B4%BB%E7%8A%B6%E6%80%81">13.3. 检查主机存活状态</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8713.3.1%20%E5%B0%86%E9%94%99%E8%AF%AFIP%E6%94%BE%E5%88%B0%E6%95%B0%E7%BB%84%E4%B8%AD%E9%87%8C%E9%9D%A2%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6ping%E5%A4%B1%E8%B4%A5%E4%B8%89%E6%AC%A1">13.3.1 将错误IP放到数组中里面判断是否ping失败三次</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8813.4%20%E8%8E%B7%E5%BE%97CPU%E5%88%A9%E7%94%A8%E7%8E%87">13.4 获得CPU利用率</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8913.5%20%E7%9B%91%E6%8E%A7%E7%BD%91%E7%BB%9C%E6%B5%81%E9%87%8F">13.5 监控网络流量</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9013.6%20%E7%9B%91%E6%8E%A7%E7%BD%91%E7%AB%99%E7%8A%B6%E6%80%81">13.6 监控网站状态</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9113.7%20%E7%9B%91%E6%8E%A7nginx%E7%8A%B6%E6%80%81">13.7 监控nginx状态</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9213.8%20%E7%9B%91%E6%8E%A7mysql%E7%8A%B6%E6%80%81">13.8 监控mysql状态</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9312.%E5%8F%82%E8%80%83">12.参考</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9412.%20%E7%BD%91%E5%9D%80">12. 网址</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9512.%E9%85%8D%E7%BD%AEnode.js">12.配置node.js</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9612.1%20%E5%AE%89%E8%A3%85nvm">12.1 安装nvm</a></li></ul></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. 准备工作">1. 准备工作 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t01.%20%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"> # </a></h2>
+<ul>
+<li>建议从<a href="https://dc.console.aliyun.com/next/index">阿里云</a>购买域名</li>
+<li>建议从<a href="https://ecs.console.aliyun.com/">阿里云</a>购买ECS服务器</li>
+<li>建议从<a href="https://bsn.console.aliyun.com/">阿里云</a>进行备案</li>
+</ul>
+<h2 id="t12. 配置ECS服务器">2. 配置ECS服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t12.%20%E9%85%8D%E7%BD%AEECS%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h2>
+<ul>
+<li>配置root密码</li>
+<li>配置安全规则</li>
+</ul>
+<h2 id="t23. 登录服务器">3. 登录服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t23.%20%E7%99%BB%E5%BD%95%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h2>
+<h3 id="t33.1 命令行登录">3.1 命令行登录 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t33.1%20%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%99%BB%E5%BD%95"> # </a></h3>
+<pre><code class="lang-js">ssh root@<span class="hljs-number">47.104</span><span class="hljs-number">.191</span><span class="hljs-number">.1</span>
+</code></pre>
+<ul>
+<li>当本机获得服务器公钥指纹，但是无法确认服务器安全性的时候会提示你是否要继续连接</li>
+</ul>
+<p><img src="./70-deploy_files/2.ssh.png" alt="2.ssh.png"></p>
+<h3 id="t43.2 SSH登录">3.2 SSH登录 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t43.2%20SSH%E7%99%BB%E5%BD%95"> # </a></h3>
+<h4 id="t53.2.1  新建用户">3.2.1  新建用户 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t53.2.1%20%20%E6%96%B0%E5%BB%BA%E7%94%A8%E6%88%B7"> # </a></h4>
+<pre><code class="lang-js">adduser devops
+</code></pre>
+<h4 id="t63.2.1  授与sudo权限">3.2.1  授与sudo权限 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t63.2.1%20%20%E6%8E%88%E4%B8%8Esudo%E6%9D%83%E9%99%90"> # </a></h4>
+<pre><code class="lang-js">visudo
+devops ALL=(ALL:ALL) ALL  
+</code></pre>
+<ul>
+<li>1 ALL 为允许使用<code>sudo</code>命令的主机</li>
+<li>2 ALL devops可以以任意用户身份来执行命令</li>
+<li>3 ALL devops可以以任意组身份来执行命令</li>
+<li>4 ALL devops可以执行任意命令</li>
+</ul>
+<p>以下命令表示允许test用户从任何主机登录，以root的身份执行<code>/usr/sbin/useradd</code>命令</p>
+<pre><code class="lang-js">test ALL=(root) /usr/sbin/useradd
+</code></pre>
+<h3 id="t73.3 配置无密码登录">3.3 配置无密码登录 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t73.3%20%E9%85%8D%E7%BD%AE%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95"> # </a></h3>
+<h4 id="t83.3.1 客户端">3.3.1 客户端 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t83.3.1%20%E5%AE%A2%E6%88%B7%E7%AB%AF"> # </a></h4>
+<pre><code class="lang-js">ssh-keygen -t rsa -b <span class="hljs-number">4096</span> -C <span class="hljs-string">"83687401@qq.com"</span>
+cat .ssh/id_rsa.pub
+</code></pre>
+<h4 id="t93.3.2 服务器端">3.3.2 服务器端 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t93.3.2%20%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"> # </a></h4>
+<pre><code class="lang-js">ssh-keygen -t rsa -b 4096 -C "83687401@qq.com"
+vi ~/.ssh/authorized_keys
+chmod 644 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+</code></pre>
+<h3 id="t103.4  修改SSH端口">3.4  修改SSH端口 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t103.4%20%20%E4%BF%AE%E6%94%B9SSH%E7%AB%AF%E5%8F%A3"> # </a></h3>
+<p>/etc/ssh/sshd_config</p>
+<pre><code class="lang-js">Port <span class="hljs-number">22222</span>
+</code></pre>
+<pre><code class="lang-js">systemctl restart sshd.service
+</code></pre>
+<p><img src="./70-deploy_files/outaddress.png" alt="outaddress"></p>
+<ul>
+<li>出方向: 是指ECS实例访问内网中其它实例或者公网的资源</li>
+<li>入方向: 是指内网中的其它ECS实例 或公网上的资源访问ECS实例</li>
+</ul>
+<h2 id="t114. docker">4. docker <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t114.%20docker"> # </a></h2>
+<h3 id="t124.1 为什么使用docker?">4.1 为什么使用docker? <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t124.1%20%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8docker?"> # </a></h3>
+<ul>
+<li>境部署是所有团队都必须面对的问题，随着系统越来越大，依赖的服务也越来越多，例如：Web服务器 + MySql数据库 + Redis缓存等</li>
+<li>依赖服务很多，本地搭建一套环境成本越来越高，初级人员很难解决环境部署中的一些问题</li>
+<li>服务的版本差异及OS的差异都可能导致线上环境BUG，项目引入新的服务时所有人的环境需要重新配置</li>
+<li>任何安装过Docker的机器都可以运行这个容器可以获得同样的结果,从而完全消除了不同环境，不同版本可能引起的各种问题</li>
+</ul>
+<h3 id="t134.2 docker中的概念">4.2 docker中的概念 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t134.2%20docker%E4%B8%AD%E7%9A%84%E6%A6%82%E5%BF%B5"> # </a></h3>
+<ul>
+<li>Docker有三个基本概念：镜像(image),容器(container),仓库(repository)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">概念</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">镜像(image)</td>
+<td style="text-align:left">镜像中包含有需要运行的文件。镜像用来创建container，一个镜像可以运行多个container；镜像可以通过Dockerfile创建，也可以从Docker hub/registry上下载</td>
+</tr>
+<tr>
+<td style="text-align:left">容器(container)</td>
+<td style="text-align:left">容器是Docker的运行组件，启动一个镜像就是一个容器，容器是一个隔离环境，多个容器之间不会相互影响，保证容器中的程序运行在一个相对安全的环境中</td>
+</tr>
+<tr>
+<td style="text-align:left">仓库(repository)</td>
+<td style="text-align:left">共享和管理Docker镜像，用户可以上传或者下载上面的镜像，官方地址为 registry.hub.docker.com/ （类似于github对源代码的管理），也可以搭建自己私有的Docker registry</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./70-deploy_files/docker-arch.jpg" alt="docker-arch"></p>
+<h3 id="t144.3 常见docker命令">4.3 常见docker命令 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t144.3%20%E5%B8%B8%E8%A7%81docker%E5%91%BD%E4%BB%A4"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">概念</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">拉取镜像</td>
+<td style="text-align:left">docker pull centos</td>
+</tr>
+<tr>
+<td style="text-align:left">创建新容器并运行</td>
+<td style="text-align:left">docker run --name mynginx -d nginx:latest</td>
+</tr>
+<tr>
+<td style="text-align:left">启动容器</td>
+<td style="text-align:left">docker start container_name/container_id</td>
+</tr>
+<tr>
+<td style="text-align:left">停止容器</td>
+<td style="text-align:left">docker stop container_name/container_id</td>
+</tr>
+<tr>
+<td style="text-align:left">重启容器</td>
+<td style="text-align:left">docker restart container_name/container_id</td>
+</tr>
+<tr>
+<td style="text-align:left">在容器中开启交互终端</td>
+<td style="text-align:left">docker exec -i -t container_id /bin/bash</td>
+</tr>
+<tr>
+<td style="text-align:left">使用当前目录Dockerfile创建镜像,标签为xxx:v1</td>
+<td style="text-align:left">docker build -t xxx:v1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t154.4 安装docker">4.4 安装docker <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t154.4%20%E5%AE%89%E8%A3%85docker"> # </a></h3>
+<ul>
+<li>docker分为企业版(EE)和社区版(CE)</li>
+</ul>
+<pre><code class="lang-js">$ yum install -y yum-utils   device-mapper-persistent-data   lvm2
+$ yum-config-manager     --add-repo     https:<span class="hljs-comment">//download.docker.com/linux/centos/docker-ce.repo</span>
+$ yum install -y docker-ce docker-ce-cli containerd.io
+</code></pre>
+<h3 id="t164.5 启动docker">4.5 启动docker <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t164.5%20%E5%90%AF%E5%8A%A8docker"> # </a></h3>
+<pre><code class="lang-js">$ systemctl start docker
+</code></pre>
+<h3 id="t174.6 查看docker版本">4.6 查看docker版本 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t174.6%20%E6%9F%A5%E7%9C%8Bdocker%E7%89%88%E6%9C%AC"> # </a></h3>
+<pre><code class="lang-js">$ docker version
+$ docker info
+</code></pre>
+<h3 id="t184.7 docker-compose">4.7 docker-compose <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t184.7%20docker-compose"> # </a></h3>
+<ul>
+<li>实际项目不可能只单单依赖于一个服务，例如一个常见的Web项目可能依赖于: 静态文件服务器，应用服务器，Mysql数据库等</li>
+<li>我们可以通过分别启动单个镜像，并把镜像绑定到本地对应端口的形式进行部署，达到容器可通信的目的</li>
+<li>但是为了更方便的管理多容器的情况，官方提供了docker-compose的方式</li>
+<li>docker-compose是Docker的一种编排服务，是一个用于在 Docker 上定义并运行复杂应用的工具，可以让用户在集群中部署分布式应用</li>
+<li>一个项目可以由多个服务（容器）关联而成，compose 面向项目进行管理，通过子命令对项目中的一组容器进行便捷地生命周期管理</li>
+<li>compose中有两个重要的概念<ul>
+<li>服务 (service)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例</li>
+<li>项目 (project)：由一组关联的应用容器组成的一个完整业务单元，在docker-compose.yml 文件中定义</li>
+</ul>
+</li>
+</ul>
+<pre><code class="lang-js">curl -L <span class="hljs-string">"https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)"</span> -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+</code></pre>
+<h3 id="t194.8 阿里云加速">4.8 阿里云加速 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t194.8%20%E9%98%BF%E9%87%8C%E4%BA%91%E5%8A%A0%E9%80%9F"> # </a></h3>
+<pre><code class="lang-js">sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json &lt;&lt;-'EOF'
+{
+  "registry-mirrors": ["https://fwvjnv59.mirror.aliyuncs.com"]
+}
+EOF
+# 重载所有修改过的配置文件
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+</code></pre>
+<h2 id="t205.整体架构">5.整体架构 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t205.%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"> # </a></h2>
+<h3 id="t215.1 前端架构">5.1 前端架构 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t215.1%20%E5%89%8D%E7%AB%AF%E6%9E%B6%E6%9E%84"> # </a></h3>
+<ul>
+<li>用户在浏览器里输入前端项目的虚拟IP地址</li>
+<li>这个虚拟IP可能会被某个keepalived容器抢占</li>
+<li>这个keepalived容器会让负载均衡的nginx服务器请求前端项目的nginx集群</li>
+<li>前端项目调用的接口是后端项目的虚拟IP</li>
+</ul>
+<p><img src="./70-deploy_files/frontdeploy.jpg" alt="frontdeploy"></p>
+<h3 id="t225.2 后端架构">5.2 后端架构 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t225.2%20%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84"> # </a></h3>
+<ul>
+<li>前端项目会访问这个后端的虚拟IP</li>
+<li>这个虚拟IP可能会被某个keepalived容器抢占</li>
+<li>这个请求会转发到keepalived容器上的负载均衡节点上</li>
+<li>负载均衡节点会把请求转发的node集群的某个节点上</li>
+<li>node服务器可能需要访问mysql、mongodb、redis服务器</li>
+</ul>
+<p><img src="./70-deploy_files/backdeployee.jpg" alt="backdeployee"></p>
+<h3 id="t235.3 mysql数据库集群">5.3 mysql数据库集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t235.3%20mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9B%86%E7%BE%A4"> # </a></h3>
+<ul>
+<li>数据库的虚拟IP是192.168.100.200,web服务器如果想访问数据库需要连接这个IP</li>
+<li>虚拟IP收到请求后会把请求转交给docker容器内的一个虚拟IP192.168.200.200上</li>
+<li>Docker内的虚拟IP不能被外网使用，所以需要借助宿主机keepalived映射成外网可以访问的虚拟IP</li>
+<li>此处配置了双机热备方案，如果第一个容器抢占了这个虚拟IP192.168.100.200</li>
+<li>这个虚拟IP会把请求转发给此容器内的haproxy节点上</li>
+<li>haproxy节点会把请求转发给MYSQL数据库集群中的某个节点上</li>
+</ul>
+<p><img src="./70-deploy_files/mysqlcluster3.jpg" alt="mysqlcluster2"></p>
+<h3 id="t245.4 mongodb数据库集群">5.4 mongodb数据库集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t245.4%20mongodb%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9B%86%E7%BE%A4"> # </a></h3>
+<h4 id="t255.4.1 主从复制">5.4.1 主从复制 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t255.4.1%20%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"> # </a></h4>
+<ul>
+<li>主从复制是一个简单的数据库同步备份的集群技术</li>
+<li>在数据库集群中要明确知道谁是主服务器，主服务器只有一台</li>
+<li>从服务器要知道自己的数据源也就是知道自己的主服务器是谁</li>
+</ul>
+<p><img src="./70-deploy_files/masterslave.jpg" alt="masterslave"></p>
+<h4 id="t265.4.2 副本集">5.4.2 副本集 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t265.4.2%20%E5%89%AF%E6%9C%AC%E9%9B%86"> # </a></h4>
+<ul>
+<li>MongoDB复制是将数据同步在多个服务器的过程。</li>
+<li>复制提供了数据的冗余备份，并在多个服务器上存储数据副本，提高了数据的可用性， 并可以保证数据的安全性。</li>
+<li>复制还允许您从硬件故障和服务中断中恢复数据。</li>
+</ul>
+<p><img src="./70-deploy_files/replication.png" alt="replication"></p>
+<h4 id="t275.4.3 分片">5.4.3 分片 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t275.4.3%20%E5%88%86%E7%89%87"> # </a></h4>
+<ul>
+<li>在Mongodb里面存在另一种集群，就是分片技术,可以满足MongoDB数据量大量增长的需求</li>
+<li>当MongoDB存储海量的数据时，一台机器可能不足以存储数据，也可能不足以提供可接受的读写吞吐量。这时，我们就可以通过在多台机器上分割数据，使得数据库系统能存储和处理更多的数据</li>
+</ul>
+<p><img src="./70-deploy_files/sharding.png" alt="sharding"></p>
+<h3 id="t285.5 redis数据库集群">5.5 redis数据库集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t285.5%20redis%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9B%86%E7%BE%A4"> # </a></h3>
+<ul>
+<li>Redis-Cluster采用无中心结构，每个节点保存数据和整个集群状态,每个节点都和其他所有节点连接</li>
+<li>所有的redis节点彼此互联(PING-PONG机制),内部使用二进制协议优化传输速度和带宽</li>
+<li>客户端与redis节点直连,不需要中间proxy层.客户端不需要连接集群所有节点,连接集群中任何一个可用节点即可</li>
+</ul>
+<p><img src="./70-deploy_files/redisconfig.jpg" alt="redisconfig"></p>
+<h2 id="t296.mysql集群">6.mysql集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t296.mysql%E9%9B%86%E7%BE%A4"> # </a></h2>
+<ul>
+<li><a href="https://hub.docker.com/r/percona/percona-xtradb-cluster/">percona-xtradb-cluster</a></li>
+<li><a href="https://www.percona.com/doc/percona-xtradb-cluster/LATEST/install/docker.html">percona-xtradb-cluster官方文档</a></li>
+<li>PXC的数据是强一致性的，要么所有节点都提交，要么都不提交</li>
+</ul>
+<p><img src="./70-deploy_files/pxccluster.jpg" alt="pxccluster"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">端口</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">3306</td>
+<td style="text-align:left">MYSQL服务端口</td>
+</tr>
+<tr>
+<td style="text-align:left">4444</td>
+<td style="text-align:left">请求全量同步(SST)接口</td>
+</tr>
+<tr>
+<td style="text-align:left">4567</td>
+<td style="text-align:left">数据库节点之间的通信接口</td>
+</tr>
+<tr>
+<td style="text-align:left">4568</td>
+<td style="text-align:left">请求增量同步(IST)端口</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t306.1 安装集群">6.1 安装集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t306.1%20%E5%AE%89%E8%A3%85%E9%9B%86%E7%BE%A4"> # </a></h3>
+<h4 id="t316.1.1 下载镜像">6.1.1 下载镜像 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t316.1.1%20%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F"> # </a></h4>
+<pre><code class="lang-js">docker pull percona/percona-xtradb-cluster:<span class="hljs-number">5.6</span>
+docker tag percona/percona-xtradb-cluster:<span class="hljs-number">5.6</span> pxc
+docker image rm percona/percona-xtradb-cluster:<span class="hljs-number">5.6</span>
+</code></pre>
+<h4 id="t326.1.2 创建内部网络">6.1.2 创建内部网络 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t326.1.2%20%E5%88%9B%E5%BB%BA%E5%86%85%E9%83%A8%E7%BD%91%E7%BB%9C"> # </a></h4>
+<pre><code class="lang-js">docker network create --subnet=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span> znet 
+docker network inspect znet
+docker network rm znet
+</code></pre>
+<h4 id="t336.1.3 创建docker卷">6.1.3 创建docker卷 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t336.1.3%20%E5%88%9B%E5%BB%BAdocker%E5%8D%B7"> # </a></h4>
+<pre><code class="lang-js">docker volume create --name v1
+docker volume create --name v2
+docker volume create --name v3
+</code></pre>
+<h4 id="t346.1.4 创建pxc容器">6.1.4 创建pxc容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t346.1.4%20%E5%88%9B%E5%BB%BApxc%E5%AE%B9%E5%99%A8"> # </a></h4>
+<pre><code class="lang-js">docker run -d \
+-p <span class="hljs-number">3306</span>:<span class="hljs-number">3306</span> \
+-e MYSQL_ROOT_PASSWORD=<span class="hljs-number">123456</span> \
+-e CLUSTER_NAME=PXC \
+-e XTRABACKUP_PASSWORD=<span class="hljs-number">123456</span> \
+-v v1:<span class="hljs-regexp">/var/</span>lib/mysql \
+--privileged \
+--name=mysql1 \
+--net=znet \
+--ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.2</span> \
+pxc
+
+docker exec -it mysql1 bash
+docker logs mysql1
+
+
+docker run -d \
+-p <span class="hljs-number">3307</span>:<span class="hljs-number">3306</span> \
+-e MYSQL_ROOT_PASSWORD=<span class="hljs-number">123456</span> \
+-e CLUSTER_NAME=PXC \
+-e XTRABACKUP_PASSWORD=<span class="hljs-number">123456</span> \
+-e CLUSTER_JOIN=mysql1 \
+-v v2:<span class="hljs-regexp">/var/</span>lib/mysql \
+--privileged \
+--name=mysql2 \
+--net=znet \
+--ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span> \
+pxc
+
+docker run -d \
+-p <span class="hljs-number">3308</span>:<span class="hljs-number">3306</span> \
+-e MYSQL_ROOT_PASSWORD=<span class="hljs-number">123456</span> \
+-e CLUSTER_NAME=PXC \
+-e XTRABACKUP_PASSWORD=<span class="hljs-number">123456</span> \
+-e CLUSTER_JOIN=mysql1 \
+-v v3:<span class="hljs-regexp">/var/</span>lib/mysql \
+--privileged \
+--name=mysql3 \
+--net=znet \
+--ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.4</span> \
+pxc
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">-d</td>
+<td style="text-align:left">服务后台运行</td>
+</tr>
+<tr>
+<td style="text-align:left">-p</td>
+<td style="text-align:left">映射端口号</td>
+</tr>
+<tr>
+<td style="text-align:left">-e MYSQL_ROOT_PASSWORD=123456</td>
+<td style="text-align:left">指定容器内的数据库的root密码</td>
+</tr>
+<tr>
+<td style="text-align:left">-e CLUSTER_NAME=PXC</td>
+<td style="text-align:left">集群的名称</td>
+</tr>
+<tr>
+<td style="text-align:left">-e XTRABACKUP_PASSWORD=123456</td>
+<td style="text-align:left">备份密码</td>
+</tr>
+<tr>
+<td style="text-align:left">-v v1:/var/lib/mysql</td>
+<td style="text-align:left">把容器内的/var/lib/mysql目录映射为宿主机的数据卷</td>
+</tr>
+<tr>
+<td style="text-align:left">--privileged</td>
+<td style="text-align:left">自动获取权限</td>
+</tr>
+<tr>
+<td style="text-align:left">--name</td>
+<td style="text-align:left">指定容器的名称</td>
+</tr>
+<tr>
+<td style="text-align:left">--net</td>
+<td style="text-align:left">指定加入的网络</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t356.2 负载均衡">6.2 负载均衡 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t356.2%20%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"> # </a></h3>
+<ul>
+<li>单节点处理所有请求负载高，性能差，所以我们要使用负载均衡</li>
+<li>使用Haproxy做负载均衡，请求被均匀分发给每个节点，单节点负载低，性能好</li>
+<li><a href="https://zhangge/5125.html">Haproxy</a>只是一个转发器</li>
+</ul>
+<p><img src="./70-deploy_files/haproxymysql.jpg" alt="haproxymysql"></p>
+<h4 id="t366.2.1 安装haproxy镜像">6.2.1 安装haproxy镜像 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t366.2.1%20%E5%AE%89%E8%A3%85haproxy%E9%95%9C%E5%83%8F"> # </a></h4>
+<pre><code class="lang-js">docker pull haproxy
+</code></pre>
+<h4 id="t376.2.2 创建配置文件">6.2.2 创建配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t376.2.2%20%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h4>
+<p>touch /home/devops/haproxy/haproxy.cfg</p>
+<pre><code class="lang-js">global
+    #工作目录
+    chroot /usr/local/etc/haproxy
+    #日志文件，使用rsyslog服务中local5日志设备（/var/log/local5），等级info
+    log 127.0.0.1 local5 info
+    #守护进程运行
+    daemon
+defaults
+    log    global
+    mode    http
+    #日志格式
+    option    httplog
+    #日志中不记录负载均衡的心跳检测记录
+    option    dontlognull
+    #连接超时（毫秒）
+    timeout connect 5000
+    #客户端超时（毫秒）
+    timeout client  50000
+    #服务器超时（毫秒）
+    timeout server  50000
+
+#监控界面    
+listen  admin_stats
+    #监控界面的访问的IP和端口
+    bind  0.0.0.0:8888
+    #访问协议
+    mode        http
+    #URI相对地址
+    stats uri   /dbs
+    #统计报告格式
+    stats realm     Global\ statistics
+    #登陆帐户信息
+    stats auth  admin:123456
+#数据库负载均衡
+listen  proxy-mysql
+    #访问的IP和端口
+    bind  0.0.0.0:3306  
+    #网络协议
+    mode  tcp
+    #负载均衡算法（轮询算法）
+    #轮询算法：roundrobin
+    #权重算法：static-rr
+    #最少连接算法：leastconn
+    #请求源IP算法：source 
+    balance  roundrobin
+    #日志格式
+    option  tcplog
+    #在MySQL中创建一个没有权限的haproxy用户，密码为空。Haproxy使用这个账户对MySQL数据库心跳检测
+    option  mysql-check user haproxy
+    server  MySQL_1 172.18.0.2:3306 check weight 1 maxconn 2000  
+    server  MySQL_2 172.18.0.3:3306 check weight 1 maxconn 2000  
+    server  MySQL_3 172.18.0.4:3306 check weight 1 maxconn 2000 
+    #使用keepalive检测死链
+    option  tcpka  
+</code></pre>
+<h4 id="t386.2.3 创建haproxy容器">6.2.3 创建haproxy容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t386.2.3%20%E5%88%9B%E5%BB%BAhaproxy%E5%AE%B9%E5%99%A8"> # </a></h4>
+<pre><code class="lang-js">docker run -it -d -p <span class="hljs-number">4001</span>:<span class="hljs-number">8888</span> -p <span class="hljs-number">4002</span>:<span class="hljs-number">3306</span> -v /home/devops/haproxy:<span class="hljs-regexp">/usr/</span>local/etc/haproxy --name haproxy1 --privileged --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.5</span> haproxy:<span class="hljs-number">2.0</span>
+
+haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+
+http:<span class="hljs-comment">//47.104.191.1:4001/dbs</span>
+admin <span class="hljs-number">123456</span>
+</code></pre>
+<h3 id="t396.3 keepalived双机热备">6.3 keepalived双机热备 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t396.3%20keepalived%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87"> # </a></h3>
+<ul>
+<li>虚拟IP在linux系统中一个网卡可以定义多个IP地址，然后把这些IP地址分配给对应的程序</li>
+<li>keepalived是用来强占虚拟IP的，在各自的haproxy容器中安装keepalived,用来强占虚拟IP</li>
+<li>抢到虚拟IP的服务器叫做主服务器，没抢到的叫做备服务器</li>
+<li>没抢到的就会处于等待的状态，然后通过心跳检测来检测主服务器是否正常，如果不正常则立刻抢占虚拟IP</li>
+</ul>
+<h3 id="t406.3.1 安装keepalived">6.3.1 安装keepalived <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t406.3.1%20%E5%AE%89%E8%A3%85keepalived"> # </a></h3>
+<ul>
+<li>安装keepalived必须要安装在haproxy所在的容器内</li>
+</ul>
+<pre><code class="lang-js">apt-get update
+apt-get install -y keepalived
+/etc/keepalived/keepalived.conf
+rm /<span class="hljs-keyword">var</span>/cache/apt/archives/lock
+rm /<span class="hljs-keyword">var</span>/lib/dpkg/lock
+apt-get -y install vim
+vim /etc/keepalived/keepalived.conf
+</code></pre>
+<p>docker cp keepalived.conf haproxy1:/etc/keepalived</p>
+<pre><code class="lang-js">vrrp_instance VI_1 {
+    state MASTER
+    interface eth0
+    virtual_router_id <span class="hljs-number">100</span>
+    priority <span class="hljs-number">100</span>
+    advert_int <span class="hljs-number">1</span>
+    authentication {
+        auth_type PASS
+        auth_pass <span class="hljs-number">123456</span>
+    }
+    virtual_ipaddress {
+        <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.201</span>
+    }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">字段</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">state</td>
+<td style="text-align:left">keepalived节点身份，master是主服务器，backup是备服务器，主服务器要抢点虚拟IP，备用服务器不抢占虚拟IP</td>
+</tr>
+<tr>
+<td style="text-align:left">interface</td>
+<td style="text-align:left">网卡设备,docker 网卡在宿主机上可以访问，但其它地方访问不到,所以需要映射到局域网的虚拟IP上</td>
+</tr>
+<tr>
+<td style="text-align:left">virtual_router_id</td>
+<td style="text-align:left">虚拟路由标识，master和backup的虚拟路由标识必须一样，可以是0~255</td>
+</tr>
+<tr>
+<td style="text-align:left">priority</td>
+<td style="text-align:left">master权重，权重越高越容易抢到虚拟IP</td>
+</tr>
+<tr>
+<td style="text-align:left">authentication</td>
+<td style="text-align:left">主从服务器验证方式，主务必须使用相同的密码才能正常通信</td>
+</tr>
+<tr>
+<td style="text-align:left">virual_ipaddress</td>
+<td style="text-align:left">虚拟IP，可以设置多个虚拟IP</td>
+</tr>
+</tbody>
+</table>
+<p>启动keepalive后，宿主机就可以ping通虚拟IP</p>
+<pre><code class="lang-js">service keepalived start
+apt-get install -y inetutils-ping
+apt-get install net-tools -y  
+ping <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.201</span>
+</code></pre>
+<h3 id="t416.3.2 haproxy2">6.3.2 haproxy2 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t416.3.2%20haproxy2"> # </a></h3>
+<pre><code class="lang-js">docker run -it -d -p <span class="hljs-number">4003</span>:<span class="hljs-number">8888</span> -p <span class="hljs-number">4004</span>:<span class="hljs-number">3306</span> -v /home/devops/haproxy:<span class="hljs-regexp">/usr/</span>local/etc/haproxy --name haproxy2 --privileged --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.6</span> haproxy:<span class="hljs-number">2.0</span>
+</code></pre>
+<h2 id="t427. 布署Egg.js">7. 布署Egg.js <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t427.%20%E5%B8%83%E7%BD%B2Egg.js"> # </a></h2>
+<ul>
+<li><a href="https://eggjs.org/zh-cn/intro/quickstart.html">eggjs</a></li>
+</ul>
+<h3 id="t437.1 编写项目">7.1 编写项目 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t437.1%20%E7%BC%96%E5%86%99%E9%A1%B9%E7%9B%AE"> # </a></h3>
+<pre><code class="lang-js">mkdir zhufeng_egg.js
+cnpm init egg --type=simple
+cnpm install
+cnpm start / npm run dev / npm test
+</code></pre>
+<h3 id="t447.2 部署项目">7.2 部署项目 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t447.2%20%E9%83%A8%E7%BD%B2%E9%A1%B9%E7%9B%AE"> # </a></h3>
+<h4 id="t457.2.1 package.json">7.2.1 package.json <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t457.2.1%20package.json"> # </a></h4>
+<ul>
+<li>把package.json中start这行里命令里的<code>--daemon</code>去掉,在Docker里eggjs应用要在前台运行</li>
+</ul>
+<h4 id="t467.2.2 Dockerfile">7.2.2 Dockerfile <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t467.2.2%20Dockerfile"> # </a></h4>
+<ul>
+<li>在本地应用的根目录下建一个名为Dockerfile的文件</li>
+</ul>
+<pre><code class="lang-js"># 设置基础镜像,如果本地没有该镜像，会从Docker.io服务器pull镜像
+FROM node:12
+# 创建app目录
+RUN mkdir -p /usr/src/egg_server
+# 设置工作目录
+WORKDIR /usr/src/egg_server
+# 拷贝package.json文件到工作目录
+COPY package.json /usr/src/egg_server/package.json
+# 安装npm依赖(使用淘宝的镜像源)
+RUN npm install --registry=https://registry.npm.taobao.org
+# 拷贝所有源代码到工作目录
+COPY . /usr/src/egg_server
+# 暴露容器端口
+EXPOSE 7001
+# 启动node应用
+CMD npm start
+</code></pre>
+<ul>
+<li>1.拉取docker镜像</li>
+<li>2.创建docker工作目录，并将package.json拷贝到docker里</li>
+<li>3.安装npm依赖</li>
+<li>4.将服务器上的应用拷贝到docker里</li>
+<li>5.暴露docker容器的端口，然后启动node应用</li>
+</ul>
+<h4 id="t477.2.3 上传服务器">7.2.3 上传服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t477.2.3%20%E4%B8%8A%E4%BC%A0%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h4>
+<ul>
+<li>使用ftp工具或git工具将整个应用上传到生产环境服务器</li>
+<li>并使用终端连接到服务器，进入到服务器应用的目录下</li>
+</ul>
+<h4 id="t487.2.4 编译docker镜像">7.2.4 编译docker镜像 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t487.2.4%20%E7%BC%96%E8%AF%91docker%E9%95%9C%E5%83%8F"> # </a></h4>
+<pre><code class="lang-js">docker build -t egg_server .
+</code></pre>
+<h4 id="t497.2.4 启动docker容器">7.2.4 启动docker容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t497.2.4%20%E5%90%AF%E5%8A%A8docker%E5%AE%B9%E5%99%A8"> # </a></h4>
+<pre><code class="lang-js">docker run -d --name egg_server1 -p <span class="hljs-number">7001</span>:<span class="hljs-number">7001</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.7</span> egg_server 
+docker run -d --name egg_server2 -p <span class="hljs-number">7002</span>:<span class="hljs-number">7001</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.8</span> egg_server 
+docker run -d --name egg_server3 -p <span class="hljs-number">7003</span>:<span class="hljs-number">7001</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.9</span> egg_server 
+docker ps
+curl -i localhost:<span class="hljs-number">7001</span>
+curl -i localhost:<span class="hljs-number">7002</span>
+curl -i localhost:<span class="hljs-number">7003</span>
+</code></pre>
+<h2 id="t508. 布署nginx">8. 布署nginx <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t508.%20%E5%B8%83%E7%BD%B2nginx"> # </a></h2>
+<h3 id="t518.1 拉取官方的镜像">8.1 拉取官方的镜像 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t518.1%20%E6%8B%89%E5%8F%96%E5%AE%98%E6%96%B9%E7%9A%84%E9%95%9C%E5%83%8F"> # </a></h3>
+<pre><code class="lang-js">docker pull nginx
+</code></pre>
+<h3 id="t528.2 启动nginx">8.2 启动nginx <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t528.2%20%E5%90%AF%E5%8A%A8nginx"> # </a></h3>
+<pre><code class="lang-js">docker run -d --name nginx1 -p <span class="hljs-number">80</span>:<span class="hljs-number">80</span>  nginx
+docker ps
+</code></pre>
+<h3 id="t538.3 创建目录">8.3 创建目录 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t538.3%20%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95"> # </a></h3>
+<pre><code class="lang-js">$ mkdir -p ~<span class="hljs-regexp">/nginx/</span>www ~<span class="hljs-regexp">/nginx/</span>logs ~<span class="hljs-regexp">/nginx/</span>conf
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">目录名</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">www</td>
+<td style="text-align:left">目录将映射为 nginx 容器配置的虚拟目录</td>
+</tr>
+<tr>
+<td style="text-align:left">logs</td>
+<td style="text-align:left">目录将映射为 nginx 容器的日志目录</td>
+</tr>
+<tr>
+<td style="text-align:left">conf</td>
+<td style="text-align:left">目录里的配置文件将映射为 nginx 容器的配置文件</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t548.4 拷贝配置文件">8.4 拷贝配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t548.4%20%E6%8B%B7%E8%B4%9D%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h3>
+<pre><code class="lang-js">$ docker cp <span class="hljs-number">09</span>ffe6a26871:<span class="hljs-regexp">/etc/</span>nginx/nginx.conf ~<span class="hljs-regexp">/nginx/</span>conf
+</code></pre>
+<h3 id="t558.5 部署">8.5 部署 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t558.5%20%E9%83%A8%E7%BD%B2"> # </a></h3>
+<pre><code class="lang-js">docker run -d -p <span class="hljs-number">80</span>:<span class="hljs-number">80</span> --name nginx1 -v ~<span class="hljs-regexp">/nginx/</span>www:<span class="hljs-regexp">/usr/</span>share/nginx/html -v ~<span class="hljs-regexp">/nginx/</span>conf/nginx.conf:<span class="hljs-regexp">/etc/</span>nginx/nginx.conf -v ~<span class="hljs-regexp">/nginx/</span>conf/conf.d:<span class="hljs-regexp">/etc/</span>nginx/conf.d  -v ~<span class="hljs-regexp">/nginx/</span>logs:<span class="hljs-regexp">/var/</span>log/nginx --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.10</span> nginx
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">目录名</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">-p 80:80</td>
+<td style="text-align:left">将容器的 80 端口映射到主机的 80 端口</td>
+</tr>
+<tr>
+<td style="text-align:left">--name nginx1</td>
+<td style="text-align:left">将容器命名为nginx1</td>
+</tr>
+<tr>
+<td style="text-align:left">-v ~/nginx/www:/usr/share/nginx/html</td>
+<td style="text-align:left">将我们自己创建的 www 目录挂载到容器的 /usr/share/nginx/html</td>
+</tr>
+<tr>
+<td style="text-align:left">-v ~/nginx/conf/nginx.conf:/etc/nginx/nginx.conf</td>
+<td style="text-align:left">将我们自己创建的 nginx.conf 挂载到容器的 /etc/nginx/nginx.conf</td>
+</tr>
+<tr>
+<td style="text-align:left">-v ~/nginx/logs:/var/log/nginx</td>
+<td style="text-align:left">将我们自己创建的 logs 挂载到容器的 /var/log/nginx</td>
+</tr>
+</tbody>
+</table>
+<p>/root/nginx/conf/conf.d/default.conf</p>
+<pre><code class="lang-js">upstream nodeservers {  
+     server <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.7</span>:<span class="hljs-number">7001</span>;  
+     server <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.8</span>:<span class="hljs-number">7001</span>;  
+     server <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.9</span>:<span class="hljs-number">7001</span>;  
+}   
+
+server {  
+        listen       <span class="hljs-number">80</span>;  
+        server_name  <span class="hljs-number">47.104</span><span class="hljs-number">.191</span><span class="hljs-number">.1</span>; 
+        location / {  
+            root /usr/share/nginx/html;
+            index  index.html index.htm;  
+        }   
+        location /api {  
+            proxy_pass   http:<span class="hljs-comment">//nodeservers;</span>
+        }  
+}
+</code></pre>
+<pre><code class="lang-js">$ cd ~<span class="hljs-regexp">/nginx/</span>www
+$ docker kill -s HUP nginx1
+$ docker restart nginx1
+</code></pre>
+<pre><code class="lang-js">curl http:<span class="hljs-comment">//47.104.191.1/api/login</span>
+curl http:<span class="hljs-comment">//47.104.191.1/</span>
+</code></pre>
+<h2 id="t569. Ant Design Pro">9. Ant Design Pro <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t569.%20Ant%20Design%20Pro"> # </a></h2>
+<ul>
+<li>[)Ant Design Pro](<a href="https://github.com/ant-design/ant-design-pro%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BC%81%E4%B8%9A%E7%BA%A7%E4%B8%AD%E5%90%8E%E5%8F%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%8C%E5%9C%A8Ant">https://github.com/ant-design/ant-design-pro是一个企业级中后台解决方案，在Ant</a> Design组件库的基础上，提炼出典型模板/业务组件/通用页等，在此基础上能够使开发者快速的完成中后台应用的开发</li>
+</ul>
+<pre><code class="lang-js">git clone https:<span class="hljs-comment">//github.com/ant-design/ant-design-pro.git --depth=1</span>
+cd ant-design-pro
+cnpm i 
+cnpm run docker-prod:dev
+</code></pre>
+<h2 id="t5710.mongodb集群">10.mongodb集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t5710.mongodb%E9%9B%86%E7%BE%A4"> # </a></h2>
+<ul>
+<li>在Docker环境上搭建一个MongoDB集群</li>
+</ul>
+<h3 id="t5810.1 容器">10.1 容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t5810.1%20%E5%AE%B9%E5%99%A8"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">集群角色</th>
+<th style="text-align:left">ContainerName</th>
+<th style="text-align:left">IP:port</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Config Server</td>
+<td style="text-align:left">cfg_1</td>
+<td style="text-align:left">172.18.0.11:27019</td>
+</tr>
+<tr>
+<td style="text-align:left">Config Server</td>
+<td style="text-align:left">cfg_2</td>
+<td style="text-align:left">172.18.0.12:27019</td>
+</tr>
+<tr>
+<td style="text-align:left">Config Server</td>
+<td style="text-align:left">cfg_3</td>
+<td style="text-align:left">172.18.0.13:27019</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard1_1</td>
+<td style="text-align:left">172.18.0.14:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard1_2</td>
+<td style="text-align:left">172.18.0.15:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard1_3</td>
+<td style="text-align:left">172.18.0.16:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard2_1</td>
+<td style="text-align:left">172.18.0.17:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard2_2</td>
+<td style="text-align:left">172.18.0.18:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard2_3</td>
+<td style="text-align:left">172.18.0.19:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard3_1</td>
+<td style="text-align:left">172.18.0.20:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard3_2</td>
+<td style="text-align:left">172.18.0.21:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Shard Server</td>
+<td style="text-align:left">shard3_3</td>
+<td style="text-align:left">172.18.0.22:27018</td>
+</tr>
+<tr>
+<td style="text-align:left">Mongos    mongos_1</td>
+<td style="text-align:left">172.18.0.23:27020</td>
+</tr>
+<tr>
+<td style="text-align:left">Mongos    mongos_2</td>
+<td style="text-align:left">172.18.0.24:27020</td>
+</tr>
+<tr>
+<td style="text-align:left">Mongos    mongos_3</td>
+<td style="text-align:left">172.18.0.25:27020</td>
+</tr>
+</tbody>
+</table>
+<h3 id="t5910.2 拉取镜像">10.2 拉取镜像 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t5910.2%20%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F"> # </a></h3>
+<pre><code class="lang-js">docker pull mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span>
+</code></pre>
+<h3 id="t6010.2 集群配置文件">10.2 集群配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6010.2%20%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h3>
+<pre><code class="lang-js">mkdir -p /home/devops/configsvr
+mkdir -p /home/devops/shard1
+mkdir -p /home/devops/shard2
+mkdir -p /home/devops/shard3
+mkdir -p /home/devops/mongos
+</code></pre>
+<h4 id="t6110.2.1 Config-Server 配置文件">10.2.1 Config-Server 配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6110.2.1%20Config-Server%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h4>
+<ul>
+<li>路径：/home/devops/configsvr/mongod.conf </li>
+<li>说明：MongoDB v3.4 之后要求Config-Server也需要组成副本集形式<pre><code class="lang-js">storage:
+dbPath: <span class="hljs-regexp">/data/</span>db
+journal:
+  enabled: <span class="hljs-literal">true</span>
+systemLog:
+destination: file
+logAppend: <span class="hljs-literal">true</span>
+path: <span class="hljs-regexp">/var/</span>log/mongodb/mongod.log
+net:
+bindIp: <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+processManagement:
+timeZoneInfo: <span class="hljs-regexp">/usr/</span>share/zoneinfo
+replication:
+replSetName: cfg
+sharding:
+clusterRole: configsvr
+</code></pre>
+</li>
+</ul>
+<h4 id="t6210.2.3 Shard-Server 配置文件">10.2.3 Shard-Server 配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6210.2.3%20Shard-Server%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h4>
+<ul>
+<li>路径：/home/devops/shard1/mongod.conf </li>
+<li>说明：此处配置3个分片为shard1,shard2,shard3;每个分片都需要组成副本集。</li>
+<li>shard2,shard3目录下配置文件同名，修改replSetName字段的值分别为’shard2’和’shard3’</li>
+</ul>
+<pre><code class="lang-js">storage:
+  dbPath: <span class="hljs-regexp">/data/</span>db
+  journal:
+    enabled: <span class="hljs-literal">true</span>
+systemLog:
+  destination: file
+  logAppend: <span class="hljs-literal">true</span>
+  path: <span class="hljs-regexp">/var/</span>log/mongodb/mongod.log
+net:
+  bindIp: <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+processManagement:
+  timeZoneInfo: <span class="hljs-regexp">/usr/</span>share/zoneinfo
+replication:
+  replSetName: shard1
+sharding:
+  clusterRole: shardsvr
+</code></pre>
+<h4 id="t6310.2.4 Mongos 配置文件">10.2.4 Mongos 配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6310.2.4%20Mongos%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h4>
+<ul>
+<li>路径：/home/dmc/mongos/mongos.conf </li>
+<li>说明：mongos不需要存储因此去掉storage字段；可任意配置net.port字段，需要指定processManagement.fork为true以–fork方式启动</li>
+<li>sharding.configDB字段用于指定Config-Server集群地址，格式为[replSetName]/[config-server1:port],[config-server2:port]</li>
+</ul>
+<pre><code class="lang-js">systemLog:
+  destination: file
+  logAppend: <span class="hljs-literal">true</span>
+  path: <span class="hljs-regexp">/var/</span>log/mongodb/mongos.log
+net:
+  port: <span class="hljs-number">27020</span>
+  bindIp: <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+processManagement:
+  fork: <span class="hljs-literal">true</span>
+  timeZoneInfo: <span class="hljs-regexp">/usr/</span>share/zoneinfo
+sharding:
+  configDB: cfg/<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.11</span>:<span class="hljs-number">27019</span>,<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.12</span>:<span class="hljs-number">27019</span>,<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.13</span>:<span class="hljs-number">27019</span>
+</code></pre>
+<h3 id="t6410.3 启动Docker容器">10.3 启动Docker容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6410.3%20%E5%90%AF%E5%8A%A8Docker%E5%AE%B9%E5%99%A8"> # </a></h3>
+<h4 id="t6510.3.1 启动3个Config-Server容器">10.3.1 启动3个Config-Server容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6510.3.1%20%E5%90%AF%E5%8A%A83%E4%B8%AAConfig-Server%E5%AE%B9%E5%99%A8"> # </a></h4>
+<pre><code class="lang-js">docker run -d --name=cfg_1 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.11</span> -v /home/devops/configsvr:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=cfg_2 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.12</span> -v /home/devops/configsvr:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=cfg_3 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.13</span> -v /home/devops/configsvr:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+</code></pre>
+<p>进入其中一个容器配置Config-Server副本集</p>
+<pre><code class="lang-js"># 宿主机
+docker exec -it cfg_1 bash
+# 容器中
+mongo --port 27019
+# Mongo Shell中
+rs.initiate({
+    "_id":"cfg",
+    "members":[
+        {
+            "_id":0,
+            "host":"172.18.0.11:27019"
+        },
+        {
+            "_id":1,
+            "host":"172.18.0.12:27019"
+        },
+        {
+            "_id":2,
+            "host":"172.18.0.13:27019"
+        }
+    ]
+})
+</code></pre>
+<h4 id="t6610.3.2 启动3*3个Shard-Server容器">10.3.2 启动3*3个Shard-Server容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6610.3.2%20%E5%90%AF%E5%8A%A83*3%E4%B8%AAShard-Server%E5%AE%B9%E5%99%A8"> # </a></h4>
+<ul>
+<li>说明：分片服务器启动后默认是以27018作为端口</li>
+</ul>
+<h5 id="t6710.3.2.1 启动第一个分片 - shard1">10.3.2.1 启动第一个分片 - shard1 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6710.3.2.1%20%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%88%86%E7%89%87%20-%20shard1"> # </a></h5>
+<pre><code class="lang-js">docker run -d --name=shard1_1 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.14</span> -v /home/devops/shard1:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=shard1_2 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.15</span> -v /home/devops/shard1:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=shard1_3 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.16</span> -v /home/devops/shard1:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+</code></pre>
+<p>进入其中一个容器配置Shard-Server副本集</p>
+<pre><code class="lang-js"># 宿主机
+docker exec -it shard1_1 bash
+# 容器中
+mongo --port 27018
+# Mongo Shell中
+rs.initiate({
+    "_id":"shard1",
+    "members":[
+        {
+            "_id":0,
+            "host":"172.18.0.14:27018"
+        },
+        {
+            "_id":1,
+            "host":"172.18.0.15:27018"
+        },
+        {
+            "_id":2,
+            "host":"172.18.0.16:27018"
+        }
+    ]
+})
+</code></pre>
+<h5 id="t6810.3.2.2 启动第二个分片 - shard2">10.3.2.2 启动第二个分片 - shard2 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6810.3.2.2%20%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%BA%8C%E4%B8%AA%E5%88%86%E7%89%87%20-%20shard2"> # </a></h5>
+<pre><code class="lang-js">docker run -d --name=shard2_1 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.17</span> -v /home/devops/shard2:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=shard2_2 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.18</span> -v /home/devops/shard2:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=shard2_3 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.19</span> -v /home/devops/shard2:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+</code></pre>
+<p>进入其中一个容器配置Shard-Server副本集</p>
+<pre><code class="lang-js"># 宿主机
+docker exec -it shard2_1 bash
+# 容器中
+mongo --port 27018
+# Mongo Shell中
+rs.initiate({
+    "_id":"shard2",
+    "members":[
+        {
+            "_id":0,
+            "host":"172.18.0.17:27018"
+        },
+        {
+            "_id":1,
+            "host":"172.18.0.18:27018"
+        },
+        {
+            "_id":2,
+            "host":"172.18.0.19:27018"
+        }
+    ]
+})
+</code></pre>
+<h5 id="t6910.3.2.3 启动第三个分片 - shard3">10.3.2.3 启动第三个分片 - shard3 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t6910.3.2.3%20%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%B8%89%E4%B8%AA%E5%88%86%E7%89%87%20-%20shard3"> # </a></h5>
+<pre><code class="lang-js">docker run -d --name=shard3_1 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.20</span> -v /home/devops/shard3:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=shard3_2 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.21</span> -v /home/devops/shard3:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+docker run -d --name=shard3_3 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.22</span> -v /home/devops/shard3:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span> -f /etc/mongodb/mongod.conf
+</code></pre>
+<p>进入其中一个容器配置Shard-Server副本集</p>
+<pre><code class="lang-js"># 宿主机
+docker exec -it shard3_1 bash
+# 容器中
+mongo --port 27018
+# Mongo Shell中
+rs.initiate({
+    "_id":"shard3",
+    "members":[
+        {
+            "_id":0,
+            "host":"172.18.0.20:27018"
+        },
+        {
+            "_id":1,
+            "host":"172.18.0.21:27018"
+        },
+        {
+            "_id":2,
+            "host":"172.18.0.22:27018"
+        }
+    ]
+})
+</code></pre>
+<h5 id="t7010.3.2.4 启动3个mongos服务器">10.3.2.4 启动3个mongos服务器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7010.3.2.4%20%E5%90%AF%E5%8A%A83%E4%B8%AAmongos%E6%9C%8D%E5%8A%A1%E5%99%A8"> # </a></h5>
+<ul>
+<li>说明：这里也使用了mongo镜像，但是需要开启mongos进程，mongod进程并不需要用到。</li>
+</ul>
+<pre><code class="lang-js">docker run -d --name=mongos_1 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.23</span> -v /home/devops/mongos:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span>
+docker run -d --name=mongos_2 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.24</span> -v /home/devops/mongos:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span>
+docker run -d --name=mongos_3 --network=znet --ip=<span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.25</span> -v /home/devops/mongos:<span class="hljs-regexp">/etc/m</span>ongodb mongo:<span class="hljs-number">4.0</span><span class="hljs-number">.0</span>
+</code></pre>
+<p>进入每个容器中，启动mongos进程</p>
+<pre><code class="lang-js"># 宿主机
+docker exec -it mongos_1 bash
+# 容器中
+mongos -f /etc/mongodb/mongos.conf
+</code></pre>
+<p>可以就在其中一个mongos容器中使用mongo shell连接mongos进程配置分片集群</p>
+<pre><code class="lang-js"># 连接mongos，端口号与mongos配置文件中设定一致
+mongo -port 27020
+# 将分片加入集群
+sh.addShard("shard1/172.18.0.14:27018,172.18.0.15:27018,172.18.0.16:27018")
+sh.addShard("shard2/172.18.0.17:27018,172.18.0.18:27018,172.18.0.19:27018")
+sh.addShard("shard3/172.18.0.20:27018,172.18.0.21:27018,172.18.0.22:27018")
+
+# 对数据库开启分片功能
+sh.enableSharding("cms")
+# 对数据库中集合开启分片，并指定片键
+sh.shardCollection("cms.user",{"name":1})
+</code></pre>
+<h3 id="t7110.4 写入数据">10.4 写入数据 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7110.4%20%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE"> # </a></h3>
+<pre><code class="lang-js">use cms;
+for(var i=1;i&lt;=1000000;i++){
+    db.user.insert({name:i,age:i});
+}
+
+# 查看分片状态
+sh.status()
+</code></pre>
+<h2 id="t7211. redis集群">11. redis集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7211.%20redis%E9%9B%86%E7%BE%A4"> # </a></h2>
+<ul>
+<li>高速缓存利用内存保存数据，读写速度远超硬盘</li>
+<li>高速缓存可以减少I/O操作，降低I/O压力 </li>
+<li>Redis是VMware开发的开源免费的KV型NoSQL缓存产品</li>
+<li>Redis具有很好的性能，最多可以提供10万次/秒的读写</li>
+</ul>
+<h3 id="t7311.1 RedisCluster">11.1 RedisCluster <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7311.1%20RedisCluster"> # </a></h3>
+<ul>
+<li>RedisCluster是官方推荐的，没有中心节点</li>
+<li>无中心节点，客户端与redis节点直连，不需要中间代理层</li>
+<li>数据可以被分片存储，每个节点存储的数据是不一样的，每个节点需要提供冗余节点</li>
+<li>Redis管理方便，可以随时自行增加和摘除节点</li>
+</ul>
+<h3 id="t7411.2 主从同步">11.2 主从同步 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7411.2%20%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"> # </a></h3>
+<ul>
+<li>Redis集群中的数据库复制是通过主从同步来实现的</li>
+<li>主节点(Master)把数据分发给从节点(Slave)</li>
+<li>主从同步的好处在于高可用，Redis节点有冗余设计</li>
+<li>Redis集群中应该包含奇数个Master,至少应该有3个Master</li>
+<li>Redis集群中每个Master都应该有Slave</li>
+</ul>
+<p><img src="./70-deploy_files/redisconfig.jpg" alt="redisconfig"></p>
+<h3 id="t7511.3 实操">11.3 实操 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7511.3%20%E5%AE%9E%E6%93%8D"> # </a></h3>
+<h4 id="t7611.3.1 安装Redis镜像">11.3.1 安装Redis镜像 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7611.3.1%20%E5%AE%89%E8%A3%85Redis%E9%95%9C%E5%83%8F"> # </a></h4>
+<ul>
+<li>导入本地Redis镜像文件，运行Redis容器<pre><code class="lang-js">docker pull zhangrenyang/redis:latest
+docker tag zhangrenyang/redis:latest zredis
+</code></pre>
+<h4 id="t7711.3.2 启动容器">11.3.2 启动容器 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7711.3.2%20%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8"> # </a></h4>
+<pre><code class="lang-js">docker run -it -d --name redis1 -p <span class="hljs-number">5001</span>:<span class="hljs-number">6379</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.23</span> zredis bash
+docker run -it -d --name redis2 -p <span class="hljs-number">5002</span>:<span class="hljs-number">6379</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.24</span> zredis bash
+docker run -it -d --name redis3 -p <span class="hljs-number">5003</span>:<span class="hljs-number">6379</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.25</span> zredis bash
+docker run -it -d --name redis4 -p <span class="hljs-number">5004</span>:<span class="hljs-number">6379</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.26</span> zredis bash
+docker run -it -d --name redis5 -p <span class="hljs-number">5005</span>:<span class="hljs-number">6379</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.27</span> zredis bash
+docker run -it -d --name redis6 -p <span class="hljs-number">5006</span>:<span class="hljs-number">6379</span> --net=znet --ip <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.28</span> zredis bash
+</code></pre>
+</li>
+</ul>
+<h4 id="t7811.3.3 配置文件">11.3.3 配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7811.3.3%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h4>
+<p>/user/redis/redis.conf</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">daemonize yes</td>
+<td style="text-align:left">以后台模式运行</td>
+</tr>
+<tr>
+<td style="text-align:left">cluster-enabled yes</td>
+<td style="text-align:left">开启集群</td>
+</tr>
+<tr>
+<td style="text-align:left">cluster-config-filter nodes.conf</td>
+<td style="text-align:left">集群配置文件</td>
+</tr>
+<tr>
+<td style="text-align:left">cluster-node-timeout 15000</td>
+<td style="text-align:left">超时时间</td>
+</tr>
+<tr>
+<td style="text-align:left">appendonly yes</td>
+<td style="text-align:left">开启AOF模式，实现日志恢复数据</td>
+</tr>
+</tbody>
+</table>
+<h4 id="t7911.3.4 配置集群">11.3.4 配置集群 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t7911.3.4%20%E9%85%8D%E7%BD%AE%E9%9B%86%E7%BE%A4"> # </a></h4>
+<pre><code class="lang-js">cp /usr/redis/src/redis-trib.rb /usr/redis/cluster
+cd /usr/redis/cluster
+apt-get install ruby
+apt-get install rubygems
+gem install redis
+
+./redis-trib.rb create --replicas <span class="hljs-number">1</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.23</span>:<span class="hljs-number">6379</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.24</span>:<span class="hljs-number">6379</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.25</span>:<span class="hljs-number">6379</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.26</span>:<span class="hljs-number">6379</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.27</span>:<span class="hljs-number">6379</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.28</span>:<span class="hljs-number">6379</span> 
+</code></pre>
+<p>--replicas 1 参数表示为每个主节点创建一个从节点</p>
+<h2 id="t8012.数据库备份">12.数据库备份 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8012.%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BD"> # </a></h2>
+<h3 id="t8112.1 mysql">12.1 mysql <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8112.1%20mysql"> # </a></h3>
+<pre><code class="lang-js">wget -i -c http:<span class="hljs-comment">//dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</span>
+yum -y install mysql57-community-release-el7<span class="hljs-number">-10.</span>noarch.rpm
+yum -y install mysql-community-server
+systemctl start  mysqld.service
+systemctl status mysqld.service
+ mysql -uroot -p
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-meta">#!/bin/bash</span>
+DATE=$(date +%F_%H-%M-%S)
+HOST=<span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+DB=test
+USER=root
+PASS=<span class="hljs-number">123456</span>
+MAIL=<span class="hljs-string">"83687401@qq.com"</span>
+BACKUP_DIR=<span class="hljs-regexp">/data/</span>db_backup
+SQL_FILE=${DB}_FULL_${DATE}.sql
+cd $BACKUP_DIR
+mysqldump -h$HOST -u$USER -p$PASS &gt;  $SQL_FILE
+echo <span class="hljs-string">"$DATE 备份成功"</span> | mail -s <span class="hljs-string">"备份成功通知"</span> $MAIL
+</code></pre>
+<h3 id="t8212.2 mongodb备份">12.2 mongodb备份 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8212.2%20mongodb%E5%A4%87%E4%BB%BD"> # </a></h3>
+<pre><code class="lang-js">dump=<span class="hljs-regexp">/usr/</span>local/mongodb/bin/mongodump
+out_dir=<span class="hljs-regexp">/media/</span>sf_mongobak/dump_bak
+tar_dir=<span class="hljs-regexp">/media/</span>sf_mongobak/tar_bak
+mkdir -p $out_dir/$sysdate
+$dump -h <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> -d masterdata -o $out_dir/$sysdate
+exit
+</code></pre>
+<h2 id="t8313.监控主机状态">13.监控主机状态 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8313.%E7%9B%91%E6%8E%A7%E4%B8%BB%E6%9C%BA%E7%8A%B6%E6%80%81"> # </a></h2>
+<h3 id="t8413.1 定义一个颜色输出字符串函数">13.1 定义一个颜色输出字符串函数 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8413.1%20%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E9%A2%9C%E8%89%B2%E8%BE%93%E5%87%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0"> # </a></h3>
+<pre><code class="lang-js">#!/bin/bash
+#description: test
+function echo_color(){
+  if [ $1 == "green" ]; then
+     echo -e "\033[32;40m$2\033[0m"
+  elif [ $1 == "red" ]; then
+     echo -e "\033[31;40m$2\033[0m"  
+  fi    
+}
+
+function echo_color2(){
+  case $1 in 
+     green)
+        echo -e "\033[32;40m$2\033[0m"
+        ;;
+     red)
+        echo -e "\033[31;40m$2\033[0m"
+        ;;   
+       *) 
+         echo "echo_color2 {green|red} string"
+  esac           
+}
+
+echo -e "\033[32;40mshell\033[0m"
+echo -e "\033[33;40mshell\033[0m"
+
+echo_color green hello
+echo_color red world
+
+</code></pre>
+<h3 id="t8513.2. 批量创建用户">13.2. 批量创建用户 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8513.2.%20%E6%89%B9%E9%87%8F%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7"> # </a></h3>
+<pre><code class="lang-sh"><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">echo_color</span></span>(){
+  <span class="hljs-keyword">if</span> [ <span class="hljs-variable">$1</span> == <span class="hljs-string">"green"</span> ]; <span class="hljs-keyword">then</span>
+     <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"\033[32;40m<span class="hljs-variable">$2</span>\033[0m"</span>
+  <span class="hljs-keyword">elif</span> [ <span class="hljs-variable">$1</span> == <span class="hljs-string">"red"</span> ]; <span class="hljs-keyword">then</span>
+     <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"\033[31;40m<span class="hljs-variable">$2</span>\033[0m"</span>  
+  <span class="hljs-keyword">fi</span>    
+}
+
+<span class="hljs-keyword">for</span> USER <span class="hljs-keyword">in</span> user{1..5}; <span class="hljs-keyword">do</span>
+  <span class="hljs-keyword">if</span> ! id <span class="hljs-variable">$USER</span> &amp;&gt;/dev/null; <span class="hljs-keyword">then</span>
+    PASS=$(<span class="hljs-built_in">echo</span> <span class="hljs-variable">$RANDOM</span> | md5sum | cut -c 1-8)
+    useradd <span class="hljs-variable">$USER</span>
+    <span class="hljs-built_in">echo</span> <span class="hljs-variable">$PASS</span> | passwd --stdin <span class="hljs-variable">$USER</span> &amp;&gt; /dev/null
+    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">"<span class="hljs-variable">$USER</span>\t<span class="hljs-variable">$PASS</span>"</span> &gt;&gt;user_file
+    <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$USER</span> user create successfully."</span>
+  <span class="hljs-keyword">else</span>
+    echo_color red <span class="hljs-string">"<span class="hljs-variable">$USER</span> already exists."</span>;  
+  <span class="hljs-keyword">fi</span>
+<span class="hljs-keyword">done</span>
+</code></pre>
+<h3 id="t8613.3. 检查主机存活状态">13.3. 检查主机存活状态 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8613.3.%20%E6%A3%80%E6%9F%A5%E4%B8%BB%E6%9C%BA%E5%AD%98%E6%B4%BB%E7%8A%B6%E6%80%81"> # </a></h3>
+<h4 id="t8713.3.1 将错误IP放到数组中里面判断是否ping失败三次">13.3.1 将错误IP放到数组中里面判断是否ping失败三次 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8713.3.1%20%E5%B0%86%E9%94%99%E8%AF%AFIP%E6%94%BE%E5%88%B0%E6%95%B0%E7%BB%84%E4%B8%AD%E9%87%8C%E9%9D%A2%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6ping%E5%A4%B1%E8%B4%A5%E4%B8%89%E6%AC%A1"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-meta">#!/bin/bash</span>
+IP_LIST=<span class="hljs-string">"192.168.0.1 192.168.0.2"</span>
+<span class="hljs-keyword">for</span> IP <span class="hljs-keyword">in</span> $IP_LIST; <span class="hljs-keyword">do</span>
+  <span class="hljs-keyword">if</span> ping -c <span class="hljs-number">1</span> $IP &amp;&gt;<span class="hljs-regexp">/dev/</span><span class="hljs-literal">null</span>; then
+     echo <span class="hljs-string">"$IP is ok."</span>
+  <span class="hljs-keyword">else</span>
+     echo <span class="hljs-string">"$IP is wrong!"</span>
+  fi
+done       
+</code></pre>
+<pre><code class="lang-js">#!/bin/bash
+IP_LIST="192.168.0.1 192.168.0.222"
+for IP in $IP_LIST; do
+  NUM=1
+  while [ $NUM -le 3 ]; do
+      if ping -c 1 $IP &amp;&gt;/dev/null; then
+        echo "$IP is ok."
+        break
+      else
+        echo $NUM
+        FAIL_COUNT[$NUM]=$IP
+      fi
+      let NUM++
+  done
+  echo ${#FAIL_COUNT[*]}
+  if [ ${#FAIL_COUNT[*]} -eq 3 ]; then
+    echo "$IP is unreachable." 
+  fi
+  unset FAIL_COUNT[*]
+done      
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-meta">#!/bin/bash</span>
+IP_LIST=<span class="hljs-string">"192.168.0.1 192.168.0.222"</span>
+<span class="hljs-keyword">for</span> IP <span class="hljs-keyword">in</span> $IP_LIST; <span class="hljs-keyword">do</span>
+  FAIL_COUNT=<span class="hljs-number">1</span>
+  <span class="hljs-keyword">for</span> ((i=<span class="hljs-number">1</span>;i&lt;=<span class="hljs-number">3</span>;i++)) <span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> ping -c <span class="hljs-number">1</span> $IP &amp;&gt;<span class="hljs-regexp">/dev/</span><span class="hljs-literal">null</span>; then
+        echo <span class="hljs-string">"$IP is ok."</span>
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">else</span>
+        echo $NUM
+        <span class="hljs-keyword">let</span> FAIL_COUNT++
+    fi
+  done
+  <span class="hljs-keyword">if</span> [ $FAIL_COUNT -eq <span class="hljs-number">3</span> ]; then
+    echo <span class="hljs-string">"$IP is unreachable."</span> 
+  fi
+done      
+</code></pre>
+<h4 id="t8813.4 获得CPU利用率">13.4 获得CPU利用率 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8813.4%20%E8%8E%B7%E5%BE%97CPU%E5%88%A9%E7%94%A8%E7%8E%87"> # </a></h4>
+<ul>
+<li>借助<code>vmstat</code>工具来分析CPU统计信息</li>
+</ul>
+<pre><code class="lang-js"><span class="hljs-meta">#!/bin/bash</span>
+cpu(){
+    local user system idle cwait
+    user=$(vmstat | awk <span class="hljs-string">'NR==3{print $13}'</span>)
+    system=$(vmstat | awk <span class="hljs-string">'NR==3{print $14}'</span>)
+    idea=$(vmstat | awk <span class="hljs-string">'NR==3{print $15}'</span>)
+    cwait=$(vmstat | awk <span class="hljs-string">'NR==3{print $16}'</span>)
+    echo <span class="hljs-string">"user cpu: $user%"</span>
+    echo <span class="hljs-string">"system cpu: $system%"</span>
+    echo <span class="hljs-string">"idle cpu: $idea%"</span>
+    echo <span class="hljs-string">"wait: $cwait%"</span>
+}
+cpu
+memory(){
+  local total used free
+  used=$(free -m | awk <span class="hljs-string">'NR==3{print $3}'</span>)
+  free=$(free -m | awak <span class="hljs-string">'NR==3{print $4}'</span>)
+  total=$(($used+$free))
+  echo <span class="hljs-string">"内存总计: $(total)M"</span>
+  echo <span class="hljs-string">"内存使用: $(used)M"</span>
+  echo <span class="hljs-string">"内存剩余: $(free)M"</span>
+}
+memory
+
+disk(){
+  local mount total used used_percent free
+  part=$(df -h|awk <span class="hljs-string">'BEGIN{OFS="="}/^\/dev/{print $6,$2,$3,$4,$5}'</span>)
+  echo $p
+  <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span>  $part; <span class="hljs-keyword">do</span>
+    mount=$(echo $p | cut -d<span class="hljs-string">"="</span> -f1)
+    total=$(echo $p | cut -d<span class="hljs-string">"="</span> -f2)
+    used=$(echo $p | cut -d<span class="hljs-string">"="</span> -f3)
+    free=$(echo $p | cut -d<span class="hljs-string">"="</span> -f4)
+    used_percent=$(echo $p | cut -d<span class="hljs-string">"="</span> -f5|cut -d<span class="hljs-string">"%"</span> -f1)
+    <span class="hljs-keyword">if</span> [ $used_percent -ge <span class="hljs-number">5</span> ]; then
+      echo <span class="hljs-string">"挂载点: $mount"</span>
+      echo <span class="hljs-string">"总大小: $total"</span>
+      echo <span class="hljs-string">"使用大小: $used"</span>
+      echo <span class="hljs-string">"空闲大小: $free"</span>
+      echo <span class="hljs-string">"使用百分比: $used_percent%"</span>
+    fi  
+  done
+}
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>; <span class="hljs-keyword">do</span> bash system.sh; sleep <span class="hljs-number">1</span>s;done
+</code></pre>
+<h4 id="t8913.5 监控网络流量">13.5 监控网络流量 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t8913.5%20%E7%9B%91%E6%8E%A7%E7%BD%91%E7%BB%9C%E6%B5%81%E9%87%8F"> # </a></h4>
+<pre><code class="lang-js">
+
+traffic(){
+    local old_in old_out new_in new_out
+    old_in=$(ifconfig eth0 | awk <span class="hljs-string">'/RX/&amp;&amp;/bytes/{print $2}'</span> |cut -d<span class="hljs-string">":"</span> -f2)
+    old_out=$(ifconfig eth0 | awk <span class="hljs-string">'/TX/&amp;&amp;/bytes/{print $2}'</span> |cut -d<span class="hljs-string">":"</span> -f2)
+    sleep <span class="hljs-number">1</span>s
+    new_in=$(ifconfig eth0 | awk <span class="hljs-string">'/RX/&amp;&amp;/bytes/{print $2}'</span> |cut -d<span class="hljs-string">":"</span> -f2)
+    new_out=$(ifconfig eth0 | awk <span class="hljs-string">'/TX/&amp;&amp;/bytes/{print $2}'</span> |cut -d<span class="hljs-string">":"</span> -f2)
+    <span class="hljs-keyword">in</span>=$(($new_in-$old_in))
+    out=$(($new_out-$old_out))
+    echo <span class="hljs-string">"${in}B/s ${out}B/s"</span>
+}
+</code></pre>
+<h4 id="t9013.6 监控网站状态">13.6 监控网站状态 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9013.6%20%E7%9B%91%E6%8E%A7%E7%BD%91%E7%AB%99%E7%8A%B6%E6%80%81"> # </a></h4>
+<pre><code class="lang-js">curl -o /dev/<span class="hljs-literal">null</span> -s -w <span class="hljs-string">"%{http_code}"</span> http:<span class="hljs-comment">//www.baidu.com</span>
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">check_url</span>(<span class="hljs-params"></span>)</span>{
+    HTTP_CODE=$(curl -o /dev/<span class="hljs-literal">null</span> -s -w <span class="hljs-string">"%{http_code}"</span> $<span class="hljs-number">1</span>)
+    <span class="hljs-keyword">if</span> [ $HTTP_CODE -ne <span class="hljs-number">200</span> ]; then
+      echo <span class="hljs-string">"$1不可达"</span>
+    <span class="hljs-keyword">else</span>
+      echo <span class="hljs-string">"$1状态正常"</span>  
+    fi
+}
+
+URL_LIST=<span class="hljs-string">"http://www.baidu.com http://www.baidu2222.com"</span>
+
+<span class="hljs-keyword">for</span> URL <span class="hljs-keyword">in</span> $URL_LIST; <span class="hljs-keyword">do</span>
+  check_url $URL
+done
+</code></pre>
+<h4 id="t9113.7 监控nginx状态">13.7 监控nginx状态 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9113.7%20%E7%9B%91%E6%8E%A7nginx%E7%8A%B6%E6%80%81"> # </a></h4>
+<pre><code class="lang-js"> #!<span class="hljs-regexp">/bin/</span>bash
+Web=<span class="hljs-string">`ps -ef |grep nginx|grep -v grep|wc -l`</span>
+ <span class="hljs-keyword">if</span> [ $Web -eq <span class="hljs-number">2</span> ];then
+    echo <span class="hljs-string">"your nginx is running"</span>
+      exit <span class="hljs-number">0</span>
+     <span class="hljs-keyword">else</span>
+       service nginx start
+        exit <span class="hljs-number">1</span>
+fi
+</code></pre>
+<h4 id="t9213.8 监控mysql状态">13.8 监控mysql状态 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9213.8%20%E7%9B%91%E6%8E%A7mysql%E7%8A%B6%E6%80%81"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-meta">#!/bin/sh</span>
+PortNum=<span class="hljs-string">`netstat -lnt|grep 3306|wc -l`</span>
+<span class="hljs-keyword">if</span> [ $PortNum -eq <span class="hljs-number">1</span> ]
+then
+ echo <span class="hljs-string">"mysqld is running."</span>
+<span class="hljs-keyword">else</span>
+ echo <span class="hljs-string">"mysqld is stoped."</span>
+fi
+</code></pre>
+<h2 id="t9312.参考">12.参考 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9312.%E5%8F%82%E8%80%83"> # </a></h2>
+<h3 id="t9412. 网址">12. 网址 <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9412.%20%E7%BD%91%E5%9D%80"> # </a></h3>
+<ul>
+<li><a href="https://www.linux.org/">linux</a></li>
+<li><a href="https://www.docker.com/">docker</a></li>
+<li><a href="http://nginx.org/">nginx</a></li>
+<li><a href="https://www.mysql.com/">mysql</a></li>
+<li><a href="https://www.mongodb.com/">mongodb</a></li>
+<li><a href="https://xshell.en.softonic.com/">xshell</a></li>
+<li><a href="https://www.netsarang.com/zh/xftp/">xftp</a></li>
+<li><a href="https://robomongo.org/">robomongo</a></li>
+<li><a href="https://www.navicat.com.cn/products/">navicat</a></li>
+<li><a href="https://redis.io/">redis</a></li>
+</ul>
+<h3 id="t9512.配置node.js">12.配置node.js <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9512.%E9%85%8D%E7%BD%AEnode.js"> # </a></h3>
+<h4 id="t9612.1 安装nvm">12.1 安装nvm <a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html#t9612.1%20%E5%AE%89%E8%A3%85nvm"> # </a></h4>
+<ul>
+<li><a href="https://github.com/nvm-sh/nvm">nvm</a></li>
+</ul>
+<pre><code class="lang-js">curl -o- https:<span class="hljs-comment">//raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash</span>
+source /root/.bashrc
+nvm install stable
+npm i cnpm -g
+cnpm i nrm -g
+cnpm i pm2 -g
+</code></pre>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./70-deploy_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

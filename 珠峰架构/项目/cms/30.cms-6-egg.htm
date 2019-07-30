@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./30.cms-6-egg_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t01.%20egg.js">1. egg.js</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t11.1%20%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">1.1 目录结构</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t21.2%20%E8%AE%BF%E9%97%AE">1.2 访问</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t32.%20%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">2. 初始化项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t43.%20%E6%B7%BB%E5%8A%A0%20npm%20scripts%20%E5%88%B0%20package.json%EF%BC%9A">3. 添加 npm scripts 到 package.json：</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t54.%20%E8%B7%91%E9%80%9A%E8%B7%AF%E7%94%B1">4. 跑通路由</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t64.1%20%E9%85%8D%E7%BD%AE%E8%B7%AF%E7%94%B1">4.1 配置路由</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t74.2%20%E7%BC%96%E5%86%99%E6%8E%A7%E5%88%B6%E5%99%A8">4.2 编写控制器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t84.3%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">4.3 配置文件</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t95.%20%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E4%B8%AD%E9%97%B4%E4%BB%B6">5. 静态文件中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t106.%20%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E">6. 使用模板引擎</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t116.1%20%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E7%9A%84%E6%8F%92%E4%BB%B6">6.1 安装依赖的插件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t126.2%20%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B6">6.2 启用插件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t136.3%20%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF">6.3 配置模板</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t146.4%20%E7%BC%96%E5%86%99%E6%A8%A1%E6%9D%BF">6.4 编写模板</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t156.5%20%E7%BC%96%E5%86%99%E6%8E%A7%E5%88%B6%E5%99%A8">6.5 编写控制器</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t167.%20%E8%AF%BB%E5%8F%96%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3%E6%9C%8D%E5%8A%A1">7. 读取远程接口服务</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t177.1%20%20%E6%B7%BB%E5%8A%A0%E9%85%8D%E7%BD%AE">7.1  添加配置</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t187.2%20%20%E7%BC%96%E5%86%99Service">7.2  编写Service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t197.3%20%20%E7%BC%96%E5%86%99%E6%8E%A7%E5%88%B6%E5%B1%82">7.3  编写控制层</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t208.%20%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1">8. 计划任务</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t218.1%20%E7%BC%96%E5%86%99%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1">8.1 编写定时任务</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t228.1.1%20update_cache.js">8.1.1 update_cache.js</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t238.1.1.1%20%E7%B1%BB%E5%9E%8B">8.1.1.1 类型</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t248.1.1.2%20%E6%89%A7%E8%A1%8C%E6%97%A5%E5%BF%97">8.1.1.2 执行日志</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t258.1.2%20config.default.js">8.1.2 config.default.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t268.1.3%20news.js">8.1.3 news.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t278.2%20%E5%90%AF%E5%8A%A8%E6%97%B6%E6%89%A7%E8%A1%8C%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1">8.2 启动时执行定时任务</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t288.2.1%20app.js">8.2.1 app.js</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t299.%20MySQL">9. MySQL</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t309.1%20%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE">9.1 安装与配置</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t319.2%20%E5%BC%80%E5%90%AF%E6%8F%92%E4%BB%B6">9.2 开启插件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t329.3%20%20%E5%BB%BA%E8%A1%A8">9.3  建表</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t339.4%20%20%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%90">9.4  配置数据源</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t349.5%20news.js">9.5 news.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3510.%20Sequelize">10. Sequelize</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3610.1%20%E5%AE%89%E8%A3%85">10.1 安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3710.2%20%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B6">10.2 启用插件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3810.3%20%20sequelize%20%E9%85%8D%E7%BD%AE">10.3  sequelize 配置</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3910.4%20%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93">10.4 初始化数据库</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4010.4.1%20%E5%AE%89%E8%A3%85sequelize-cli">10.4.1 安装sequelize-cli</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4110.4.2%20.sequelizerc">10.4.2 .sequelizerc</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4210.4.3%20%E5%88%9D%E5%A7%8B%E5%8C%96%20Migrations">10.4.3 初始化 Migrations</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4310.4.4%20%E5%88%9B%E5%BB%BAusers%E8%A1%A8">10.4.4 创建users表</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4410.4.4.1%20%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95">10.4.4.1 创建目录</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4510.4.4.2%20%E5%88%9B%E5%BB%BA%E5%8D%87%E7%BA%A7%E8%84%9A%E6%9C%AC">10.4.4.2 创建升级脚本</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4610.4.4.3%20%E6%89%A7%E8%A1%8C%20migrate%20%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%98%E6%9B%B4">10.4.4.3 执行 migrate 进行数据库变更</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4710.4.5%20%E4%BD%BF%E7%94%A8">10.4.5 使用</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4810.4.5.1%20app\model\user.js">10.4.5.1 app\model\user.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4910.4.5.2%20%20users.js">10.4.5.2  users.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5010.4.5.3%20router.js">10.4.5.3 router.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5110.4.5.4%20config.default.js">10.4.5.4 config.default.js</a></li></ul></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5211.%20%E5%9B%BD%E9%99%85%E5%8C%96%EF%BC%88I18n%EF%BC%89">11. 国际化（I18n）</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5311.1%20%E9%BB%98%E8%AE%A4%E8%AF%AD%E8%A8%80">11.1 默认语言</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5411.2%20%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%96%87%E4%BB%B6">11.2 多语言文件</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5511.2.1%20en-US.js">11.2.1 en-US.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5611.2.2%20zh-CN.js">11.2.2 zh-CN.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5711.3%20%E8%8E%B7%E5%8F%96%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%96%87%E6%9C%AC">11.3 获取多语言文本</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5812.%20%E6%89%A9%E5%B1%95%E5%B7%A5%E5%85%B7%E6%96%B9%E6%B3%95">12. 扩展工具方法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5913.%20%E4%B8%AD%E9%97%B4%E4%BB%B6">13. 中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6014.%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83">14.运行环境</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6115.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">15. 单元测试</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6215.1%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E7%9A%84%E4%BC%98%E7%82%B9">15.1 单元测试的优点</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6315.2%20%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6">15.2 测试框架</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6415.3%20%E6%B5%8B%E8%AF%95%E7%BA%A6%E5%AE%9A">15.3 测试约定</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6515.3.1%20%E6%B5%8B%E8%AF%95%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">15.3.1 测试目录结构</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6615.3.2%20%E6%B5%8B%E8%AF%95%E8%BF%90%E8%A1%8C%E5%B7%A5%E5%85%B7">15.3.2 测试运行工具</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6715.3.3%20mock">15.3.3 mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6815.3.4%20app">15.3.4 app</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6915.3.5%20%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0">15.3.5 钩子函数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7015.3.6%20ctx">15.3.6 ctx</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7115.4%20%E5%BC%82%E6%AD%A5%E6%B5%8B%E8%AF%95">15.4 异步测试</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7215.4.1%20%E5%BC%82%E6%AD%A5%E6%B5%8B%E8%AF%95%E5%86%99%E6%B3%95">15.4.1 异步测试写法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7315.4.2%20Controller%20%E6%B5%8B%E8%AF%95">15.4.2 Controller 测试</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7415.4.2.1%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE">15.4.2.1 准备数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7515.4.2.2%20user.test.js">15.4.2.2 user.test.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7615.4.3%20service">15.4.3 service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7715.4.4%20Extend%20%E6%B5%8B%E8%AF%95">15.4.4 Extend 测试</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7815.4.4.1%20application">15.4.4.1 application</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7915.4.4.2%20context">15.4.4.2 context</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8015.4.4.3%20Request">15.4.4.3 Request</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8115.4.4.4%20response">15.4.4.4 response</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8215.4.4.5%20Helper">15.4.4.5 Helper</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8315.4.5%20%E6%B5%8B%E8%AF%95%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1">15.4.5 测试计划任务</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8415.4.5.1%20update_cache.test.js">15.4.5.1 update_cache.test.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8515.4.6%20%E6%B5%8B%E8%AF%95model">15.4.6 测试model</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8615.4.6.1%20%E4%BF%AE%E6%94%B9%E7%8E%AF%E5%A2%83">15.4.6.1 修改环境</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8715.4.6.2%20%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE">15.4.6.2 测试数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8815.4.6.2.1%20%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96">15.4.6.2.1 安装依赖</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8915.4.6.2.2%20factories.js">15.4.6.2.2 factories.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9015.4.6.2.3%20.setup.js">15.4.6.2.3 .setup.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9115.4.6.2.4%20users.test.js">15.4.6.2.4 users.test.js</a></li></ul></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9216.%20%E5%B8%83%E7%BD%B2">16. 布署</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9316.1%20%E5%AE%89%E8%A3%85%E5%B7%A5%E5%85%B7">16.1 安装工具</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9416.2%20%E6%B7%BB%E5%8A%A0npm%20scripts">16.2 添加npm scripts</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9517.%E5%8F%82%E8%80%83">17.参考</a></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. egg.js">1. egg.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t01.%20egg.js"> # </a></h2>
+<ul>
+<li><a href="https://eggjs.org/zh-cn/intro/">egg.js</a></li>
+<li>提供基于 Egg 定制上层框架的能力</li>
+<li>高度可扩展的插件机制</li>
+<li>内置多进程管理</li>
+<li>基于 Koa 开发，性能优异</li>
+<li>框架稳定，测试覆盖率高</li>
+<li>渐进式开发</li>
+</ul>
+<h3 id="t11.1 目录结构">1.1 目录结构 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t11.1%20%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"> # </a></h3>
+<pre><code class="lang-js">├── package.json
+├── app.js (app.js 和 agent.js 用于自定义启动时的初始化工作)
+├── agent.js (可选)
+├── app
+|   ├── router.js(用于配置 URL 路由规则)
+│   ├── controller(用于解析用户的输入，处理后返回相应的结果)
+│   |   └── home.js
+│   ├── service (用于编写业务逻辑层，可选)
+│   |   └── user.js
+│   ├── middleware (用于编写中间件，可选)
+│   |   └── response_time.js
+│   ├── schedule (用于定时任务，可选)
+│   |   └── my_task.js
+│   ├── public (用于放置静态资源，可选)
+│   |   └── reset.css
+│   ├── extend (用于框架的扩展，可选)
+│   |   └── application.js app 对象指的是 Koa 的全局应用对象，全局只有一个，在应用启动时被创建。
+│       ├── context.js (Context 指的是 Koa 的请求上下文，这是 请求级别 的对象)
+│       ├── request.js (Request 对象和 Koa 的 Request 对象相同，是 请求级别 的对象)
+│       ├── response.js (Response 对象和 Koa 的 Response 对象相同，是 请求级别 的对象)
+│       ├── helper.js (Helper 函数用来提供一些实用的 utility 函数)
+│   ├── view (用于放置模板文件)
+│   |   └── home.tpl
+├── |── model (用于放置领域模型)
+│   |   └── home.tpl
+│   └── extend (用于框架的扩展)
+│       ├── helper.js (可选)
+│       ├── request.js (可选)
+│       ├── response.js (可选)
+│       ├── context.js (可选)
+│       ├── application.js (可选)
+│       └── agent.js (可选)
+├── config(用于编写配置文件)
+|   ├── plugin.js(用于配置需要加载的插件)
+|   ├── config.default.js
+│   ├── config.prod.js
+|   ├── config.test.js (可选)
+|   ├── config.local.js (可选)
+|   └── config.unittest.js (可选)
+└── test(用于单元测试)
+    ├── middleware
+    |   └── response_time.test.js
+    └── controller
+        └── home.test.js
+</code></pre>
+<h3 id="t21.2 访问">1.2 访问 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t21.2%20%E8%AE%BF%E9%97%AE"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">文件</th>
+<th style="text-align:left">app</th>
+<th style="text-align:left">ctx</th>
+<th style="text-align:left">service</th>
+<th style="text-align:left">config</th>
+<th style="text-align:left">logger</th>
+<th style="text-align:left">helper</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Controller</td>
+<td style="text-align:left">this.app</td>
+<td style="text-align:left">this.ctx</td>
+<td style="text-align:left">this.service</td>
+<td style="text-align:left">this.config</td>
+<td style="text-align:left">this.logger</td>
+<td style="text-align:left">this.app.helper</td>
+</tr>
+<tr>
+<td style="text-align:left">Service</td>
+<td style="text-align:left">this.app</td>
+<td style="text-align:left">this.ctx</td>
+<td style="text-align:left">this.service</td>
+<td style="text-align:left">this.config</td>
+<td style="text-align:left">this.logger</td>
+<td style="text-align:left">this.app.helper</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>ctx.helper </p>
+</blockquote>
+<h2 id="t32. 初始化项目">2. 初始化项目 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t32.%20%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"> # </a></h2>
+<pre><code class="lang-js">mkdir egg-news
+cd egg-news
+npm init -y
+cnpm i egg --save
+cnpm i egg-bin --save-dev
+</code></pre>
+<h2 id="t43. 添加 npm scripts 到 package.json：">3. 添加 npm scripts 到 package.json： <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t43.%20%E6%B7%BB%E5%8A%A0%20npm%20scripts%20%E5%88%B0%20package.json%EF%BC%9A"> # </a></h2>
+<pre><code class="lang-json">"scripts": {
+    "dev": "egg-bin dev"
+}
+</code></pre>
+<h2 id="t54. 跑通路由">4. 跑通路由 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t54.%20%E8%B7%91%E9%80%9A%E8%B7%AF%E7%94%B1"> # </a></h2>
+<pre><code class="lang-js">├─app
+│  │─router.js
+│  ├─controller
+│  │      news.js
+├─config
+│      config.default.js
+|─package.json
+</code></pre>
+<h3 id="t64.1 配置路由">4.1 配置路由 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t64.1%20%E9%85%8D%E7%BD%AE%E8%B7%AF%E7%94%B1"> # </a></h3>
+<p>app/router.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">app</span> =&gt;</span> {
+    <span class="hljs-keyword">const</span> { router, controller } = app;
+    router.get(<span class="hljs-string">'/news'</span>, controller.news.index);
+}
+</code></pre>
+<h3 id="t74.2 编写控制器">4.2 编写控制器 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t74.2%20%E7%BC%96%E5%86%99%E6%8E%A7%E5%88%B6%E5%99%A8"> # </a></h3>
+<p>app\controller\news.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Controller } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NewsController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
+    <span class="hljs-keyword">async</span> index() {
+        <span class="hljs-keyword">this</span>.ctx.body = <span class="hljs-string">'hello world'</span>;
+    }
+}
+<span class="hljs-built_in">module</span>.exports = NewsController;
+</code></pre>
+<h3 id="t84.3 配置文件">4.3 配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t84.3%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h3>
+<p>config\config.default.js</p>
+<pre><code class="lang-js">exports.keys = <span class="hljs-string">'zfpx'</span>;
+</code></pre>
+<h2 id="t95. 静态文件中间件">5. 静态文件中间件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t95.%20%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E4%B8%AD%E9%97%B4%E4%BB%B6"> # </a></h2>
+<ul>
+<li>Egg 内置了 static 插件</li>
+<li>static 插件默认映射 /public/<em> -&gt; app/public/</em> 目录</li>
+<li>把静态资源都放到 app/public 目录即可</li>
+<li><a href="http://img.zhufengpeixun.cn/bootstrap.zip">bootstrap</a></li>
+</ul>
+<h2 id="t106. 使用模板引擎">6. 使用模板引擎 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t106.%20%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E"> # </a></h2>
+<pre><code class="lang-js">├─app
+│  │─router.js
+│  ├─controller
+│  │      news.js   
+│  ├─public
+│  │  ├─css
+│  │  │      bootstrap.css  
+│  │  └─js
+│  │          bootstrap.js         
+│  └─view
+│          news.ejs       
+├─config
+│   config.default.js
+│   plugin.js
+</code></pre>
+<h3 id="t116.1 安装依赖的插件">6.1 安装依赖的插件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t116.1%20%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E7%9A%84%E6%8F%92%E4%BB%B6"> # </a></h3>
+<pre><code class="lang-js">cnpm install egg-view-nunjucks --save
+</code></pre>
+<h3 id="t126.2 启用插件">6.2 启用插件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t126.2%20%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B6"> # </a></h3>
+<p>{ROOT}\config\plugin.js</p>
+<pre><code class="lang-js">exports.nunjucks = {
+    <span class="hljs-attr">enable</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">package</span>: <span class="hljs-string">'egg-view-nunjucks'</span>
+}
+</code></pre>
+<h3 id="t136.3 配置模板">6.3 配置模板 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t136.3%20%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF"> # </a></h3>
+<p>{ROOT}\config\config.default.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports=<span class="hljs-function"><span class="hljs-params">app</span> =&gt;</span> {
+    <span class="hljs-keyword">let</span> config={};
+
+    config.keys=<span class="hljs-string">'zfpx'</span>;
+
+    config.view={
+        <span class="hljs-attr">defaultExtension</span>: <span class="hljs-string">'.html'</span>,
+        <span class="hljs-attr">defaultViewEngine</span>: <span class="hljs-string">'nunjucks'</span>,
+        <span class="hljs-attr">mapping</span>: {
+            <span class="hljs-string">'.html'</span>:<span class="hljs-string">'nunjucks'</span>
+        }
+    }
+    <span class="hljs-keyword">return</span> config;
+}
+</code></pre>
+<h3 id="t146.4 编写模板">6.4 编写模板 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t146.4%20%E7%BC%96%E5%86%99%E6%A8%A1%E6%9D%BF"> # </a></h3>
+<p>app\view\index.html</p>
+<pre><code class="lang-js">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;meta http-equiv="X-UA-Compatible" content="ie=edge"&gt;
+    &lt;link rel="stylesheet" href="/public/css/bootstrap.css"&gt;
+    &lt;title&gt;新闻列表&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="container"&gt;
+    &lt;div class="row"&gt;
+        &lt;div class="col-md-8 col-md-offset-2"&gt;
+           {% for item in list%}
+                &lt;div class="panel panel-default"&gt;
+                    &lt;div class="panel-heading"&gt;
+                       &lt;h3 class="text-center"&gt;{{item.title}}&lt;/h3&gt;
+                    &lt;/div&gt;
+                    &lt;div class="panel-body"&gt;
+                        &lt;img src="{{item.image}}" class="img-responsive center-block"&gt;
+                    &lt;/div&gt;
+                    &lt;div class="panel-footer"&gt;
+                        &lt;h3 class="text-center"&gt;创建时间: {{item.createAt}}&lt;/h3&gt;
+                    &lt;/div&gt;
+                 &lt;/div&gt;
+            {% endfor %}
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="t156.5 编写控制器">6.5 编写控制器 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t156.5%20%E7%BC%96%E5%86%99%E6%8E%A7%E5%88%B6%E5%99%A8"> # </a></h3>
+<p>app\controller\news.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Controller}=<span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NewsController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span></span>{
+    <span class="hljs-keyword">async</span> index() {
+        <span class="hljs-keyword">const</span> {ctx}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">const</span> list=[
+            {
+                <span class="hljs-attr">id</span>: <span class="hljs-string">'45154322_0'</span>,
+                <span class="hljs-attr">title</span>: <span class="hljs-string">'世界首富早晚是这个人，坐拥7家独角兽公司，估值破数万！'</span>,
+                <span class="hljs-attr">url</span>: <span class="hljs-string">'http://tech.ifeng.com/a/20180904/45154322_0.shtml'</span>,
+                <span class="hljs-attr">image</span>:<span class="hljs-string">'http://p0.ifengimg.com/pmop/2018/0905/CFFF918B94D561D2A61FB434ADA81589E8972025_size41_w640_h479.jpeg'</span>,
+                <span class="hljs-attr">createAt</span>:<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toLocaleString()
+            },
+            {
+                <span class="hljs-attr">id</span>: <span class="hljs-string">'16491630_0'</span>,
+                <span class="hljs-attr">title</span>: <span class="hljs-string">'支付宝们来了！将来人民币会消失吗？'</span>,
+                <span class="hljs-attr">url</span>: <span class="hljs-string">'http://finance.ifeng.com/a/20180907/16491630_0.shtml'</span>,
+                <span class="hljs-attr">image</span>:<span class="hljs-string">'http://p0.ifengimg.com/pmop/2018/0907/2AF684C2EC49B7E3C17FCB13D6DEEF08401D4567_size27_w530_h369.jpeg'</span>,
+                <span class="hljs-attr">createAt</span>:<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toLocaleString()
+            },
+            {
+                <span class="hljs-attr">id</span>: <span class="hljs-string">'2451982'</span>,
+                <span class="hljs-attr">title</span>: <span class="hljs-string">'《福布斯》专访贝索斯：无业务边界的亚马逊 令对手生畏的CEO'</span>,
+                <span class="hljs-attr">url</span>: <span class="hljs-string">'https://www.jiemian.com/article/2451982.html'</span>,
+                <span class="hljs-attr">image</span>:<span class="hljs-string">'https://img1.jiemian.com/101/original/20180907/153628523948814900_a580x330.jpg'</span>,
+                <span class="hljs-attr">createAt</span>:<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toLocaleString()
+            }
+        ];
+        <span class="hljs-keyword">await</span> ctx.render(<span class="hljs-string">'index'</span>,{list});
+    }
+}
+<span class="hljs-built_in">module</span>.exports=NewsController;
+</code></pre>
+<h2 id="t167. 读取远程接口服务">7. 读取远程接口服务 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t167.%20%E8%AF%BB%E5%8F%96%E8%BF%9C%E7%A8%8B%E6%8E%A5%E5%8F%A3%E6%9C%8D%E5%8A%A1"> # </a></h2>
+<p>在实际应用中，Controller 一般不会自己产出数据，也不会包含复杂的逻辑，复杂的过程应抽象为业务逻辑层 Service。</p>
+<h3 id="t177.1  添加配置">7.1  添加配置 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t177.1%20%20%E6%B7%BB%E5%8A%A0%E9%85%8D%E7%BD%AE"> # </a></h3>
+<p>config.default.js</p>
+<pre><code class="lang-js">config.news={
+       <span class="hljs-attr">pageSize</span>:<span class="hljs-number">10</span>,
+        <span class="hljs-attr">newsListUrl</span>: <span class="hljs-string">'https://www.easy-mock.com/mock/5cfa48f640971927560c5d74/news/api/list'</span>,
+}
+</code></pre>
+<pre><code class="lang-js">{
+  <span class="hljs-string">"data|10"</span>: [{
+    <span class="hljs-string">"id"</span>: <span class="hljs-string">"@id"</span>,
+    <span class="hljs-string">"title"</span>: <span class="hljs-string">"@csentence"</span>,
+    <span class="hljs-string">"url"</span>: <span class="hljs-string">"@url"</span>,
+    <span class="hljs-string">"image"</span>: <span class="hljs-string">"@image(600X500)"</span>,
+    <span class="hljs-string">"createAt"</span>: <span class="hljs-string">"@datetime"</span>,
+  }]
+}
+</code></pre>
+<h3 id="t187.2  编写Service">7.2  编写Service <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t187.2%20%20%E7%BC%96%E5%86%99Service"> # </a></h3>
+<p>app/service/news.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Service}=<span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NewsService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Service</span> </span>{
+    <span class="hljs-keyword">async</span> list(pageNum,pageSize) {
+        <span class="hljs-keyword">const</span> {ctx}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">const</span> {newsListUrl}=<span class="hljs-keyword">this</span>.config.news;
+        <span class="hljs-keyword">const</span> result=<span class="hljs-keyword">await</span> ctx.curl(newsListUrl,{
+            <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+            <span class="hljs-attr">data</span>: {
+                pageNum,pageSize
+            },
+            <span class="hljs-attr">dataType</span>:<span class="hljs-string">'json'</span>
+        });
+        <span class="hljs-keyword">return</span> result.data.data;
+    }
+}
+<span class="hljs-built_in">module</span>.exports=NewsService;
+</code></pre>
+<h3 id="t197.3  编写控制层">7.3  编写控制层 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t197.3%20%20%E7%BC%96%E5%86%99%E6%8E%A7%E5%88%B6%E5%B1%82"> # </a></h3>
+<p>app/controller/news.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Controller}=<span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NewsController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span></span>{
+    <span class="hljs-keyword">async</span> index() {
+        <span class="hljs-keyword">const</span> {ctx,service}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">let</span> {pageNum=<span class="hljs-number">1</span>,pageSize=<span class="hljs-keyword">this</span>.config.news.pageSize}=ctx.query;
+        <span class="hljs-keyword">const</span> list=<span class="hljs-keyword">await</span> service.news.list(pageNum,pageSize);
+        <span class="hljs-keyword">await</span> ctx.render(<span class="hljs-string">'index'</span>,{list});
+    }
+}
+<span class="hljs-built_in">module</span>.exports=NewsController;
+</code></pre>
+<h2 id="t208. 计划任务">8. 计划任务 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t208.%20%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1"> # </a></h2>
+<p>我们还会有许多场景需要执行一些定时任务，例如：</p>
+<ul>
+<li>定时上报应用状态。</li>
+<li>定时从远程接口更新本地缓存。</li>
+<li>定时进行文件切割、临时文件删除</li>
+</ul>
+<h3 id="t218.1 编写定时任务">8.1 编写定时任务 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t218.1%20%E7%BC%96%E5%86%99%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"> # </a></h3>
+<ul>
+<li>所有的定时任务都统一存放在 app/schedule 目录下，每一个文件都是一个独立的定时任务，可以配置定时任务的属性和要执行的方法</li>
+</ul>
+<h4 id="t228.1.1 update_cache.js">8.1.1 update_cache.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t228.1.1%20update_cache.js"> # </a></h4>
+<p>app\schedule\update_cache.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Subscription} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UpdateCache</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Subscription</span> </span>{
+  <span class="hljs-comment">// 通过 schedule 属性来设置定时任务的执行间隔等配置</span>
+  <span class="hljs-keyword">static</span> get schedule() {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">interval</span>: <span class="hljs-string">'1m'</span>, <span class="hljs-comment">// 1 分钟间隔</span>
+      type: <span class="hljs-string">'all'</span>, <span class="hljs-comment">// 指定所有的 worker 都需要执行</span>
+    };
+  }
+
+  <span class="hljs-comment">// subscribe 是真正定时任务执行时被运行的函数</span>
+  <span class="hljs-keyword">async</span> subscribe() {
+    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.ctx.curl(<span class="hljs-keyword">this</span>.config.cache.url, {
+      <span class="hljs-attr">dataType</span>: <span class="hljs-string">'json'</span>,
+    });
+    <span class="hljs-keyword">this</span>.ctx.app.cache = res.data;
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = UpdateCache;
+</code></pre>
+<h5 id="t238.1.1.1 类型">8.1.1.1 类型 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t238.1.1.1%20%E7%B1%BB%E5%9E%8B"> # </a></h5>
+<ul>
+<li>框架提供的定时任务默认支持两种类型，worker 和 all。worker 和 all 都支持上面的两种定时方式，只是当到执行时机时，会执行定时任务的 worker 不同：<ul>
+<li>worker 类型：每台机器上只有一个 worker 会执行这个定时任务，每次执行定时任务的 worker 的选择是随机的。</li>
+<li>all 类型：每台机器上的每个 worker 都会执行这个定时任务。</li>
+</ul>
+</li>
+</ul>
+<h5 id="t248.1.1.2 执行日志">8.1.1.2 执行日志 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t248.1.1.2%20%E6%89%A7%E8%A1%8C%E6%97%A5%E5%BF%97"> # </a></h5>
+<ul>
+<li>执行日志会输出到 <code>${appInfo.root}/logs/{app_name}/egg-schedule.log</code></li>
+</ul>
+<h4 id="t258.1.2 config.default.js">8.1.2 config.default.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t258.1.2%20config.default.js"> # </a></h4>
+<p>config\config.default.js</p>
+<pre><code class="lang-diff"><span class="hljs-addition">+config.cache = {</span>
+<span class="hljs-addition">+        url:'https://www.easy-mock.com/mock/5cfa48f640971927560c5d74/news/api/cache'</span>
+<span class="hljs-addition">+}</span>
+</code></pre>
+<h4 id="t268.1.3 news.js">8.1.3 news.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t268.1.3%20news.js"> # </a></h4>
+<p>app\controller\news.js</p>
+<pre><code class="lang-diff">const {Controller} = require('egg');
+class NewsController extends Controller{
+    async index(){
+        const {ctx,service}=this;
+        let {pageNum=1,pageSize=this.config.news.pageSize}=ctx.query;
+        const list=await service.news.list(pageNum,pageSize);
+<span class="hljs-addition">+        await ctx.render('index',{list,title:this.app.cache?this.app.cache.title:'珠峰新闻列表'});</span>
+    }
+}
+module.exports = NewsController;
+</code></pre>
+<h3 id="t278.2 启动时执行定时任务">8.2 启动时执行定时任务 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t278.2%20%E5%90%AF%E5%8A%A8%E6%97%B6%E6%89%A7%E8%A1%8C%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"> # </a></h3>
+<h4 id="t288.2.1 app.js">8.2.1 app.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t288.2.1%20app.js"> # </a></h4>
+<ul>
+<li>框架提供了统一的入口文件（app.js）进行启动过程自定义
+app.js<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">app</span> =&gt;</span> {
+app.beforeStart(<span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-comment">// 保证应用启动监听端口前数据已经准备好了</span>
+  <span class="hljs-comment">// 后续数据的更新由定时任务自动触发</span>
+  <span class="hljs-keyword">await</span> app.runSchedule(<span class="hljs-string">'update_cache'</span>);
+});
+};
+</code></pre>
+</li>
+</ul>
+<h2 id="t299. MySQL">9. MySQL <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t299.%20MySQL"> # </a></h2>
+<ul>
+<li>框架提供了 egg-mysql 插件来访问 MySQL 数据库。这个插件既可以访问普通的 MySQL 数据库，也可以访问基于 MySQL 协议的在线数据库服务。</li>
+</ul>
+<h3 id="t309.1 安装与配置">9.1 安装与配置 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t309.1%20%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"> # </a></h3>
+<pre><code class="lang-js">$ npm i --save egg-mysql
+</code></pre>
+<h3 id="t319.2 开启插件">9.2 开启插件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t319.2%20%E5%BC%80%E5%90%AF%E6%8F%92%E4%BB%B6"> # </a></h3>
+<p>config/plugin.js</p>
+<pre><code class="lang-js">exports.mysql = {
+  <span class="hljs-attr">enable</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">package</span>: <span class="hljs-string">'egg-mysql'</span>,
+};
+</code></pre>
+<h3 id="t329.3  建表">9.3  建表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t329.3%20%20%E5%BB%BA%E8%A1%A8"> # </a></h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">IF</span> <span class="hljs-keyword">EXISTS</span> <span class="hljs-string">`news`</span>;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`news`</span>  (
+  <span class="hljs-string">`id`</span> <span class="hljs-built_in">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT,
+  <span class="hljs-string">`title`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">255</span>) <span class="hljs-built_in">CHARACTER</span> <span class="hljs-keyword">SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4_bin <span class="hljs-literal">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`url`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">255</span>) <span class="hljs-built_in">CHARACTER</span> <span class="hljs-keyword">SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4_bin <span class="hljs-literal">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`image`</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">255</span>) <span class="hljs-built_in">CHARACTER</span> <span class="hljs-keyword">SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4_bin <span class="hljs-literal">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  <span class="hljs-string">`createAt`</span> datetime <span class="hljs-literal">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-literal">NULL</span>,
+  PRIMARY <span class="hljs-keyword">KEY</span> (<span class="hljs-string">`id`</span>) <span class="hljs-keyword">USING</span> BTREE
+) <span class="hljs-keyword">ENGINE</span> = <span class="hljs-keyword">InnoDB</span> AUTO_INCREMENT = <span class="hljs-number">4</span> <span class="hljs-built_in">CHARACTER</span> <span class="hljs-keyword">SET</span> = utf8mb4 <span class="hljs-keyword">COLLATE</span> = utf8mb4_bin ROW_FORMAT = <span class="hljs-keyword">Compact</span>;
+
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`news`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>, <span class="hljs-string">'世界首富早晚是这个人，坐拥7家独角兽公司，估值破数万！'</span>, <span class="hljs-string">'http://tech.ifeng.com/a/20180904/45154322_0.shtml'</span>, <span class="hljs-string">'http://p0.ifengimg.com/pmop/2018/0905/CFFF918B94D561D2A61FB434ADA81589E8972025_size41_w640_h479.jpeg'</span>, <span class="hljs-string">'2019-06-08 22:07:29'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`news`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">2</span>, <span class="hljs-string">'支付宝们来了！将来人民币会消失吗？'</span>, <span class="hljs-string">'http://finance.ifeng.com/a/20180907/16491630_0.shtml'</span>, <span class="hljs-string">'http://p0.ifengimg.com/pmop/2018/0907/2AF684C2EC49B7E3C17FCB13D6DEEF08401D4567_size27_w530_h369.jpeg'</span>, <span class="hljs-string">'2019-06-08 22:08:24'</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-string">`news`</span> <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">3</span>, <span class="hljs-string">'《福布斯》专访贝索斯：无业务边界的亚马逊 令对手生畏的CEO'</span>, <span class="hljs-string">'https://www.jiemian.com/article/2451982.html'</span>, <span class="hljs-string">'https://img1.jiemian.com/101/original/20180907/153628523948814900_a580x330.jpg'</span>, <span class="hljs-string">'2019-06-08 22:17:16'</span>);
+
+</code></pre>
+<h3 id="t339.4  配置数据源">9.4  配置数据源 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t339.4%20%20%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%BA%90"> # </a></h3>
+<p>config/config.${env}.js</p>
+<pre><code class="lang-js">config.mysql = {
+  <span class="hljs-comment">// 单数据库信息配置</span>
+  client: {
+    <span class="hljs-comment">// host</span>
+    host: <span class="hljs-string">'localhost'</span>,
+    <span class="hljs-comment">// 端口号</span>
+    port: <span class="hljs-string">'3306'</span>,
+    <span class="hljs-comment">// 用户名</span>
+    user: <span class="hljs-string">'root'</span>,
+    <span class="hljs-comment">// 密码</span>
+    password: <span class="hljs-string">'root'</span>,
+    <span class="hljs-comment">// 数据库名</span>
+    database: <span class="hljs-string">'cms'</span>
+  },
+  <span class="hljs-comment">// 是否加载到 app 上，默认开启</span>
+  app: <span class="hljs-literal">true</span>,
+  <span class="hljs-comment">// 是否加载到 agent 上，默认关闭</span>
+  agent: <span class="hljs-literal">false</span>,
+};
+</code></pre>
+<h3 id="t349.5 news.js">9.5 news.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t349.5%20news.js"> # </a></h3>
+<p>app\service\news.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Service}=<span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NewsService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Service</span> </span>{
+    <span class="hljs-keyword">async</span> list(pageNum,pageSize) {
+        <span class="hljs-keyword">const</span> {ctx}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">let</span> result  = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.app.mysql.query(<span class="hljs-string">'select * from news'</span>);
+        <span class="hljs-keyword">return</span> result;
+    }
+}
+<span class="hljs-built_in">module</span>.exports=NewsService;
+</code></pre>
+<h2 id="t3510. Sequelize">10. Sequelize <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3510.%20Sequelize"> # </a></h2>
+<h3 id="t3610.1 安装">10.1 安装 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3610.1%20%E5%AE%89%E8%A3%85"> # </a></h3>
+<pre><code class="lang-js">$ npm install --save egg-sequelize mysql2
+</code></pre>
+<h3 id="t3710.2 启用插件">10.2 启用插件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3710.2%20%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B6"> # </a></h3>
+<pre><code class="lang-js">exports.sequelize = {
+  <span class="hljs-attr">enable</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">package</span>: <span class="hljs-string">'egg-sequelize'</span>,
+};
+</code></pre>
+<h3 id="t3810.3  sequelize 配置">10.3  sequelize 配置 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3810.3%20%20sequelize%20%E9%85%8D%E7%BD%AE"> # </a></h3>
+<p>config/config.default.js</p>
+<pre><code class="lang-js">config.sequelize = {
+        <span class="hljs-attr">dialect</span>: <span class="hljs-string">'mysql'</span>,
+        <span class="hljs-attr">host</span>: <span class="hljs-string">'localhost'</span>,
+        <span class="hljs-attr">port</span>: <span class="hljs-number">3306</span>,
+        <span class="hljs-attr">username</span>: <span class="hljs-string">"root"</span>,
+        <span class="hljs-attr">password</span>: <span class="hljs-string">"root"</span>,
+        <span class="hljs-attr">database</span>: <span class="hljs-string">'school'</span>,
+};
+</code></pre>
+<p>config/config.unittest.js</p>
+<pre><code class="lang-js">config.sequelize = {
+        <span class="hljs-attr">dialect</span>: <span class="hljs-string">'mysql'</span>,
+        <span class="hljs-attr">host</span>: <span class="hljs-string">'localhost'</span>,
+        <span class="hljs-attr">port</span>: <span class="hljs-number">3306</span>,
+        <span class="hljs-attr">username</span>: <span class="hljs-string">"root"</span>,
+        <span class="hljs-attr">password</span>: <span class="hljs-string">"root"</span>,
+        <span class="hljs-attr">database</span>: <span class="hljs-string">'school_test'</span>,
+};
+</code></pre>
+<h3 id="t3910.4 初始化数据库">10.4 初始化数据库 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t3910.4%20%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93"> # </a></h3>
+<h4 id="t4010.4.1 安装sequelize-cli">10.4.1 安装sequelize-cli <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4010.4.1%20%E5%AE%89%E8%A3%85sequelize-cli"> # </a></h4>
+<ul>
+<li>sequelize 提供了 <code>sequelize-cli</code> 工具来实现 <code>Migrations</code></li>
+</ul>
+<pre><code class="lang-js">npm install --save-dev sequelize-cli
+</code></pre>
+<h4 id="t4110.4.2 .sequelizerc">10.4.2 .sequelizerc <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4110.4.2%20.sequelizerc"> # </a></h4>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">config</span>: path.join(__dirname, <span class="hljs-string">'database/config.json'</span>),
+  <span class="hljs-string">'migrations-path'</span>: path.join(__dirname, <span class="hljs-string">'database/migrations'</span>),
+  <span class="hljs-string">'seeders-path'</span>: path.join(__dirname, <span class="hljs-string">'database/seeders'</span>),
+  <span class="hljs-string">'models-path'</span>: path.join(__dirname, <span class="hljs-string">'app/model'</span>),
+};
+</code></pre>
+<h4 id="t4210.4.3 初始化 Migrations">10.4.3 初始化 Migrations <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4210.4.3%20%E5%88%9D%E5%A7%8B%E5%8C%96%20Migrations"> # </a></h4>
+<pre><code class="lang-js">npx sequelize init:config
+npx sequelize init:migrations
+</code></pre>
+<h4 id="t4310.4.4 创建users表">10.4.4 创建users表 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4310.4.4%20%E5%88%9B%E5%BB%BAusers%E8%A1%A8"> # </a></h4>
+<h5 id="t4410.4.4.1 创建目录">10.4.4.1 创建目录 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4410.4.4.1%20%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95"> # </a></h5>
+<pre><code class="lang-js">npx sequelize migration:generate --name=init-users
+</code></pre>
+<h5 id="t4510.4.4.2 创建升级脚本">10.4.4.2 创建升级脚本 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4510.4.4.2%20%E5%88%9B%E5%BB%BA%E5%8D%87%E7%BA%A7%E8%84%9A%E6%9C%AC"> # </a></h5>
+<p>database\migrations\20190608143311-init-users.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-comment">// 在执行数据库升级时调用的函数，创建 users 表</span>
+  up: <span class="hljs-keyword">async</span> (queryInterface, Sequelize) =&gt; {
+    <span class="hljs-keyword">const</span> { INTEGER, DATE, STRING } = Sequelize;
+    <span class="hljs-keyword">await</span> queryInterface.createTable(<span class="hljs-string">'users'</span>, {
+      <span class="hljs-attr">id</span>: { <span class="hljs-attr">type</span>: INTEGER, <span class="hljs-attr">primaryKey</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> },
+      <span class="hljs-attr">name</span>: STRING(<span class="hljs-number">30</span>),
+      <span class="hljs-attr">age</span>: INTEGER,
+      <span class="hljs-attr">created_at</span>: DATE,
+      <span class="hljs-attr">updated_at</span>: DATE,
+    });
+  },
+  <span class="hljs-comment">// 在执行数据库降级时调用的函数，删除 users 表</span>
+  down: <span class="hljs-keyword">async</span> queryInterface =&gt; {
+    <span class="hljs-keyword">await</span> queryInterface.dropTable(<span class="hljs-string">'users'</span>);
+  },
+};
+</code></pre>
+<h5 id="t4610.4.4.3 执行 migrate 进行数据库变更">10.4.4.3 执行 migrate 进行数据库变更 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4610.4.4.3%20%E6%89%A7%E8%A1%8C%20migrate%20%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8F%98%E6%9B%B4"> # </a></h5>
+<pre><code class="lang-js"># 升级数据库
+npx sequelize db:migrate
+# 如果有问题需要回滚，可以通过 `db:migrate:undo` 回退一个变更
+# npx sequelize db:migrate:undo
+# 可以通过 `db:migrate:undo:all` 回退到初始状态
+# npx sequelize db:migrate:undo:all
+</code></pre>
+<h4 id="t4710.4.5 使用">10.4.5 使用 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4710.4.5%20%E4%BD%BF%E7%94%A8"> # </a></h4>
+<ul>
+<li><p><a href="https://eggjs.org/zh-cn/basics/router.html#restful-%E9%A3%8E%E6%A0%BC%E7%9A%84-url-%E5%AE%9A%E4%B9%89">RESTful 风格的 URL 定义</a></p>
+<h5 id="t4810.4.5.1 app\model\user.js">10.4.5.1 app\model\user.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4810.4.5.1%20app\model\user.js"> # </a></h5>
+<p>app\model\user.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">app</span> =&gt;</span> {
+<span class="hljs-keyword">const</span> { STRING, INTEGER, DATE } = app.Sequelize;
+
+<span class="hljs-keyword">const</span> User = app.model.define(<span class="hljs-string">'User'</span>, {
+  <span class="hljs-attr">id</span>: { <span class="hljs-attr">type</span>: INTEGER, <span class="hljs-attr">primaryKey</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> },
+  <span class="hljs-attr">name</span>: STRING(<span class="hljs-number">30</span>),
+  <span class="hljs-attr">age</span>: INTEGER,
+  <span class="hljs-attr">created_at</span>: DATE,
+  <span class="hljs-attr">updated_at</span>: DATE,
+});
+
+<span class="hljs-keyword">return</span> User;
+};
+</code></pre>
+<blockquote>
+<p>这个 Model 就可以在 Controller 和 Service 中通过 app.model.User 或者 ctx.model.User 访问到了</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="t4910.4.5.2  users.js">10.4.5.2  users.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t4910.4.5.2%20%20users.js"> # </a></h5>
+<p>app\controller\users.js</p>
+<pre><code class="lang-js"><span class="hljs-comment">// app/controller/users.js</span>
+<span class="hljs-keyword">const</span> Controller = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>).Controller;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toInt</span>(<span class="hljs-params">str</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> str === <span class="hljs-string">'number'</span>) <span class="hljs-keyword">return</span> str;
+  <span class="hljs-keyword">if</span> (!str) <span class="hljs-keyword">return</span> str;
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseInt</span>(str, <span class="hljs-number">10</span>) || <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span> </span>{
+  <span class="hljs-keyword">async</span> index() {
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-keyword">this</span>.ctx;
+    <span class="hljs-keyword">const</span> query = { <span class="hljs-attr">limit</span>: toInt(ctx.query.limit), <span class="hljs-attr">offset</span>: toInt(ctx.query.offset) };
+    ctx.body = <span class="hljs-keyword">await</span> ctx.model.User.findAll(query);
+  }
+
+  <span class="hljs-keyword">async</span> show() {
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-keyword">this</span>.ctx;
+    ctx.body = <span class="hljs-keyword">await</span> ctx.model.User.findByPk(toInt(ctx.params.id));
+  }
+
+  <span class="hljs-keyword">async</span> create() {
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-keyword">this</span>.ctx;
+    <span class="hljs-keyword">const</span> { name, age } = ctx.request.body;
+    <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> ctx.model.User.create({ name, age });
+    ctx.status = <span class="hljs-number">201</span>;
+    ctx.body = user;
+  }
+
+  <span class="hljs-keyword">async</span> update() {
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-keyword">this</span>.ctx;
+    <span class="hljs-keyword">const</span> id = toInt(ctx.params.id);
+    <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> ctx.model.User.findByPk(id);
+    <span class="hljs-keyword">if</span> (!user) {
+      ctx.status = <span class="hljs-number">404</span>;
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">const</span> { name, age } = ctx.request.body;
+    <span class="hljs-keyword">await</span> user.update({ name, age });
+    ctx.body = user;
+  }
+
+  <span class="hljs-keyword">async</span> destroy() {
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-keyword">this</span>.ctx;
+    <span class="hljs-keyword">const</span> id = toInt(ctx.params.id);
+    <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> ctx.model.User.findByPk(id);
+    <span class="hljs-keyword">if</span> (!user) {
+      ctx.status = <span class="hljs-number">404</span>;
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">await</span> user.destroy();
+    ctx.status = <span class="hljs-number">200</span>;
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = UserController;
+</code></pre>
+<h5 id="t5010.4.5.3 router.js">10.4.5.3 router.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5010.4.5.3%20router.js"> # </a></h5>
+<p>app\router.js</p>
+<pre><code class="lang-js"><span class="hljs-comment">// app/router.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">app</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> { router, controller } = app;
+  router.resources(<span class="hljs-string">'users'</span>, <span class="hljs-string">'/users'</span>, controller.users);
+};
+</code></pre>
+<h5 id="t5110.4.5.4 config.default.js">10.4.5.4 config.default.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5110.4.5.4%20config.default.js"> # </a></h5>
+<p>config\config.default.js</p>
+<pre><code class="lang-js">config.security={
+    <span class="hljs-attr">csrf</span>: <span class="hljs-literal">false</span>
+}
+</code></pre>
+<h2 id="t5211. 国际化（I18n）">11. 国际化（I18n） <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5211.%20%E5%9B%BD%E9%99%85%E5%8C%96%EF%BC%88I18n%EF%BC%89"> # </a></h2>
+<ul>
+<li>为了方便开发多语言应用，框架内置了国际化（I18n）支持，由 egg-i18n 插件提供。</li>
+</ul>
+<h3 id="t5311.1 默认语言">11.1 默认语言 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5311.1%20%E9%BB%98%E8%AE%A4%E8%AF%AD%E8%A8%80"> # </a></h3>
+<p>// config/config.default.js</p>
+<pre><code class="lang-js">exports.i18n = {
+  <span class="hljs-attr">defaultLocale</span>: <span class="hljs-string">'zh-CN'</span>,
+};
+</code></pre>
+<h3 id="t5411.2 多语言文件">11.2 多语言文件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5411.2%20%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%96%87%E4%BB%B6"> # </a></h3>
+<p>多种语言的配置是独立的，统一存放在 config/locale/*.js 下。</p>
+<ul>
+<li>config/locale/<ul>
+<li>en-US.js</li>
+<li>zh-CN.js</li>
+</ul>
+</li>
+</ul>
+<h4 id="t5511.2.1 en-US.js">11.2.1 en-US.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5511.2.1%20en-US.js"> # </a></h4>
+<p>config/locale/en-US.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-attr">Email</span>: <span class="hljs-string">'Email'</span>,
+    <span class="hljs-string">'Welcome back, %s!'</span>: <span class="hljs-string">'welcome back，%s!'</span>,
+    <span class="hljs-string">'Hello {0}! My name is {1}.'</span>: <span class="hljs-string">'你好 {0}! 我的名字叫 {1}。'</span>,
+};
+</code></pre>
+<h4 id="t5611.2.2 zh-CN.js">11.2.2 zh-CN.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5611.2.2%20zh-CN.js"> # </a></h4>
+<p>config/locale/zh-CN.js</p>
+<pre><code class="lang-js"><span class="hljs-comment">// config/locale/zh-CN.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-attr">Email</span>: <span class="hljs-string">'邮箱'</span>,
+    <span class="hljs-string">'Welcome back, %s!'</span>: <span class="hljs-string">'欢迎回来，%s!'</span>,
+    <span class="hljs-string">'Hello {0}! My name is {1}.'</span>: <span class="hljs-string">'Hello {0}! My name is {1}.'</span>,
+};
+</code></pre>
+<h3 id="t5711.3 获取多语言文本">11.3 获取多语言文本 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5711.3%20%E8%8E%B7%E5%8F%96%E5%A4%9A%E8%AF%AD%E8%A8%80%E6%96%87%E6%9C%AC"> # </a></h3>
+<ul>
+<li>我们可以使用 __ (Alias: gettext) 函数获取 locale 文件夹下面的多语言文本。</li>
+</ul>
+<pre><code class="lang-js">ctx.__(<span class="hljs-string">'Email'</span>)
+<span class="hljs-comment">// zh-CN =&gt; 邮箱</span>
+<span class="hljs-comment">// en-US =&gt; Email</span>
+</code></pre>
+<p>app\controller\news.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Controller} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NewsController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span></span>{
+    <span class="hljs-keyword">async</span> index(){
+        <span class="hljs-keyword">const</span> {ctx,service}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">let</span> {pageNum=<span class="hljs-number">1</span>,pageSize=<span class="hljs-keyword">this</span>.config.news.pageSize}=ctx.query;
+        <span class="hljs-keyword">const</span> list=<span class="hljs-keyword">await</span> service.news.list(pageNum,pageSize);
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'email'</span>,ctx.__(<span class="hljs-string">'Email'</span>));
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Welcome'</span>,ctx.__(<span class="hljs-string">'Welcome back, %s!'</span>, <span class="hljs-string">'zhufeng'</span>));
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Hello'</span>,ctx.__(<span class="hljs-string">'Hello {0}! My name is {1}.'</span>, [<span class="hljs-string">'mary'</span>, <span class="hljs-string">'john'</span>]))
+        <span class="hljs-keyword">await</span> ctx.render(<span class="hljs-string">'index'</span>,{list,<span class="hljs-attr">title</span>:<span class="hljs-keyword">this</span>.app.cache?<span class="hljs-keyword">this</span>.app.cache.title:<span class="hljs-string">'珠峰新闻列表'</span>,
+          <span class="hljs-attr">email</span>:<span class="hljs-string">'zhufeng@126.com'</span>,
+          <span class="hljs-attr">name</span>:<span class="hljs-string">'zhufeng'</span>,
+          <span class="hljs-attr">names</span>:[<span class="hljs-string">'mary'</span>, <span class="hljs-string">'john'</span>]
+       });
+    }
+}
+<span class="hljs-built_in">module</span>.exports = NewsController;
+</code></pre>
+<p>app\view\index.html</p>
+<pre><code class="lang-html"> {{__('Email')}} 
+ {{__('Welcome back, %s!', name)}} 
+ {{__('Hello {0}! My name is {1}.', names)}} 
+</code></pre>
+<h2 id="t5812. 扩展工具方法">12. 扩展工具方法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5812.%20%E6%89%A9%E5%B1%95%E5%B7%A5%E5%85%B7%E6%96%B9%E6%B3%95"> # </a></h2>
+<ul>
+<li>框架提供了一种快速扩展的方式，只需在<code>app/extend</code>目录下提供扩展脚本即可</li>
+<li>Helper 函数用来提供一些实用的 <code>utility</code> 函数。</li>
+<li>访问方式 通过 <code>ctx.helper</code> 访问到 helper 对象</li>
+</ul>
+<p>app\extend\helper.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> moment=<span class="hljs-built_in">require</span>(<span class="hljs-string">'moment'</span>);
+moment.locale(<span class="hljs-string">'zh-cn'</span>);
+exports.fromNow=<span class="hljs-function"><span class="hljs-params">dateTime</span> =&gt;</span> moment(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(dateTime)).fromNow();
+</code></pre>
+<p>app\controller\news.js</p>
+<pre><code class="lang-js">list.forEach(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+            item.createAt=ctx.helper.fromNow(item.createAt);
+            <span class="hljs-keyword">return</span> item;
+});
+</code></pre>
+<p>app\view\index.html</p>
+<pre><code class="lang-js">时间: {{helper.fromNow(news.createAt)}}
+</code></pre>
+<h2 id="t5913. 中间件">13. 中间件 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t5913.%20%E4%B8%AD%E9%97%B4%E4%BB%B6"> # </a></h2>
+<p>app/middleware/robot.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports=<span class="hljs-function">(<span class="hljs-params">options,app</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">ctx,next</span>) </span>{
+        <span class="hljs-keyword">const</span> source=ctx.get(<span class="hljs-string">'user-agent'</span>)||<span class="hljs-string">''</span>;
+        <span class="hljs-keyword">const</span> matched=options.ua.some(<span class="hljs-function"><span class="hljs-params">ua</span> =&gt;</span> ua.test(source));
+        <span class="hljs-keyword">if</span> (matched) {
+            ctx.status=<span class="hljs-number">403</span>;
+            ctx.body=<span class="hljs-string">'你没有访问权限'</span>;
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">await</span> next();
+        }
+    }
+}
+</code></pre>
+<p>config.default.js</p>
+<pre><code class="lang-js">    config.middleware=[
+        <span class="hljs-string">'robot'</span>
+    ]
+    config.robot={
+        <span class="hljs-attr">ua</span>: [
+            <span class="hljs-regexp">/Chrome/</span>
+        ]
+    }
+</code></pre>
+<h2 id="t6014.运行环境">14.运行环境 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6014.%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83"> # </a></h2>
+<p>框架有两种方式指定运行环境：</p>
+<ul>
+<li>通过 <code>config/env</code> 文件指定，该文件的内容就是运行环境，如 prod。</li>
+<li>通过 <code>EGG_SERVER_ENV</code> 环境变量指定。</li>
+<li>框架提供了变量 <code>app.config.env</code> 来表示应用当前的运行环境。</li>
+<li>支持按环境变量加载不同的配置文件，如 <code>config.local.js</code>， <code>config.prod.js</code> 等等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">EGG_SERVER_ENV</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">local</td>
+<td style="text-align:left">本地开发环境</td>
+</tr>
+<tr>
+<td style="text-align:left">prod</td>
+<td style="text-align:left">生产环境</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="lang-js">npm install  cross-env --save-dev
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-string">"scripts"</span>: {
+    <span class="hljs-string">"dev"</span>: <span class="hljs-string">"cross-env EGG_SERVER_ENV=local  egg-bin dev"</span>,
+    <span class="hljs-string">"debug"</span>: <span class="hljs-string">"egg-bin debug"</span>
+}
+</code></pre>
+<h2 id="t6115. 单元测试">15. 单元测试 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6115.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"> # </a></h2>
+<h3 id="t6215.1 单元测试的优点">15.1 单元测试的优点 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6215.1%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E7%9A%84%E4%BC%98%E7%82%B9"> # </a></h3>
+<ul>
+<li>代码质量持续有保障</li>
+<li>重构正确性保障</li>
+<li>增强自信心</li>
+<li>自动化运行</li>
+</ul>
+<h3 id="t6315.2 测试框架">15.2 测试框架 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6315.2%20%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"> # </a></h3>
+<ul>
+<li><a href="https://mochajs.org/">mochajs</a></li>
+<li><a href="https://github.com/power-assert-js/power-assert">power-assert</a></li>
+</ul>
+<h3 id="t6415.3 测试约定">15.3 测试约定 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6415.3%20%E6%B5%8B%E8%AF%95%E7%BA%A6%E5%AE%9A"> # </a></h3>
+<h4 id="t6515.3.1 测试目录结构">15.3.1 测试目录结构 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6515.3.1%20%E6%B5%8B%E8%AF%95%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"> # </a></h4>
+<ul>
+<li>我们约定 <code>test</code> 目录为存放所有测试脚本的目录，测试所使用到的 <code>fixtures</code> 和相关辅助脚本都应该放在此目录下。</li>
+<li>测试脚本文件统一按 ${filename}.test.js 命名，必须以 .test.js 作为文件后缀。
+一个应用的测试目录示例：<pre><code class="lang-js">test
+├── controller
+│   └── news.test.js
+└── service
+  └── news.test.js
+</code></pre>
+</li>
+</ul>
+<h4 id="t6615.3.2 测试运行工具">15.3.2 测试运行工具 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6615.3.2%20%E6%B5%8B%E8%AF%95%E8%BF%90%E8%A1%8C%E5%B7%A5%E5%85%B7"> # </a></h4>
+<p>统一使用 egg-bin 来运行测试脚本， 自动将内置的 Mocha、co-mocha、power-assert，nyc 等模块组合引入到测试脚本中， 让我们聚焦精力在编写测试代码上，而不是纠结选择那些测试周边工具和模块。</p>
+<pre><code class="lang-json">  "scripts": {
+    "test": "egg-bin test",
+    "cov": "egg-bin cov"
+  }
+</code></pre>
+<h4 id="t6715.3.3 mock">15.3.3 mock <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6715.3.3%20mock"> # </a></h4>
+<ul>
+<li>如果要完整手写一个 app 创建和启动代码，还是需要写一段初始化脚本的， 并且还需要在测试跑完之后做一些清理工作，如删除临时文件，销毁 app。</li>
+<li>常常还有模拟各种网络异常，服务访问异常等特殊情况。</li>
+<li>egg.js单独为框架抽取了一个测试 mock 辅助模块：<code>egg-mock</code>， 有了它我们就可以非常快速地编写一个 app 的单元测试，并且还能快速创建一个 ctx 来测试它的属性、方法和 Service 等。</li>
+</ul>
+<pre><code class="lang-js">cnpm i egg-mock -D
+</code></pre>
+<h4 id="t6815.3.4 app">15.3.4 app <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6815.3.4%20app"> # </a></h4>
+<p>在测试运行之前，我们首先要创建应用的一个 app 实例， 通过它来访问需要被测试的 Controller、Middleware、Service 等应用层代码。</p>
+<pre><code class="lang-js"><span class="hljs-comment">// test/controller/home.test.js</span>
+<span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+
+describe(<span class="hljs-string">'test/controller/news.test.js'</span>, () =&gt; {
+
+});
+
+</code></pre>
+<h4 id="t6915.3.5 钩子函数">15.3.5 钩子函数 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t6915.3.5%20%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0"> # </a></h4>
+<p>test/order.test.js</p>
+<pre><code class="lang-js">describe(<span class="hljs-string">'egg test'</span>, () =&gt; {
+  before(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'order 1'</span>));
+  before(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'order 2'</span>));
+  after(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'order 6'</span>));
+  beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'order 3'</span>));
+  afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'order 5'</span>));
+  it(<span class="hljs-string">'should worker'</span>, () =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'order 4'</span>));
+});
+</code></pre>
+<h4 id="t7015.3.6 ctx">15.3.6 ctx <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7015.3.6%20ctx"> # </a></h4>
+<p>test/controller/news.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test/controller/news.test.js'</span>, () =&gt; {
+  it(<span class="hljs-string">'should get a ctx'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> ctx=app.mockContext({
+          <span class="hljs-attr">session</span>: {
+            <span class="hljs-attr">user</span>:{<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>}
+        }
+    });
+    assert(ctx.method === <span class="hljs-string">'GET'</span>);
+    assert(ctx.url===<span class="hljs-string">'/'</span>);
+    assert(ctx.session.user.name == <span class="hljs-string">'zfpx'</span>);
+  });
+});
+</code></pre>
+<h3 id="t7115.4 异步测试">15.4 异步测试 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7115.4%20%E5%BC%82%E6%AD%A5%E6%B5%8B%E8%AF%95"> # </a></h3>
+<h4 id="t7215.4.1 异步测试写法">15.4.1 异步测试写法 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7215.4.1%20%E5%BC%82%E6%AD%A5%E6%B5%8B%E8%AF%95%E5%86%99%E6%B3%95"> # </a></h4>
+<p>test/controller/news.test.js</p>
+<ul>
+<li>egg-bin 支持测试异步调用，它支持多种写法</li>
+</ul>
+<pre><code class="lang-js">  <span class="hljs-comment">/*
+  it('promise',() =&gt; {
+    return app.httpRequest().get('/news').expect(200);
+  });
+  */</span>
+  <span class="hljs-comment">/*
+  it('callback',(done) =&gt; {
+      app.httpRequest().get('/news').expect(200,done);
+  });
+  */</span>
+  <span class="hljs-comment">/*
+  it('async',async () =&gt; {
+      await app.httpRequest().get('/news').expect(200);
+  });
+  */</span>
+</code></pre>
+<h4 id="t7315.4.2 Controller 测试">15.4.2 Controller 测试 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7315.4.2%20Controller%20%E6%B5%8B%E8%AF%95"> # </a></h4>
+<p>test/controller/user.test.js</p>
+<ul>
+<li><code>app.httpRequest()</code>是 <code>egg-mock</code> 封装的 <a href="https://github.com/visionmedia/supertest">SuperTest</a> 请求实例</li>
+</ul>
+<h5 id="t7415.4.2.1 准备数据">15.4.2.1 准备数据 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7415.4.2.1%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE"> # </a></h5>
+<p>app/router.js</p>
+<pre><code class="lang-js">router.get(<span class="hljs-string">'/add'</span>,controller.user.add);
+router.post(<span class="hljs-string">'/doAdd'</span>,controller.user.doAdd);
+</code></pre>
+<p>app/controller/user.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> {Controller}=<span class="hljs-built_in">require</span>(<span class="hljs-string">'egg'</span>);
+<span class="hljs-keyword">let</span> users=[];
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Controller</span></span>{
+    <span class="hljs-keyword">async</span> index() {
+        <span class="hljs-keyword">let</span> {ctx}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">await</span> ctx.render(<span class="hljs-string">'user/list'</span>,{users});
+    }
+    <span class="hljs-keyword">async</span> add() {
+        <span class="hljs-keyword">let</span> {ctx}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">await</span> ctx.render(<span class="hljs-string">'user/add'</span>,{});
+    }
+    <span class="hljs-keyword">async</span> doAdd() {
+        <span class="hljs-keyword">let</span> {ctx}=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">let</span> user=ctx.request.body;
+        user.id=users.length&gt;<span class="hljs-number">0</span>?users[users.length<span class="hljs-number">-1</span>].id+<span class="hljs-number">1</span>:<span class="hljs-number">1</span>;
+        users.push(user);
+        ctx.body = user;
+    }
+}
+<span class="hljs-built_in">module</span>.exports=UserController;
+</code></pre>
+<h5 id="t7515.4.2.2 user.test.js">15.4.2.2 user.test.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7515.4.2.2%20user.test.js"> # </a></h5>
+<p>test/controller/user.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+it(<span class="hljs-string">'test post'</span>,<span class="hljs-keyword">async</span> () =&gt; {
+        <span class="hljs-keyword">let</span> user={<span class="hljs-attr">username</span>: <span class="hljs-string">'zfpx'</span>};
+        app.mockCsrf();
+        <span class="hljs-keyword">let</span> response=<span class="hljs-keyword">await</span> app.httpRequest().post(<span class="hljs-string">'/doAdd'</span>).send(user).expect(<span class="hljs-number">200</span>);
+        assert(response.body.id == <span class="hljs-number">1</span>);
+});
+</code></pre>
+<h4 id="t7615.4.3 service">15.4.3 service <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7615.4.3%20service"> # </a></h4>
+<ul>
+<li>Service 相对于 Controller 来说，测试起来会更加简单</li>
+<li>我们只需要先创建一个 ctx，然后通过 <code>ctx.service.${serviceName}</code> 拿到 Service 实例， 然后调用 Service 方法即可。</li>
+</ul>
+<p>test/service/user.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+<span class="hljs-keyword">const</span> {app,assert}=<span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test/service/news.test.js'</span>,() =&gt; {
+    it(<span class="hljs-string">'newsService'</span>,<span class="hljs-keyword">async</span> () =&gt; {
+        <span class="hljs-keyword">let</span> ctx=app.mockContext();
+        <span class="hljs-keyword">let</span> result=<span class="hljs-keyword">await</span> ctx.service.news.list(<span class="hljs-number">1</span>,<span class="hljs-number">5</span>);
+        assert(result.length == <span class="hljs-number">3</span>);
+    });
+});
+</code></pre>
+<h4 id="t7715.4.4 Extend 测试">15.4.4 Extend 测试 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7715.4.4%20Extend%20%E6%B5%8B%E8%AF%95"> # </a></h4>
+<p>应用可以对 Application、Request、Response、Context 和 Helper 进行扩展。 我们可以对扩展的方法或者属性针对性的编写单元测试。</p>
+<h5 id="t7815.4.4.1 application">15.4.4.1 application <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7815.4.4.1%20application"> # </a></h5>
+<p>egg-mock 创建 app 的时候，已经将 Application 的扩展自动加载到 app 实例了， 直接使用这个 app 实例访问扩展的属性和方法即可进行测试。</p>
+<p>app/extend/application.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> cacheData={};
+exports.cache={
+    get(key) {
+        <span class="hljs-keyword">return</span> cacheData[key];
+    },
+    set(key,val) {
+        cacheData[key]=val;
+    }
+}
+</code></pre>
+<p>test/app/extend/cache.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test/app/extend/cache.test.js'</span>, () =&gt; {
+    it(<span class="hljs-string">'cache'</span>,<span class="hljs-keyword">async</span> () =&gt; {
+        app.cache.set(<span class="hljs-string">'name'</span>,<span class="hljs-string">'zfpx'</span>);
+        assert(app.cache.get(<span class="hljs-string">'name'</span>) == <span class="hljs-string">'zfpx'</span>);
+  });
+});
+</code></pre>
+<h5 id="t7915.4.4.2 context">15.4.4.2 context <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t7915.4.4.2%20context"> # </a></h5>
+<ul>
+<li>Context 测试只比 Application 多了一个 <code>app.mockContext()</code> 步骤来模拟创建一个 Context 对象。</li>
+</ul>
+<p>app\extend\context.js</p>
+<pre><code class="lang-js">exports.language=<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'accept-language'</span>);
+}
+</code></pre>
+<p>test/app/extend/context.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test/app/extend/context.test.js'</span>,() =&gt; {
+    <span class="hljs-keyword">let</span> language=<span class="hljs-string">"zh-cn"</span>;
+    it(<span class="hljs-string">'test language'</span>,<span class="hljs-keyword">async</span> () =&gt; {
+        <span class="hljs-keyword">const</span> ctx=app.mockContext({<span class="hljs-attr">headers</span>: {<span class="hljs-string">'Accept-Language'</span>:language}});
+        <span class="hljs-comment">//console.log('ctx.lan',ctx.lan())</span>
+        assert(ctx.language() == language);
+  });
+});
+</code></pre>
+<h5 id="t8015.4.4.3 Request">15.4.4.3 Request <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8015.4.4.3%20Request"> # </a></h5>
+<p>通过 ctx.request 来访问 Request 扩展的属性和方法，直接即可进行测试。
+app\extend\request.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports={
+    get isChrome() {
+        <span class="hljs-keyword">const</span> userAgent=<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'User-Agent'</span>).toLowerCase();
+        <span class="hljs-keyword">return</span> userAgent.includes(<span class="hljs-string">'chrome'</span>);
+    }
+}
+</code></pre>
+<p>test\extend\request.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app, mock, assert } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+describe(<span class="hljs-string">'test/app/extend/request.test.js'</span>,() =&gt; {
+    it(<span class="hljs-string">'cache'</span>,<span class="hljs-keyword">async</span> () =&gt; {
+        <span class="hljs-keyword">const</span> ctx=app.mockContext({
+            <span class="hljs-attr">headers</span>: {
+                <span class="hljs-string">'User-Agent'</span>:<span class="hljs-string">'I love Chrome'</span>
+            }
+        });
+        assert(ctx.request.isChrome);
+  });
+});
+</code></pre>
+<h5 id="t8115.4.4.4 response">15.4.4.4 response <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8115.4.4.4%20response"> # </a></h5>
+<p>Response 测试与 Request 完全一致。 通过 ctx.response 来访问 Response 扩展的属性和方法，直接即可进行测试。
+app\extend\response.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+  get isSuccess() {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.status === <span class="hljs-number">200</span>;
+  },
+};
+</code></pre>
+<p>test\extend\response.test.js</p>
+<pre><code class="lang-js">describe(<span class="hljs-string">'isSuccess()'</span>, () =&gt; {
+  it(<span class="hljs-string">'should true'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> ctx = app.mockContext();
+    ctx.status = <span class="hljs-number">200</span>;
+    assert(ctx.response.isSuccess === <span class="hljs-literal">true</span>);
+  });
+
+  it(<span class="hljs-string">'should false'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> ctx = app.mockContext();
+    ctx.status = <span class="hljs-number">404</span>;
+    assert(ctx.response.isSuccess === <span class="hljs-literal">false</span>);
+  });
+});
+</code></pre>
+<h5 id="t8215.4.4.5 Helper">15.4.4.5 Helper <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8215.4.4.5%20Helper"> # </a></h5>
+<ul>
+<li>Helper 测试方式与 Service 类似，也是通过 ctx 来访问到 Helper，然后调用 Helper 方法测试</li>
+</ul>
+<p>app\extend\helper.js</p>
+<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+  money(val) {
+    <span class="hljs-keyword">const</span> lang = <span class="hljs-keyword">this</span>.ctx.get(<span class="hljs-string">'accept-language'</span>);
+    <span class="hljs-keyword">if</span> (lang.includes(<span class="hljs-string">'zh-cn'</span>)) {
+      <span class="hljs-keyword">return</span> <span class="hljs-string">`￥ <span class="hljs-subst">${val}</span>`</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`$ <span class="hljs-subst">${val}</span>`</span>;
+  },
+};
+</code></pre>
+<p>test\extend\helper.test.js</p>
+<pre><code class="lang-js">describe(<span class="hljs-string">'money()'</span>, () =&gt; {
+  it(<span class="hljs-string">'should RMB'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> ctx = app.mockContext({
+      <span class="hljs-comment">// 模拟 ctx 的 headers</span>
+      headers: {
+        <span class="hljs-string">'Accept-Language'</span>: <span class="hljs-string">'zh-cn'</span>,
+      },
+    });
+    assert(ctx.helper.money(<span class="hljs-number">100</span>) === <span class="hljs-string">'￥ 100'</span>);
+  });
+
+  it(<span class="hljs-string">'should US Dolar'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> ctx = app.mockContext();
+    assert(ctx.helper.money(<span class="hljs-number">100</span>) === <span class="hljs-string">'$ 100'</span>);
+  });
+});
+</code></pre>
+<h4 id="t8315.4.5 测试计划任务">15.4.5 测试计划任务 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8315.4.5%20%E6%B5%8B%E8%AF%95%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1"> # </a></h4>
+<ul>
+<li>我们可以通过 <code>app.runSchedule(schedulePath)</code> 来运行一个定时任务</li>
+<li><code>app.runSchedule</code> 接受一个定时任务文件路径<code>（app/schedule 目录下的相对路径或者完整的绝对路径）</code>，执行对应的定时任务，返回一个 <code>Promise</code></li>
+</ul>
+<h5 id="t8415.4.5.1 update_cache.test.js">15.4.5.1 update_cache.test.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8415.4.5.1%20update_cache.test.js"> # </a></h5>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> mock = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock'</span>);
+<span class="hljs-keyword">const</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">'assert'</span>);
+
+it(<span class="hljs-string">'should schedule work fine'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> app = mock.app();
+  <span class="hljs-keyword">await</span> app.ready();
+  <span class="hljs-keyword">await</span> app.runSchedule(<span class="hljs-string">'update_cache'</span>);
+  assert(app.cache);
+});
+</code></pre>
+<h4 id="t8515.4.6 测试model">15.4.6 测试model <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8515.4.6%20%E6%B5%8B%E8%AF%95model"> # </a></h4>
+<h5 id="t8615.4.6.1 修改环境">15.4.6.1 修改环境 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8615.4.6.1%20%E4%BF%AE%E6%94%B9%E7%8E%AF%E5%A2%83"> # </a></h5>
+<pre><code class="lang-js">set NODE_ENV=test
+npx sequelize db:migrate
+</code></pre>
+<h5 id="t8715.4.6.2 测试数据">15.4.6.2 测试数据 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8715.4.6.2%20%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"> # </a></h5>
+<ul>
+<li>可以通过 factory-girl 模块来快速创建测试数据</li>
+</ul>
+<h5 id="t8815.4.6.2.1 安装依赖">15.4.6.2.1 安装依赖 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8815.4.6.2.1%20%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"> # </a></h5>
+<pre><code class="lang-js">npm install --save-dev factory-girl
+</code></pre>
+<h5 id="t8915.4.6.2.2 factories.js">15.4.6.2.2 factories.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t8915.4.6.2.2%20factories.js"> # </a></h5>
+<p>test/factories.js </p>
+<pre><code class="lang-js"><span class="hljs-comment">// test/factories.js</span>
+<span class="hljs-meta">'use strict'</span>;
+<span class="hljs-keyword">const</span> { factory } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'factory-girl'</span>);
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">app</span> =&gt;</span> {
+  <span class="hljs-comment">// 可以通过 app.factory 访问 factory 实例</span>
+  app.factory = factory;
+  <span class="hljs-comment">// 定义 user 和默认数据</span>
+  factory.define(<span class="hljs-string">'user'</span>, app.model.User, {
+    <span class="hljs-attr">name</span>: factory.sequence(<span class="hljs-string">'User.name'</span>, n =&gt; <span class="hljs-string">`name_<span class="hljs-subst">${n}</span>`</span>),
+    <span class="hljs-attr">age</span>: <span class="hljs-number">18</span>,
+  });
+};
+</code></pre>
+<h5 id="t9015.4.6.2.3 .setup.js">15.4.6.2.3 .setup.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9015.4.6.2.3%20.setup.js"> # </a></h5>
+<p>test/.setup.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { app } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+<span class="hljs-keyword">const</span> factories = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./factories'</span>);
+
+before(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> factories(app));
+afterEach(<span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-comment">// clear database after each test case</span>
+  <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.all([
+    app.model.User.destroy({ <span class="hljs-attr">truncate</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">force</span>: <span class="hljs-literal">true</span> }),
+  ]);
+});
+</code></pre>
+<h5 id="t9115.4.6.2.4 users.test.js">15.4.6.2.4 users.test.js <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9115.4.6.2.4%20users.test.js"> # </a></h5>
+<p>test/app/controller/users.test.js</p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { assert, app } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'egg-mock/bootstrap'</span>);
+
+describe(<span class="hljs-string">'test/app/service/users.test.js'</span>, () =&gt; {
+  describe(<span class="hljs-string">'GET /users'</span>, () =&gt; {
+    it(<span class="hljs-string">'should work'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-comment">// 通过 factory-girl 快速创建 user 对象到数据库中</span>
+      <span class="hljs-keyword">await</span> app.factory.createMany(<span class="hljs-string">'user'</span>, <span class="hljs-number">3</span>);
+      <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> app.httpRequest().get(<span class="hljs-string">'/users?limit=2'</span>);
+      assert(res.status === <span class="hljs-number">200</span>);
+      assert(res.body.length === <span class="hljs-number">2</span>);
+      assert(res.body[<span class="hljs-number">0</span>].name);
+      assert(res.body[<span class="hljs-number">0</span>].age);
+    });
+  });
+
+  describe(<span class="hljs-string">'GET /users/:id'</span>, () =&gt; {
+    it(<span class="hljs-string">'should work'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> app.factory.create(<span class="hljs-string">'user'</span>);
+      <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> app.httpRequest().get(<span class="hljs-string">`/users/<span class="hljs-subst">${user.id}</span>`</span>);
+      assert(res.status === <span class="hljs-number">200</span>);
+      assert(res.body.age === user.age);
+    });
+  });
+
+  describe(<span class="hljs-string">'POST /users'</span>, () =&gt; {
+    it(<span class="hljs-string">'should work'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      app.mockCsrf();
+      <span class="hljs-keyword">let</span> res = <span class="hljs-keyword">await</span> app.httpRequest().post(<span class="hljs-string">'/users'</span>)
+        .send({
+          <span class="hljs-attr">age</span>: <span class="hljs-number">10</span>,
+          <span class="hljs-attr">name</span>: <span class="hljs-string">'name'</span>,
+        });
+      assert(res.status === <span class="hljs-number">201</span>);
+      assert(res.body.id);
+
+      res = <span class="hljs-keyword">await</span> app.httpRequest().get(<span class="hljs-string">`/users/<span class="hljs-subst">${res.body.id}</span>`</span>);
+      assert(res.status === <span class="hljs-number">200</span>);
+      assert(res.body.name === <span class="hljs-string">'name'</span>);
+    });
+  });
+
+  describe(<span class="hljs-string">'DELETE /users/:id'</span>, () =&gt; {
+    it(<span class="hljs-string">'should work'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> app.factory.create(<span class="hljs-string">'user'</span>);
+
+      app.mockCsrf();
+      <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> app.httpRequest().delete(<span class="hljs-string">`/users/<span class="hljs-subst">${user.id}</span>`</span>);
+      assert(res.status === <span class="hljs-number">200</span>);
+    });
+  });
+});
+</code></pre>
+<h2 id="t9216. 布署">16. 布署 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9216.%20%E5%B8%83%E7%BD%B2"> # </a></h2>
+<ul>
+<li>框架内置了 egg-cluster 来启动 Master 进程，Master 有足够的稳定性，不再需要使用 pm2 等进程守护模块。</li>
+<li>框架也提供了 egg-scripts 来支持线上环境的运行和停止</li>
+</ul>
+<h3 id="t9316.1 安装工具">16.1 安装工具 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9316.1%20%E5%AE%89%E8%A3%85%E5%B7%A5%E5%85%B7"> # </a></h3>
+<pre><code class="lang-js">$ npm i egg-scripts --save
+</code></pre>
+<h3 id="t9416.2 添加npm scripts">16.2 添加npm scripts <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9416.2%20%E6%B7%BB%E5%8A%A0npm%20scripts"> # </a></h3>
+<p>添加 npm scripts 到 package.json：</p>
+<pre><code class="lang-js">{
+  <span class="hljs-string">"scripts"</span>: {
+    <span class="hljs-string">"start"</span>: <span class="hljs-string">"egg-scripts start --daemon"</span>,
+    <span class="hljs-string">"stop"</span>: <span class="hljs-string">"egg-scripts stop"</span>
+  }
+}
+</code></pre>
+<h2 id="t9517.参考">17.参考 <a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html#t9517.%E5%8F%82%E8%80%83"> # </a></h2>
+<ul>
+<li><a href="https://github.com/eggjs/egg-view-nunjucks">egg-view-nunjucks</a></li>
+<li><a href="https://github.com/atian25/blog/issues/25">egg-debug</a></li>
+<li><a href="https://www.easy-mock.com/docs">easy-mock</a></li>
+<li><a href="https://github.com/nuysoft/Mock/wiki/Syntax-Specification">Mock</a></li>
+</ul>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./30.cms-6-egg_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>

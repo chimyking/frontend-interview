@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>珠峰架构师成长计划</title>
+    <link rel="stylesheet" type="text/css" href="./29.mongodb-1_files/main.css">
+<style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body>
+<div class="nav" style="height: 81px;">
+    <div class="logo">
+        
+            珠峰架构师成长计划
+        
+    </div>
+<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+
+
+<div class="warpper">
+
+    <div class="page-toc">
+        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t01.%20%E4%BB%80%E4%B9%88%E6%98%AFMongoDB">1. 什么是MongoDB</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t12.%20MongoDB%E5%AE%89%E8%A3%85">2. MongoDB安装</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t22.1%20windows%E5%AE%89%E8%A3%85">2.1 windows安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t32.2%20mac%E5%AE%89%E8%A3%85">2.2 mac安装</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t43.%20mongodb%E5%90%AF%E5%8A%A8%E4%B8%8E%E8%BF%9E%E6%8E%A5">3. mongodb启动与连接</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t53.1%20windows%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF">3.1 windows启动服务器端</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t64.%20MongoDB%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">4. MongoDB基本概念</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t75.%20%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C">5. 数据库操作</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t85.1%20%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93">5.1 使用数据库</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t95.2%20%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E5%BA%93">5.2 查看所有数据库</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t105.3%20%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93">5.3 查看当前使用的数据库</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t115.4%20%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E5%BA%93">5.4 删除数据库</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t126.%20%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C">6. 集合操作</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t136.1%20%E6%9F%A5%E7%9C%8B%E9%9B%86%E5%90%88%E5%B8%AE%E5%8A%A9">6.1 查看集合帮助</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t146.2%20%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8B%E7%9A%84%E9%9B%86%E5%90%88">6.2 查看数据库下的集合</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t156.3%20%E5%88%9B%E5%BB%BA%E9%9B%86%E5%90%88">6.3 创建集合</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t166.3.1%20%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%A9%BA%E9%9B%86%E5%90%88">6.3.1 创建一个空集合</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t176.3.2%20%E5%88%9B%E5%BB%BA%E9%9B%86%E5%90%88%E5%B9%B6%E6%8F%92%E5%85%A5%E4%B8%80%E4%B8%AA%E6%96%87%E6%A1%A3">6.3.2 创建集合并插入一个文档</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t187.%20%E6%8F%92%E5%85%A5%E6%96%87%E6%A1%A3">7. 插入文档</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t197.1%20insert">7.1 insert</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t207.2%20save">7.2 save</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t218.%20%E6%9B%B4%E6%96%B0%E6%96%87%E6%A1%A3">8. 更新文档</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t228.1%20%E8%AF%AD%E6%B3%95">8.1 语法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t238.2%20%E5%8F%82%E6%95%B0">8.2 参数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t248.3%20upsert">8.3 upsert</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t258.4%20multi">8.4 multi</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t269.%20%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C%E7%AC%A6">9. 更新操作符</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t279.1%20$set">9.1 $set</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t289.2%20$inc">9.2 $inc</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t299.3%20$unset">9.3 $unset</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t309.4%20$push">9.4 $push</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t319.5%20$ne">9.5 $ne</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t329.5%20$addToSet">9.5 $addToSet</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t339.6%20$each">9.6 $each</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t349.7%20%20$pop">9.7  $pop</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t359.8%20%E4%BF%AE%E6%94%B9%E6%8C%87%E5%AE%9A%E7%B4%A2%E5%BC%95%E5%85%83%E7%B4%A0">9.8 修改指定索引元素</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3610.%20%E6%96%87%E6%A1%A3%E7%9A%84%E5%88%A0%E9%99%A4">10. 文档的删除</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3710.1%20%E8%AF%AD%E6%B3%95">10.1 语法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3810.2%20%E5%8F%82%E6%95%B0">10.2 参数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3910.3%20%E5%AE%9E%E4%BE%8B">10.3 实例</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4011.%20%E6%9F%A5%E8%AF%A2%E6%96%87%E6%A1%A3">11. 查询文档</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4111.1%20find">11.1 find</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4211.2%20%E6%9F%A5%E8%AF%A2%E6%8C%87%E5%AE%9A%E5%88%97">11.2 查询指定列</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4311.3%20findOne">11.3 findOne</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4411.4%20$in">11.4 $in</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4511.5%20$nin">11.5 $nin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4611.6%20%20$not">11.6  $not</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4711.7%20%20array">11.7  array</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4811.8%20where">11.8 where</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4911.9%20%20%20cursor">11.9   cursor</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5012.%20%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6">12. 条件操作符</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5112.1%20%E5%A4%A7%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6">12.1 大于操作符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5212.2%20%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6">12.2 大于等于操作符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5312.3%20%E5%B0%8F%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6">12.3 小于操作符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5412.4%20%E5%B0%8F%E4%BA%8E%E7%AD%89%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6">12.4 小于等于操作符</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5512.5%20%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%20$gte%E5%92%8C$lte">12.5 同时使用 $gte和$lte</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5612.6%20%E7%AD%89%E4%BA%8E">12.6 等于</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5712.7%20%E4%BD%BF%E7%94%A8%20_id%E8%BF%9B%E8%A1%8C%E6%9F%A5%E8%AF%A2">12.7 使用 _id进行查询</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5812.8%20%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C%E9%9B%86%E7%9A%84%E6%9D%A1%E6%95%B0">12.8 查询结果集的条数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5912.9%20%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D">12.9 正则匹配</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6013.%20%E4%B8%8E%E5%92%8C%E6%88%96">13. 与和或</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6113.1%20and">13.1 and</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6213.2%20or">13.2 or</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6313.3%20and%E5%92%8Cor%E8%81%94%E7%94%A8">13.3 and和or联用</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6414.%20%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2">14. 分页查询</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6514.1%20limit">14.1 limit</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6614.2%20skip">14.2 skip</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6714.3%20skip+limit">14.3 skip+limit</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6814.4%20sort%E6%8E%92%E5%BA%8F">14.4 sort排序</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6915.%20%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC">15. 执行脚本</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7016.%20%20%E5%A4%87%E4%BB%BD%E4%B8%8E%E5%AF%BC%E5%87%BA">16.  备份与导出</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7117.%20%20%E6%9D%83%E9%99%90">17.  权限</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7217.1%20%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7">17.1 创建用户</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7317.2%20%E6%9F%A5%E8%AF%A2%E7%94%A8%E6%88%B7">17.2 查询用户</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7417.3%20%E5%88%A0%E9%99%A4%E7%94%A8%E6%88%B7">17.3 删除用户</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7517.4%20%E5%90%AF%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9D%83%E9%99%90%E6%A3%80%E6%9F%A5">17.4 启动数据库权限检查</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7617.5%20%E9%89%B4%E6%9D%83">17.5 鉴权</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7718.%20%E7%B4%A2%E5%BC%95">18. 索引</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7818.1%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE">18.1 准备数据</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7918.2%20%E6%89%93%E5%8D%B0%E5%87%BA%E6%9F%A5%E8%AF%A2%E6%97%B6%E9%97%B4">18.2 打印出查询时间</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8018.3%20%20%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95">18.3  建立索引</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8119.%20%E9%99%84%E5%BD%95">19. 附录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8219.1%20ObjectId%E6%9E%84%E6%88%90">19.1 ObjectId构成</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8319.2%20Mongodb%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4mongod%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E">19.2 Mongodb启动命令mongod参数说明</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8419.3%20%E9%9B%86%E5%90%88%E5%91%BD%E4%BB%A4">19.3 集合命令</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8520%20%E8%A7%92%E8%89%B2">20 角色</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8620.1%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%94%A8%E6%88%B7%E8%A7%92%E8%89%B2">20.1 数据库用户角色</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8720.2%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E8%A7%92%E8%89%B2">20.2 数据库管理角色</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8820.3%20%E9%9B%86%E7%BE%A4%E7%AE%A1%E7%90%86%E6%9D%83%E9%99%90">20.3 集群管理权限</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8920.4%20%20%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%92%E8%89%B2">20.4  所有数据库角色</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t9020.5%20%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90">20.5 超级管理员权限</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t9120.6%20%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D%E8%A7%92%E8%89%B2">20.6 备份恢复角色</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t9220.7%20%E5%86%85%E9%83%A8%E8%A7%92%E8%89%B2">20.7 内部角色</a></li></ul></li></ul>
+    </div>
+    
+    <div class="content markdown-body">
+        <h2 id="t01. 什么是MongoDB">1. 什么是MongoDB <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t01.%20%E4%BB%80%E4%B9%88%E6%98%AFMongoDB"> # </a></h2>
+<ul>
+<li>MongoDB是一个基于分布式文件存储的开源数据库系统</li>
+<li>MongoDB 将数据存储为一个文档，数据结构由键值(key=&gt;value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。</li>
+</ul>
+<h2 id="t12. MongoDB安装">2. MongoDB安装 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t12.%20MongoDB%E5%AE%89%E8%A3%85"> # </a></h2>
+<h3 id="t22.1 windows安装">2.1 windows安装 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t22.1%20windows%E5%AE%89%E8%A3%85"> # </a></h3>
+<p><a href="https://www.mongodb.org/downloads">Windows官方安装指南</a></p>
+<ul>
+<li><p>mongodb32位安装版
+链接: <a href="https://pan.baidu.com/s/1SHJ1vre_CQOE3u-W0zniqQ">https://pan.baidu.com/s/1SHJ1vre_CQOE3u-W0zniqQ</a> 密码: chan</p>
+</li>
+<li><p>MongoDB64位绿色版
+链接: <a href="https://pan.baidu.com/s/1EkAB2SrcU1mfMfff_WDxtA">https://pan.baidu.com/s/1EkAB2SrcU1mfMfff_WDxtA</a> 密码: w913</p>
+</li>
+<li><p>mongo客户端
+链接: <a href="https://pan.baidu.com/s/1YFxLZ-55D-WFR8os2fXN0A">https://pan.baidu.com/s/1YFxLZ-55D-WFR8os2fXN0A</a> 密码: 61qd</p>
+</li>
+</ul>
+<h3 id="t32.2 mac安装">2.2 mac安装 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t32.2%20mac%E5%AE%89%E8%A3%85"> # </a></h3>
+<p><a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/">Mac官方安装指南</a></p>
+<ol>
+<li><p>先安装homebrew</p>
+<pre><code>http://brew.sh/
+</code></pre></li>
+<li><p>使用brew安装mongodb</p>
+<pre><code>brew install mongodb
+</code></pre></li>
+<li><p>再安装可视化工具
+<a href="https://robomongo.org/">Robomongo</a></p>
+</li>
+</ol>
+<h2 id="t43. mongodb启动与连接">3. mongodb启动与连接 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t43.%20mongodb%E5%90%AF%E5%8A%A8%E4%B8%8E%E8%BF%9E%E6%8E%A5"> # </a></h2>
+<h3 id="t53.1 windows启动服务器端">3.1 windows启动服务器端 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t53.1%20windows%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"> # </a></h3>
+<ol>
+<li>找到mongodb安装目录,一般是 <code>C:\Program Files\MongoDB 2.6 Standard\bin</code></li>
+<li>按下Shift+鼠标右键,选择在此处打开命令窗口</li>
+<li>在除C盘外的盘符新建一个空目录,如 <code>D:\Mongodb\data</code></li>
+<li>在命令行中输入<code>mongod --dbpath=刚创建的空目录</code>,如<pre><code class="lang-js">mongod --dbpath=D:\Mongodb\data
+</code></pre>
+</li>
+<li>再按回车键</li>
+</ol>
+<p><img src="./29.mongodb-1_files/mongostart.png" class="img-responsive"></p>
+<ul>
+<li>如果出现<code>waiting for connections on port 27017</code>就表示<strong>启动成功</strong>,已经在27017端口上监听了客户端的请求</li>
+<li>注意：<code>--dbpath</code>后的值表示数据库文件的存储路径,而且后面的路径必须事先创建好，必须已经<strong>存在</strong>，否则服务开启失败</li>
+<li>注意：这个命令窗体绝对<strong>不能关</strong>,关闭这个窗口就相当于停止了<code>mongodb</code>服务</li>
+</ul>
+<h2 id="t64. MongoDB基本概念">4. MongoDB基本概念 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t64.%20MongoDB%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"> # </a></h2>
+<ul>
+<li><strong>数据库</strong> MongoDB的单个实例可以容纳<strong>多个</strong>独立的数据库，比如一个学生管理系统就可以对应一个数据库实例</li>
+<li><strong>集合</strong> 数据库是由集合组成的,一个集合用来表示一个<strong>实体</strong>,如学生集合</li>
+<li><strong>文档</strong> 集合是由文档组成的，一个文档表示一条<strong>记录</strong>,比如一位同学张三就是一个文档</li>
+</ul>
+<p><img src="./29.mongodb-1_files/mongostat.jpg" alt="mongostat"></p>
+<h2 id="t75. 数据库操作">5. 数据库操作 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t75.%20%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"> # </a></h2>
+<h3 id="t85.1 使用数据库">5.1 使用数据库 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t85.1%20%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code>use database_name     
+</code></pre><ul>
+<li>database_name 代表数据库的名字</li>
+<li>注：如果此数据库存在，则切换到此数据库下,如果此数据库还不存在也可以切过来,但是并不能立刻创建数据库</li>
+</ul>
+<p>切换到 <code>school</code>数据库下</p>
+<pre><code class="lang-js">use school
+</code></pre>
+<h3 id="t95.2 查看所有数据库">5.2 查看所有数据库 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t95.2%20%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E5%BA%93"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">show dbs
+</code></pre>
+<ul>
+<li>备注: 我们刚创建的数据库<code>school</code>如果不在列表内， 要显示它，我们需要向<code>school</code>数据库插入一些数据</li>
+</ul>
+<pre><code class="lang-js">db.students.insert({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h3 id="t105.3 查看当前使用的数据库">5.3 查看当前使用的数据库 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t105.3%20%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%BA%93"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db
+</code></pre>
+<ul>
+<li>注：db代表的是当前数据库 也就是school这个数据库</li>
+</ul>
+<h3 id="t115.4 删除数据库">5.4 删除数据库 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t115.4%20%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E5%BA%93"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.dropDatabase()
+</code></pre>
+<h2 id="t126. 集合操作">6. 集合操作 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t126.%20%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C"> # </a></h2>
+<h3 id="t136.1 查看集合帮助">6.1 查看集合帮助 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t136.1%20%E6%9F%A5%E7%9C%8B%E9%9B%86%E5%90%88%E5%B8%AE%E5%8A%A9"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.students.help();
+</code></pre>
+<h3 id="t146.2 查看数据库下的集合">6.2 查看数据库下的集合 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t146.2%20%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8B%E7%9A%84%E9%9B%86%E5%90%88"> # </a></h3>
+<pre><code class="lang-js">show collections
+</code></pre>
+<h3 id="t156.3 创建集合">6.3 创建集合 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t156.3%20%E5%88%9B%E5%BB%BA%E9%9B%86%E5%90%88"> # </a></h3>
+<h3 id="t166.3.1 创建一个空集合">6.3.1 创建一个空集合 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t166.3.1%20%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%A9%BA%E9%9B%86%E5%90%88"> # </a></h3>
+<pre><code class="lang-js">db.createCollection(collection_Name)      
+</code></pre>
+<ul>
+<li>collection_Name集合的名称</li>
+</ul>
+<h3 id="t176.3.2 创建集合并插入一个文档">6.3.2 创建集合并插入一个文档 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t176.3.2%20%E5%88%9B%E5%BB%BA%E9%9B%86%E5%90%88%E5%B9%B6%E6%8F%92%E5%85%A5%E4%B8%80%E4%B8%AA%E6%96%87%E6%A1%A3"> # </a></h3>
+<ul>
+<li>collection_Name集合的名称</li>
+<li>document要插入的文档</li>
+</ul>
+<pre><code class="lang-js">db.collection_Name.insert(<span class="hljs-built_in">document</span>)
+</code></pre>
+<h2 id="t187. 插入文档">7. 插入文档 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t187.%20%E6%8F%92%E5%85%A5%E6%96%87%E6%A1%A3"> # </a></h2>
+<h3 id="t197.1 insert">7.1 insert <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t197.1%20insert"> # </a></h3>
+<pre><code class="lang-js">db.collection_name.insert(<span class="hljs-built_in">document</span>);
+<span class="hljs-string">`
+</span></code></pre>
+<ul>
+<li>collection_name 集合的名字</li>
+<li>document 插入的文档</li>
+</ul>
+<blockquote>
+<p>每当插入一条新文档的时候mongodb会自动为此文档生成一个<code>_id</code>属性,_id一定是唯一的，用来唯一标识一个文档
+ _id也可以直接指定，但如果数据库中此集合下已经有此_id的话插入会失败</p>
+</blockquote>
+<pre><code class="lang-js">db.students.insert({<span class="hljs-attr">_id</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+WriteResult({ <span class="hljs-string">"nInserted"</span> : <span class="hljs-number">1</span> })
+db.students.insert({<span class="hljs-attr">_id</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h3 id="t207.2 save">7.2 save <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t207.2%20save"> # </a></h3>
+<pre><code class="lang-js">db.collection_name.save(<span class="hljs-built_in">document</span>)
+</code></pre>
+<ul>
+<li>collection_name 集合的名字</li>
+<li>document 插入的文档</li>
+</ul>
+<blockquote>
+<p>注：如果不指定 _id 字段 save() 方法类似于 insert() 方法。如果指定 _id 字段，则会更新该 _id 的数据。</p>
+</blockquote>
+<pre><code class="lang-js">&gt; db.students.save({<span class="hljs-attr">_id</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+WriteResult({ <span class="hljs-string">"nMatched"</span> : <span class="hljs-number">1</span>, <span class="hljs-string">"nUpserted"</span> : <span class="hljs-number">0</span>, <span class="hljs-string">"nModified"</span> : <span class="hljs-number">0</span> })
+&gt; db.students.save({<span class="hljs-attr">_id</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">100</span>});
+WriteResult({ <span class="hljs-string">"nMatched"</span> : <span class="hljs-number">1</span>, <span class="hljs-string">"nUpserted"</span> : <span class="hljs-number">0</span>, <span class="hljs-string">"nModified"</span> : <span class="hljs-number">1</span> })
+</code></pre>
+<h2 id="t218. 更新文档">8. 更新文档 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t218.%20%E6%9B%B4%E6%96%B0%E6%96%87%E6%A1%A3"> # </a></h2>
+<h3 id="t228.1 语法">8.1 语法 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t228.1%20%E8%AF%AD%E6%B3%95"> # </a></h3>
+<pre><code class="lang-js">db.collection.update(
+   &lt;query&gt;,
+   &lt;updateObj&gt;,
+   {
+     upsert: &lt;boolean&gt;,
+     multi: &lt;boolean&gt;
+   }
+)
+</code></pre>
+<h3 id="t238.2 参数">8.2 参数 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t238.2%20%E5%8F%82%E6%95%B0"> # </a></h3>
+<ul>
+<li>query  查询条件,指定要更新符合哪些条件的文档</li>
+<li>update  更新后的对象或指定一些更新的操作符<ul>
+<li>$set直接指定更新后的值</li>
+<li>$inc在原基础上累加</li>
+</ul>
+</li>
+<li>upsert 可选，这个参数的意思是，如果不存在符合条件的记录时是否插入updateObj.  默认是false,不插入。</li>
+<li>multi  可选，mongodb 默认只更新找到的第一条记录，如果这个参数为true,就更新所有符合条件的记录。</li>
+</ul>
+<h3 id="t248.3 upsert">8.3 upsert <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t248.3%20upsert"> # </a></h3>
+<p>将<code>students</code>集合中数据中<code>name</code>是zfpx2的值修改为zfpx22</p>
+<pre><code class="lang-js">&gt; db.students.insert({<span class="hljs-attr">_id</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx1'</span>});
+WriteResult({ <span class="hljs-string">"nInserted"</span> : <span class="hljs-number">1</span> })
+&gt; db.students.update({<span class="hljs-attr">_id</span>:<span class="hljs-number">2</span>},{<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx2'</span>},{<span class="hljs-attr">upsert</span>:<span class="hljs-literal">true</span>});
+WriteResult({ <span class="hljs-string">"nMatched"</span> : <span class="hljs-number">0</span>, <span class="hljs-string">"nUpserted"</span> : <span class="hljs-number">1</span>, <span class="hljs-string">"nModified"</span> : <span class="hljs-number">0</span>, <span class="hljs-string">"_id"</span> : <span class="hljs-number">2</span> })
+</code></pre>
+<h3 id="t258.4 multi">8.4 multi <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t258.4%20multi"> # </a></h3>
+<ul>
+<li>如果有多条name是zfpx2的数据只更新一条,如果想全部更新需要指定<code>{multi:true}</code>的参数<pre><code class="lang-js">db.students.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx2'</span>},{<span class="hljs-attr">$set</span>:{<span class="hljs-attr">age</span>:<span class="hljs-number">10</span>}},{<span class="hljs-attr">multi</span>:<span class="hljs-literal">true</span>});
+WriteResult({ <span class="hljs-string">"nMatched"</span> : <span class="hljs-number">2</span>, <span class="hljs-string">"nUpserted"</span> : <span class="hljs-number">0</span>, <span class="hljs-string">"nModified"</span> : <span class="hljs-number">2</span> });
+</code></pre>
+</li>
+</ul>
+<h2 id="t269. 更新操作符">9. 更新操作符 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t269.%20%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C%E7%AC%A6"> # </a></h2>
+<h3 id="t279.1 $set">9.1 $set <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t279.1%20$set"> # </a></h3>
+<p>直接指定更新后的值</p>
+<pre><code class="lang-js">db.c3.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx2'</span>},{<span class="hljs-attr">$set</span>:{<span class="hljs-attr">age</span>:<span class="hljs-number">10</span>}},{<span class="hljs-attr">multi</span>:<span class="hljs-literal">true</span>});
+</code></pre>
+<h3 id="t289.2 $inc">9.2 $inc <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t289.2%20$inc"> # </a></h3>
+<p>在原基础上累加</p>
+<pre><code class="lang-js">db.c3.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx2'</span>},{<span class="hljs-attr">$inc</span>:{<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>}},{<span class="hljs-attr">multi</span>:<span class="hljs-literal">true</span>});
+</code></pre>
+<h3 id="t299.3 $unset">9.3 $unset <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t299.3%20$unset"> # </a></h3>
+<p>删除指定的键</p>
+<pre><code class="lang-js">db.c3.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx2'</span>},{<span class="hljs-attr">$unset</span>:{<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>}},{<span class="hljs-attr">multi</span>:<span class="hljs-literal">true</span>});
+</code></pre>
+<h3 id="t309.4 $push">9.4 $push <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t309.4%20$push"> # </a></h3>
+<p>向数组中添加元素 </p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> result = db.student.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'张三'</span>},{
+    <span class="hljs-attr">$push</span>:{<span class="hljs-string">"hobbys"</span>:<span class="hljs-string">"smoking"</span>}
+});
+</code></pre>
+<h3 id="t319.5 $ne">9.5 $ne <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t319.5%20$ne"> # </a></h3>
+<p>$ne类似于MYSQL的 <code>not in</code> 或者<code>not exists</code></p>
+<pre><code class="lang-js">db.student.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx1'</span>,<span class="hljs-attr">hobbys</span>:{<span class="hljs-attr">$ne</span>:<span class="hljs-string">'smoking'</span>}},{<span class="hljs-attr">$push</span>:{<span class="hljs-string">"hobbys"</span>:<span class="hljs-string">"smoking"</span>}});
+</code></pre>
+<h3 id="t329.5 $addToSet">9.5 $addToSet <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t329.5%20$addToSet"> # </a></h3>
+<p>向集合中添加元素</p>
+<pre><code class="lang-js">db.student.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx1'</span>},{<span class="hljs-attr">$addToSet</span>:{<span class="hljs-string">"hobbys"</span>:<span class="hljs-string">"smoking"</span>}});
+</code></pre>
+<h3 id="t339.6 $each">9.6 $each <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t339.6%20$each"> # </a></h3>
+<p>把数组中的元素逐个添加到集合中</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> hobbys = [<span class="hljs-string">"A"</span>,<span class="hljs-string">'B'</span>];
+db.student.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx1'</span>},{<span class="hljs-attr">$addToSet</span>:{<span class="hljs-attr">hobbys</span>:{<span class="hljs-attr">$each</span>:hobbys}}});
+</code></pre>
+<h3 id="t349.7  $pop">9.7  $pop <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t349.7%20%20$pop"> # </a></h3>
+<p>从数组中移除指定的索引中对应的元素</p>
+<pre><code class="lang-js">db.student.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx1'</span>},{<span class="hljs-attr">$pop</span>:{<span class="hljs-attr">hobbys</span>:<span class="hljs-number">1</span>}});
+</code></pre>
+<h3 id="t359.8 修改指定索引元素">9.8 修改指定索引元素 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t359.8%20%E4%BF%AE%E6%94%B9%E6%8C%87%E5%AE%9A%E7%B4%A2%E5%BC%95%E5%85%83%E7%B4%A0"> # </a></h3>
+<pre><code class="lang-js">db.c3.update({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx1'</span>},{<span class="hljs-attr">$set</span>:{<span class="hljs-string">"hobbys.0"</span>:<span class="hljs-string">"smoking2"</span>}});
+</code></pre>
+<h2 id="t3610. 文档的删除">10. 文档的删除 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3610.%20%E6%96%87%E6%A1%A3%E7%9A%84%E5%88%A0%E9%99%A4"> # </a></h2>
+<p>remove方法是用来移除集合中的数据</p>
+<h3 id="t3710.1 语法">10.1 语法 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3710.1%20%E8%AF%AD%E6%B3%95"> # </a></h3>
+<pre><code class="lang-js">db.collection.remove(
+   &lt;query&gt;,
+   {
+     justOne: &lt;boolean&gt;
+   }
+)
+</code></pre>
+<h3 id="t3810.2 参数">10.2 参数 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3810.2%20%E5%8F%82%E6%95%B0"> # </a></h3>
+<ul>
+<li>query :（可选）删除的文档的条件。</li>
+<li>justOne : （可选）如果设为 true 或 1，则只删除匹配到的多个文档中的第一个</li>
+</ul>
+<h3 id="t3910.3 实例">10.3 实例 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t3910.3%20%E5%AE%9E%E4%BE%8B"> # </a></h3>
+<p>删除worker集合里name是zfpx2的所有文档数据</p>
+<pre><code class="lang-js">&gt; db.students.remove({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx2'</span>});
+WriteResult({ <span class="hljs-string">"nRemoved"</span> : <span class="hljs-number">2</span> })
+</code></pre>
+<p>即使匹配多条也只删除一条</p>
+<pre><code class="lang-js">&gt; db.students.remove({<span class="hljs-attr">name</span>:<span class="hljs-string">"zfpx2"</span>},{<span class="hljs-attr">justOne</span>:<span class="hljs-literal">true</span>})
+WriteResult({ <span class="hljs-string">"nRemoved"</span> : <span class="hljs-number">1</span> })
+</code></pre>
+<h2 id="t4011. 查询文档">11. 查询文档 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4011.%20%E6%9F%A5%E8%AF%A2%E6%96%87%E6%A1%A3"> # </a></h2>
+<h3 id="t4111.1 find">11.1 find <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4111.1%20find"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code>db.collection_name.find()
+</code></pre><p><strong>参数</strong></p>
+<ul>
+<li>collection_name 集合的名字</li>
+</ul>
+<p><strong>实例</strong>
+查询students下所有的文档</p>
+<pre><code>db.students.find()
+</code></pre><h3 id="t4211.2 查询指定列">11.2 查询指定列 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4211.2%20%E6%9F%A5%E8%AF%A2%E6%8C%87%E5%AE%9A%E5%88%97"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code>db.collection_name.find({queryWhere},{key:1,key:1})
+</code></pre><p><strong>参数列表</strong></p>
+<ul>
+<li>collection_name  集合的名字</li>
+<li>queryWhere 参阅查询条件操作符</li>
+<li>key 指定要返回的列</li>
+<li>1 表示要显示</li>
+</ul>
+<p><strong>实例</strong>
+只返回显示age列</p>
+<pre><code>&gt; db.students.find({},{age:1});
+</code></pre><h3 id="t4311.3 findOne">11.3 findOne <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4311.3%20findOne"> # </a></h3>
+<p>查询匹配结果的第一条数据
+<strong>语法</strong></p>
+<pre><code>db.collection_name.findOne()
+</code></pre><p><strong>实例</strong></p>
+<pre><code>db.students.findOne()
+</code></pre><h3 id="t4411.4 $in">11.4 $in <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4411.4%20$in"> # </a></h3>
+<p>查询字段在某个范围内</p>
+<pre><code class="lang-js">db.student.find({<span class="hljs-attr">age</span>:{<span class="hljs-attr">$in</span>:[<span class="hljs-number">30</span>,<span class="hljs-number">100</span>]}},{<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h3 id="t4511.5 $nin">11.5 $nin <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4511.5%20$nin"> # </a></h3>
+<p>查询字段不在某个范围内</p>
+<pre><code class="lang-js">db.student.find({<span class="hljs-attr">age</span>:{<span class="hljs-attr">$nin</span>:[<span class="hljs-number">30</span>,<span class="hljs-number">100</span>]}},{<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h3 id="t4611.6  $not">11.6  $not <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4611.6%20%20$not"> # </a></h3>
+<p>对特定条件取反</p>
+<pre><code class="lang-js">db.student.find({<span class="hljs-attr">age</span>:{<span class="hljs-attr">$not</span>:{<span class="hljs-attr">$gte</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">$lte</span>:<span class="hljs-number">30</span>}}});
+</code></pre>
+<h3 id="t4711.7  array">11.7  array <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4711.7%20%20array"> # </a></h3>
+<p>对数组的查询</p>
+<pre><code class="lang-js"><span class="hljs-comment">//按所有元素匹配</span>
+<span class="hljs-comment">//let result = db.student.find({friends:[ "A", "B", "C", "D" ]});</span>
+<span class="hljs-comment">//匹配一项 包含A的就可以</span>
+<span class="hljs-comment">//let result = db.student.find({friends:"A"});</span>
+<span class="hljs-comment">//$all 必须同时包含A B</span>
+<span class="hljs-comment">//let result = db.student.find({friends:{$all:['A',"B"]}});</span>
+<span class="hljs-comment">//$in 或者关系 ，包含A或者B</span>
+<span class="hljs-comment">//let result = db.student.find({friends:{$in:['A',"B"]}});</span>
+<span class="hljs-comment">//$size 按数组的长度去匹配</span>
+<span class="hljs-comment">//let result = db.student.find({friends:{$size:4}});</span>
+<span class="hljs-comment">//$slice 只返回数组中的某一部分</span>
+<span class="hljs-comment">//let result = db.student.find({friends:{$size:5}},{name:1,friends:{$slice:2}});</span>
+<span class="hljs-comment">//let result = db.student.find({friends:{$size:5}},{name:1,friends:{$slice:-2}});</span>
+$slice:[<span class="hljs-string">"$array"</span>, [startIndex, ] length ] （startIndex可以省略，默认从<span class="hljs-number">0</span>开始）
+<span class="hljs-string">"friends"</span> : [ <span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span> ] }   <span class="hljs-string">"friends"</span> : [ <span class="hljs-string">"C"</span>, <span class="hljs-string">"D"</span> ]
+db.stu.find({},{<span class="hljs-attr">friends</span>:{<span class="hljs-attr">$slice</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">3</span>]}});  <span class="hljs-string">"friends"</span> : [ <span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span>, <span class="hljs-string">"C"</span> ]
+</code></pre>
+<h3 id="t4811.8 where">11.8 where <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4811.8%20where"> # </a></h3>
+<pre><code class="lang-js">db.student.find({<span class="hljs-attr">$where</span>:<span class="hljs-string">"this.age&gt;30"</span>},{<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h3 id="t4911.9   cursor">11.9   cursor <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t4911.9%20%20%20cursor"> # </a></h3>
+<ul>
+<li>游标不是查询结果，而是查询的一个返回资源或者接口，通过这个接口，可以逐条读取数据</li>
+</ul>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> result = db.student.find();
+
+<span class="hljs-comment">//while(result.hasNext()){</span>
+<span class="hljs-comment">//    printjson(result.next());</span>
+<span class="hljs-comment">//}</span>
+
+</code></pre>
+<h2 id="t5012. 条件操作符">12. 条件操作符 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5012.%20%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6"> # </a></h2>
+<p>条件操作符用于比较两个表达式并从mongoDB集合中获取数据</p>
+<h3 id="t5112.1 大于操作符">12.1 大于操作符 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5112.1%20%E5%A4%A7%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code>db.collectoin_name.find({&lt;key&gt;:{$gt:&lt;value&gt;}})
+</code></pre><p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name  集合名称</li>
+<li>key   字段</li>
+<li>value   值</li>
+</ul>
+<p>查询 age 大于 30的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">age</span>:{<span class="hljs-attr">$gt</span>:<span class="hljs-number">30</span>}})
+</code></pre>
+<h3 id="t5212.2 大于等于操作符">12.2 大于等于操作符 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5212.2%20%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find({&lt;key&gt;:{<span class="hljs-attr">$gte</span>:<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>}})
+</span></code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name 集合名称</li>
+<li>key  字段</li>
+<li>value  值</li>
+</ul>
+<p>查询age 3大于等于30 的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">age</span>: {<span class="hljs-attr">$gte</span>: <span class="hljs-number">30</span>}}) 
+</code></pre>
+<h3 id="t5312.3 小于操作符">12.3 小于操作符 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5312.3%20%E5%B0%8F%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find( {&lt;key&gt;:{<span class="hljs-attr">$lt</span>:<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>}})
+</span></code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name集合名称</li>
+<li>key 字段</li>
+<li>value 值</li>
+</ul>
+<p><strong>实例</strong></p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">age</span>: {<span class="hljs-attr">$lt</span>: <span class="hljs-number">30</span>}}) 查询age 小于<span class="hljs-number">30</span>的数据
+</code></pre>
+<h3 id="t5412.4 小于等于操作符">12.4 小于等于操作符 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5412.4%20%E5%B0%8F%E4%BA%8E%E7%AD%89%E4%BA%8E%E6%93%8D%E4%BD%9C%E7%AC%A6"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code>db.collectoin_name.find({&lt;key&gt;:{$lte:&lt;value&gt;}})
+</code></pre><p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name集合名词</li>
+<li>key字段</li>
+<li>value值</li>
+</ul>
+<p>查询age 小于等于30的数据</p>
+<pre><code>db.students.find({age: {$lte: 30}}) 
+</code></pre><h3 id="t5512.5 同时使用 $gte和$lte">12.5 同时使用 $gte和$lte <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5512.5%20%E5%90%8C%E6%97%B6%E4%BD%BF%E7%94%A8%20$gte%E5%92%8C$lte"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find({&lt;key&gt;:{<span class="hljs-attr">$gte</span>:&lt;value&gt;},&lt;key&gt;:{$lte:&lt;value&gt;}})
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name 集合名称</li>
+<li>key 字段</li>
+<li>value 值</li>
+</ul>
+<p><strong>实例</strong>
+查询age 大于等于 30 并且 age 小于等于 50  的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">age</span>: {<span class="hljs-attr">$gte</span>: <span class="hljs-number">30</span>, <span class="hljs-attr">$lte</span>: <span class="hljs-number">50</span>}})
+</code></pre>
+<h3 id="t5612.6 等于">12.6 等于 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5612.6%20%E7%AD%89%E4%BA%8E"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find({&lt;key&gt;:&lt;value&gt;,&lt;key&gt;:&lt;value&gt;})
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name集合名词</li>
+<li>key字段</li>
+<li>value值</li>
+</ul>
+<p>查询age = 30的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-string">"age"</span>: <span class="hljs-number">30</span>})<span class="hljs-string">`
+</span></code></pre>
+<h3 id="t5712.7 使用 _id进行查询">12.7 使用 _id进行查询 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5712.7%20%E4%BD%BF%E7%94%A8%20_id%E8%BF%9B%E8%A1%8C%E6%9F%A5%E8%AF%A2"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find({<span class="hljs-string">"_id"</span> : ObjectId(<span class="hljs-string">"value"</span>)})
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>value  <code>_id</code>的值</li>
+</ul>
+<p><strong>实例</strong>
+查询_id是 562af23062d5a57609133974 数据</p>
+<pre><code class="lang-js">&gt; db.students.find({<span class="hljs-attr">_id</span>:ObjectId(<span class="hljs-string">"5adb666ecd738e9771638985"</span>)});
+{ <span class="hljs-string">"_id"</span> : ObjectId(<span class="hljs-string">"5adb666ecd738e9771638985"</span>), <span class="hljs-string">"name"</span> : <span class="hljs-string">"zzzz"</span> }
+</code></pre>
+<h3 id="t5812.8 查询结果集的条数">12.8 查询结果集的条数 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5812.8%20%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C%E9%9B%86%E7%9A%84%E6%9D%A1%E6%95%B0"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find().count()
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name 集合名称</li>
+</ul>
+<p><strong>实例</strong></p>
+<pre><code class="lang-js">db.students.find().count()
+</code></pre>
+<h3 id="t5912.9 正则匹配">12.9 正则匹配 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t5912.9%20%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collection.find({<span class="hljs-attr">key</span>:<span class="hljs-regexp">/value/</span>})
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name 集合名称</li>
+<li>key 字段</li>
+<li>value 值</li>
+</ul>
+<p><strong>实例</strong>
+查询name里包含zhang的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">name</span>:<span class="hljs-regexp">/value/</span>})
+</code></pre>
+<p>查询某个字段的值当中是否以另一个值开头</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">name</span>:<span class="hljs-regexp">/^zhang/</span>})
+</code></pre>
+<h2 id="t6013. 与和或">13. 与和或 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6013.%20%E4%B8%8E%E5%92%8C%E6%88%96"> # </a></h2>
+<h3 id="t6113.1 and">13.1 and <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6113.1%20and"> # </a></h3>
+<p>find方法可以传入多个键(key)，每个键(key)以逗号隔开</p>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collection_name.find({<span class="hljs-attr">key1</span>:value1, <span class="hljs-attr">key2</span>:value2})
+</code></pre>
+<p><strong>实例</strong>
+查询name是zfpx并且age是1的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">1</span>})
+</code></pre>
+<h3 id="t6213.2 or">13.2 or <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6213.2%20or"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collection_name.find(
+   {
+      <span class="hljs-attr">$or</span>: [
+   {<span class="hljs-attr">key1</span>: value1}, {<span class="hljs-attr">key2</span>:value2}
+      ]
+   }
+)
+</code></pre>
+<p><strong>实例</strong>
+查询age = 30 或者 age = 50  的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">$or</span>:[{<span class="hljs-attr">age</span>:<span class="hljs-number">30</span>},{<span class="hljs-attr">age</span>:<span class="hljs-number">50</span>}]})
+</code></pre>
+<h3 id="t6313.3 and和or联用">13.3 and和or联用 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6313.3%20and%E5%92%8Cor%E8%81%94%E7%94%A8"> # </a></h3>
+<p><strong>语法</strong></p>
+<pre><code class="lang-js">db.collection_name.find(
+   {
+     <span class="hljs-attr">key1</span>:value1,
+     <span class="hljs-attr">key2</span>:value2,
+     <span class="hljs-attr">$or</span>: [
+   {<span class="hljs-attr">key1</span>: value1},
+   {<span class="hljs-attr">key2</span>:value2}
+     ]
+   }
+)
+</code></pre>
+<p><strong>实例</strong>
+查询 name是zfpx 并且 age是30 或者 age是 50 的数据</p>
+<pre><code class="lang-js">db.students.find({<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>,<span class="hljs-attr">$or</span>:[{<span class="hljs-attr">age</span>:<span class="hljs-number">30</span>},{<span class="hljs-attr">age</span>:<span class="hljs-number">50</span>}]})
+</code></pre>
+<h2 id="t6414. 分页查询">14. 分页查询 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6414.%20%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2"> # </a></h2>
+<h3 id="t6514.1 limit">14.1 limit <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6514.1%20limit"> # </a></h3>
+<p>读取指定数量的数据记录
+<strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find().limit(number)
+</code></pre>
+<p><strong> 参数</strong></p>
+<ul>
+<li>collectoin_name集合</li>
+<li>number读取的条数</li>
+</ul>
+<p><strong>实例</strong>
+查询前3条数据</p>
+<pre><code class="lang-js">db.students.find().limit(<span class="hljs-number">3</span>)
+</code></pre>
+<h3 id="t6614.2 skip">14.2 skip <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6614.2%20skip"> # </a></h3>
+<p>跳过指定数量的数据，skip方法同样接受一个数字参数作为跳过的记录条数
+<strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find().skip(number)
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name集合</li>
+<li>number跳过的条数</li>
+</ul>
+<p><strong>实例</strong>
+查询3条以后的数据</p>
+<pre><code class="lang-js">db.students.find().skip(<span class="hljs-number">3</span>)
+</code></pre>
+<h3 id="t6714.3 skip+limit">14.3 skip+limit <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6714.3%20skip+limit"> # </a></h3>
+<p>通常用这种方式来实现分页功能
+<strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find().skip(skipNum).limit(limitNum)
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name 集合名称</li>
+<li>skipNum 跳过的条数</li>
+<li>limitNum 限制返回的条数</li>
+</ul>
+<p><strong>实例</strong>
+查询在4-6之间的数据</p>
+<pre><code class="lang-js">db.students.find().skip(<span class="hljs-number">3</span>).limit(<span class="hljs-number">3</span>);
+</code></pre>
+<h3 id="t6814.4 sort排序">14.4 sort排序 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6814.4%20sort%E6%8E%92%E5%BA%8F"> # </a></h3>
+<p>sort()方法可以通过参数指定排序的字段，并使用 1 和 -1 来指定排序的方式，其中 1 为升序排列，而-1是用于降序排列。
+<strong>语法</strong></p>
+<pre><code class="lang-js">db.collectoin_name.find().sort({<span class="hljs-attr">key</span>:<span class="hljs-number">1</span>})
+db.collectoin_name.find().sort({<span class="hljs-attr">key</span>:<span class="hljs-number">-1</span>})
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>collectoin_name集合</li>
+<li>key表示字段</li>
+</ul>
+<p><strong>实例</strong>
+查询出并升序排序 {age:1}  age表示按那个字段排序 1表示升序</p>
+<pre><code>db.students.find().sort({age:1})
+</code></pre><h2 id="t6915. 执行脚本">15. 执行脚本 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t6915.%20%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC"> # </a></h2>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> username = <span class="hljs-string">'zfpx'</span>;
+<span class="hljs-keyword">var</span> password = <span class="hljs-string">'123456'</span>;
+<span class="hljs-keyword">var</span> user = { <span class="hljs-string">"username"</span>: username, <span class="hljs-string">"password"</span>: password };
+<span class="hljs-keyword">var</span> db = connect(<span class="hljs-string">'students'</span>);<span class="hljs-comment">//选择users数据库</span>
+<span class="hljs-keyword">var</span> result = db.users.insert(user);
+print(<span class="hljs-string">'write '</span> + result);
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> start = <span class="hljs-built_in">Date</span>.now();
+<span class="hljs-keyword">var</span> db = connect(<span class="hljs-string">'students'</span>);
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1000</span>; i++) {
+    db.users.insert({ <span class="hljs-string">"username"</span>: <span class="hljs-string">"zfpx"</span> + i });
+}
+<span class="hljs-keyword">var</span> cost = <span class="hljs-built_in">Date</span>.now() - start;
+print(<span class="hljs-string">'cost '</span> + cost + <span class="hljs-string">' ms'</span>);
+</code></pre>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> start = <span class="hljs-built_in">Date</span>.now();
+<span class="hljs-keyword">var</span> db = connect(<span class="hljs-string">'students'</span>);
+<span class="hljs-keyword">var</span> users = [];
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">1000</span>; i++) {
+    users.push({ <span class="hljs-string">"username"</span>: <span class="hljs-string">"zfpx"</span> + i });
+}
+db.users.insert(users);
+<span class="hljs-keyword">var</span> cost = <span class="hljs-built_in">Date</span>.now() - start;
+print(<span class="hljs-string">'cost '</span> + cost + <span class="hljs-string">' ms'</span>);
+</code></pre>
+<p>在命令行中执行</p>
+<pre><code class="lang-js">script&gt;mongo <span class="hljs-number">1.</span>js
+MongoDB shell version: <span class="hljs-number">2.6</span><span class="hljs-number">.7</span>
+connecting to: test
+connecting to: students
+write WriteResult({ <span class="hljs-string">"nInserted"</span> : <span class="hljs-number">1</span> })
+</code></pre>
+<h3 id="t7016.  备份与导出">16.  备份与导出 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7016.%20%20%E5%A4%87%E4%BB%BD%E4%B8%8E%E5%AF%BC%E5%87%BA"> # </a></h3>
+<pre><code class="lang-js">mongodump
+    -- host <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+    -- port <span class="hljs-number">27017</span>
+    -- out D:<span class="hljs-regexp">/databack/</span>backup
+    -- collection mycollection
+    -- db test
+    -- username
+    -- password
+<span class="hljs-comment">//mongodump --host 127.0.0.1 --port 27017 --out ./backup --collection users --db students</span>
+<span class="hljs-comment">//db.users.drop();</span>
+
+mongorestore
+--host
+--port
+--username
+--password
+
+<span class="hljs-comment">// mongorestore --host 127.0.0.1 --port 27017 ./backup</span>
+</code></pre>
+<h2 id="t7117.  权限">17.  权限 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7117.%20%20%E6%9D%83%E9%99%90"> # </a></h2>
+<h3 id="t7217.1 创建用户">17.1 创建用户 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7217.1%20%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7"> # </a></h3>
+<ul>
+<li>使用<code>use admin</code>进入我们的admin库</li>
+<li>使用<code>db.createUser</code>方法来创建集合</li>
+</ul>
+<pre><code class="lang-js">db.createUser({
+    <span class="hljs-attr">user</span>:<span class="hljs-string">'zfpx'</span>,
+    <span class="hljs-attr">pwd</span>:<span class="hljs-string">'123456'</span>,
+    <span class="hljs-attr">customData</span>:{
+        <span class="hljs-attr">name</span>:<span class="hljs-string">'zhufengpeixun'</span>,
+        <span class="hljs-attr">email</span>:<span class="hljs-string">'zhufengpeixun@126.com'</span>,
+        <span class="hljs-attr">age</span>:<span class="hljs-number">9</span>
+    },
+    <span class="hljs-attr">roles</span>:[
+        {
+          <span class="hljs-attr">role</span>:<span class="hljs-string">'readWrite'</span>,
+          <span class="hljs-attr">db</span>:<span class="hljs-string">'school'</span>
+        },
+        <span class="hljs-string">'read'</span>
+    ]
+});
+</code></pre>
+<h3 id="t7317.2 查询用户">17.2 查询用户 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7317.2%20%E6%9F%A5%E8%AF%A2%E7%94%A8%E6%88%B7"> # </a></h3>
+<pre><code class="lang-js">db.system.users.find();
+</code></pre>
+<h3 id="t7417.3 删除用户">17.3 删除用户 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7417.3%20%E5%88%A0%E9%99%A4%E7%94%A8%E6%88%B7"> # </a></h3>
+<pre><code class="lang-js">db.system.users.remove({<span class="hljs-attr">user</span>:<span class="hljs-string">'zfpx'</span>});
+</code></pre>
+<h3 id="t7517.4 启动数据库权限检查">17.4 启动数据库权限检查 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7517.4%20%E5%90%AF%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9D%83%E9%99%90%E6%A3%80%E6%9F%A5"> # </a></h3>
+<pre><code class="lang-js">mongod --auth
+mongo  -u zfpx -p <span class="hljs-number">123456</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">27017</span>/admin
+</code></pre>
+<h3 id="t7617.5 鉴权">17.5 鉴权 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7617.5%20%E9%89%B4%E6%9D%83"> # </a></h3>
+<pre><code class="lang-js">use admin;
+db.auth(<span class="hljs-string">'zfpx'</span>,<span class="hljs-string">'zfpx'</span>);
+</code></pre>
+<ul>
+<li>正确返回1，如果错误返回0</li>
+</ul>
+<h2 id="t7718. 索引">18. 索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7718.%20%E7%B4%A2%E5%BC%95"> # </a></h2>
+<h3 id="t7818.1 准备数据">18.1 准备数据 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7818.1%20%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> db = connect(<span class="hljs-string">'school'</span>);<span class="hljs-comment">//选择users数据库</span>
+<span class="hljs-keyword">var</span> users = [];
+<span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">0</span>;i&lt;<span class="hljs-number">20</span>;i++){
+    users.push({<span class="hljs-attr">_id</span>:i,<span class="hljs-attr">name</span>:<span class="hljs-string">'zfpx'</span>+i});
+}
+print(users.length);
+db.users.insert(users);
+</code></pre>
+<h3 id="t7918.2 打印出查询时间">18.2 打印出查询时间 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t7918.2%20%E6%89%93%E5%8D%B0%E5%87%BA%E6%9F%A5%E8%AF%A2%E6%97%B6%E9%97%B4"> # </a></h3>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> startTime = <span class="hljs-built_in">Date</span>.now();
+<span class="hljs-keyword">var</span>  db = connect(<span class="hljs-string">'school'</span>);          
+<span class="hljs-keyword">var</span>  records=db.users.find({<span class="hljs-attr">name</span>:<span class="hljs-string">"zfpx100"</span>});
+records.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">item</span>)</span>{printjson(item)});
+print(<span class="hljs-built_in">Date</span>.now() - startTime);
+</code></pre>
+<h3 id="t8018.3  建立索引">18.3  建立索引 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8018.3%20%20%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95"> # </a></h3>
+<pre><code class="lang-js">db.users.ensureIndex({<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>});
+</code></pre>
+<h2 id="t8119. 附录">19. 附录 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8119.%20%E9%99%84%E5%BD%95"> # </a></h2>
+<h3 id="t8219.1 ObjectId构成">19.1 ObjectId构成 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8219.1%20ObjectId%E6%9E%84%E6%88%90"> # </a></h3>
+<p>之前我们使用MySQL等关系型数据库时，主键都是设置成自增的。但在分布式环境下，这种方法就不可行了，会产生冲突。为此，MongoDB采用了一个称之为ObjectId的类型来做主键。ObjectId是一个12字节的 BSON 类型字符串。按照字节顺序，一次代表：</p>
+<ul>
+<li>4字节：UNIX时间戳</li>
+<li>3字节：表示运行MongoDB的机器</li>
+<li>2字节：表示生成此_id的进程</li>
+<li>3字节：由一个随机数开始的计数器生成的值</li>
+</ul>
+<h3 id="t8319.2 Mongodb启动命令mongod参数说明">19.2 Mongodb启动命令mongod参数说明 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8319.2%20Mongodb%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4mongod%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"> # </a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">--port</td>
+<td style="text-align:left">指定服务端口号，默认端口27017</td>
+</tr>
+<tr>
+<td style="text-align:left">--logpath</td>
+<td style="text-align:left">指定MongoDB日志文件，注意是指定文件不是目录</td>
+</tr>
+<tr>
+<td style="text-align:left">--logappend</td>
+<td style="text-align:left">使用追加的方式写日志</td>
+</tr>
+<tr>
+<td style="text-align:left">--dbpath</td>
+<td style="text-align:left">指定数据库路径</td>
+</tr>
+<tr>
+<td style="text-align:left">--directoryperdb</td>
+<td style="text-align:left">设置每个数据库将被保存在一个单独的目录</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t8419.3 集合命令">19.3 集合命令 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8419.3%20%E9%9B%86%E5%90%88%E5%91%BD%E4%BB%A4"> # </a></h2>
+<ul>
+<li>db.students.help();</li>
+<li>DBCollection help</li>
+<li>db.students.find().help() - show DBCursor help 显示游标帮助</li>
+<li>db.students.count()   显示条数</li>
+<li>db.students.copyTo(newColl) - duplicates collection by copying all docum
+ents to newColl; no indexes are copied. 把一个旧集合拷贝到一个新的集合，不拷贝索引</li>
+<li>db.students.convertToCapped(maxBytes) - calls {convertToCapped:'students
+', size:maxBytes}} command  </li>
+<li>db.students.dataSize() 数据大小</li>
+<li>db.students.distinct( key ) - e.g. db.students.distinct( 'x' ) 统计唯一的key的数量</li>
+<li>db.students.drop() drop the collection ，删除集合</li>
+<li>db.students.dropIndex(index) - e.g. db.students.dropIndex( "indexName" ) 删除索引
+or db.students.dropIndex( { "indexKey" : 1 } )</li>
+<li>db.students.dropIndexes() 删除 所有的索引</li>
+<li>db.students.ensureIndex(keypattern[,options]) - options is an object wit
+h these possible fields: name, unique, dropDups 添加索引</li>
+<li>db.students.reIndex() </li>
+<li>db.students.find([query],[fields]) - query is an optional query filter.
+fields is optional set of fields to return. 查找文档<pre><code>     e.g. db.students.find( {x:
+</code></pre>77} , {name:1, x:1} )</li>
+<li>db.students.find(...).count() 数量</li>
+<li>db.students.find(...).limit(n) 限制返回的条数</li>
+<li>db.students.find(...).skip(n) 设置跳过的条数</li>
+<li>db.students.find(...).sort(...) 排序</li>
+<li>db.students.findOne([query]) 查找一条</li>
+<li>db.students.findAndModify( { update : ... , remove : bool [, query: {},
+sort: {}, 'new': false] } )  查找并且修改 更新后的值，是否删除，查询条件 排序  是否返回新值</li>
+<li>db.students.getDB() get DB object associated with collection 获得DB</li>
+<li>db.students.getPlanCache() get query plan cache associated with collecti
+on</li>
+<li>db.students.getIndexes() 获取索引</li>
+<li>db.students.group( { key : ..., initial: ..., reduce : ...[, cond: ...]
+} ) 分组统计 </li>
+<li>db.students.insert(obj) 插入文档</li>
+<li>db.students.mapReduce( mapFunction , reduceFunction , <optional params="">
+) 统计 </optional></li>
+<li>db.students.aggregate( [pipeline], <optional params=""> ) - performs an agg
+regation on a collection; returns a cursor 聚合</optional></li>
+<li>db.students.remove(query) 删除 </li>
+<li>db.students.renameCollection( newName , <droptarget> ) renames the colle
+ction. 重命名集合</droptarget></li>
+<li>db.students.runCommand( name , <options> ) runs a db command with the gi
+ven name where the first param is the collection name</options></li>
+<li>db.students.save(obj) 保存对象</li>
+<li>db.students.stats() 统计信息</li>
+<li>db.students.storageSize() - includes free space allocated to this collec
+tion</li>
+<li>db.students.totalIndexSize() - size in bytes of all the indexes</li>
+<li>db.students.totalSize() - storage allocated for all data and indexes</li>
+<li>db.students.update(query, object[, upsert_bool, multi_bool]) - instead o
+f two flags, you can pass an object with fields: upsert, multi 更新</li>
+<li>db.students.validate( <full> ) - SLOW</full></li>
+<li>db.students.getShardVersion() - only for use with sharding</li>
+<li>db.students.getShardDistribution() - prints statistics about data distri
+bution in the cluster</li>
+<li>db.students.getSplitKeysForChunks( <maxchunksize> ) - calculates split p
+oints over all chunks and returns splitter function</maxchunksize></li>
+<li>db.students.getWriteConcern() - returns the write concern used for any o
+perations on this collection, inherited from server/db if set</li>
+<li>db.students.setWriteConcern( <write concern="" doc=""> ) - sets the write conc
+ern for writes to the collection</write></li>
+<li>db.students.unsetWriteConcern( <write concern="" doc=""> ) - unsets the write
+concern for writes to the collection</write></li>
+</ul>
+<h2 id="t8520 角色">20 角色 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8520%20%E8%A7%92%E8%89%B2"> # </a></h2>
+<h3 id="t8620.1 数据库用户角色">20.1 数据库用户角色 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8620.1%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%94%A8%E6%88%B7%E8%A7%92%E8%89%B2"> # </a></h3>
+<p>针对每一个数据库进行控制。</p>
+<ul>
+<li>read :提供了读取所有非系统集合，以及系统集合中的system.indexes, system.js, system.namespaces</li>
+<li>readWrite: 包含了所有read权限，以及修改所有非系统集合的和系统集合中的system.js的权限</li>
+</ul>
+<h3 id="t8720.2 数据库管理角色">20.2 数据库管理角色 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8720.2%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E8%A7%92%E8%89%B2"> # </a></h3>
+<p>每一个数据库包含了下面的数据库管理角色。</p>
+<ul>
+<li>dbOwner：该数据库的所有者，具有该数据库的全部权限。</li>
+<li>dbAdmin：一些数据库对象的管理操作，但是没有数据库的读写权限。（参考：<a href="http://docs.mongodb.org/manual/reference/built-in-roles/#dbAdmin%EF%BC%89">http://docs.mongodb.org/manual/reference/built-in-roles/#dbAdmin）</a></li>
+<li>userAdmin：为当前用户创建、修改用户和角色。拥有userAdmin权限的用户可以将该数据库的任意权限赋予任意的用户。</li>
+</ul>
+<h3 id="t8820.3 集群管理权限">20.3 集群管理权限 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8820.3%20%E9%9B%86%E7%BE%A4%E7%AE%A1%E7%90%86%E6%9D%83%E9%99%90"> # </a></h3>
+<ul>
+<li>admin数据库包含了下面的角色，用户管理整个系统，而非单个数据库。这些权限包含了复制集和共享集群的管理函数。</li>
+<li>clusterAdmin：提供了最大的集群管理功能。相当于clusterManager, clusterMonitor, and hostManager和dropDatabase的权限组合。</li>
+<li>clusterManager：提供了集群和复制集管理和监控操作。拥有该权限的用户可以操作config和local数据库（即分片和复制功能）</li>
+<li>clusterMonitor：仅仅监控集群和复制集。</li>
+<li>hostManager：提供了监控和管理服务器的权限，包括shutdown节点，logrotate, repairDatabase等。
+备份恢复权限：admin数据库中包含了备份恢复数据的角色。包括backup、restore等等。</li>
+</ul>
+<h3 id="t8920.4  所有数据库角色">20.4  所有数据库角色 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t8920.4%20%20%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%92%E8%89%B2"> # </a></h3>
+<ul>
+<li>admin数据库提供了一个mongod实例中所有数据库的权限角色：</li>
+<li>readAnyDatabase：具有read每一个数据库权限。但是不包括应用到集群中的数据库。</li>
+<li>readWriteAnyDatabase：具有readWrite每一个数据库权限。但是不包括应用到集群中的数据库。</li>
+<li>userAdminAnyDatabase：具有userAdmin每一个数据库权限，但是不包括应用到集群中的数据库。</li>
+<li>dbAdminAnyDatabase：提供了dbAdmin每一个数据库权限，但是不包括应用到集群中的数据库。</li>
+</ul>
+<h3 id="t9020.5 超级管理员权限">20.5 超级管理员权限 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t9020.5%20%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90"> # </a></h3>
+<ul>
+<li>root: dbadmin到admin数据库、useradmin到admin数据库以及UserAdminAnyDatabase。但它不具有备份恢复、直接操作system.*集合的权限，但是拥有root权限的超级用户可以自己给自己赋予这些权限。</li>
+</ul>
+<h3 id="t9120.6 备份恢复角色">20.6 备份恢复角色 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t9120.6%20%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D%E8%A7%92%E8%89%B2"> # </a></h3>
+<p>backup、restore；</p>
+<h3 id="t9220.7 内部角色">20.7 内部角色 <a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html#t9220.7%20%E5%86%85%E9%83%A8%E8%A7%92%E8%89%B2"> # </a></h3>
+<p>__system</p>
+
+        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+    </div>
+    
+</div>
+
+<script src="./29.mongodb-1_files/jquery.js"></script>
+<script>
+$('.warpper .page-toc ul ul li a').on('click',function(){
+  $('.warpper .page-toc ul ul li a').removeClass('my-active')
+  $(this).addClass('my-active')
+})
+
+$('.logo').on('mouseenter',function(){
+  $('.nav').height('400px');
+})
+$('.nav').on('mouseleave',function(){
+  $('.nav').height('80px');
+})
+$('.logo').on('click',function(){
+  $('.nav').css('display','none');
+ $('.warpper').css('padding','0px');
+})
+// if (!$('.understand-me').length) {
+  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+  //   var count = bar / 26 / 2;
+  //   var barHeight = $('.page-toc').outerHeight();
+  //   $('.page-toc li').eq(0).children('a').addClass('red');
+  //   var arr = [];
+  //   $("h1,h2,h3,h4,h5,h6").each(function () {
+  //     arr.push($(this).position().top);
+  //   });
+  //   var timer
+  //   function dark() {
+  //     clearTimeout(timer)
+  //      timer = setTimeout(function () {
+  //      var top = Math.abs($('.page-toc > ul').position().top);
+  //      var cur = $('.content').scrollTop();
+  //      for (var i = arr.length; i >= 0; i--) {
+  //        if (arr[i] <= cur) {
+  //          break;
+  //        }
+  //      }
+  //      if (i === -1) {
+  //        i = 0;
+  //      }
+  //      $('.page-toc li a').removeClass('red');
+  //      $('.page-toc li').eq(i).children('a').addClass('red');
+  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+  //    },200)
+  //   }
+
+  //   $('.content').on('scroll', dark);
+  // }
+</script>
+<style>
+
+    /* ::-webkit-scrollbar{width:14px;}
+    ::-webkit-scrollbar-track{background-color:transparent;}
+    ::-webkit-scrollbar-thumb{background-color:transparent;}
+    ::-webkit-scrollbar-thumb:hover {background-color:transparent}
+    ::-webkit-scrollbar-thumb:active {background-color:transparent} */
+
+    .page-toc > ul .red {
+        background: #f3f3f3;
+        z-index: 1;
+        border-left: 3px solid #009a61;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        color: #000
+    }
+
+
+
+
+
+</style>
+
+
+</body></html>
