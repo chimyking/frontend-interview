@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)https://promisesaplus.com/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Promises/A+</title>
+
+    
+
+    <script>
+      "use strict";
+      if (location.href.indexOf("github.io") !== -1) {
+        location.href = "https://promisesaplus.com/";
+      }
+    </script>
+
+    <link rel="stylesheet" href="./Promises_A+_files/stylesheet.css">
+    <link rel="shortcut icon" href="https://promisesaplus.com/assets/favicon.ico">
+
+    <link rel="canonical" href="https://promisesaplus.com/">
+  <style type="text/css" abt="234"></style><script>//console.log('a')
+</script><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+
+  <body class="spec">
+    <h1 id="promisesa">Promises/A+</h1>
+
+<p id="point-1"><a href="https://promisesaplus.com/#point-1" class="anchor"></a><strong>An open standard for sound, interoperable JavaScript promises—by implementers, for implementers.</strong></p>
+
+<p id="point-2"><a href="https://promisesaplus.com/#point-2" class="anchor"></a>A <em>promise</em> represents the eventual result of an asynchronous operation. The primary way of interacting with a promise is through its <code class="highlighter-rouge">then</code> method, which registers callbacks to receive either a promise’s eventual value or the reason why the promise cannot be fulfilled.</p>
+
+<p id="point-3"><a href="https://promisesaplus.com/#point-3" class="anchor"></a>This specification details the behavior of the <code class="highlighter-rouge">then</code> method, providing an interoperable base which all Promises/A+ conformant promise implementations can be depended on to provide. As such, the specification should be considered very stable. Although the Promises/A+ organization may occasionally revise this specification with minor backward-compatible changes to address newly-discovered corner cases, we will integrate large or backward-incompatible changes only after careful consideration, discussion, and testing.</p>
+
+<p id="point-4"><a href="https://promisesaplus.com/#point-4" class="anchor"></a>Historically, Promises/A+ clarifies the behavioral clauses of the earlier <a href="http://wiki.commonjs.org/wiki/Promises/A">Promises/A proposal</a>, extending it to cover <em>de facto</em> behaviors and omitting parts that are underspecified or problematic.</p>
+
+<p id="point-5"><a href="https://promisesaplus.com/#point-5" class="anchor"></a>Finally, the core Promises/A+ specification does not deal with how to create, fulfill, or reject promises, choosing instead to focus on providing an interoperable <code class="highlighter-rouge">then</code> method. Future work in companion specifications may touch on these subjects.</p>
+
+<h2 id="terminology"><a href="https://promisesaplus.com/#terminology" class="anchor"></a>Terminology</h2>
+
+<ol>
+  <li id="point-6"><a href="https://promisesaplus.com/#point-6" class="anchor"></a>“promise” is an object or function with a <code class="highlighter-rouge">then</code> method whose behavior conforms to this specification.</li>
+  <li id="point-7"><a href="https://promisesaplus.com/#point-7" class="anchor"></a>“thenable” is an object or function that defines a <code class="highlighter-rouge">then</code> method.</li>
+  <li id="point-8"><a href="https://promisesaplus.com/#point-8" class="anchor"></a>“value” is any legal JavaScript value (including <code class="highlighter-rouge">undefined</code>, a thenable, or a promise).</li>
+  <li id="point-9"><a href="https://promisesaplus.com/#point-9" class="anchor"></a>“exception” is a value that is thrown using the <code class="highlighter-rouge">throw</code> statement.</li>
+  <li id="point-10"><a href="https://promisesaplus.com/#point-10" class="anchor"></a>“reason” is a value that indicates why a promise was rejected.</li>
+</ol>
+
+<h2 id="requirements"><a href="https://promisesaplus.com/#requirements" class="anchor"></a>Requirements</h2>
+
+<h3 id="promise-states"><a href="https://promisesaplus.com/#promise-states" class="anchor"></a>Promise States</h3>
+
+<p id="point-11"><a href="https://promisesaplus.com/#point-11" class="anchor"></a>A promise must be in one of three states: pending, fulfilled, or rejected.</p>
+
+<ol>
+  <li id="point-12"><a href="https://promisesaplus.com/#point-12" class="anchor"></a>When pending, a promise:
+    <ol>
+      <li id="point-13"><a href="https://promisesaplus.com/#point-13" class="anchor"></a>may transition to either the fulfilled or rejected state.</li>
+    </ol>
+  </li>
+  <li id="point-14"><a href="https://promisesaplus.com/#point-14" class="anchor"></a>When fulfilled, a promise:
+    <ol>
+      <li id="point-15"><a href="https://promisesaplus.com/#point-15" class="anchor"></a>must not transition to any other state.</li>
+      <li id="point-16"><a href="https://promisesaplus.com/#point-16" class="anchor"></a>must have a value, which must not change.</li>
+    </ol>
+  </li>
+  <li id="point-17"><a href="https://promisesaplus.com/#point-17" class="anchor"></a>When rejected, a promise:
+    <ol>
+      <li id="point-18"><a href="https://promisesaplus.com/#point-18" class="anchor"></a>must not transition to any other state.</li>
+      <li id="point-19"><a href="https://promisesaplus.com/#point-19" class="anchor"></a>must have a reason, which must not change.</li>
+    </ol>
+  </li>
+</ol>
+
+<p id="point-20"><a href="https://promisesaplus.com/#point-20" class="anchor"></a>Here, “must not change” means immutable identity (i.e. <code class="highlighter-rouge">===</code>), but does not imply deep immutability.</p>
+
+<h3 id="the-then-method"><a href="https://promisesaplus.com/#the-then-method" class="anchor"></a>The <code class="highlighter-rouge">then</code> Method</h3>
+
+<p id="point-21"><a href="https://promisesaplus.com/#point-21" class="anchor"></a>A promise must provide a <code class="highlighter-rouge">then</code> method to access its current or eventual value or reason.</p>
+
+<p id="point-22"><a href="https://promisesaplus.com/#point-22" class="anchor"></a>A promise’s <code class="highlighter-rouge">then</code> method accepts two arguments:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">onFulfilled</span><span class="p">,</span> <span class="nx">onRejected</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ol>
+  <li id="point-23"><a href="https://promisesaplus.com/#point-23" class="anchor"></a>Both <code class="highlighter-rouge">onFulfilled</code> and <code class="highlighter-rouge">onRejected</code> are optional arguments:
+    <ol>
+      <li id="point-24"><a href="https://promisesaplus.com/#point-24" class="anchor"></a>If <code class="highlighter-rouge">onFulfilled</code> is not a function, it must be ignored.</li>
+      <li id="point-25"><a href="https://promisesaplus.com/#point-25" class="anchor"></a>If <code class="highlighter-rouge">onRejected</code> is not a function, it must be ignored.</li>
+    </ol>
+  </li>
+  <li id="point-26"><a href="https://promisesaplus.com/#point-26" class="anchor"></a>If <code class="highlighter-rouge">onFulfilled</code> is a function:
+    <ol>
+      <li id="point-27"><a href="https://promisesaplus.com/#point-27" class="anchor"></a>it must be called after <code class="highlighter-rouge">promise</code> is fulfilled, with <code class="highlighter-rouge">promise</code>’s value as its first argument.</li>
+      <li id="point-28"><a href="https://promisesaplus.com/#point-28" class="anchor"></a>it must not be called before <code class="highlighter-rouge">promise</code> is fulfilled.</li>
+      <li id="point-29"><a href="https://promisesaplus.com/#point-29" class="anchor"></a>it must not be called more than once.</li>
+    </ol>
+  </li>
+  <li id="point-30"><a href="https://promisesaplus.com/#point-30" class="anchor"></a>If <code class="highlighter-rouge">onRejected</code> is a function,
+    <ol>
+      <li id="point-31"><a href="https://promisesaplus.com/#point-31" class="anchor"></a>it must be called after <code class="highlighter-rouge">promise</code> is rejected, with <code class="highlighter-rouge">promise</code>’s reason as its first argument.</li>
+      <li id="point-32"><a href="https://promisesaplus.com/#point-32" class="anchor"></a>it must not be called before <code class="highlighter-rouge">promise</code> is rejected.</li>
+      <li id="point-33"><a href="https://promisesaplus.com/#point-33" class="anchor"></a>it must not be called more than once.</li>
+    </ol>
+  </li>
+  <li id="point-34"><a href="https://promisesaplus.com/#point-34" class="anchor"></a><code class="highlighter-rouge">onFulfilled</code> or <code class="highlighter-rouge">onRejected</code> must not be called until the <a href="https://es5.github.io/#x10.3">execution context</a> stack contains only platform code. [<a href="https://promisesaplus.com/#notes">3.1</a>].</li>
+  <li id="point-35"><a href="https://promisesaplus.com/#point-35" class="anchor"></a><code class="highlighter-rouge">onFulfilled</code> and <code class="highlighter-rouge">onRejected</code> must be called as functions (i.e. with no <code class="highlighter-rouge">this</code> value). [<a href="https://promisesaplus.com/#notes">3.2</a>]</li>
+  <li id="point-36"><a href="https://promisesaplus.com/#point-36" class="anchor"></a><code class="highlighter-rouge">then</code> may be called multiple times on the same promise.
+    <ol>
+      <li id="point-37"><a href="https://promisesaplus.com/#point-37" class="anchor"></a>If/when <code class="highlighter-rouge">promise</code> is fulfilled, all respective <code class="highlighter-rouge">onFulfilled</code> callbacks must execute in the order of their originating calls to <code class="highlighter-rouge">then</code>.</li>
+      <li id="point-38"><a href="https://promisesaplus.com/#point-38" class="anchor"></a>If/when <code class="highlighter-rouge">promise</code> is rejected, all respective <code class="highlighter-rouge">onRejected</code> callbacks must execute in the order of their originating calls to <code class="highlighter-rouge">then</code>.</li>
+    </ol>
+  </li>
+  <li id="point-39"><a href="https://promisesaplus.com/#point-39" class="anchor"></a>
+    <p id="point-40"><a href="https://promisesaplus.com/#point-40" class="anchor"></a><code class="highlighter-rouge">then</code> must return a promise [<a href="https://promisesaplus.com/#notes">3.3</a>].</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">promise2</span> <span class="o">=</span> <span class="nx">promise1</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">onFulfilled</span><span class="p">,</span> <span class="nx">onRejected</span><span class="p">);</span>
+</code></pre></div>    </div>
+
+    <ol>
+      <li id="point-41"><a href="https://promisesaplus.com/#point-41" class="anchor"></a>If either <code class="highlighter-rouge">onFulfilled</code> or <code class="highlighter-rouge">onRejected</code> returns a value <code class="highlighter-rouge">x</code>, run the Promise Resolution Procedure <code class="highlighter-rouge">[[Resolve]](promise2, x)</code>.</li>
+      <li id="point-42"><a href="https://promisesaplus.com/#point-42" class="anchor"></a>If either <code class="highlighter-rouge">onFulfilled</code> or <code class="highlighter-rouge">onRejected</code> throws an exception <code class="highlighter-rouge">e</code>, <code class="highlighter-rouge">promise2</code> must be rejected with <code class="highlighter-rouge">e</code> as the reason.</li>
+      <li id="point-43"><a href="https://promisesaplus.com/#point-43" class="anchor"></a>If <code class="highlighter-rouge">onFulfilled</code> is not a function and <code class="highlighter-rouge">promise1</code> is fulfilled, <code class="highlighter-rouge">promise2</code> must be fulfilled with the same value as <code class="highlighter-rouge">promise1</code>.</li>
+      <li id="point-44"><a href="https://promisesaplus.com/#point-44" class="anchor"></a>If <code class="highlighter-rouge">onRejected</code> is not a function and <code class="highlighter-rouge">promise1</code> is rejected, <code class="highlighter-rouge">promise2</code> must be rejected with the same reason as <code class="highlighter-rouge">promise1</code>.</li>
+    </ol>
+  </li>
+</ol>
+
+<h3 id="the-promise-resolution-procedure"><a href="https://promisesaplus.com/#the-promise-resolution-procedure" class="anchor"></a>The Promise Resolution Procedure</h3>
+
+<p id="point-45"><a href="https://promisesaplus.com/#point-45" class="anchor"></a>The <strong>promise resolution procedure</strong> is an abstract operation taking as input a promise and a value, which we denote as <code class="highlighter-rouge">[[Resolve]](promise, x)</code>. If <code class="highlighter-rouge">x</code> is a thenable, it attempts to make <code class="highlighter-rouge">promise</code> adopt the state of <code class="highlighter-rouge">x</code>, under the assumption that <code class="highlighter-rouge">x</code> behaves at least somewhat like a promise. Otherwise, it fulfills <code class="highlighter-rouge">promise</code> with the value <code class="highlighter-rouge">x</code>.</p>
+
+<p id="point-46"><a href="https://promisesaplus.com/#point-46" class="anchor"></a>This treatment of thenables allows promise implementations to interoperate, as long as they expose a Promises/A+-compliant <code class="highlighter-rouge">then</code> method. It also allows Promises/A+ implementations to “assimilate” nonconformant implementations with reasonable <code class="highlighter-rouge">then</code> methods.</p>
+
+<p id="point-47"><a href="https://promisesaplus.com/#point-47" class="anchor"></a>To run <code class="highlighter-rouge">[[Resolve]](promise, x)</code>, perform the following steps:</p>
+
+<ol>
+  <li id="point-48"><a href="https://promisesaplus.com/#point-48" class="anchor"></a>If <code class="highlighter-rouge">promise</code> and <code class="highlighter-rouge">x</code> refer to the same object, reject <code class="highlighter-rouge">promise</code> with a <code class="highlighter-rouge">TypeError</code> as the reason.</li>
+  <li id="point-49"><a href="https://promisesaplus.com/#point-49" class="anchor"></a>If <code class="highlighter-rouge">x</code> is a promise, adopt its state [<a href="https://promisesaplus.com/#notes">3.4</a>]:
+    <ol>
+      <li id="point-50"><a href="https://promisesaplus.com/#point-50" class="anchor"></a>If <code class="highlighter-rouge">x</code> is pending, <code class="highlighter-rouge">promise</code> must remain pending until <code class="highlighter-rouge">x</code> is fulfilled or rejected.</li>
+      <li id="point-51"><a href="https://promisesaplus.com/#point-51" class="anchor"></a>If/when <code class="highlighter-rouge">x</code> is fulfilled, fulfill <code class="highlighter-rouge">promise</code> with the same value.</li>
+      <li id="point-52"><a href="https://promisesaplus.com/#point-52" class="anchor"></a>If/when <code class="highlighter-rouge">x</code> is rejected, reject <code class="highlighter-rouge">promise</code> with the same reason.</li>
+    </ol>
+  </li>
+  <li id="point-53"><a href="https://promisesaplus.com/#point-53" class="anchor"></a>Otherwise, if <code class="highlighter-rouge">x</code> is an object or function,
+    <ol>
+      <li id="point-54"><a href="https://promisesaplus.com/#point-54" class="anchor"></a>Let <code class="highlighter-rouge">then</code> be <code class="highlighter-rouge">x.then</code>. [<a href="https://promisesaplus.com/#notes">3.5</a>]</li>
+      <li id="point-55"><a href="https://promisesaplus.com/#point-55" class="anchor"></a>If retrieving the property <code class="highlighter-rouge">x.then</code> results in a thrown exception <code class="highlighter-rouge">e</code>, reject <code class="highlighter-rouge">promise</code> with <code class="highlighter-rouge">e</code> as the reason.</li>
+      <li id="point-56"><a href="https://promisesaplus.com/#point-56" class="anchor"></a>If <code class="highlighter-rouge">then</code> is a function, call it with <code class="highlighter-rouge">x</code> as <code class="highlighter-rouge">this</code>, first argument <code class="highlighter-rouge">resolvePromise</code>, and second argument <code class="highlighter-rouge">rejectPromise</code>, where:
+        <ol>
+          <li id="point-57"><a href="https://promisesaplus.com/#point-57" class="anchor"></a>If/when <code class="highlighter-rouge">resolvePromise</code> is called with a value <code class="highlighter-rouge">y</code>, run <code class="highlighter-rouge">[[Resolve]](promise, y)</code>.</li>
+          <li id="point-58"><a href="https://promisesaplus.com/#point-58" class="anchor"></a>If/when <code class="highlighter-rouge">rejectPromise</code> is called with a reason <code class="highlighter-rouge">r</code>, reject <code class="highlighter-rouge">promise</code> with <code class="highlighter-rouge">r</code>.</li>
+          <li id="point-59"><a href="https://promisesaplus.com/#point-59" class="anchor"></a>If both <code class="highlighter-rouge">resolvePromise</code> and <code class="highlighter-rouge">rejectPromise</code> are called, or multiple calls to the same argument are made, the first call takes precedence, and any further calls are ignored.</li>
+          <li id="point-60"><a href="https://promisesaplus.com/#point-60" class="anchor"></a>If calling <code class="highlighter-rouge">then</code> throws an exception <code class="highlighter-rouge">e</code>,
+            <ol>
+              <li id="point-61"><a href="https://promisesaplus.com/#point-61" class="anchor"></a>If <code class="highlighter-rouge">resolvePromise</code> or <code class="highlighter-rouge">rejectPromise</code> have been called, ignore it.</li>
+              <li id="point-62"><a href="https://promisesaplus.com/#point-62" class="anchor"></a>Otherwise, reject <code class="highlighter-rouge">promise</code> with <code class="highlighter-rouge">e</code> as the reason.</li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+      <li id="point-63"><a href="https://promisesaplus.com/#point-63" class="anchor"></a>If <code class="highlighter-rouge">then</code> is not a function, fulfill <code class="highlighter-rouge">promise</code> with <code class="highlighter-rouge">x</code>.</li>
+    </ol>
+  </li>
+  <li id="point-64"><a href="https://promisesaplus.com/#point-64" class="anchor"></a>If <code class="highlighter-rouge">x</code> is not an object or function, fulfill <code class="highlighter-rouge">promise</code> with <code class="highlighter-rouge">x</code>.</li>
+</ol>
+
+<p id="point-65"><a href="https://promisesaplus.com/#point-65" class="anchor"></a>If a promise is resolved with a thenable that participates in a circular thenable chain, such that the recursive nature of <code class="highlighter-rouge">[[Resolve]](promise, thenable)</code> eventually causes <code class="highlighter-rouge">[[Resolve]](promise, thenable)</code> to be called again, following the above algorithm will lead to infinite recursion. Implementations are encouraged, but not required, to detect such recursion and reject <code class="highlighter-rouge">promise</code> with an informative <code class="highlighter-rouge">TypeError</code> as the reason. [<a href="https://promisesaplus.com/#notes">3.6</a>]</p>
+
+<h2 id="notes"><a href="https://promisesaplus.com/#notes" class="anchor"></a>Notes</h2>
+
+<ol>
+  <li id="point-66"><a href="https://promisesaplus.com/#point-66" class="anchor"></a>
+    <p id="point-67"><a href="https://promisesaplus.com/#point-67" class="anchor"></a>Here “platform code” means engine, environment, and promise implementation code. In practice, this requirement ensures that <code class="highlighter-rouge">onFulfilled</code> and <code class="highlighter-rouge">onRejected</code> execute asynchronously, after the event loop turn in which <code class="highlighter-rouge">then</code> is called, and with a fresh stack. This can be implemented with either a “macro-task” mechanism such as <a href="https://html.spec.whatwg.org/multipage/webappapis.html#timers"><code class="highlighter-rouge">setTimeout</code></a> or <a href="https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/setImmediate/Overview.html#processingmodel"><code class="highlighter-rouge">setImmediate</code></a>, or with a “micro-task” mechanism such as <a href="https://dom.spec.whatwg.org/#interface-mutationobserver"><code class="highlighter-rouge">MutationObserver</code></a> or <a href="http://nodejs.org/api/process.html#process_process_nexttick_callback"><code class="highlighter-rouge">process.nextTick</code></a>. Since the promise implementation is considered platform code, it may itself contain a task-scheduling queue or “trampoline” in which the handlers are called.</p>
+  </li>
+  <li id="point-68"><a href="https://promisesaplus.com/#point-68" class="anchor"></a>
+    <p id="point-69"><a href="https://promisesaplus.com/#point-69" class="anchor"></a>That is, in strict mode <code class="highlighter-rouge">this</code> will be <code class="highlighter-rouge">undefined</code> inside of them; in sloppy mode, it will be the global object.</p>
+  </li>
+  <li id="point-70"><a href="https://promisesaplus.com/#point-70" class="anchor"></a>
+    <p id="point-71"><a href="https://promisesaplus.com/#point-71" class="anchor"></a>Implementations may allow <code class="highlighter-rouge">promise2 === promise1</code>, provided the implementation meets all requirements. Each implementation should document whether it can produce <code class="highlighter-rouge">promise2 === promise1</code> and under what conditions.</p>
+  </li>
+  <li id="point-72"><a href="https://promisesaplus.com/#point-72" class="anchor"></a>
+    <p id="point-73"><a href="https://promisesaplus.com/#point-73" class="anchor"></a>Generally, it will only be known that <code class="highlighter-rouge">x</code> is a true promise if it comes from the current implementation. This clause allows the use of implementation-specific means to adopt the state of known-conformant promises.</p>
+  </li>
+  <li id="point-74"><a href="https://promisesaplus.com/#point-74" class="anchor"></a>
+    <p id="point-75"><a href="https://promisesaplus.com/#point-75" class="anchor"></a>This procedure of first storing a reference to <code class="highlighter-rouge">x.then</code>, then testing that reference, and then calling that reference, avoids multiple accesses to the <code class="highlighter-rouge">x.then</code> property. Such precautions are important for ensuring consistency in the face of an accessor property, whose value could change between retrievals.</p>
+  </li>
+  <li id="point-76"><a href="https://promisesaplus.com/#point-76" class="anchor"></a>
+    <p id="point-77"><a href="https://promisesaplus.com/#point-77" class="anchor"></a>Implementations should <em>not</em> set arbitrary limits on the depth of thenable chains, and assume that beyond that arbitrary limit the recursion will be infinite. Only true cycles should lead to a <code class="highlighter-rouge">TypeError</code>; if an infinite chain of distinct thenables is encountered, recursing forever is the correct behavior.</p>
+  </li>
+</ol>
+
+<hr>
+
+<p xmlns:dct="http://purl.org/dc/terms/" xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#" id="point-78"><a href="https://promisesaplus.com/#point-78" class="anchor"></a>
+  <a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+    <img src="./Promises_A+_files/88x31.png" style="border-style: none;" alt="CC0">
+  </a>
+  <br>
+  To the extent possible under law,
+  <a rel="dct:publisher" href="https://github.com/promises-aplus">
+    <span property="dct:title">the Promises/A+ organization</span></a>
+  has waived all copyright and related or neighboring rights to
+  <span property="dct:title">Promises/A+ Promise Specification</span>.
+This work is published from:
+<span property="vcard:Country" datatype="dct:ISO3166" content="US" about="https://github.com/promises-aplus">
+  United States</span>.
+</p>
+
+
+    <footer>
+      <a href="https://promisesaplus.com/">Specification</a>
+      <a href="https://promisesaplus.com/changelog">Changelog</a>
+      <a href="https://promisesaplus.com/credits">Credits</a>
+      <a href="https://promisesaplus.com/differences-from-promises-a">Differences from Promises/A</a>
+      <a href="https://promisesaplus.com/implementations">Implementations</a>
+      <a href="https://github.com/promises-aplus/promises-tests">Compliance Tests</a>
+      <a href="https://github.com/promises-aplus">GitHub organization</a>
+    </footer>
+    <script src="./Promises_A+_files/linker.js"></script>
+  
+
+</body></html>
