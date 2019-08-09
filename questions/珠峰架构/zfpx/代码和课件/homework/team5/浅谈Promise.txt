@@ -1,1 +1,0 @@
-浅谈Promise实现（知乎）：https://zhuanlan.zhihu.com/p/34673704
