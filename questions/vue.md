@@ -1,5 +1,8 @@
 # Vue 面试题
 
+感谢[浪子神剑](https://juejin.im/user/5b5ff865f265da0f6b771700)-[github](https://github.com/haizlin/fe-interview)整理得文档。本文便于自己学习所用，所有连接均指向[原文仓库地址](https://github.com/haizlin/fe-interview/issues),本文 markdown 文件可到
+[本人仓库](https://github.com/chimyking/frontend-interview/blob/master/questions/vue.md)获取
+
 ## vue
 
 1. [你知道 vue 的模板语法用的是哪个 web 模板引擎的吗？说说你对这模板引擎的理解](https://github.com/haizlin/fe-interview/issues/561)
@@ -81,7 +84,6 @@
 1. [vue 如何优化首页的加载速度？](https://github.com/haizlin/fe-interview/issues/424)
 1. [vue 打包成最终的文件有哪些？](https://github.com/haizlin/fe-interview/issues/423)
 1. [ajax、fetch、axios 这三都有什么区别？](https://github.com/haizlin/fe-interview/issues/422)
-
 1. [vue 能监听到数组变化的方法有哪些？为什么这些方法能监听到呢？](https://github.com/haizlin/fe-interview/issues/421)
 1. [vue 中是如何使用 event 对象的？](https://github.com/haizlin/fe-interview/issues/420)
 1. [vue 首页白屏是什么问题引起的？如何解决呢？](https://github.com/haizlin/fe-interview/issues/366)
@@ -191,29 +193,17 @@
 ## vue-cli
 
 1. [vue-cli 提供了的哪几种脚手架模板？](https://github.com/haizlin/fe-interview/issues/543)
-
 1. [vue-cli 工程中常用的 npm 命令有哪些？](https://github.com/haizlin/fe-interview/issues/542)
-
 1. [在使用 vue-cli 开发 vue 项目时，自动刷新页面的原理你了解吗？](https://github.com/haizlin/fe-interview/issues/541)
-
 1. [vue-cli3 插件有写过吗？怎么写一个代码生成插件？](https://github.com/haizlin/fe-interview/issues/540)
-
 1. [vue-cli 生成的项目可以使用 es6、es7 的语法吗？为什么？](https://github.com/haizlin/fe-interview/issues/488)
-
 1. [vue-cli 怎么解决跨域的问题？](https://github.com/haizlin/fe-interview/issues/487)
-
 1. [vue-cli 中你经常的加载器有哪些？](https://github.com/haizlin/fe-interview/issues/486)
-
 1. [你知道什么是脚手架吗？](https://github.com/haizlin/fe-interview/issues/485)
-
 1. [说下你了解的 vue-cli 原理？你可以自己实现个类 vue-cli 吗？](https://github.com/haizlin/fe-interview/issues/484)
-
 1. [怎么使用 vue-cli3 创建一个项目？](https://github.com/haizlin/fe-interview/issues/483)
-
 1. [vue-cli3 你有使用过吗？它和 2.x 版本有什么区别？](https://github.com/haizlin/fe-interview/issues/482)
-
 1. [vue-cli 默认是单页面的，那要弄成多页面该怎么办呢？](https://github.com/haizlin/fe-interview/issues/360)
-
 1. [不用 vue-cli，你自己有搭建过 vue 的开发环境吗？流程是什么？](https://github.com/haizlin/fe-interview/issues/351)
 
 ## vue-router
