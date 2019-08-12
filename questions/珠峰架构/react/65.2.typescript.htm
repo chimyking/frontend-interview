@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <!-- saved from url=(0066)http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>珠峰架构师成长计划</title>
-    <link rel="stylesheet" type="text/css" href="./65.2.typescript_files/main.css">
-<style type="text/css" abt="234"></style><script>//console.log('a')
-</script><script>//remove 17173 video ad
-doAdblock();
-function doAdblock(){
-    (function() {
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>珠峰架构师成长计划</title>
+  <link rel="stylesheet" type="text/css" href="./65.2.typescript_files/main.css">
+  <style type="text/css" abt="234"></style>
+  <script>
+    //console.log('a')
+  </script>
+  <script>
+    //remove 17173 video ad
+    doAdblock();
+
+    function doAdblock() {
+      (function () {
         function A() {}
         A.prototype = {
-            rules: {
-                '17173_in':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
-                },
-                '17173_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
-                },
-                '17173_live':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
-                },
-                '17173_live_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
-                }
+          rules: {
+            '17173_in': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+              'replace': "http://swf.adtchrome.com/17173_in_20150522.swf"
             },
-            _done: null,
-            get done() {
-                if(!this._done) {
-                    this._done = new Array();
-                }
-                return this._done;
+            '17173_out': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+              'replace': "http://swf.adtchrome.com/17173_out_20150522.swf"
             },
-            addAnimations: function() {
-                var style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = 'object,embed{\
+            '17173_live': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+              'replace': "http://swf.adtchrome.com/17173_stream_20150522.swf"
+            },
+            '17173_live_out': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+              'replace': "http://swf.adtchrome.com/17173.out.Live.swf"
+            }
+          },
+          _done: null,
+          get done() {
+            if (!this._done) {
+              this._done = new Array();
+            }
+            return this._done;
+          },
+          addAnimations: function () {
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = 'object,embed{\
                 -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
                 -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
                 -o-animation-duration:.001s;-o-animation-name:playerInserted;\
@@ -49,180 +57,404 @@ function doAdblock(){
                 @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
-                document.getElementsByTagName('head')[0].appendChild(style);
-            },
-            animationsHandler: function(e) {
-                if(e.animationName === 'playerInserted') {
-                    this.replace(e.target);
-                }
-            },
-            replace: function(elem) {
-                if(this.done.indexOf(elem) != -1) return;
-                this.done.push(elem);
-                var player = elem.data || elem.src;
-                if(!player) return;
-                var i, find, replace = false;
-                for(i in this.rules) {
-                    find = this.rules[i]['find'];
-                    if(find.test(player)) {
-                        replace = this.rules[i]['replace'];
-                        if('function' === typeof this.rules[i]['preHandle']) {
-                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
-                        }else{
-                            this.reallyReplace.bind(this, elem, find, replace)();
-                        }
-                        break;
-                    }
-                }
-            },
-            reallyReplace: function(elem, find, replace) {
-                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
-                var b = elem.querySelector("param[name='movie']");
-                this.reloadPlugin(elem);
-            },
-            reloadPlugin: function(elem) {
-                var nextSibling = elem.nextSibling;
-                var parentNode = elem.parentNode;
-                parentNode.removeChild(elem);
-                var newElem = elem.cloneNode(true);
-                this.done.push(newElem);
-                if(nextSibling) {
-                    parentNode.insertBefore(newElem, nextSibling);
-                } else {
-                    parentNode.appendChild(newElem);
-                }
-            },
-            init: function() {
-                var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
-                document.body.addEventListener('animationstart', handler, false);
-                this.addAnimations();
+            document.getElementsByTagName('head')[0].appendChild(style);
+          },
+          animationsHandler: function (e) {
+            if (e.animationName === 'playerInserted') {
+              this.replace(e.target);
             }
+          },
+          replace: function (elem) {
+            if (this.done.indexOf(elem) != -1) return;
+            this.done.push(elem);
+            var player = elem.data || elem.src;
+            if (!player) return;
+            var i, find, replace = false;
+            for (i in this.rules) {
+              find = this.rules[i]['find'];
+              if (find.test(player)) {
+                replace = this.rules[i]['replace'];
+                if ('function' === typeof this.rules[i]['preHandle']) {
+                  this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                } else {
+                  this.reallyReplace.bind(this, elem, find, replace)();
+                }
+                break;
+              }
+            }
+          },
+          reallyReplace: function (elem, find, replace) {
+            elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src
+              .replace(find, replace)) && (elem.style.display = 'block'));
+            var b = elem.querySelector("param[name='movie']");
+            this.reloadPlugin(elem);
+          },
+          reloadPlugin: function (elem) {
+            var nextSibling = elem.nextSibling;
+            var parentNode = elem.parentNode;
+            parentNode.removeChild(elem);
+            var newElem = elem.cloneNode(true);
+            this.done.push(newElem);
+            if (nextSibling) {
+              parentNode.insertBefore(newElem, nextSibling);
+            } else {
+              parentNode.appendChild(newElem);
+            }
+          },
+          init: function () {
+            var handler = this.animationsHandler.bind(this);
+            document.body.addEventListener('webkitAnimationStart', handler, false);
+            document.body.addEventListener('msAnimationStart', handler, false);
+            document.body.addEventListener('oAnimationStart', handler, false);
+            document.body.addEventListener('animationstart', handler, false);
+            this.addAnimations();
+          }
         };
         new A().init();
-    })();
-}
-//remove baidu search ad
-if(document.URL.indexOf('www.baidu.com') >= 0){
-    if(document && document.getElementsByTagName && document.getElementById && document.body){
-        var aa = function(){
-            var all = document.body.querySelectorAll("#content_left div,#content_left table");
-            for(var i = 0; i < all.length; i++){
-                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+      })();
+    }
+    //remove baidu search ad
+    if (document.URL.indexOf('www.baidu.com') >= 0) {
+      if (document && document.getElementsByTagName && document.getElementById && document.body) {
+        var aa = function () {
+          var all = document.body.querySelectorAll("#content_left div,#content_left table");
+          for (var i = 0; i < all.length; i++) {
+            if (/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))) {
+              all[i].style.display = "none";
+              all[i].style.visibility = 'hidden';
             }
-            all = document.body.querySelectorAll('.result.c-container[id="1"]');
-            //if(all.length == 1) return;
-            for(var i = 0; i < all.length; i++){
-                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
-                    all[i].style.display= "none";all[i].style.visibility='hidden';
-                }
+          }
+          all = document.body.querySelectorAll('.result.c-container[id="1"]');
+          //if(all.length == 1) return;
+          for (var i = 0; i < all.length; i++) {
+            if (all[i].innerHTML && all[i].innerHTML.indexOf('广告') > -1) {
+              all[i].style.display = "none";
+              all[i].style.visibility = 'hidden';
             }
+          }
         }
         aa();
-        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
-    };
-}
-//remove sohu video ad
-if (document.URL.indexOf("tv.sohu.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//remove 56.com video ad
-if (document.URL.indexOf("56.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//fore iqiyi enable html5 player function
-if (document.URL.indexOf("iqiyi.com") >= 0){
-    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
-        document.cookie='player_forcedType=h5_VOD'
-        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
-            console.log('no reload')
-        }else{
-            location.reload()
-            localStorage.reloadTime = Date.now();
-        }
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified', aa)
+      };
     }
-}
-</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+    //remove sohu video ad
+    if (document.URL.indexOf("tv.sohu.com") >= 0) {
+      if (document.cookie.indexOf("fee_status=true") == -1) {
+        document.cookie = 'fee_status=true'
+      };
+    }
+    //remove 56.com video ad
+    if (document.URL.indexOf("56.com") >= 0) {
+      if (document.cookie.indexOf("fee_status=true") == -1) {
+        document.cookie = 'fee_status=true'
+      };
+    }
+    //fore iqiyi enable html5 player function
+    if (document.URL.indexOf("iqiyi.com") >= 0) {
+      if (document.cookie.indexOf("player_forcedType=h5_VOD") == -1) {
+        document.cookie = 'player_forcedType=h5_VOD'
+        if (localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime) < 60000) {
+          console.log('no reload')
+        } else {
+          location.reload()
+          localStorage.reloadTime = Date.now();
+        }
+      }
+    }
+  </script>
+  <style type="text/css">
+    object,
+    embed {
+      -webkit-animation-duration: .001s;
+      -webkit-animation-name: playerInserted;
+      -ms-animation-duration: .001s;
+      -ms-animation-name: playerInserted;
+      -o-animation-duration: .001s;
+      -o-animation-name: playerInserted;
+      animation-duration: .001s;
+      animation-name: playerInserted;
+    }
+
+    @-webkit-keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @-ms-keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @-o-keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
 <body>
-<div class="nav" style="height: 81px;">
-    <div class="logo">
-        
-            珠峰架构师成长计划
-        
-    </div>
-<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+  
 
-
-<div class="warpper">
+  <div class="warpper">
 
     <div class="page-toc">
-        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t01.%20TS%E4%B8%AD%E7%9A%84%E5%B7%A5%E7%A8%8B%E5%8C%96">1. TS中的工程化</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t12.%20%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0">2. 编译参数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t23.%20%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5">3. 代码检查</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t33.1%20%E6%A8%A1%E5%9D%97%E5%AE%89%E8%A3%85">3.1 模块安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t43.2%20eslintrc%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">3.2 eslintrc配置文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t53.3%20npm%E5%91%BD%E4%BB%A4">3.3 npm命令</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t63.4%20%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E4%BF%AE%E5%A4%8D">3.4 配置自动修复</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t74.%20Git%20Hooks%20%E6%A3%80%E6%9F%A5">4. Git Hooks 检查</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t84.1%20pre-commit">4.1 pre-commit</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t94.2%20%E5%AE%89%E8%A3%85pre-commit">4.2 安装pre-commit</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t104.3%20%E9%85%8D%E7%BD%AE%E8%84%9A%E6%9C%AC">4.3 配置脚本</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t115.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">5. 单元测试</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t125.1%20%E5%AE%89%E8%A3%85">5.1 安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t135.2%20sum.ts">5.2 sum.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t145.3%20sum.test.ts">5.3 sum.test.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t155.4%20%E6%96%AD%E8%A8%80%E5%BA%93">5.4 断言库</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t165.4.1%20assert">5.4.1 assert</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t175.4.2%20chai">5.4.2 chai</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t185.5%20%E6%8C%87%E5%AE%9A%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6">5.5 指定测试脚本文件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t195.6%20tsconfig.json">5.6 tsconfig.json</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t205.7%20package.json">5.7 package.json</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t215.8%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6mocha.opts">5.8 配置文件mocha.opts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t225.9%20%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8">5.9 方法调用</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t235.9.1%20%E8%A6%81%E6%B5%8B%E8%AF%95%E7%9A%84%E7%B1%BB">5.9.1 要测试的类</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t245.9.2%20spy">5.9.2 spy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t255.9.3%20stub">5.9.3 stub</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t265.9.4%20mock">5.9.4 mock</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t276.%20%E4%B8%BAJS%E6%B7%BB%E5%8A%A0TS%E6%94%AF%E6%8C%81">6. 为JS添加TS支持</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t286.1%20sum.js">6.1 sum.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t296.3%20sum.test.ts">6.3 sum.test.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t306.3%20tsconfig.json">6.3 tsconfig.json</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t317.%20%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90">7. 持续集成</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t327.1%20%E7%99%BB%E5%BD%95%E5%B9%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE">7.1 登录并创建项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t337.2%20.travis.yml">7.2 .travis.yml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t347.3%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B">7.3 运行流程</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t357.3.1%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B">7.3.1 运行流程</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t367.3.2%20install">7.3.2 install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t377.3.3%20script">7.3.3 script</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t387.3.4%20%E9%92%A9%E5%AD%90%E6%96%B9%E6%B3%95">7.3.4 钩子方法</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t397.4%20%E5%AE%9E%E6%88%98">7.4 实战</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t407.4.1%20%E5%AE%89%E8%A3%85hexo">7.4.1 安装hexo</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t417.4.2%20%E7%94%9F%E6%88%90%E9%A1%B9%E7%9B%AE">7.4.2 生成项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t427.4.3%20%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE">7.4.3 启动项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t437.4.4%20%E5%B8%83%E7%BD%B2%E9%A1%B9%E7%9B%AE">7.4.4 布署项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t447.4.5%20%E5%90%8C%E6%AD%A5%E4%BB%93%E5%BA%93">7.4.5 同步仓库</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t457.4.6%20%E8%AE%BE%E7%BD%AE%E4%BB%93%E5%BA%93%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">7.4.6 设置仓库环境变量</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t467.4.7%20Github%E7%94%9F%E6%88%90%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C%20(%E5%8D%B3%E6%B7%BB%E5%8A%A0%E6%8E%88%E6%9D%83)">7.4.7 Github生成访问令牌 (即添加授权)</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t477.4.8%20.travis.yml">7.4.8 .travis.yml</a></li></ul></li></ul></li></ul>
+      <ul>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t01.%20TS%E4%B8%AD%E7%9A%84%E5%B7%A5%E7%A8%8B%E5%8C%96">1.
+            TS中的工程化</a></li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t12.%20%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0">2.
+            编译参数</a></li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t23.%20%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5">3.
+            代码检查</a>
+          <ul>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t33.1%20%E6%A8%A1%E5%9D%97%E5%AE%89%E8%A3%85">3.1
+                模块安装</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t43.2%20eslintrc%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">3.2
+                eslintrc配置文件</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t53.3%20npm%E5%91%BD%E4%BB%A4">3.3
+                npm命令</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t63.4%20%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E4%BF%AE%E5%A4%8D">3.4
+                配置自动修复</a></li>
+          </ul>
+        </li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t74.%20Git%20Hooks%20%E6%A3%80%E6%9F%A5">4.
+            Git Hooks 检查</a>
+          <ul>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t84.1%20pre-commit">4.1
+                pre-commit</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t94.2%20%E5%AE%89%E8%A3%85pre-commit">4.2
+                安装pre-commit</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t104.3%20%E9%85%8D%E7%BD%AE%E8%84%9A%E6%9C%AC">4.3
+                配置脚本</a></li>
+          </ul>
+        </li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t115.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">5.
+            单元测试</a>
+          <ul>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t125.1%20%E5%AE%89%E8%A3%85">5.1
+                安装</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t135.2%20sum.ts">5.2
+                sum.ts</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t145.3%20sum.test.ts">5.3
+                sum.test.ts</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t155.4%20%E6%96%AD%E8%A8%80%E5%BA%93">5.4
+                断言库</a>
+              <ul>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t165.4.1%20assert">5.4.1
+                    assert</a></li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t175.4.2%20chai">5.4.2
+                    chai</a></li>
+              </ul>
+            </li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t185.5%20%E6%8C%87%E5%AE%9A%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6">5.5
+                指定测试脚本文件</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t195.6%20tsconfig.json">5.6
+                tsconfig.json</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t205.7%20package.json">5.7
+                package.json</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t215.8%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6mocha.opts">5.8
+                配置文件mocha.opts</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t225.9%20%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8">5.9
+                方法调用</a>
+              <ul>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t235.9.1%20%E8%A6%81%E6%B5%8B%E8%AF%95%E7%9A%84%E7%B1%BB">5.9.1
+                    要测试的类</a></li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t245.9.2%20spy">5.9.2
+                    spy</a></li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t255.9.3%20stub">5.9.3
+                    stub</a></li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t265.9.4%20mock">5.9.4
+                    mock</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t276.%20%E4%B8%BAJS%E6%B7%BB%E5%8A%A0TS%E6%94%AF%E6%8C%81">6.
+            为JS添加TS支持</a>
+          <ul>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t286.1%20sum.js">6.1
+                sum.js</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t296.3%20sum.test.ts">6.3
+                sum.test.ts</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t306.3%20tsconfig.json">6.3
+                tsconfig.json</a></li>
+          </ul>
+        </li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t317.%20%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90">7.
+            持续集成</a>
+          <ul>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t327.1%20%E7%99%BB%E5%BD%95%E5%B9%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE">7.1
+                登录并创建项目</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t337.2%20.travis.yml">7.2
+                .travis.yml</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t347.3%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B">7.3
+                运行流程</a>
+              <ul>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t357.3.1%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B">7.3.1
+                    运行流程</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t367.3.2%20install">7.3.2
+                    install</a></li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t377.3.3%20script">7.3.3
+                    script</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t387.3.4%20%E9%92%A9%E5%AD%90%E6%96%B9%E6%B3%95">7.3.4
+                    钩子方法</a></li>
+              </ul>
+            </li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t397.4%20%E5%AE%9E%E6%88%98">7.4
+                实战</a>
+              <ul>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t407.4.1%20%E5%AE%89%E8%A3%85hexo">7.4.1
+                    安装hexo</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t417.4.2%20%E7%94%9F%E6%88%90%E9%A1%B9%E7%9B%AE">7.4.2
+                    生成项目</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t427.4.3%20%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE">7.4.3
+                    启动项目</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t437.4.4%20%E5%B8%83%E7%BD%B2%E9%A1%B9%E7%9B%AE">7.4.4
+                    布署项目</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t447.4.5%20%E5%90%8C%E6%AD%A5%E4%BB%93%E5%BA%93">7.4.5
+                    同步仓库</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t457.4.6%20%E8%AE%BE%E7%BD%AE%E4%BB%93%E5%BA%93%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">7.4.6
+                    设置仓库环境变量</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t467.4.7%20Github%E7%94%9F%E6%88%90%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C%20(%E5%8D%B3%E6%B7%BB%E5%8A%A0%E6%8E%88%E6%9D%83)">7.4.7
+                    Github生成访问令牌 (即添加授权)</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t477.4.8%20.travis.yml">7.4.8
+                    .travis.yml</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
-    
+
     <div class="content markdown-body">
-        <h2 id="t01. TS中的工程化">1. TS中的工程化 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t01.%20TS%E4%B8%AD%E7%9A%84%E5%B7%A5%E7%A8%8B%E5%8C%96"> # </a></h2>
-<ul>
-<li>前端工程化就是通过流程规范化、标准化提升团队协作效率</li>
-<li>通过组件化、模块化提升代码质量</li>
-<li>使用构建工具、自动化工具提升开发效率</li>
-<li>编译 =&gt; 打包(合并) =&gt; 压缩 =&gt; 代码检查 =&gt; 测试 =&gt; 持续集成</li>
-</ul>
-<h2 id="t12. 编译参数">2. 编译参数 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t12.%20%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0"> # </a></h2>
-<ul>
-<li><a href="https://www.tslang.cn/docs/handbook/compiler-options.html">编译参数</a></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">参数</th>
-<th style="text-align:left">功能</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">rootDir,outDir</td>
-<td style="text-align:left">配置输入输出目录</td>
-</tr>
-<tr>
-<td style="text-align:left">lib,jsx</td>
-<td style="text-align:left">添加基础库的能力</td>
-</tr>
-<tr>
-<td style="text-align:left">noImplicitAny,strict</td>
-<td style="text-align:left">更严格的模式</td>
-</tr>
-<tr>
-<td style="text-align:left">module,target,declaration,sourceMap</td>
-<td style="text-align:left">控制输出的内容</td>
-</tr>
-<tr>
-<td style="text-align:left">watch</td>
-<td style="text-align:left">观察模式</td>
-</tr>
-<tr>
-<td style="text-align:left">allowJs</td>
-<td style="text-align:left">允许编译javascript文件</td>
-</tr>
-</tbody>
-</table>
-<h2 id="t23. 代码检查">3. 代码检查 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t23.%20%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5"> # </a></h2>
-<ul>
-<li>ESLint 是一款插件化的 JavaScript 静态代码检查工具，ESLint 通过规则来描述具体的检查行为</li>
-<li><a href="https://eslint.org/">eslint</a></li>
-</ul>
-<h3 id="t33.1 模块安装">3.1 模块安装 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t33.1%20%E6%A8%A1%E5%9D%97%E5%AE%89%E8%A3%85"> # </a></h3>
-<pre><code class="lang-js">cnpm i eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
+      <h2 id="t01. TS中的工程化">1. TS中的工程化 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t01.%20TS%E4%B8%AD%E7%9A%84%E5%B7%A5%E7%A8%8B%E5%8C%96">
+          # </a></h2>
+      <ul>
+        <li>前端工程化就是通过流程规范化、标准化提升团队协作效率</li>
+        <li>通过组件化、模块化提升代码质量</li>
+        <li>使用构建工具、自动化工具提升开发效率</li>
+        <li>编译 =&gt; 打包(合并) =&gt; 压缩 =&gt; 代码检查 =&gt; 测试 =&gt; 持续集成</li>
+      </ul>
+      <h2 id="t12. 编译参数">2. 编译参数 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t12.%20%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0">
+          # </a></h2>
+      <ul>
+        <li><a href="https://www.tslang.cn/docs/handbook/compiler-options.html">编译参数</a></li>
+      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left">参数</th>
+            <th style="text-align:left">功能</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:left">rootDir,outDir</td>
+            <td style="text-align:left">配置输入输出目录</td>
+          </tr>
+          <tr>
+            <td style="text-align:left">lib,jsx</td>
+            <td style="text-align:left">添加基础库的能力</td>
+          </tr>
+          <tr>
+            <td style="text-align:left">noImplicitAny,strict</td>
+            <td style="text-align:left">更严格的模式</td>
+          </tr>
+          <tr>
+            <td style="text-align:left">module,target,declaration,sourceMap</td>
+            <td style="text-align:left">控制输出的内容</td>
+          </tr>
+          <tr>
+            <td style="text-align:left">watch</td>
+            <td style="text-align:left">观察模式</td>
+          </tr>
+          <tr>
+            <td style="text-align:left">allowJs</td>
+            <td style="text-align:left">允许编译javascript文件</td>
+          </tr>
+        </tbody>
+      </table>
+      <h2 id="t23. 代码检查">3. 代码检查 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t23.%20%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5">
+          # </a></h2>
+      <ul>
+        <li>ESLint 是一款插件化的 JavaScript 静态代码检查工具，ESLint 通过规则来描述具体的检查行为</li>
+        <li><a href="https://eslint.org/">eslint</a></li>
+      </ul>
+      <h3 id="t33.1 模块安装">3.1 模块安装 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t33.1%20%E6%A8%A1%E5%9D%97%E5%AE%89%E8%A3%85">
+          # </a></h3>
+      <pre><code class="lang-js">cnpm i eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
 </code></pre>
-<h3 id="t43.2 eslintrc配置文件">3.2 eslintrc配置文件 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t43.2%20eslintrc%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"> # </a></h3>
-<ul>
-<li><a href="https://eslint.org/docs/rules/">英文rules</a></li>
-<li><a href="https://cn.eslint.org/docs/rules/">中文rules</a></li>
-<li>需要添加<code>parserOptions</code>以支持模块化的写法</li>
-<li>.eslintrc.js</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
+      <h3 id="t43.2 eslintrc配置文件">3.2 eslintrc配置文件 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t43.2%20eslintrc%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">
+          # </a></h3>
+      <ul>
+        <li><a href="https://eslint.org/docs/rules/">英文rules</a></li>
+        <li><a href="https://cn.eslint.org/docs/rules/">中文rules</a></li>
+        <li>需要添加<code>parserOptions</code>以支持模块化的写法</li>
+        <li>.eslintrc.js</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-built_in">module</span>.exports = {
     <span class="hljs-string">"parser"</span>:<span class="hljs-string">"@typescript-eslint/parser"</span>,
     <span class="hljs-string">"plugins"</span>:[<span class="hljs-string">"@typescript-eslint"</span>],
     <span class="hljs-string">"rules"</span>:{
@@ -239,32 +471,37 @@ if (document.URL.indexOf("iqiyi.com") >= 0){
     }
 }
 </code></pre>
-<h3 id="t53.3 npm命令">3.3 npm命令 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t53.3%20npm%E5%91%BD%E4%BB%A4"> # </a></h3>
-<pre><code class="lang-json">"scripts": {
+      <h3 id="t53.3 npm命令">3.3 npm命令 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t53.3%20npm%E5%91%BD%E4%BB%A4"> #
+        </a></h3>
+      <pre><code class="lang-json">"scripts": {
     "start": "webpack",
     "build": "tsc",
     "eslint": "eslint src --ext .ts",
     "eslint:fix": "eslint src --ext .ts --fix"
   }
 </code></pre>
-<p>代码</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> name2 = <span class="hljs-string">'zhufeng'</span>;;;
+      <p>代码</p>
+      <pre><code class="lang-js"><span class="hljs-keyword">var</span> name2 = <span class="hljs-string">'zhufeng'</span>;;;
 <span class="hljs-keyword">if</span>(<span class="hljs-literal">true</span>){
     <span class="hljs-keyword">let</span> a = <span class="hljs-number">10</span>;
 }
 </code></pre>
-<p>检查结果</p>
-<pre><code class="lang-js">src\helloworld.ts
+      <p>检查结果</p>
+      <pre><code class="lang-js">src\helloworld.ts
   <span class="hljs-number">1</span>:<span class="hljs-number">1</span>   error  Unexpected <span class="hljs-keyword">var</span>, use <span class="hljs-keyword">let</span> or <span class="hljs-keyword">const</span> instead      no-<span class="hljs-keyword">var</span>
   <span class="hljs-number">1</span>:<span class="hljs-number">23</span>  error  Unnecessary semicolon                         no-extra-semi
   <span class="hljs-number">1</span>:<span class="hljs-number">24</span>  error  Unnecessary semicolon                         no-extra-semi
   <span class="hljs-number">3</span>:<span class="hljs-number">1</span>   error  Expected indentation <span class="hljs-keyword">of</span> <span class="hljs-number">2</span> spaces but found <span class="hljs-number">4</span>  @typescript-eslint/inden
 </code></pre>
-<h3 id="t63.4 配置自动修复">3.4 配置自动修复 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t63.4%20%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E4%BF%AE%E5%A4%8D"> # </a></h3>
-<ul>
-<li>安装vscode的eslint插件</li>
-<li>配置参数
-.vscode\settings.json<pre><code class="lang-js">{
+      <h3 id="t63.4 配置自动修复">3.4 配置自动修复 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t63.4%20%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E4%BF%AE%E5%A4%8D">
+          # </a></h3>
+      <ul>
+        <li>安装vscode的eslint插件</li>
+        <li>配置参数
+          .vscode\settings.json
+          <pre><code class="lang-js">{
   <span class="hljs-string">"eslint.autoFixOnSave"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-string">"eslint.validate"</span>: [
       <span class="hljs-string">"javascript"</span>,
@@ -280,30 +517,39 @@ if (document.URL.indexOf("iqiyi.com") >= 0){
   ]
 }
 </code></pre>
-<img src="./65.2.typescript_files/eslintplugin.png" alt="eslintplugin"></li>
-</ul>
-<p><img src="./65.2.typescript_files/eslint.png" alt="eslint"></p>
-<h2 id="t74. Git Hooks 检查">4. Git Hooks 检查 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t74.%20Git%20Hooks%20%E6%A3%80%E6%9F%A5"> # </a></h2>
-<ul>
-<li>Git 基本已经成为项目开发中默认的版本管理软件，在使用 Git 的项目中，我们可以为项目设置 Git Hooks 来帮我们在提交代码的各个阶段做一些代码检查等工作</li>
-<li>钩子（Hooks） 都被存储在 Git 目录下的 hooks 子目录中。 也就是绝大部分项目中的 .git/hooks 目录</li>
-<li><a href="https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E9%92%A9%E5%AD%90">钩子</a>分为两大类，客户端的和服务器端的<ul>
-<li>客户端钩子主要被提交和合并这样的操作所调用</li>
-<li>而服务器端钩子作用于接收被推送的提交这样的联网操作，这里我们主要介绍客户端钩子</li>
-</ul>
-</li>
-</ul>
-<h3 id="t84.1 pre-commit">4.1 pre-commit <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t84.1%20pre-commit"> # </a></h3>
-<ul>
-<li><code>pre-commit</code> 就是在代码提交之前做些东西，比如代码打包，代码检测，称之为钩子（hook）</li>
-<li>在commit之前执行一个函数（callback）。这个函数成功执行完之后，再继续commit，但是失败之后就阻止commit</li>
-<li>在.git-&gt;hooks-&gt;下面有个pre-commit.sample*，这个里面就是默认的函数(脚本)样本</li>
-</ul>
-<h3 id="t94.2 安装pre-commit">4.2 安装pre-commit <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t94.2%20%E5%AE%89%E8%A3%85pre-commit"> # </a></h3>
-<pre><code class="lang-js">npm install pre-commit --save-dev
+          <img src="./65.2.typescript_files/eslintplugin.png" alt="eslintplugin"></li>
+      </ul>
+      <p><img src="./65.2.typescript_files/eslint.png" alt="eslint"></p>
+      <h2 id="t74. Git Hooks 检查">4. Git Hooks 检查 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t74.%20Git%20Hooks%20%E6%A3%80%E6%9F%A5">
+          # </a></h2>
+      <ul>
+        <li>Git 基本已经成为项目开发中默认的版本管理软件，在使用 Git 的项目中，我们可以为项目设置 Git Hooks 来帮我们在提交代码的各个阶段做一些代码检查等工作</li>
+        <li>钩子（Hooks） 都被存储在 Git 目录下的 hooks 子目录中。 也就是绝大部分项目中的 .git/hooks 目录</li>
+        <li><a
+            href="https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E9%92%A9%E5%AD%90">钩子</a>分为两大类，客户端的和服务器端的
+          <ul>
+            <li>客户端钩子主要被提交和合并这样的操作所调用</li>
+            <li>而服务器端钩子作用于接收被推送的提交这样的联网操作，这里我们主要介绍客户端钩子</li>
+          </ul>
+        </li>
+      </ul>
+      <h3 id="t84.1 pre-commit">4.1 pre-commit <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t84.1%20pre-commit"> # </a></h3>
+      <ul>
+        <li><code>pre-commit</code> 就是在代码提交之前做些东西，比如代码打包，代码检测，称之为钩子（hook）</li>
+        <li>在commit之前执行一个函数（callback）。这个函数成功执行完之后，再继续commit，但是失败之后就阻止commit</li>
+        <li>在.git-&gt;hooks-&gt;下面有个pre-commit.sample*，这个里面就是默认的函数(脚本)样本</li>
+      </ul>
+      <h3 id="t94.2 安装pre-commit">4.2 安装pre-commit <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t94.2%20%E5%AE%89%E8%A3%85pre-commit">
+          # </a></h3>
+      <pre><code class="lang-js">npm install pre-commit --save-dev
 </code></pre>
-<h3 id="t104.3 配置脚本">4.3 配置脚本 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t104.3%20%E9%85%8D%E7%BD%AE%E8%84%9A%E6%9C%AC"> # </a></h3>
-<pre><code class="lang-json">"scripts": {
+      <h3 id="t104.3 配置脚本">4.3 配置脚本 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t104.3%20%E9%85%8D%E7%BD%AE%E8%84%9A%E6%9C%AC">
+          # </a></h3>
+      <pre><code class="lang-json">"scripts": {
     "build": "tsc",
     "eslint": "eslint src --ext .ts",
     "eslint:fix": "eslint src --ext .ts --fix"
@@ -312,34 +558,41 @@ if (document.URL.indexOf("iqiyi.com") >= 0){
     "eslint"
   ]
 </code></pre>
-<blockquote>
-<p>如果没有在<code>.git-&gt;hooks</code>目录下生成<code>pre-commit</code>文件的话，则要手工创建<code>node ./node_modules/pre-commit/install.js</code></p>
-</blockquote>
-<h2 id="t115. 单元测试">5. 单元测试 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t115.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"> # </a></h2>
-<ul>
-<li>Mocha是现在最流行的JavaScript测试框架之一，在浏览器和Node环境都可以使用。</li>
-<li>所谓"测试框架"，就是运行测试的工具。通过它，可以为JavaScript应用添加测试，从而保证代码的质量</li>
-</ul>
-<h3 id="t125.1 安装">5.1 安装 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t125.1%20%E5%AE%89%E8%A3%85"> # </a></h3>
-<pre><code class="lang-js">cnpm i mocha  @types/mocha chai @types/chai ts-node @types/node  --save-dev
+      <blockquote>
+        <p>如果没有在<code>.git-&gt;hooks</code>目录下生成<code>pre-commit</code>文件的话，则要手工创建<code>node
+            ./node_modules/pre-commit/install.js</code></p>
+      </blockquote>
+      <h2 id="t115. 单元测试">5. 单元测试 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t115.%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">
+          # </a></h2>
+      <ul>
+        <li>Mocha是现在最流行的JavaScript测试框架之一，在浏览器和Node环境都可以使用。</li>
+        <li>所谓"测试框架"，就是运行测试的工具。通过它，可以为JavaScript应用添加测试，从而保证代码的质量</li>
+      </ul>
+      <h3 id="t125.1 安装">5.1 安装 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t125.1%20%E5%AE%89%E8%A3%85"> # </a>
+      </h3>
+      <pre><code class="lang-js">cnpm i mocha  @types/mocha chai @types/chai ts-node @types/node  --save-dev
 </code></pre>
-<h3 id="t135.2 sum.ts">5.2 sum.ts <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t135.2%20sum.ts"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">x:number,y:number</span>):<span class="hljs-title">number</span></span>{
+      <h3 id="t135.2 sum.ts">5.2 sum.ts <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t135.2%20sum.ts"> # </a></h3>
+      <pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">x:number,y:number</span>):<span class="hljs-title">number</span></span>{
   <span class="hljs-keyword">return</span> x + y;
 }
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">x:number,y:number</span>)</span>{
+      <pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">x:number,y:number</span>)</span>{
   <span class="hljs-keyword">return</span> (x+y).toPrecision(<span class="hljs-number">10</span>);
 }
 </code></pre>
-<h3 id="t145.3 sum.test.ts">5.3 sum.test.ts <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t145.3%20sum.test.ts"> # </a></h3>
-<ul>
-<li>通常，测试脚本与所要测试的源码脚本同名，但是后缀名为.test.js（表示测试）或者.spec.js（表示规格）。比如，add.js的测试脚本名字就是add.test.js</li>
-<li>测试脚本里面应该包括一个或多个describe块，每个describe块应该包括一个或多个it块</li>
-<li>describe块称为"测试套件"（test suite），表示一组相关的测试。它是一个函数，第一个参数是测试套件的名称（"加法函数的测试"），第二个参数是一个实际执行的函数。</li>
-<li>it块称为"测试用例"（test case），表示一个单独的测试，是测试的最小单位。它也是一个函数，第一个参数是测试用例的名称（"1 加 1 应该等于 2"），第二个参数是一个实际执行的函数。</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> sum <span class="hljs-keyword">from</span> <span class="hljs-string">'../src/sum'</span>;
+      <h3 id="t145.3 sum.test.ts">5.3 sum.test.ts <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t145.3%20sum.test.ts"> # </a></h3>
+      <ul>
+        <li>通常，测试脚本与所要测试的源码脚本同名，但是后缀名为.test.js（表示测试）或者.spec.js（表示规格）。比如，add.js的测试脚本名字就是add.test.js</li>
+        <li>测试脚本里面应该包括一个或多个describe块，每个describe块应该包括一个或多个it块</li>
+        <li>describe块称为"测试套件"（test suite），表示一组相关的测试。它是一个函数，第一个参数是测试套件的名称（"加法函数的测试"），第二个参数是一个实际执行的函数。</li>
+        <li>it块称为"测试用例"（test case），表示一个单独的测试，是测试的最小单位。它也是一个函数，第一个参数是测试用例的名称（"1 加 1 应该等于 2"），第二个参数是一个实际执行的函数。</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-keyword">import</span> sum <span class="hljs-keyword">from</span> <span class="hljs-string">'../src/sum'</span>;
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'assert'</span>;
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> chai <span class="hljs-keyword">from</span> <span class="hljs-string">'chai'</span>
 describe(<span class="hljs-string">'test sum'</span>,()=&gt;{
@@ -351,21 +604,25 @@ describe(<span class="hljs-string">'test sum'</span>,()=&gt;{
   })
 });
 </code></pre>
-<pre><code class="lang-js">it(<span class="hljs-string">'0.1+0.2=0.3'</span>,()=&gt;{
+      <pre><code class="lang-js">it(<span class="hljs-string">'0.1+0.2=0.3'</span>,()=&gt;{
     assert.equal(sum(<span class="hljs-number">.1</span>,<span class="hljs-number">.2</span>),<span class="hljs-number">.3</span>);
 })
 </code></pre>
-<h3 id="t155.4 断言库">5.4 断言库 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t155.4%20%E6%96%AD%E8%A8%80%E5%BA%93"> # </a></h3>
-<ul>
-<li>所谓"断言"，就是判断源码的实际执行结果与预期结果是否一致，如果不一致就抛出一个错误</li>
-<li>所有的测试用例（it块）都应该含有一句或多句的断言。它是编写测试用例的关键。断言功能由断言库来实现，Mocha本身不带断言库，所以必须先引入断言库</li>
-</ul>
-<h4 id="t165.4.1 assert">5.4.1 assert <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t165.4.1%20assert"> # </a></h4>
-<ul>
-<li>assert.equal 用于判断两个值是否相等</li>
-</ul>
-<h4 id="t175.4.2 chai">5.4.2 chai <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t175.4.2%20chai"> # </a></h4>
-<pre><code class="lang-js"><span class="hljs-comment">// 相等或不相等</span>
+      <h3 id="t155.4 断言库">5.4 断言库 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t155.4%20%E6%96%AD%E8%A8%80%E5%BA%93">
+          # </a></h3>
+      <ul>
+        <li>所谓"断言"，就是判断源码的实际执行结果与预期结果是否一致，如果不一致就抛出一个错误</li>
+        <li>所有的测试用例（it块）都应该含有一句或多句的断言。它是编写测试用例的关键。断言功能由断言库来实现，Mocha本身不带断言库，所以必须先引入断言库</li>
+      </ul>
+      <h4 id="t165.4.1 assert">5.4.1 assert <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t165.4.1%20assert"> # </a></h4>
+      <ul>
+        <li>assert.equal 用于判断两个值是否相等</li>
+      </ul>
+      <h4 id="t175.4.2 chai">5.4.2 chai <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t175.4.2%20chai"> # </a></h4>
+      <pre><code class="lang-js"><span class="hljs-comment">// 相等或不相等</span>
 expect(<span class="hljs-number">1</span> + <span class="hljs-number">1</span>).to.be.equal(<span class="hljs-number">2</span>);
 expect(<span class="hljs-number">1</span> + <span class="hljs-number">1</span>).to.be.not.equal(<span class="hljs-number">3</span>);
 <span class="hljs-keyword">let</span> a = {<span class="hljs-attr">name</span>:<span class="hljs-string">'zhufeng'</span>};<span class="hljs-keyword">let</span> b = {<span class="hljs-attr">name</span>:<span class="hljs-string">'zhufeng'</span>};
@@ -395,97 +652,107 @@ expect({}).to.be.empty;
 <span class="hljs-comment">// 正则匹配</span>
 expect(<span class="hljs-string">'zhufengnodejs@126.com'</span>).to.match(<span class="hljs-regexp">/^zhufeng/</span>);
 </code></pre>
-<blockquote>
-<p>头部是expect方法，尾部是断言方法，比如equal、a/an、ok、match等。两者之间使用to或to.be连接</p>
-</blockquote>
-<h3 id="t185.5 指定测试脚本文件">5.5 指定测试脚本文件 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t185.5%20%E6%8C%87%E5%AE%9A%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6"> # </a></h3>
-<ul>
-<li>mocha命令后面紧跟测试脚本的路径和文件名，可以指定多个测试脚本。</li>
-<li>Mocha默认运行test子目录里面的测试脚本。所以，一般都会把测试脚本放在test目录里面，然后执行mocha就不需要参数了</li>
-<li>加上--recursive参数，就会执行test子目录下面所有的层的测试用例</li>
-<li>命令行指定测试脚本时，可以使用通配符，同时指定多个文件</li>
-</ul>
-<pre><code class="lang-js">mocha spec/{a,b}.js      执行spec目录下面的a.js和b.js
+      <blockquote>
+        <p>头部是expect方法，尾部是断言方法，比如equal、a/an、ok、match等。两者之间使用to或to.be连接</p>
+      </blockquote>
+      <h3 id="t185.5 指定测试脚本文件">5.5 指定测试脚本文件 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t185.5%20%E6%8C%87%E5%AE%9A%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6">
+          # </a></h3>
+      <ul>
+        <li>mocha命令后面紧跟测试脚本的路径和文件名，可以指定多个测试脚本。</li>
+        <li>Mocha默认运行test子目录里面的测试脚本。所以，一般都会把测试脚本放在test目录里面，然后执行mocha就不需要参数了</li>
+        <li>加上--recursive参数，就会执行test子目录下面所有的层的测试用例</li>
+        <li>命令行指定测试脚本时，可以使用通配符，同时指定多个文件</li>
+      </ul>
+      <pre><code class="lang-js">mocha spec/{a,b}.js      执行spec目录下面的a.js和b.js
 mocha test<span class="hljs-comment">/*.js     执行test目录下面的所有文件
 mocha test/**/</span>*.js   执行test目录下面任何子目录中、文件后缀名为js的测试脚本
 </code></pre>
-<h3 id="t195.6 tsconfig.json">5.6 tsconfig.json <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t195.6%20tsconfig.json"> # </a></h3>
-<pre><code class="lang-json">{
+      <h3 id="t195.6 tsconfig.json">5.6 tsconfig.json <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t195.6%20tsconfig.json"> # </a></h3>
+      <pre><code class="lang-json">{
   <span class="hljs-attr">"compilerOptions"</span>: {
     <span class="hljs-attr">"module"</span>: <span class="hljs-string">"commonjs"</span>
   }
 </code></pre>
-<h3 id="t205.7 package.json">5.7 package.json <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t205.7%20package.json"> # </a></h3>
-<ul>
-<li>mocha命令后面紧跟测试脚本的路径和文件名，可以指定多个测试脚本</li>
-<li>Mocha默认运行<code>test</code>子目录里面的测试脚本。所以，一般都会把测试脚本放在<code>test</code>目录里面，然后执行mocha就不需要参数了</li>
-<li>加上--recursive参数可以保证子目录下面所有的测试用例都会执行</li>
-</ul>
-<pre><code class="lang-json">  "scripts": {
+      <h3 id="t205.7 package.json">5.7 package.json <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t205.7%20package.json"> # </a></h3>
+      <ul>
+        <li>mocha命令后面紧跟测试脚本的路径和文件名，可以指定多个测试脚本</li>
+        <li>Mocha默认运行<code>test</code>子目录里面的测试脚本。所以，一般都会把测试脚本放在<code>test</code>目录里面，然后执行mocha就不需要参数了</li>
+        <li>加上--recursive参数可以保证子目录下面所有的测试用例都会执行</li>
+      </ul>
+      <pre><code class="lang-json">  "scripts": {
     "test": "set TS_NODE_COMPILER_OPTIONS={\"module\":\"commonjs\"}  &amp;&amp; mocha --require ts-node/register --watch --watch-extensions ts test/**/*"
   },
 </code></pre>
-<blockquote>
-<p>如果"module": "es2015"的话则需要在命令行中配置module规范</p>
-</blockquote>
-<h3 id="t215.8 配置文件mocha.opts">5.8 配置文件mocha.opts <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t215.8%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6mocha.opts"> # </a></h3>
-<ul>
-<li>Mocha允许在test目录下面，放置配置文件mocha.opts，把命令行参数写在里面</li>
-</ul>
-<pre><code class="lang-json">--require ts-node/register 
+      <blockquote>
+        <p>如果"module": "es2015"的话则需要在命令行中配置module规范</p>
+      </blockquote>
+      <h3 id="t215.8 配置文件mocha.opts">5.8 配置文件mocha.opts <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t215.8%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6mocha.opts">
+          # </a></h3>
+      <ul>
+        <li>Mocha允许在test目录下面，放置配置文件mocha.opts，把命令行参数写在里面</li>
+      </ul>
+      <pre><code class="lang-json">--require ts-node/register 
 --watch 
 --watch-extensions ts
 test/sum.test.ts
 </code></pre>
-<h3 id="t225.9 方法调用">5.9 方法调用 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t225.9%20%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8"> # </a></h3>
-<ul>
-<li>Sinon 是用于 JavaScript 的测试框架，适用于任何单元测试框架。</li>
-<li>Sinon 将测试为三种类型：<ul>
-<li>Spies：提供有关函数调用的信息，而不会影响其行为</li>
-<li>Stubs：类似于 Spies，但完全取代了功能。这样就可以使存根函数做任何你喜欢的事情 - 抛出异常，返回一个特定的值等等</li>
-<li>Mocks：通过组合 Spies 和 Stubs，可以更轻松地替换整个对象</li>
-</ul>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left"></th>
-<th style="text-align:left">监控函数执行</th>
-<th style="text-align:left">真正执行原函数</th>
-<th style="text-align:left">替换原有实现</th>
-<th style="text-align:left">提供行为描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">spy</td>
-<td style="text-align:left">是</td>
-<td style="text-align:left">是</td>
-<td style="text-align:left"></td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td style="text-align:left">stub</td>
-<td style="text-align:left">是</td>
-<td style="text-align:left"></td>
-<td style="text-align:left">是</td>
-<td style="text-align:left"></td>
-</tr>
-<tr>
-<td style="text-align:left">mock</td>
-<td style="text-align:left">是</td>
-<td style="text-align:left"></td>
-<td style="text-align:left">是</td>
-<td style="text-align:left">是</td>
-</tr>
-</tbody>
-</table>
-<pre><code class="lang-js">npm install sinon @types/sinon -D
+      <h3 id="t225.9 方法调用">5.9 方法调用 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t225.9%20%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8">
+          # </a></h3>
+      <ul>
+        <li>Sinon 是用于 JavaScript 的测试框架，适用于任何单元测试框架。</li>
+        <li>Sinon 将测试为三种类型：<ul>
+            <li>Spies：提供有关函数调用的信息，而不会影响其行为</li>
+            <li>Stubs：类似于 Spies，但完全取代了功能。这样就可以使存根函数做任何你喜欢的事情 - 抛出异常，返回一个特定的值等等</li>
+            <li>Mocks：通过组合 Spies 和 Stubs，可以更轻松地替换整个对象</li>
+          </ul>
+        </li>
+      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left"></th>
+            <th style="text-align:left">监控函数执行</th>
+            <th style="text-align:left">真正执行原函数</th>
+            <th style="text-align:left">替换原有实现</th>
+            <th style="text-align:left">提供行为描述</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:left">spy</td>
+            <td style="text-align:left">是</td>
+            <td style="text-align:left">是</td>
+            <td style="text-align:left"></td>
+            <td style="text-align:left"></td>
+          </tr>
+          <tr>
+            <td style="text-align:left">stub</td>
+            <td style="text-align:left">是</td>
+            <td style="text-align:left"></td>
+            <td style="text-align:left">是</td>
+            <td style="text-align:left"></td>
+          </tr>
+          <tr>
+            <td style="text-align:left">mock</td>
+            <td style="text-align:left">是</td>
+            <td style="text-align:left"></td>
+            <td style="text-align:left">是</td>
+            <td style="text-align:left">是</td>
+          </tr>
+        </tbody>
+      </table>
+      <pre><code class="lang-js">npm install sinon @types/sinon -D
 </code></pre>
-<h4 id="t235.9.1 要测试的类">5.9.1 要测试的类 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t235.9.1%20%E8%A6%81%E6%B5%8B%E8%AF%95%E7%9A%84%E7%B1%BB"> # </a></h4>
-<p>src\todo.ts</p>
-<pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span></span>{
+      <h4 id="t235.9.1 要测试的类">5.9.1 要测试的类 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t235.9.1%20%E8%A6%81%E6%B5%8B%E8%AF%95%E7%9A%84%E7%B1%BB">
+          # </a></h4>
+      <p>src\todo.ts</p>
+      <pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span></span>{
   private todos:string[]=[]
   private store:any
   <span class="hljs-keyword">constructor</span>(store:any){
@@ -502,9 +769,11 @@ test/sum.test.ts
   }
 }
 </code></pre>
-<h4 id="t245.9.2 spy">5.9.2 spy <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t245.9.2%20spy"> # </a></h4>
-<ul>
-<li>提供有关函数调用的信息，而不会影响其行为<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> sinon <span class="hljs-keyword">from</span> <span class="hljs-string">"sinon"</span>;
+      <h4 id="t245.9.2 spy">5.9.2 spy <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t245.9.2%20spy"> # </a></h4>
+      <ul>
+        <li>提供有关函数调用的信息，而不会影响其行为
+          <pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> sinon <span class="hljs-keyword">from</span> <span class="hljs-string">"sinon"</span>;
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span>  chai  <span class="hljs-keyword">from</span> <span class="hljs-string">"chai"</span>;
 <span class="hljs-keyword">import</span> Todos <span class="hljs-keyword">from</span> <span class="hljs-string">"../src/todos"</span>;
 describe(<span class="hljs-string">"测试 Todos"</span>, () =&gt; {
@@ -522,13 +791,14 @@ it(<span class="hljs-string">"spy print"</span>, () =&gt; {
 });
 });
 </code></pre>
-</li>
-</ul>
-<h4 id="t255.9.3 stub">5.9.3 stub <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t255.9.3%20stub"> # </a></h4>
-<ul>
-<li>类似于 spy，但完全取代了功能。这样就可以使存根函数做任何你喜欢的事情 - 抛出异常，返回一个特定的值等等</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span>  sinon <span class="hljs-keyword">from</span> <span class="hljs-string">"sinon"</span>;
+        </li>
+      </ul>
+      <h4 id="t255.9.3 stub">5.9.3 stub <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t255.9.3%20stub"> # </a></h4>
+      <ul>
+        <li>类似于 spy，但完全取代了功能。这样就可以使存根函数做任何你喜欢的事情 - 抛出异常，返回一个特定的值等等</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span>  sinon <span class="hljs-keyword">from</span> <span class="hljs-string">"sinon"</span>;
 <span class="hljs-keyword">import</span> { expect } <span class="hljs-keyword">from</span> <span class="hljs-string">"chai"</span>;
 <span class="hljs-keyword">import</span> Todos <span class="hljs-keyword">from</span> <span class="hljs-string">"../src/todos"</span>;
 describe(<span class="hljs-string">"测试 Todos"</span>, () =&gt; {
@@ -546,11 +816,12 @@ describe(<span class="hljs-string">"测试 Todos"</span>, () =&gt; {
   });
 });
 </code></pre>
-<h4 id="t265.9.4 mock">5.9.4 mock <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t265.9.4%20mock"> # </a></h4>
-<ul>
-<li>通过组合 Spies 和 Stubs，可以更轻松地替换整个对象</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span>  sinon <span class="hljs-keyword">from</span> <span class="hljs-string">"sinon"</span>;
+      <h4 id="t265.9.4 mock">5.9.4 mock <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t265.9.4%20mock"> # </a></h4>
+      <ul>
+        <li>通过组合 Spies 和 Stubs，可以更轻松地替换整个对象</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span>  sinon <span class="hljs-keyword">from</span> <span class="hljs-string">"sinon"</span>;
 <span class="hljs-keyword">import</span> { expect } <span class="hljs-keyword">from</span> <span class="hljs-string">"chai"</span>;
 <span class="hljs-keyword">import</span> Todos <span class="hljs-keyword">from</span> <span class="hljs-string">"../src/todos"</span>;
 describe(<span class="hljs-string">"测试 Todos"</span>, () =&gt; {
@@ -569,10 +840,13 @@ describe(<span class="hljs-string">"测试 Todos"</span>, () =&gt; {
   });
 });
 </code></pre>
-<h2 id="t276. 为JS添加TS支持">6. 为JS添加TS支持 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t276.%20%E4%B8%BAJS%E6%B7%BB%E5%8A%A0TS%E6%94%AF%E6%8C%81"> # </a></h2>
-<h3 id="t286.1 sum.js">6.1 sum.js <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t286.1%20sum.js"> # </a></h3>
-<p>src\sum.js </p>
-<pre><code class="lang-js"><span class="hljs-comment">/**
+      <h2 id="t276. 为JS添加TS支持">6. 为JS添加TS支持 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t276.%20%E4%B8%BAJS%E6%B7%BB%E5%8A%A0TS%E6%94%AF%E6%8C%81">
+          # </a></h2>
+      <h3 id="t286.1 sum.js">6.1 sum.js <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t286.1%20sum.js"> # </a></h3>
+      <p>src\sum.js </p>
+      <pre><code class="lang-js"><span class="hljs-comment">/**
  * 可以使用注释给参数添加类型
  * @param {number} x  
  * @param {number} y 
@@ -581,9 +855,10 @@ describe(<span class="hljs-string">"测试 Todos"</span>, () =&gt; {
   <span class="hljs-keyword">return</span> (x+y).toPrecision(<span class="hljs-number">10</span>);
 }
 </code></pre>
-<h3 id="t296.3 sum.test.ts">6.3 sum.test.ts <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t296.3%20sum.test.ts"> # </a></h3>
-<p>test\sum.test.ts</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> sum <span class="hljs-keyword">from</span> <span class="hljs-string">'../src/sum'</span>;
+      <h3 id="t296.3 sum.test.ts">6.3 sum.test.ts <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t296.3%20sum.test.ts"> # </a></h3>
+      <p>test\sum.test.ts</p>
+      <pre><code class="lang-js"><span class="hljs-keyword">import</span> sum <span class="hljs-keyword">from</span> <span class="hljs-string">'../src/sum'</span>;
 <span class="hljs-keyword">import</span>  assert <span class="hljs-keyword">from</span> <span class="hljs-string">'assert'</span>;
 describe(<span class="hljs-string">'test sum'</span>,()=&gt;{
   it(<span class="hljs-string">'1+2=3'</span>,()=&gt;{
@@ -595,61 +870,77 @@ describe(<span class="hljs-string">'test sum'</span>,()=&gt;{
   })
 });
 </code></pre>
-<h3 id="t306.3 tsconfig.json">6.3 tsconfig.json <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t306.3%20tsconfig.json"> # </a></h3>
-<pre><code class="lang-diff">{
+      <h3 id="t306.3 tsconfig.json">6.3 tsconfig.json <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t306.3%20tsconfig.json"> # </a></h3>
+      <pre><code class="lang-diff">{
   "compilerOptions": {
 <span class="hljs-addition">+     "checkJs": true, //允许代码中使用JS</span>
 <span class="hljs-addition">+     "checkJs": true, //可以对JS进行类型检查</span>
 </code></pre>
-<h2 id="t317. 持续集成">7. 持续集成 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t317.%20%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90"> # </a></h2>
-<ul>
-<li><a href="https://travis-ci.com/">Travis CI</a> 提供的是持续集成服务（Continuous Integration，简称 CI）。它绑定 Github 上面的项目，只要有新的代码，就会自动抓取。然后，提供一个运行环境，执行测试，完成构建，还能部署到服务器</li>
-<li>持续集成指的是只要代码有变更，就自动运行构建和测试，反馈运行结果。确保符合预期以后，再将新代码集成到主干</li>
-<li>持续集成的好处在于，每次代码的小幅变更，就能看到运行结果，从而不断累积小的变更，而不是在开发周期结束时，一下子合并一大块代码</li>
-</ul>
-<h3 id="t327.1 登录并创建项目">7.1 登录并创建项目 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t327.1%20%E7%99%BB%E5%BD%95%E5%B9%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"> # </a></h3>
-<ul>
-<li><a href="https://travis-ci.com/">Travis CI</a> 只支持 Github,所以你要拥有<code>GitHub</code>帐号</li>
-<li>该帐号下面有一个项目,面有可运行的代码,还包含构建或测试脚本</li>
-<li>你需要激活了一个仓库，Travis 会监听这个仓库的所有变化</li>
-</ul>
-<h3 id="t337.2 .travis.yml">7.2 .travis.yml <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t337.2%20.travis.yml"> # </a></h3>
-<ul>
-<li><code>Travis</code> 要求项目的根目录下面，必须有一个<code>.travis.yml</code>文件。这是配置文件，指定了 Travis 的行为</li>
-<li>该文件必须保存在 Github 仓库里面，一旦代码仓库有新的 <code>Commit</code>，Travis 就会去找这个文件，执行里面的命令</li>
-<li>这个文件采用 YAML 格式。下面是一个最简单的 Node 项目的<code>.travis.yml</code>文件</li>
-<li>language 字段指定了默认运行环境,<a href="https://docs.travis-ci.com/user/languages">所有的语言在此</a></li>
-<li>node_js: "11" 表示不执行任何脚本，状态直接设为成功</li>
-</ul>
-<pre><code class="lang-js">language: node_js
+      <h2 id="t317. 持续集成">7. 持续集成 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t317.%20%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90">
+          # </a></h2>
+      <ul>
+        <li><a href="https://travis-ci.com/">Travis CI</a> 提供的是持续集成服务（Continuous Integration，简称 CI）。它绑定 Github
+          上面的项目，只要有新的代码，就会自动抓取。然后，提供一个运行环境，执行测试，完成构建，还能部署到服务器</li>
+        <li>持续集成指的是只要代码有变更，就自动运行构建和测试，反馈运行结果。确保符合预期以后，再将新代码集成到主干</li>
+        <li>持续集成的好处在于，每次代码的小幅变更，就能看到运行结果，从而不断累积小的变更，而不是在开发周期结束时，一下子合并一大块代码</li>
+      </ul>
+      <h3 id="t327.1 登录并创建项目">7.1 登录并创建项目 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t327.1%20%E7%99%BB%E5%BD%95%E5%B9%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE">
+          # </a></h3>
+      <ul>
+        <li><a href="https://travis-ci.com/">Travis CI</a> 只支持 Github,所以你要拥有<code>GitHub</code>帐号</li>
+        <li>该帐号下面有一个项目,面有可运行的代码,还包含构建或测试脚本</li>
+        <li>你需要激活了一个仓库，Travis 会监听这个仓库的所有变化</li>
+      </ul>
+      <h3 id="t337.2 .travis.yml">7.2 .travis.yml <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t337.2%20.travis.yml"> # </a></h3>
+      <ul>
+        <li><code>Travis</code> 要求项目的根目录下面，必须有一个<code>.travis.yml</code>文件。这是配置文件，指定了 Travis 的行为</li>
+        <li>该文件必须保存在 Github 仓库里面，一旦代码仓库有新的 <code>Commit</code>，Travis 就会去找这个文件，执行里面的命令</li>
+        <li>这个文件采用 YAML 格式。下面是一个最简单的 Node 项目的<code>.travis.yml</code>文件</li>
+        <li>language 字段指定了默认运行环境,<a href="https://docs.travis-ci.com/user/languages">所有的语言在此</a></li>
+        <li>node_js: "11" 表示不执行任何脚本，状态直接设为成功</li>
+      </ul>
+      <pre><code class="lang-js">language: node_js
 node_js:
   - <span class="hljs-string">"11"</span>
 install: npm install
 script:  npm test  
 </code></pre>
-<h3 id="t347.3 运行流程">7.3 运行流程 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t347.3%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"> # </a></h3>
-<h4 id="t357.3.1 运行流程">7.3.1 运行流程 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t357.3.1%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"> # </a></h4>
-<ul>
-<li>Travis 的运行流程很简单，任何项目都会经过两个阶段<ul>
-<li>install 阶段：安装依赖</li>
-<li>script 阶段：运行脚本</li>
-</ul>
-</li>
-</ul>
-<h4 id="t367.3.2 install">7.3.2 install <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t367.3.2%20install"> # </a></h4>
-<ul>
-<li><code>install</code>字段用来指定安装脚本  <code>install: npm install -g npm</code></li>
-<li>如果不需要安装，即跳过安装阶段，就直接设为true <code>install: true</code></li>
-</ul>
-<h4 id="t377.3.3 script">7.3.3 script <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t377.3.3%20script"> # </a></h4>
-<ul>
-<li>script字段用来指定构建或测试脚本<pre><code class="lang-js">script: npm run build
+      <h3 id="t347.3 运行流程">7.3 运行流程 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t347.3%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B">
+          # </a></h3>
+      <h4 id="t357.3.1 运行流程">7.3.1 运行流程 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t357.3.1%20%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B">
+          # </a></h4>
+      <ul>
+        <li>Travis 的运行流程很简单，任何项目都会经过两个阶段<ul>
+            <li>install 阶段：安装依赖</li>
+            <li>script 阶段：运行脚本</li>
+          </ul>
+        </li>
+      </ul>
+      <h4 id="t367.3.2 install">7.3.2 install <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t367.3.2%20install"> # </a></h4>
+      <ul>
+        <li><code>install</code>字段用来指定安装脚本 <code>install: npm install -g npm</code></li>
+        <li>如果不需要安装，即跳过安装阶段，就直接设为true <code>install: true</code></li>
+      </ul>
+      <h4 id="t377.3.3 script">7.3.3 script <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t377.3.3%20script"> # </a></h4>
+      <ul>
+        <li>script字段用来指定构建或测试脚本
+          <pre><code class="lang-js">script: npm run build
 </code></pre>
-</li>
-</ul>
-<h4 id="t387.3.4 钩子方法">7.3.4 钩子方法 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t387.3.4%20%E9%92%A9%E5%AD%90%E6%96%B9%E6%B3%95"> # </a></h4>
-<p>Travis 为上面这些阶段提供了7个钩子</p>
-<pre><code class="lang-js">before_install  安装阶段之前执行
+        </li>
+      </ul>
+      <h4 id="t387.3.4 钩子方法">7.3.4 钩子方法 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t387.3.4%20%E9%92%A9%E5%AD%90%E6%96%B9%E6%B3%95">
+          # </a></h4>
+      <p>Travis 为上面这些阶段提供了7个钩子</p>
+      <pre><code class="lang-js">before_install  安装阶段之前执行
 install 安装
 before_script 脚本阶段之前执行
 script 脚本阶段
@@ -659,30 +950,40 @@ aftersuccess or afterfailure 脚本成功或失败
 [OPTIONAL] after_deploy 布署之后
 after_script  脚本阶段之后
 </code></pre>
-<h3 id="t397.4 实战">7.4 实战 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t397.4%20%E5%AE%9E%E6%88%98"> # </a></h3>
-<h4 id="t407.4.1 安装hexo">7.4.1 安装hexo <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t407.4.1%20%E5%AE%89%E8%A3%85hexo"> # </a></h4>
-<ul>
-<li><a href="https://hexo.io/zh-cn/docs/">hexo</a>是一个快速、简洁且高效的博客框架</li>
-</ul>
-<pre><code class="lang-js">$ npm install -g hexo-cli
+      <h3 id="t397.4 实战">7.4 实战 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t397.4%20%E5%AE%9E%E6%88%98"> # </a>
+      </h3>
+      <h4 id="t407.4.1 安装hexo">7.4.1 安装hexo <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t407.4.1%20%E5%AE%89%E8%A3%85hexo"> #
+        </a></h4>
+      <ul>
+        <li><a href="https://hexo.io/zh-cn/docs/">hexo</a>是一个快速、简洁且高效的博客框架</li>
+      </ul>
+      <pre><code class="lang-js">$ npm install -g hexo-cli
 </code></pre>
-<h4 id="t417.4.2 生成项目">7.4.2 生成项目 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t417.4.2%20%E7%94%9F%E6%88%90%E9%A1%B9%E7%9B%AE"> # </a></h4>
-<pre><code class="lang-js">hexo init zfblog
+      <h4 id="t417.4.2 生成项目">7.4.2 生成项目 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t417.4.2%20%E7%94%9F%E6%88%90%E9%A1%B9%E7%9B%AE">
+          # </a></h4>
+      <pre><code class="lang-js">hexo init zfblog
 cd zfblog
 npm install
 </code></pre>
-<h4 id="t427.4.3 启动项目">7.4.3 启动项目 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t427.4.3%20%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE"> # </a></h4>
-<pre><code class="lang-js">hexo generate
+      <h4 id="t427.4.3 启动项目">7.4.3 启动项目 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t427.4.3%20%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE">
+          # </a></h4>
+      <pre><code class="lang-js">hexo generate
 hexo server
 hexo deploy
 </code></pre>
-<h4 id="t437.4.4 布署项目">7.4.4 布署项目 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t437.4.4%20%E5%B8%83%E7%BD%B2%E9%A1%B9%E7%9B%AE"> # </a></h4>
-<pre><code class="lang-js">$ cnpm install eslint hexo-deployer-git --save
+      <h4 id="t437.4.4 布署项目">7.4.4 布署项目 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t437.4.4%20%E5%B8%83%E7%BD%B2%E9%A1%B9%E7%9B%AE">
+          # </a></h4>
+      <pre><code class="lang-js">$ cnpm install eslint hexo-deployer-git --save
 cnpm generate
 cnpm deploy
 </code></pre>
-<p>_config.yml</p>
-<pre><code class="lang-yaml"><span class="hljs-comment"># Deployment</span>
+      <p>_config.yml</p>
+      <pre><code class="lang-yaml"><span class="hljs-comment"># Deployment</span>
 <span class="hljs-comment">## Docs: https://hexo.io/docs/deployment.html</span>
 <span class="hljs-attr">deploy:</span>
 <span class="hljs-attr">  type:</span> <span class="hljs-string">git</span>
@@ -690,58 +991,65 @@ cnpm deploy
 <span class="hljs-attr">  branch:</span> <span class="hljs-string">gh-pages</span>
 <span class="hljs-attr">  message:</span> 
 </code></pre>
-<blockquote>
-<p><a href="https://zhufengnodejs.github.io/zfblog2">https://zhufengnodejs.github.io/zfblog2</a></p>
-</blockquote>
-<h4 id="t447.4.5 同步仓库">7.4.5 同步仓库 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t447.4.5%20%E5%90%8C%E6%AD%A5%E4%BB%93%E5%BA%93"> # </a></h4>
-<ul>
-<li>登录<a href="https://travis-ci.com/">travis-ci.com</a>选择同步仓库</li>
-</ul>
-<p><img src="./65.2.typescript_files/1.syncrepos.png" alt="syncrepos"></p>
-<h4 id="t457.4.6 设置仓库环境变量">7.4.6 设置仓库环境变量 <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t457.4.6%20%E8%AE%BE%E7%BD%AE%E4%BB%93%E5%BA%93%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"> # </a></h4>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">变量名</th>
-<th style="text-align:left">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">USERNAME</td>
-<td style="text-align:left">git用户名</td>
-<td>zhufengnodejs</td>
-</tr>
-<tr>
-<td style="text-align:left">UESREMAIL</td>
-<td style="text-align:left">git用户邮箱</td>
-<td><a href="mailto:zhufengnodejs@126.com">zhufengnodejs@126.com</a></td>
-</tr>
-<tr>
-<td style="text-align:left">GH_TOKEN</td>
-<td style="text-align:left">用户生成的令牌</td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:left">GH_REF</td>
-<td style="text-align:left">仓库地址</td>
-<td>github.com/zhufengnodejs/zfblog3.git</td>
-</tr>
-<tr>
-<td style="text-align:left">GH_BRANCH</td>
-<td style="text-align:left">推送的pages分支</td>
-<td>gh-pages</td>
-</tr>
-</tbody>
-</table>
-<p><img src="./65.2.typescript_files/2.settings.png" alt="2.settings"></p>
-<h4 id="t467.4.7 Github生成访问令牌 (即添加授权)">7.4.7 Github生成访问令牌 (即添加授权) <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t467.4.7%20Github%E7%94%9F%E6%88%90%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C%20(%E5%8D%B3%E6%B7%BB%E5%8A%A0%E6%8E%88%E6%9D%83)"> # </a></h4>
-<ul>
-<li>访问令牌的作用就是授权仓库操作权限</li>
-<li>Github&gt;settings&gt;Personal access tokens&gt; Generate new token &gt; Generate token&gt; Copy Token</li>
-</ul>
-<h4 id="t477.4.8 .travis.yml">7.4.8 .travis.yml <a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t477.4.8%20.travis.yml"> # </a></h4>
-<pre><code class="lang-yaml"><span class="hljs-attr">language:</span> <span class="hljs-string">node_js</span>
+      <blockquote>
+        <p><a href="https://zhufengnodejs.github.io/zfblog2">https://zhufengnodejs.github.io/zfblog2</a></p>
+      </blockquote>
+      <h4 id="t447.4.5 同步仓库">7.4.5 同步仓库 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t447.4.5%20%E5%90%8C%E6%AD%A5%E4%BB%93%E5%BA%93">
+          # </a></h4>
+      <ul>
+        <li>登录<a href="https://travis-ci.com/">travis-ci.com</a>选择同步仓库</li>
+      </ul>
+      <p><img src="./65.2.typescript_files/1.syncrepos.png" alt="syncrepos"></p>
+      <h4 id="t457.4.6 设置仓库环境变量">7.4.6 设置仓库环境变量 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t457.4.6%20%E8%AE%BE%E7%BD%AE%E4%BB%93%E5%BA%93%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">
+          # </a></h4>
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left">变量名</th>
+            <th style="text-align:left">含义</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:left">USERNAME</td>
+            <td style="text-align:left">git用户名</td>
+            <td>zhufengnodejs</td>
+          </tr>
+          <tr>
+            <td style="text-align:left">UESREMAIL</td>
+            <td style="text-align:left">git用户邮箱</td>
+            <td><a href="mailto:zhufengnodejs@126.com">zhufengnodejs@126.com</a></td>
+          </tr>
+          <tr>
+            <td style="text-align:left">GH_TOKEN</td>
+            <td style="text-align:left">用户生成的令牌</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:left">GH_REF</td>
+            <td style="text-align:left">仓库地址</td>
+            <td>github.com/zhufengnodejs/zfblog3.git</td>
+          </tr>
+          <tr>
+            <td style="text-align:left">GH_BRANCH</td>
+            <td style="text-align:left">推送的pages分支</td>
+            <td>gh-pages</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><img src="./65.2.typescript_files/2.settings.png" alt="2.settings"></p>
+      <h4 id="t467.4.7 Github生成访问令牌 (即添加授权)">7.4.7 Github生成访问令牌 (即添加授权) <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t467.4.7%20Github%E7%94%9F%E6%88%90%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C%20(%E5%8D%B3%E6%B7%BB%E5%8A%A0%E6%8E%88%E6%9D%83)">
+          # </a></h4>
+      <ul>
+        <li>访问令牌的作用就是授权仓库操作权限</li>
+        <li>Github&gt;settings&gt;Personal access tokens&gt; Generate new token &gt; Generate token&gt; Copy Token</li>
+      </ul>
+      <h4 id="t477.4.8 .travis.yml">7.4.8 .travis.yml <a
+          href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html#t477.4.8%20.travis.yml"> # </a></h4>
+      <pre><code class="lang-yaml"><span class="hljs-attr">language:</span> <span class="hljs-string">node_js</span>
 <span class="hljs-attr">node_js:</span> 
 <span class="hljs-bullet">    -</span> <span class="hljs-string">'11'</span>
 <span class="hljs-attr">install:</span>
@@ -761,83 +1069,80 @@ cnpm deploy
 <span class="hljs-bullet">    -</span> <span class="hljs-string">master</span>
 </code></pre>
 
-        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+      <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>.
+        Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
     </div>
-    
-</div>
 
-<script src="./65.2.typescript_files/jquery.js"></script>
-<script>
-$('.warpper .page-toc ul ul li a').on('click',function(){
-  $('.warpper .page-toc ul ul li a').removeClass('my-active')
-  $(this).addClass('my-active')
-})
+  </div>
 
-$('.logo').on('mouseenter',function(){
-  $('.nav').height('400px');
-})
-$('.nav').on('mouseleave',function(){
-  $('.nav').height('80px');
-})
-$('.logo').on('click',function(){
-  $('.nav').css('display','none');
- $('.warpper').css('padding','0px');
-})
-// if (!$('.understand-me').length) {
-  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-  //   var count = bar / 26 / 2;
-  //   var barHeight = $('.page-toc').outerHeight();
-  //   $('.page-toc li').eq(0).children('a').addClass('red');
-  //   var arr = [];
-  //   $("h1,h2,h3,h4,h5,h6").each(function () {
-  //     arr.push($(this).position().top);
-  //   });
-  //   var timer
-  //   function dark() {
-  //     clearTimeout(timer)
-  //      timer = setTimeout(function () {
-  //      var top = Math.abs($('.page-toc > ul').position().top);
-  //      var cur = $('.content').scrollTop();
-  //      for (var i = arr.length; i >= 0; i--) {
-  //        if (arr[i] <= cur) {
-  //          break;
-  //        }
-  //      }
-  //      if (i === -1) {
-  //        i = 0;
-  //      }
-  //      $('.page-toc li a').removeClass('red');
-  //      $('.page-toc li').eq(i).children('a').addClass('red');
-  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-  //    },200)
-  //   }
+  <script src="./65.2.typescript_files/jquery.js"></script>
+  <script>
+    $('.warpper .page-toc ul ul li a').on('click', function () {
+      $('.warpper .page-toc ul ul li a').removeClass('my-active')
+      $(this).addClass('my-active')
+    })
 
-  //   $('.content').on('scroll', dark);
-  // }
-</script>
-<style>
+    $('.logo').on('mouseenter', function () {
+      $('.nav').height('400px');
+    })
+    $('.nav').on('mouseleave', function () {
+      $('.nav').height('80px');
+    })
+    $('.logo').on('click', function () {
+      $('.nav').css('display', 'none');
+      $('.warpper').css('padding', '0px');
+    })
+    // if (!$('.understand-me').length) {
+    //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+    //   var count = bar / 26 / 2;
+    //   var barHeight = $('.page-toc').outerHeight();
+    //   $('.page-toc li').eq(0).children('a').addClass('red');
+    //   var arr = [];
+    //   $("h1,h2,h3,h4,h5,h6").each(function () {
+    //     arr.push($(this).position().top);
+    //   });
+    //   var timer
+    //   function dark() {
+    //     clearTimeout(timer)
+    //      timer = setTimeout(function () {
+    //      var top = Math.abs($('.page-toc > ul').position().top);
+    //      var cur = $('.content').scrollTop();
+    //      for (var i = arr.length; i >= 0; i--) {
+    //        if (arr[i] <= cur) {
+    //          break;
+    //        }
+    //      }
+    //      if (i === -1) {
+    //        i = 0;
+    //      }
+    //      $('.page-toc li a').removeClass('red');
+    //      $('.page-toc li').eq(i).children('a').addClass('red');
+    //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+    //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+    //    },200)
+    //   }
 
+    //   $('.content').on('scroll', dark);
+    // }
+  </script>
+  <style>
     /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
     ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
-    .page-toc > ul .red {
-        background: #f3f3f3;
-        z-index: 1;
-        border-left: 3px solid #009a61;
-        -webkit-transition: all .2s ease;
-        transition: all .2s ease;
-        color: #000
+    .page-toc>ul .red {
+      background: #f3f3f3;
+      z-index: 1;
+      border-left: 3px solid #009a61;
+      -webkit-transition: all .2s ease;
+      transition: all .2s ease;
+      color: #000
     }
+  </style>
 
 
+</body>
 
-
-
-</style>
-
-
-</body></html>
+</html>

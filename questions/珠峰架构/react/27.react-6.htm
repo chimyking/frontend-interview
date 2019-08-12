@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <!-- saved from url=(0061)http://www.zhufengpeixun.cn/architecture/html/27.react-6.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>珠峰架构师成长计划</title>
     <link rel="stylesheet" type="text/css" href="./27.react-6_files/main.css">
-<style type="text/css" abt="234"></style><script>//console.log('a')
-</script><script>//remove 17173 video ad
-doAdblock();
-function doAdblock(){
-    (function() {
-        function A() {}
-        A.prototype = {
-            rules: {
-                '17173_in':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
-                },
-                '17173_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
-                },
-                '17173_live':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
-                },
-                '17173_live_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
-                }
-            },
-            _done: null,
-            get done() {
-                if(!this._done) {
-                    this._done = new Array();
-                }
-                return this._done;
-            },
-            addAnimations: function() {
-                var style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = 'object,embed{\
+    <style type="text/css" abt="234"></style>
+    <script>
+        //console.log('a')
+    </script>
+    <script>
+        //remove 17173 video ad
+        doAdblock();
+
+        function doAdblock() {
+            (function () {
+                function A() {}
+                A.prototype = {
+                    rules: {
+                        '17173_in': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_in_20150522.swf"
+                        },
+                        '17173_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_out_20150522.swf"
+                        },
+                        '17173_live': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_stream_20150522.swf"
+                        },
+                        '17173_live_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173.out.Live.swf"
+                        }
+                    },
+                    _done: null,
+                    get done() {
+                        if (!this._done) {
+                            this._done = new Array();
+                        }
+                        return this._done;
+                    },
+                    addAnimations: function () {
+                        var style = document.createElement('style');
+                        style.type = 'text/css';
+                        style.innerHTML = 'object,embed{\
                 -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
                 -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
                 -o-animation-duration:.001s;-o-animation-name:playerInserted;\
@@ -49,130 +57,373 @@ function doAdblock(){
                 @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
-                document.getElementsByTagName('head')[0].appendChild(style);
-            },
-            animationsHandler: function(e) {
-                if(e.animationName === 'playerInserted') {
-                    this.replace(e.target);
-                }
-            },
-            replace: function(elem) {
-                if(this.done.indexOf(elem) != -1) return;
-                this.done.push(elem);
-                var player = elem.data || elem.src;
-                if(!player) return;
-                var i, find, replace = false;
-                for(i in this.rules) {
-                    find = this.rules[i]['find'];
-                    if(find.test(player)) {
-                        replace = this.rules[i]['replace'];
-                        if('function' === typeof this.rules[i]['preHandle']) {
-                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
-                        }else{
-                            this.reallyReplace.bind(this, elem, find, replace)();
+                        document.getElementsByTagName('head')[0].appendChild(style);
+                    },
+                    animationsHandler: function (e) {
+                        if (e.animationName === 'playerInserted') {
+                            this.replace(e.target);
                         }
-                        break;
+                    },
+                    replace: function (elem) {
+                        if (this.done.indexOf(elem) != -1) return;
+                        this.done.push(elem);
+                        var player = elem.data || elem.src;
+                        if (!player) return;
+                        var i, find, replace = false;
+                        for (i in this.rules) {
+                            find = this.rules[i]['find'];
+                            if (find.test(player)) {
+                                replace = this.rules[i]['replace'];
+                                if ('function' === typeof this.rules[i]['preHandle']) {
+                                    this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                                } else {
+                                    this.reallyReplace.bind(this, elem, find, replace)();
+                                }
+                                break;
+                            }
+                        }
+                    },
+                    reallyReplace: function (elem, find, replace) {
+                        elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem
+                            .src = elem.src.replace(find, replace)) && (elem.style.display =
+                            'block'));
+                        var b = elem.querySelector("param[name='movie']");
+                        this.reloadPlugin(elem);
+                    },
+                    reloadPlugin: function (elem) {
+                        var nextSibling = elem.nextSibling;
+                        var parentNode = elem.parentNode;
+                        parentNode.removeChild(elem);
+                        var newElem = elem.cloneNode(true);
+                        this.done.push(newElem);
+                        if (nextSibling) {
+                            parentNode.insertBefore(newElem, nextSibling);
+                        } else {
+                            parentNode.appendChild(newElem);
+                        }
+                    },
+                    init: function () {
+                        var handler = this.animationsHandler.bind(this);
+                        document.body.addEventListener('webkitAnimationStart', handler, false);
+                        document.body.addEventListener('msAnimationStart', handler, false);
+                        document.body.addEventListener('oAnimationStart', handler, false);
+                        document.body.addEventListener('animationstart', handler, false);
+                        this.addAnimations();
+                    }
+                };
+                new A().init();
+            })();
+        }
+        //remove baidu search ad
+        if (document.URL.indexOf('www.baidu.com') >= 0) {
+            if (document && document.getElementsByTagName && document.getElementById && document.body) {
+                var aa = function () {
+                    var all = document.body.querySelectorAll("#content_left div,#content_left table");
+                    for (var i = 0; i < all.length; i++) {
+                        if (/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
+                    }
+                    all = document.body.querySelectorAll('.result.c-container[id="1"]');
+                    //if(all.length == 1) return;
+                    for (var i = 0; i < all.length; i++) {
+                        if (all[i].innerHTML && all[i].innerHTML.indexOf('广告') > -1) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
                     }
                 }
-            },
-            reallyReplace: function(elem, find, replace) {
-                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
-                var b = elem.querySelector("param[name='movie']");
-                this.reloadPlugin(elem);
-            },
-            reloadPlugin: function(elem) {
-                var nextSibling = elem.nextSibling;
-                var parentNode = elem.parentNode;
-                parentNode.removeChild(elem);
-                var newElem = elem.cloneNode(true);
-                this.done.push(newElem);
-                if(nextSibling) {
-                    parentNode.insertBefore(newElem, nextSibling);
+                aa();
+                document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified', aa)
+            };
+        }
+        //remove sohu video ad
+        if (document.URL.indexOf("tv.sohu.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //remove 56.com video ad
+        if (document.URL.indexOf("56.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //fore iqiyi enable html5 player function
+        if (document.URL.indexOf("iqiyi.com") >= 0) {
+            if (document.cookie.indexOf("player_forcedType=h5_VOD") == -1) {
+                document.cookie = 'player_forcedType=h5_VOD'
+                if (localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime) < 60000) {
+                    console.log('no reload')
                 } else {
-                    parentNode.appendChild(newElem);
-                }
-            },
-            init: function() {
-                var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
-                document.body.addEventListener('animationstart', handler, false);
-                this.addAnimations();
-            }
-        };
-        new A().init();
-    })();
-}
-//remove baidu search ad
-if(document.URL.indexOf('www.baidu.com') >= 0){
-    if(document && document.getElementsByTagName && document.getElementById && document.body){
-        var aa = function(){
-            var all = document.body.querySelectorAll("#content_left div,#content_left table");
-            for(var i = 0; i < all.length; i++){
-                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
-            }
-            all = document.body.querySelectorAll('.result.c-container[id="1"]');
-            //if(all.length == 1) return;
-            for(var i = 0; i < all.length; i++){
-                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
-                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                    location.reload()
+                    localStorage.reloadTime = Date.now();
                 }
             }
         }
-        aa();
-        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
-    };
-}
-//remove sohu video ad
-if (document.URL.indexOf("tv.sohu.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//remove 56.com video ad
-if (document.URL.indexOf("56.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//fore iqiyi enable html5 player function
-if (document.URL.indexOf("iqiyi.com") >= 0){
-    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
-        document.cookie='player_forcedType=h5_VOD'
-        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
-            console.log('no reload')
-        }else{
-            location.reload()
-            localStorage.reloadTime = Date.now();
+    </script>
+    <style type="text/css">
+        object,
+        embed {
+            -webkit-animation-duration: .001s;
+            -webkit-animation-name: playerInserted;
+            -ms-animation-duration: .001s;
+            -ms-animation-name: playerInserted;
+            -o-animation-duration: .001s;
+            -o-animation-name: playerInserted;
+            animation-duration: .001s;
+            animation-name: playerInserted;
         }
-    }
-}
-</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+
+        @-webkit-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-ms-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
 <body>
-<div class="nav" style="height: 81px;">
-    <div class="logo">
-        
-            珠峰架构师成长计划
-        
-    </div>
-<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
-
-
-<div class="warpper">
-
-    <div class="page-toc">
-        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t01.%20React%E8%B7%AF%E7%94%B1">1. React路由</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t11.1%20hash">1.1 hash</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t21.2%20history">1.2 history</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t32.%E8%B7%91%E9%80%9A%E8%B7%AF%E7%94%B1">2.跑通路由</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t42.1%20index.js">2.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t52.2%20Home.js">2.2 Home.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t62.3%20Profile.js">2.3 Profile.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t72.4%20User.js">2.4 User.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t82.5%20this.props">2.5 this.props</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t92.6%20%20createHref">2.6  createHref</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t103.%E5%AE%9E%E7%8E%B0%E5%9F%BA%E6%9C%AC%E8%B7%AF%E7%94%B1">3.实现基本路由</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t113.1%20index.js">3.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t123.2%20index.js">3.2 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t133.3%20context.js">3.3 context.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t143.4%20HashRouter.js">3.4 HashRouter.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t153.5%20Route.js">3.5 Route.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t164.%20path-to-regexp">4. path-to-regexp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t175.%20%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D%E8%B7%AF%E5%BE%84">5. 正则匹配路径</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t185.1%20Route.js">5.1 Route.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t196.exact%20%E7%B2%BE%E7%A1%AE%E5%8C%B9%E9%85%8D">6.exact 精确匹配</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t206.1%20index.js">6.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t216.2%20%20Route.js">6.2  Route.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t227.%20Link">7. Link</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t237.1%20Link.js">7.1 Link.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t247.2%20index.js">7.2 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t257.3%20HashRouter.js">7.3 HashRouter.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t268.Redirect&amp;Switch">8.Redirect&amp;Switch</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t278.1%20index.js">8.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t288.2%20Redirect.js">8.2 Redirect.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t298.3%20%20Switch.js">8.3  Switch.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t309.%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC">9.页面跳转</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t319.1%20%20User.js">9.1  User.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t329.2%20HashRouter.js">9.2 HashRouter.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t339.3%20%20Route.js">9.3  Route.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t349.4%20%20Switch.js">9.4  Switch.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t359.5%20%20UserAdd.js">9.5  UserAdd.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t369.6%20UserDetail.js">9.6 UserDetail.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t379.7%20UserList.js">9.7 UserList.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3810.%20%E5%8F%97%E4%BF%9D%E6%8A%A4%E7%9A%84%E8%B7%AF%E7%94%B1">10. 受保护的路由</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3910.1%20src/index.js">10.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4010.2%20HashRouter.js">10.2 HashRouter.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4110.3%20Route.js">10.3 Route.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4210.4%20Login.js">10.4 Login.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4310.5%20Protected.js">10.5 Protected.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4411.%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%BC%E8%88%AA">11. 自定义导航</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4511.1%20index.js">11.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4611.2%20%20Route.js">11.2  Route.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4711.3%20MenuLink.js">11.3 MenuLink.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4811.4%20%20MenuLink.css">11.4  MenuLink.css</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4912.%20%E9%98%B2%E6%AD%A2%E8%B7%B3%E8%BD%AC">12. 防止跳转</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5012.1%20UserAdd.js">12.1 UserAdd.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5112.2%20%20HashRouter.js">12.2  HashRouter.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5212.3%20Prompt.js">12.3 Prompt.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5313.%20withRouter">13. withRouter</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5413.1%20index.js">13.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5513.2%20Route.js">13.2 Route.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5613.3%20index.js">13.3 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5713.4%20Header.js">13.4 Header.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5813.5%20withRouter.js">13.5 withRouter.js</a></li></ul></li></ul>
-    </div>
     
-    <div class="content markdown-body">
-        <h2 id="t01. React路由">1. React路由 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t01.%20React%E8%B7%AF%E7%94%B1"> # </a></h2>
-<ul>
-<li>不同的路径渲染不同的组件</li>
-<li>有两种实现方式<ul>
-<li>HashRouter:利用hash实现路由切换</li>
-<li>BrowserRouter:实现h5 Api实现路由的切换</li>
-</ul>
-</li>
-</ul>
-<h3 id="t11.1 hash">1.1 hash <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t11.1%20hash"> # </a></h3>
-<pre><code class="lang-js">    &lt;a href="#/a"&gt;去a&lt;/a&gt;
+
+
+    <div class="warpper">
+
+        <div class="page-toc">
+            <ul>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t01.%20React%E8%B7%AF%E7%94%B1">1.
+                        React路由</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t11.1%20hash">1.1
+                                hash</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t21.2%20history">1.2
+                                history</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t32.%E8%B7%91%E9%80%9A%E8%B7%AF%E7%94%B1">2.跑通路由</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t42.1%20index.js">2.1
+                                index.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t52.2%20Home.js">2.2
+                                Home.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t62.3%20Profile.js">2.3
+                                Profile.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t72.4%20User.js">2.4
+                                User.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t82.5%20this.props">2.5
+                                this.props</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t92.6%20%20createHref">2.6
+                                createHref</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t103.%E5%AE%9E%E7%8E%B0%E5%9F%BA%E6%9C%AC%E8%B7%AF%E7%94%B1">3.实现基本路由</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t113.1%20index.js">3.1
+                                index.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t123.2%20index.js">3.2
+                                index.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t133.3%20context.js">3.3
+                                context.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t143.4%20HashRouter.js">3.4
+                                HashRouter.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t153.5%20Route.js">3.5
+                                Route.js</a></li>
+                    </ul>
+                </li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t164.%20path-to-regexp">4.
+                        path-to-regexp</a></li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t175.%20%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D%E8%B7%AF%E5%BE%84">5.
+                        正则匹配路径</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t185.1%20Route.js">5.1
+                                Route.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t196.exact%20%E7%B2%BE%E7%A1%AE%E5%8C%B9%E9%85%8D">6.exact
+                        精确匹配</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t206.1%20index.js">6.1
+                                index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t216.2%20%20Route.js">6.2
+                                Route.js</a></li>
+                    </ul>
+                </li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t227.%20Link">7. Link</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t237.1%20Link.js">7.1
+                                Link.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t247.2%20index.js">7.2
+                                index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t257.3%20HashRouter.js">7.3
+                                HashRouter.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t268.Redirect&amp;Switch">8.Redirect&amp;Switch</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t278.1%20index.js">8.1
+                                index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t288.2%20Redirect.js">8.2
+                                Redirect.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t298.3%20%20Switch.js">8.3
+                                Switch.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t309.%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC">9.页面跳转</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t319.1%20%20User.js">9.1
+                                User.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t329.2%20HashRouter.js">9.2
+                                HashRouter.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t339.3%20%20Route.js">9.3
+                                Route.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t349.4%20%20Switch.js">9.4
+                                Switch.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t359.5%20%20UserAdd.js">9.5
+                                UserAdd.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t369.6%20UserDetail.js">9.6
+                                UserDetail.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t379.7%20UserList.js">9.7
+                                UserList.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3810.%20%E5%8F%97%E4%BF%9D%E6%8A%A4%E7%9A%84%E8%B7%AF%E7%94%B1">10.
+                        受保护的路由</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3910.1%20src/index.js">10.1
+                                src/index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4010.2%20HashRouter.js">10.2
+                                HashRouter.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4110.3%20Route.js">10.3
+                                Route.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4210.4%20Login.js">10.4
+                                Login.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4310.5%20Protected.js">10.5
+                                Protected.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4411.%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%BC%E8%88%AA">11.
+                        自定义导航</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4511.1%20index.js">11.1
+                                index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4611.2%20%20Route.js">11.2
+                                Route.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4711.3%20MenuLink.js">11.3
+                                MenuLink.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4811.4%20%20MenuLink.css">11.4
+                                MenuLink.css</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4912.%20%E9%98%B2%E6%AD%A2%E8%B7%B3%E8%BD%AC">12.
+                        防止跳转</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5012.1%20UserAdd.js">12.1
+                                UserAdd.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5112.2%20%20HashRouter.js">12.2
+                                HashRouter.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5212.3%20Prompt.js">12.3
+                                Prompt.js</a></li>
+                    </ul>
+                </li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5313.%20withRouter">13.
+                        withRouter</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5413.1%20index.js">13.1
+                                index.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5513.2%20Route.js">13.2
+                                Route.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5613.3%20index.js">13.3
+                                index.js</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5713.4%20Header.js">13.4
+                                Header.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5813.5%20withRouter.js">13.5
+                                withRouter.js</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content markdown-body">
+            <h2 id="t01. React路由">1. React路由 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t01.%20React%E8%B7%AF%E7%94%B1">
+                    # </a></h2>
+            <ul>
+                <li>不同的路径渲染不同的组件</li>
+                <li>有两种实现方式<ul>
+                        <li>HashRouter:利用hash实现路由切换</li>
+                        <li>BrowserRouter:实现h5 Api实现路由的切换</li>
+                    </ul>
+                </li>
+            </ul>
+            <h3 id="t11.1 hash">1.1 hash <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t11.1%20hash"> # </a></h3>
+            <pre><code class="lang-js">    &lt;a href="#/a"&gt;去a&lt;/a&gt;
     &lt;a href="#/b"&gt;去b&lt;/a&gt;
     &lt;script&gt;
       window.addEventListener('hashchange',()=&gt;{
@@ -180,18 +431,22 @@ if (document.URL.indexOf("iqiyi.com") >= 0){
       });
     &lt;/script&gt;
 </code></pre>
-<h3 id="t21.2 history">1.2 history <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t21.2%20history"> # </a></h3>
-<ul>
-<li>history对象提供了操作浏览器会话历史的接口。</li>
-<li>history对象持续追踪着一组location</li>
-<li>除了一组location外，history也保存一个索引值，用来指向当前所对应的location</li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/history">history</a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/History">History</a></li>
-<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/onpopstate">onpopstate</a></li>
-</ul>
-<h2 id="t32.跑通路由">2.跑通路由 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t32.%E8%B7%91%E9%80%9A%E8%B7%AF%E7%94%B1"> # </a></h2>
-<h3 id="t42.1 index.js">2.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t42.1%20index.js"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t21.2 history">1.2 history <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t21.2%20history"> # </a></h3>
+            <ul>
+                <li>history对象提供了操作浏览器会话历史的接口。</li>
+                <li>history对象持续追踪着一组location</li>
+                <li>除了一组location外，history也保存一个索引值，用来指向当前所对应的location</li>
+                <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/history">history</a></li>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/History">History</a></li>
+                <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/onpopstate">onpopstate</a></li>
+            </ul>
+            <h2 id="t32.跑通路由">2.跑通路由 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t32.%E8%B7%91%E9%80%9A%E8%B7%AF%E7%94%B1">
+                    # </a></h2>
+            <h3 id="t42.1 index.js">2.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t42.1%20index.js"> # </a></h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> {HashRouter <span class="hljs-keyword">as</span> Router,Route} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span>;
 <span class="hljs-keyword">import</span> Home <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Home'</span>;
@@ -207,9 +462,10 @@ ReactDOM.render(
     &lt;/Router&gt;
 ,document.getElementById('root'));
 </code></pre>
-<h3 id="t52.2 Home.js">2.2 Home.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t52.2%20Home.js"> # </a></h3>
-<p>components/Home.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t52.2 Home.js">2.2 Home.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t52.2%20Home.js"> # </a></h3>
+            <p>components/Home.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Home</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render() {
         <span class="hljs-keyword">return</span> (
@@ -218,9 +474,10 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t62.3 Profile.js">2.3 Profile.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t62.3%20Profile.js"> # </a></h3>
-<p>components/Profile.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t62.3 Profile.js">2.3 Profile.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t62.3%20Profile.js"> # </a></h3>
+            <p>components/Profile.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Profile</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render() {
         <span class="hljs-keyword">return</span> (
@@ -229,9 +486,10 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t72.4 User.js">2.4 User.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t72.4%20User.js"> # </a></h3>
-<p>components/User.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t72.4 User.js">2.4 User.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t72.4%20User.js"> # </a></h3>
+            <p>components/User.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render() {
         <span class="hljs-keyword">return</span> (
@@ -240,11 +498,13 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t82.5 this.props">2.5 this.props <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t82.5%20this.props"> # </a></h3>
-<blockquote>
-<p><a href="http://localhost:3000/#/user?name=zfpx#top">http://localhost:3000/#/user?name=zfpx#top</a></p>
-</blockquote>
-<pre><code class="lang-js">{
+            <h3 id="t82.5 this.props">2.5 this.props <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t82.5%20this.props"> # </a></h3>
+            <blockquote>
+                <p><a href="http://localhost:3000/#/user?name=zfpx#top">http://localhost:3000/#/user?name=zfpx#top</a>
+                </p>
+            </blockquote>
+            <pre><code class="lang-js">{
     <span class="hljs-string">"match"</span>: {
         <span class="hljs-string">"path"</span>: <span class="hljs-string">"/user/:id"</span>,   <span class="hljs-comment">//匹配路径</span>
         <span class="hljs-string">"url"</span>: <span class="hljs-string">"/user/1"</span>,      <span class="hljs-comment">//地址栏中的url</span>
@@ -276,8 +536,10 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t92.6  createHref">2.6  createHref <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t92.6%20%20createHref"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> location = {
+            <h3 id="t92.6  createHref">2.6 createHref <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t92.6%20%20createHref"> # </a>
+            </h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">const</span> location = {
   <span class="hljs-attr">pathname</span>: <span class="hljs-string">'/user'</span>,
   <span class="hljs-attr">search</span>: <span class="hljs-string">'?id=1'</span>,
   <span class="hljs-attr">hash</span>: <span class="hljs-string">'#bottom'</span>
@@ -287,13 +549,16 @@ ReactDOM.render(
 a.href = url
 <span class="hljs-comment">// &lt;a href='/user?id=1#bottom'&gt;&lt;/a&gt;</span>
 </code></pre>
-<h2 id="t103.实现基本路由">3.实现基本路由 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t103.%E5%AE%9E%E7%8E%B0%E5%9F%BA%E6%9C%AC%E8%B7%AF%E7%94%B1"> # </a></h2>
-<ul>
-<li><a href="https://reacttraining.com/react-router/web/example/basic">react-router</a></li>
-</ul>
-<h3 id="t113.1 index.js">3.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t113.1%20index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t103.实现基本路由">3.实现基本路由 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t103.%E5%AE%9E%E7%8E%B0%E5%9F%BA%E6%9C%AC%E8%B7%AF%E7%94%B1">
+                    # </a></h2>
+            <ul>
+                <li><a href="https://reacttraining.com/react-router/web/example/basic">react-router</a></li>
+            </ul>
+            <h3 id="t113.1 index.js">3.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t113.1%20index.js"> # </a></h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> {HashRouter <span class="hljs-keyword">as</span> Router,Route} <span class="hljs-keyword">from</span> <span class="hljs-string">'./react-router-dom'</span>;
 <span class="hljs-keyword">import</span> Home <span class="hljs-keyword">from</span> <span class="hljs-string">'./components/Home'</span>;
@@ -309,9 +574,10 @@ ReactDOM.render(
     &lt;/Router&gt;
 ,document.getElementById('root'));
 </code></pre>
-<h3 id="t123.2 index.js">3.2 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t123.2%20index.js"> # </a></h3>
-<p>src/react-router-dom/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> HashRouter <span class="hljs-keyword">from</span> <span class="hljs-string">'./HashRouter'</span>;
+            <h3 id="t123.2 index.js">3.2 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t123.2%20index.js"> # </a></h3>
+            <p>src/react-router-dom/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> HashRouter <span class="hljs-keyword">from</span> <span class="hljs-string">'./HashRouter'</span>;
 <span class="hljs-keyword">import</span> Route <span class="hljs-keyword">from</span> <span class="hljs-string">'./Route'</span>;
 
 <span class="hljs-keyword">export</span> {
@@ -319,16 +585,20 @@ ReactDOM.render(
     Route
 }
 </code></pre>
-<h3 id="t133.3 context.js">3.3 context.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t133.3%20context.js"> # </a></h3>
-<p>src/react-router-dom/context.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t133.3 context.js">3.3 context.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t133.3%20context.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/context.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-comment">// React16.3</span>
 <span class="hljs-keyword">let</span> {Provider,Consumer}=React.createContext();
 <span class="hljs-keyword">export</span> {Provider,Consumer};
 </code></pre>
-<h3 id="t143.4 HashRouter.js">3.4 HashRouter.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t143.4%20HashRouter.js"> # </a></h3>
-<p>src/react-router-dom/HashRouter.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t143.4 HashRouter.js">3.4 HashRouter.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t143.4%20HashRouter.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/HashRouter.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Provider} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HashRouter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     state={
@@ -360,9 +630,10 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t153.5 Route.js">3.5 Route.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t153.5%20Route.js"> # </a></h3>
-<p>src/react-router-dom/Route.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t153.5 Route.js">3.5 Route.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t153.5%20Route.js"> # </a></h3>
+            <p>src/react-router-dom/Route.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Route</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render() {
@@ -384,18 +655,22 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h2 id="t164. path-to-regexp">4. path-to-regexp <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t164.%20path-to-regexp"> # </a></h2>
-<p>把一个路径转换成正则表达式</p>
-<ul>
-<li><a href="https://www.npmjs.com/package/path-to-regexp">path-to-regexp</a></li>
-<li><p><a href="https://regexper.com/">regexper</a></p>
-</li>
-<li><p><img src="./27.react-6_files/userendfalse.png" alt="不需要结束"></p>
-</li>
-<li><img src="./27.react-6_files/userendtrue.png" alt="需要结束"></li>
-<li><img src="./27.react-6_files/userparams.png" alt="有路径参数"></li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">let</span> pathToRegexp=<span class="hljs-built_in">require</span>(<span class="hljs-string">'path-to-regexp'</span>);
+            <h2 id="t164. path-to-regexp">4. path-to-regexp <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t164.%20path-to-regexp"> # </a>
+            </h2>
+            <p>把一个路径转换成正则表达式</p>
+            <ul>
+                <li><a href="https://www.npmjs.com/package/path-to-regexp">path-to-regexp</a></li>
+                <li>
+                    <p><a href="https://regexper.com/">regexper</a></p>
+                </li>
+                <li>
+                    <p><img src="./27.react-6_files/userendfalse.png" alt="不需要结束"></p>
+                </li>
+                <li><img src="./27.react-6_files/userendtrue.png" alt="需要结束"></li>
+                <li><img src="./27.react-6_files/userparams.png" alt="有路径参数"></li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">let</span> pathToRegexp=<span class="hljs-built_in">require</span>(<span class="hljs-string">'path-to-regexp'</span>);
 <span class="hljs-comment">//let regex=pathToRegexp('/user',[],{end: true});// /^\/user(?:\/)?$/i</span>
 <span class="hljs-comment">//let regex=pathToRegexp('/user',[],{end: false});// //^\/user(?:\/(?=$))?(?=\/|$)/i</span>
 <span class="hljs-keyword">let</span> keys=[];
@@ -409,10 +684,13 @@ ReactDOM.render(
 <span class="hljs-built_in">console</span>.log(regex.test(<span class="hljs-string">'/user/1'</span>)); <span class="hljs-comment">//true</span>
 
 </code></pre>
-<h2 id="t175. 正则匹配路径">5. 正则匹配路径 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t175.%20%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D%E8%B7%AF%E5%BE%84"> # </a></h2>
-<h3 id="t185.1 Route.js">5.1 Route.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t185.1%20Route.js"> # </a></h3>
-<p>src/react-router-dom/Route.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t175. 正则匹配路径">5. 正则匹配路径 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t175.%20%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D%E8%B7%AF%E5%BE%84">
+                    # </a></h2>
+            <h3 id="t185.1 Route.js">5.1 Route.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t185.1%20Route.js"> # </a></h3>
+            <p>src/react-router-dom/Route.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">import</span> pathToRegexp <span class="hljs-keyword">from</span> <span class="hljs-string">'path-to-regexp'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Route</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
@@ -436,10 +714,13 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h2 id="t196.exact 精确匹配">6.exact 精确匹配 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t196.exact%20%E7%B2%BE%E7%A1%AE%E5%8C%B9%E9%85%8D"> # </a></h2>
-<h3 id="t206.1 index.js">6.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t206.1%20index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-diff">ReactDOM.render(
+            <h2 id="t196.exact 精确匹配">6.exact 精确匹配 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t196.exact%20%E7%B2%BE%E7%A1%AE%E5%8C%B9%E9%85%8D">
+                    # </a></h2>
+            <h3 id="t206.1 index.js">6.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t206.1%20index.js"> # </a></h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-diff">ReactDOM.render(
     &lt;Router&gt;
         &lt;div&gt;
 <span class="hljs-addition">+            &lt;Route exact={true} path="/" component={Home} /&gt;</span>
@@ -449,9 +730,11 @@ ReactDOM.render(
     &lt;/Router&gt;
 ,document.getElementById('root'));
 </code></pre>
-<h3 id="t216.2  Route.js">6.2  Route.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t216.2%20%20Route.js"> # </a></h3>
-<p>src/react-router-dom/Route.js</p>
-<pre><code class="lang-diff">export default class Route extends Component{
+            <h3 id="t216.2  Route.js">6.2 Route.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t216.2%20%20Route.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/Route.js</p>
+            <pre><code class="lang-diff">export default class Route extends Component{
     render() {
 <span class="hljs-addition">+        let {path,component: Component,exact=false}=this.props;</span>
 <span class="hljs-addition">+        let regexp=pathToRegexp(path,[],{end:exact});</span>
@@ -472,10 +755,12 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h2 id="t227. Link">7. Link <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t227.%20Link"> # </a></h2>
-<h3 id="t237.1 Link.js">7.1 Link.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t237.1%20Link.js"> # </a></h3>
-<p>src/react-router-dom/Link.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t227. Link">7. Link <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t227.%20Link"> # </a></h2>
+            <h3 id="t237.1 Link.js">7.1 Link.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t237.1%20Link.js"> # </a></h3>
+            <p>src/react-router-dom/Link.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Link</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render() {
@@ -494,9 +779,10 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t247.2 index.js">7.2 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t247.2%20index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> <span class="hljs-string">'bootstrap/dist/css/bootstrap.css'</span>
+            <h3 id="t247.2 index.js">7.2 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t247.2%20index.js"> # </a></h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> <span class="hljs-string">'bootstrap/dist/css/bootstrap.css'</span>
 ReactDOM.render(
     &lt;Router&gt;
         &lt;div&gt;
@@ -523,9 +809,11 @@ ReactDOM.render(
     &lt;/Router&gt;
 ,document.getElementById('root'));
 </code></pre>
-<h3 id="t257.3 HashRouter.js">7.3 HashRouter.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t257.3%20HashRouter.js"> # </a></h3>
-<p>src/react-router-dom/HashRouter.js</p>
-<pre><code class="lang-js">    render() {
+            <h3 id="t257.3 HashRouter.js">7.3 HashRouter.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t257.3%20HashRouter.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/HashRouter.js</p>
+            <pre><code class="lang-js">    render() {
         <span class="hljs-keyword">let</span> value={
             <span class="hljs-attr">location</span>: <span class="hljs-keyword">this</span>.state.location,
             <span class="hljs-attr">history</span>: {
@@ -541,10 +829,13 @@ ReactDOM.render(
         )
     }
 </code></pre>
-<h2 id="t268.Redirect&amp;Switch">8.Redirect&amp;Switch <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t268.Redirect&amp;Switch"> # </a></h2>
-<h3 id="t278.1 index.js">8.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t278.1%20index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js">&lt;div className=<span class="hljs-string">"container"</span>&gt;
+            <h2 id="t268.Redirect&amp;Switch">8.Redirect&amp;Switch <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t268.Redirect&amp;Switch"> #
+                </a></h2>
+            <h3 id="t278.1 index.js">8.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t278.1%20index.js"> # </a></h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js">&lt;div className=<span class="hljs-string">"container"</span>&gt;
                 &lt;Switch&gt;
                     &lt;Route exact={true} path="/" component={Home} /&gt;
                     &lt;Route path="/user" component={User} /&gt;
@@ -553,9 +844,11 @@ ReactDOM.render(
                 &lt;/Switch&gt;
             &lt;/div&gt;
 </code></pre>
-<h3 id="t288.2 Redirect.js">8.2 Redirect.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t288.2%20Redirect.js"> # </a></h3>
-<p>src/react-router-dom/Redirect.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t288.2 Redirect.js">8.2 Redirect.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t288.2%20Redirect.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/Redirect.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Redirect</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render() {
@@ -572,9 +865,11 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t298.3  Switch.js">8.3  Switch.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t298.3%20%20Switch.js"> # </a></h3>
-<p>src/react-router-dom/Switch.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t298.3  Switch.js">8.3 Switch.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t298.3%20%20Switch.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/Switch.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">import</span> pathToRegexp <span class="hljs-keyword">from</span> <span class="hljs-string">'path-to-regexp'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Switch</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
@@ -601,18 +896,24 @@ ReactDOM.render(
     }
 }
 </span></code></pre>
-<h2 id="t309.页面跳转">9.页面跳转 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t309.%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC"> # </a></h2>
-<h3 id="t319.1  User.js">9.1  User.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t319.1%20%20User.js"> # </a></h3>
-<p> src/components/User.js</p>
-<pre><code class="lang-js"> &lt;Switch&gt;
+            <h2 id="t309.页面跳转">9.页面跳转 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t309.%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC">
+                    # </a></h2>
+            <h3 id="t319.1  User.js">9.1 User.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t319.1%20%20User.js"> # </a>
+            </h3>
+            <p> src/components/User.js</p>
+            <pre><code class="lang-js"> &lt;Switch&gt;
     &lt;Route path="/user/add" component={UserAdd} /&gt;
     &lt;Route path="/user/list" component={UserList} /&gt;
     &lt;Route path="/user/detail/:id" component={UserDetail}/&gt;
 &lt;/Switch&gt;
 </code></pre>
-<h3 id="t329.2 HashRouter.js">9.2 HashRouter.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t329.2%20HashRouter.js"> # </a></h3>
-<p>src/react-router-dom/HashRouter.js</p>
-<pre><code class="lang-js">    render() {
+            <h3 id="t329.2 HashRouter.js">9.2 HashRouter.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t329.2%20HashRouter.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/HashRouter.js</p>
+            <pre><code class="lang-js">    render() {
         <span class="hljs-keyword">let</span> value={
             <span class="hljs-attr">location</span>: <span class="hljs-keyword">this</span>.state.location,
             <span class="hljs-attr">history</span>: {
@@ -628,9 +929,11 @@ ReactDOM.render(
         )
     }
 </code></pre>
-<h3 id="t339.3  Route.js">9.3  Route.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t339.3%20%20Route.js"> # </a></h3>
-<p>src/react-router-dom/Route.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t339.3  Route.js">9.3 Route.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t339.3%20%20Route.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/Route.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">import</span> pathToRegexp <span class="hljs-keyword">from</span> <span class="hljs-string">'path-to-regexp'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Route</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
@@ -675,9 +978,11 @@ ReactDOM.render(
     }
 }
 </span></code></pre>
-<h3 id="t349.4  Switch.js">9.4  Switch.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t349.4%20%20Switch.js"> # </a></h3>
-<p>src/react-router-dom/Switch.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t349.4  Switch.js">9.4 Switch.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t349.4%20%20Switch.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/Switch.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">import</span> pathToRegexp <span class="hljs-keyword">from</span> <span class="hljs-string">'path-to-regexp'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Switch</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
@@ -704,9 +1009,11 @@ ReactDOM.render(
     }
 }
 </span></code></pre>
-<h3 id="t359.5  UserAdd.js">9.5  UserAdd.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t359.5%20%20UserAdd.js"> # </a></h3>
-<p>src/components/UserAdd.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t359.5  UserAdd.js">9.5 UserAdd.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t359.5%20%20UserAdd.js"> # </a>
+            </h3>
+            <p>src/components/UserAdd.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserAdd</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     handleSubmit=<span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
         event.preventDefault();
@@ -743,9 +1050,11 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t369.6 UserDetail.js">9.6 UserDetail.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t369.6%20UserDetail.js"> # </a></h3>
-<p>src/components/UserDetail.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t369.6 UserDetail.js">9.6 UserDetail.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t369.6%20UserDetail.js"> # </a>
+            </h3>
+            <p>src/components/UserDetail.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserList</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     state={
         <span class="hljs-attr">user</span>: {}
@@ -770,9 +1079,11 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t379.7 UserList.js">9.7 UserList.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t379.7%20UserList.js"> # </a></h3>
-<p>src/components/UserList.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t379.7 UserList.js">9.7 UserList.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t379.7%20UserList.js"> # </a>
+            </h3>
+            <p>src/components/UserList.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {Link} <span class="hljs-keyword">from</span> <span class="hljs-string">'../react-router-dom'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserList</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     state={
@@ -802,9 +1113,13 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h2 id="t3810. 受保护的路由">10. 受保护的路由 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3810.%20%E5%8F%97%E4%BF%9D%E6%8A%A4%E7%9A%84%E8%B7%AF%E7%94%B1"> # </a></h2>
-<h3 id="t3910.1 src/index.js">10.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3910.1%20src/index.js"> # </a></h3>
-<pre><code class="lang-diff">                &lt;Switch&gt;
+            <h2 id="t3810. 受保护的路由">10. 受保护的路由 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3810.%20%E5%8F%97%E4%BF%9D%E6%8A%A4%E7%9A%84%E8%B7%AF%E7%94%B1">
+                    # </a></h2>
+            <h3 id="t3910.1 src/index.js">10.1 src/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t3910.1%20src/index.js"> # </a>
+            </h3>
+            <pre><code class="lang-diff">                &lt;Switch&gt;
                     &lt;Route exact={true} path="/" component={Home} /&gt;
                     &lt;Route path="/user" component={User} /&gt;
 <span class="hljs-addition">+                    &lt;Route path="/login" component={Login} /&gt;</span>
@@ -812,9 +1127,11 @@ ReactDOM.render(
                     &lt;Redirect to="/"/&gt;
                 &lt;/Switch&gt;
 </code></pre>
-<h3 id="t4010.2 HashRouter.js">10.2 HashRouter.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4010.2%20HashRouter.js"> # </a></h3>
-<p>src/react-router-dom/HashRouter.js</p>
-<pre><code class="lang-diff">render() {
+            <h3 id="t4010.2 HashRouter.js">10.2 HashRouter.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4010.2%20HashRouter.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/HashRouter.js</p>
+            <pre><code class="lang-diff">render() {
         let self=this;
         let value={
             location: self.state.location,
@@ -842,9 +1159,10 @@ ReactDOM.render(
         )
     }
 </code></pre>
-<h3 id="t4110.3 Route.js">10.3 Route.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4110.3%20Route.js"> # </a></h3>
-<p> src/react-router-dom/Route.js</p>
-<pre><code class="lang-diff"><span class="hljs-addition">+                             if (Component) {</span>
+            <h3 id="t4110.3 Route.js">10.3 Route.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4110.3%20Route.js"> # </a></h3>
+            <p> src/react-router-dom/Route.js</p>
+            <pre><code class="lang-diff"><span class="hljs-addition">+                             if (Component) {</span>
 <span class="hljs-addition">+                                return &lt;Component {...props}/&gt; </span>
 <span class="hljs-addition">+                            } else if (render) {</span>
 <span class="hljs-addition">+                                return render(props);</span>
@@ -852,9 +1170,10 @@ ReactDOM.render(
 <span class="hljs-addition">+                                return null;</span>
 <span class="hljs-addition">+                            }</span>
 </code></pre>
-<h3 id="t4210.4 Login.js">10.4 Login.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4210.4%20Login.js"> # </a></h3>
-<p>src/components/Login.js</p>
-<pre><code class="lang-diff"><span class="hljs-addition">+ import React from 'react'</span>
+            <h3 id="t4210.4 Login.js">10.4 Login.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4210.4%20Login.js"> # </a></h3>
+            <p>src/components/Login.js</p>
+            <pre><code class="lang-diff"><span class="hljs-addition">+ import React from 'react'</span>
 <span class="hljs-addition">+ export default class Login extends React.Component{</span>
 <span class="hljs-addition">+    handleClick=() =&gt; {</span>
 <span class="hljs-addition">+        localStorage.setItem('logined',true);</span>
@@ -872,9 +1191,11 @@ ReactDOM.render(
 <span class="hljs-addition">+    }</span>
 <span class="hljs-addition">+}</span>
 </code></pre>
-<h3 id="t4310.5 Protected.js">10.5 Protected.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4310.5%20Protected.js"> # </a></h3>
-<p> src/components/Protected.js</p>
-<pre><code class="lang-diff"><span class="hljs-addition">+ import React from 'react'</span>
+            <h3 id="t4310.5 Protected.js">10.5 Protected.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4310.5%20Protected.js"> # </a>
+            </h3>
+            <p> src/components/Protected.js</p>
+            <pre><code class="lang-diff"><span class="hljs-addition">+ import React from 'react'</span>
 <span class="hljs-addition">+ import {Route,Redirect} from '../react-router-dom';</span>
 <span class="hljs-addition">+ export default ({component:Component,...rest}) =&gt; (</span>
 <span class="hljs-addition">+     &lt;Route</span>
@@ -889,18 +1210,23 @@ ReactDOM.render(
 <span class="hljs-addition">+     /&gt;</span>
 <span class="hljs-addition">+ )</span>
 </code></pre>
-<h2 id="t4411. 自定义导航">11. 自定义导航 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4411.%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%BC%E8%88%AA"> # </a></h2>
-<h3 id="t4511.1 index.js">11.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4511.1%20index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js">&lt;ul className="nav navbar-nav"&gt;
+            <h2 id="t4411. 自定义导航">11. 自定义导航 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4411.%20%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%BC%E8%88%AA">
+                    # </a></h2>
+            <h3 id="t4511.1 index.js">11.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4511.1%20index.js"> # </a></h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js">&lt;ul className="nav navbar-nav"&gt;
 +    &lt;MenuLink exact to="/"&gt;Home&lt;/MenuLink&gt;
 +    &lt;MenuLink to="/user"&gt;User&lt;/MenuLink&gt;
 +    &lt;MenuLink to="/profile"&gt;Profile&lt;/MenuLink&gt;
 &lt;/ul&gt;
 </code></pre>
-<h3 id="t4611.2  Route.js">11.2  Route.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4611.2%20%20Route.js"> # </a></h3>
-<p> src/react-router-dom/Route.js</p>
-<pre><code class="lang-js"> <span class="hljs-keyword">let</span> props={
+            <h3 id="t4611.2  Route.js">11.2 Route.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4611.2%20%20Route.js"> # </a>
+            </h3>
+            <p> src/react-router-dom/Route.js</p>
+            <pre><code class="lang-js"> <span class="hljs-keyword">let</span> props={
                             <span class="hljs-attr">location</span>: value.location,
                             <span class="hljs-attr">history</span>: value.history
                         }
@@ -931,8 +1257,10 @@ ReactDOM.render(
                             return null;
                         }
 </span></code></pre>
-<h3 id="t4711.3 MenuLink.js">11.3 MenuLink.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4711.3%20MenuLink.js"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+            <h3 id="t4711.3 MenuLink.js">11.3 MenuLink.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4711.3%20MenuLink.js"> # </a>
+            </h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
 <span class="hljs-keyword">import</span> {Route,Link} <span class="hljs-keyword">from</span> <span class="hljs-string">'../react-router-dom'</span>;
 <span class="hljs-keyword">import</span> <span class="hljs-string">'./MenuLink.css'</span>
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> ({to,exact,children}) =&gt; (
@@ -947,15 +1275,21 @@ ReactDOM.render(
     /&gt;
 )
 </span></code></pre>
-<h3 id="t4811.4  MenuLink.css">11.4  MenuLink.css <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4811.4%20%20MenuLink.css"> # </a></h3>
-<pre><code class="lang-js">.navbar-inverse .navbar-nav &gt; .active &gt; a{
+            <h3 id="t4811.4  MenuLink.css">11.4 MenuLink.css <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4811.4%20%20MenuLink.css"> #
+                </a></h3>
+            <pre><code class="lang-js">.navbar-inverse .navbar-nav &gt; .active &gt; a{
     background-color: orange;
 }
 </code></pre>
-<h2 id="t4912. 防止跳转">12. 防止跳转 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4912.%20%E9%98%B2%E6%AD%A2%E8%B7%B3%E8%BD%AC"> # </a></h2>
-<h3 id="t5012.1 UserAdd.js">12.1 UserAdd.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5012.1%20UserAdd.js"> # </a></h3>
-<p>src/components/UserAdd.js</p>
-<pre><code class="lang-diff">import React,{Component} from 'react';
+            <h2 id="t4912. 防止跳转">12. 防止跳转 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t4912.%20%E9%98%B2%E6%AD%A2%E8%B7%B3%E8%BD%AC">
+                    # </a></h2>
+            <h3 id="t5012.1 UserAdd.js">12.1 UserAdd.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5012.1%20UserAdd.js"> # </a>
+            </h3>
+            <p>src/components/UserAdd.js</p>
+            <pre><code class="lang-diff">import React,{Component} from 'react';
 import {Prompt} from '../react-router-dom';
 export default class UserAdd extends Component{
 <span class="hljs-addition">+    state={</span>
@@ -1015,9 +1349,11 @@ export default class UserAdd extends Component{
     }
 }
 </code></pre>
-<h3 id="t5112.2  HashRouter.js">12.2  HashRouter.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5112.2%20%20HashRouter.js"> # </a></h3>
-<p>src/react-router-dom/HashRouter.js</p>
-<pre><code class="lang-diff">let value={
+            <h3 id="t5112.2  HashRouter.js">12.2 HashRouter.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5112.2%20%20HashRouter.js"> #
+                </a></h3>
+            <p>src/react-router-dom/HashRouter.js</p>
+            <pre><code class="lang-diff">let value={
             location: self.state.location,
             history: {
                 push(to) {
@@ -1048,9 +1384,11 @@ export default class UserAdd extends Component{
             }
         }
 </code></pre>
-<h3 id="t5212.3 Prompt.js">12.3 Prompt.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5212.3%20Prompt.js"> # </a></h3>
-<p> src/react-router-dom/Prompt.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+            <h3 id="t5212.3 Prompt.js">12.3 Prompt.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5212.3%20Prompt.js"> # </a>
+            </h3>
+            <p> src/react-router-dom/Prompt.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Prompt</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
     componentWillUnmount() {
@@ -1075,22 +1413,27 @@ export default class UserAdd extends Component{
     }
 }
 </code></pre>
-<h2 id="t5313. withRouter">13. withRouter <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5313.%20withRouter"> # </a></h2>
-<h3 id="t5413.1 index.js">13.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5413.1%20index.js"> # </a></h3>
-<p>rc/index.js</p>
-<pre><code class="lang-diff">    &lt;div className="container-fluid"&gt;
+            <h2 id="t5313. withRouter">13. withRouter <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5313.%20withRouter"> # </a>
+            </h2>
+            <h3 id="t5413.1 index.js">13.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5413.1%20index.js"> # </a></h3>
+            <p>rc/index.js</p>
+            <pre><code class="lang-diff">    &lt;div className="container-fluid"&gt;
 <span class="hljs-addition">+                    &lt;Header/&gt;</span>
                     &lt;div id="navbar" className="collapse navbar-collapse"&gt;
 </code></pre>
-<h3 id="t5513.2 Route.js">13.2 Route.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5513.2%20Route.js"> # </a></h3>
-<p>src/react-router-dom/Route.js</p>
-<pre><code class="lang-js">+    <span class="hljs-keyword">let</span> {path=<span class="hljs-string">'/'</span>,<span class="hljs-attr">component</span>: Component,exact=<span class="hljs-literal">false</span>,render,children}=<span class="hljs-keyword">this</span>.props;
+            <h3 id="t5513.2 Route.js">13.2 Route.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5513.2%20Route.js"> # </a></h3>
+            <p>src/react-router-dom/Route.js</p>
+            <pre><code class="lang-js">+    <span class="hljs-keyword">let</span> {path=<span class="hljs-string">'/'</span>,<span class="hljs-attr">component</span>: Component,exact=<span class="hljs-literal">false</span>,render,children}=<span class="hljs-keyword">this</span>.props;
         <span class="hljs-keyword">return</span> (
             <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Consumer</span>&gt;</span>
 </span></code></pre>
-<h3 id="t5613.3 index.js">13.3 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5613.3%20index.js"> # </a></h3>
-<p>src/react-router-dom/index.js</p>
-<pre><code class="lang-diff"><span class="hljs-addition">+import withRouter from './withRouter';</span>
+            <h3 id="t5613.3 index.js">13.3 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5613.3%20index.js"> # </a></h3>
+            <p>src/react-router-dom/index.js</p>
+            <pre><code class="lang-diff"><span class="hljs-addition">+import withRouter from './withRouter';</span>
 export {
     HashRouter,
     Route,
@@ -1101,9 +1444,11 @@ export {
 <span class="hljs-addition">+    withRouter</span>
 }
 </code></pre>
-<h3 id="t5713.4 Header.js">13.4 Header.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5713.4%20Header.js"> # </a></h3>
-<p>src/components/Header.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+            <h3 id="t5713.4 Header.js">13.4 Header.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5713.4%20Header.js"> # </a>
+            </h3>
+            <p>src/components/Header.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
 <span class="hljs-keyword">import</span> {withRouter} <span class="hljs-keyword">from</span> <span class="hljs-string">'../react-router-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Header</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
     render() {
@@ -1120,9 +1465,11 @@ export {
 }
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> withRouter(Header);
 </code></pre>
-<h3 id="t5813.5 withRouter.js">13.5 withRouter.js <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5813.5%20withRouter.js"> # </a></h3>
-<p>src/react-router-dom/withRouter.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+            <h3 id="t5813.5 withRouter.js">13.5 withRouter.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html#t5813.5%20withRouter.js"> # </a>
+            </h3>
+            <p>src/react-router-dom/withRouter.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
 <span class="hljs-keyword">import</span> {Consumer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./context'</span>;
 <span class="hljs-keyword">import</span> Route <span class="hljs-keyword">from</span> <span class="hljs-string">'./Route'</span>;
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">Component</span>) </span>{
@@ -1142,87 +1489,84 @@ export {
     return Proxy;
 }
 </span></code></pre>
-<ul>
-<li><a href="https://gitee.com/zhufengpeixun/router4">router4</a></li>
-</ul>
+            <ul>
+                <li><a href="https://gitee.com/zhufengpeixun/router4">router4</a></li>
+            </ul>
 
-        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+            <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>.
+                Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+        </div>
+
     </div>
-    
-</div>
 
-<script src="./27.react-6_files/jquery.js"></script>
-<script>
-$('.warpper .page-toc ul ul li a').on('click',function(){
-  $('.warpper .page-toc ul ul li a').removeClass('my-active')
-  $(this).addClass('my-active')
-})
+    <script src="./27.react-6_files/jquery.js"></script>
+    <script>
+        $('.warpper .page-toc ul ul li a').on('click', function () {
+            $('.warpper .page-toc ul ul li a').removeClass('my-active')
+            $(this).addClass('my-active')
+        })
 
-$('.logo').on('mouseenter',function(){
-  $('.nav').height('400px');
-})
-$('.nav').on('mouseleave',function(){
-  $('.nav').height('80px');
-})
-$('.logo').on('click',function(){
-  $('.nav').css('display','none');
- $('.warpper').css('padding','0px');
-})
-// if (!$('.understand-me').length) {
-  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-  //   var count = bar / 26 / 2;
-  //   var barHeight = $('.page-toc').outerHeight();
-  //   $('.page-toc li').eq(0).children('a').addClass('red');
-  //   var arr = [];
-  //   $("h1,h2,h3,h4,h5,h6").each(function () {
-  //     arr.push($(this).position().top);
-  //   });
-  //   var timer
-  //   function dark() {
-  //     clearTimeout(timer)
-  //      timer = setTimeout(function () {
-  //      var top = Math.abs($('.page-toc > ul').position().top);
-  //      var cur = $('.content').scrollTop();
-  //      for (var i = arr.length; i >= 0; i--) {
-  //        if (arr[i] <= cur) {
-  //          break;
-  //        }
-  //      }
-  //      if (i === -1) {
-  //        i = 0;
-  //      }
-  //      $('.page-toc li a').removeClass('red');
-  //      $('.page-toc li').eq(i).children('a').addClass('red');
-  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-  //    },200)
-  //   }
+        $('.logo').on('mouseenter', function () {
+            $('.nav').height('400px');
+        })
+        $('.nav').on('mouseleave', function () {
+            $('.nav').height('80px');
+        })
+        $('.logo').on('click', function () {
+            $('.nav').css('display', 'none');
+            $('.warpper').css('padding', '0px');
+        })
+        // if (!$('.understand-me').length) {
+        //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+        //   var count = bar / 26 / 2;
+        //   var barHeight = $('.page-toc').outerHeight();
+        //   $('.page-toc li').eq(0).children('a').addClass('red');
+        //   var arr = [];
+        //   $("h1,h2,h3,h4,h5,h6").each(function () {
+        //     arr.push($(this).position().top);
+        //   });
+        //   var timer
+        //   function dark() {
+        //     clearTimeout(timer)
+        //      timer = setTimeout(function () {
+        //      var top = Math.abs($('.page-toc > ul').position().top);
+        //      var cur = $('.content').scrollTop();
+        //      for (var i = arr.length; i >= 0; i--) {
+        //        if (arr[i] <= cur) {
+        //          break;
+        //        }
+        //      }
+        //      if (i === -1) {
+        //        i = 0;
+        //      }
+        //      $('.page-toc li a').removeClass('red');
+        //      $('.page-toc li').eq(i).children('a').addClass('red');
+        //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+        //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+        //    },200)
+        //   }
 
-  //   $('.content').on('scroll', dark);
-  // }
-</script>
-<style>
-
-    /* ::-webkit-scrollbar{width:14px;}
+        //   $('.content').on('scroll', dark);
+        // }
+    </script>
+    <style>
+        /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
     ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
-    .page-toc > ul .red {
-        background: #f3f3f3;
-        z-index: 1;
-        border-left: 3px solid #009a61;
-        -webkit-transition: all .2s ease;
-        transition: all .2s ease;
-        color: #000
-    }
+        .page-toc>ul .red {
+            background: #f3f3f3;
+            z-index: 1;
+            border-left: 3px solid #009a61;
+            -webkit-transition: all .2s ease;
+            transition: all .2s ease;
+            color: #000
+        }
+    </style>
 
 
+</body>
 
-
-
-</style>
-
-
-</body></html>
+</html>
