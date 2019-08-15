@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <!-- saved from url=(0059)http://www.zhufengpeixun.cn/architecture/html/33.redis.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>珠峰架构师成长计划</title>
     <link rel="stylesheet" type="text/css" href="./33.redis_files/main.css">
-<style type="text/css" abt="234"></style><script>//console.log('a')
-</script><script>//remove 17173 video ad
-doAdblock();
-function doAdblock(){
-    (function() {
-        function A() {}
-        A.prototype = {
-            rules: {
-                '17173_in':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
-                },
-                '17173_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
-                },
-                '17173_live':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
-                },
-                '17173_live_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
-                }
-            },
-            _done: null,
-            get done() {
-                if(!this._done) {
-                    this._done = new Array();
-                }
-                return this._done;
-            },
-            addAnimations: function() {
-                var style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = 'object,embed{\
+    <style type="text/css" abt="234"></style>
+    <script>
+        //console.log('a')
+    </script>
+    <script>
+        //remove 17173 video ad
+        doAdblock();
+
+        function doAdblock() {
+            (function () {
+                function A() {}
+                A.prototype = {
+                    rules: {
+                        '17173_in': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_in_20150522.swf"
+                        },
+                        '17173_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_out_20150522.swf"
+                        },
+                        '17173_live': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_stream_20150522.swf"
+                        },
+                        '17173_live_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173.out.Live.swf"
+                        }
+                    },
+                    _done: null,
+                    get done() {
+                        if (!this._done) {
+                            this._done = new Array();
+                        }
+                        return this._done;
+                    },
+                    addAnimations: function () {
+                        var style = document.createElement('style');
+                        style.type = 'text/css';
+                        style.innerHTML = 'object,embed{\
                 -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
                 -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
                 -o-animation-duration:.001s;-o-animation-name:playerInserted;\
@@ -49,179 +57,418 @@ function doAdblock(){
                 @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
-                document.getElementsByTagName('head')[0].appendChild(style);
-            },
-            animationsHandler: function(e) {
-                if(e.animationName === 'playerInserted') {
-                    this.replace(e.target);
-                }
-            },
-            replace: function(elem) {
-                if(this.done.indexOf(elem) != -1) return;
-                this.done.push(elem);
-                var player = elem.data || elem.src;
-                if(!player) return;
-                var i, find, replace = false;
-                for(i in this.rules) {
-                    find = this.rules[i]['find'];
-                    if(find.test(player)) {
-                        replace = this.rules[i]['replace'];
-                        if('function' === typeof this.rules[i]['preHandle']) {
-                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
-                        }else{
-                            this.reallyReplace.bind(this, elem, find, replace)();
+                        document.getElementsByTagName('head')[0].appendChild(style);
+                    },
+                    animationsHandler: function (e) {
+                        if (e.animationName === 'playerInserted') {
+                            this.replace(e.target);
                         }
-                        break;
+                    },
+                    replace: function (elem) {
+                        if (this.done.indexOf(elem) != -1) return;
+                        this.done.push(elem);
+                        var player = elem.data || elem.src;
+                        if (!player) return;
+                        var i, find, replace = false;
+                        for (i in this.rules) {
+                            find = this.rules[i]['find'];
+                            if (find.test(player)) {
+                                replace = this.rules[i]['replace'];
+                                if ('function' === typeof this.rules[i]['preHandle']) {
+                                    this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                                } else {
+                                    this.reallyReplace.bind(this, elem, find, replace)();
+                                }
+                                break;
+                            }
+                        }
+                    },
+                    reallyReplace: function (elem, find, replace) {
+                        elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem
+                            .src = elem.src.replace(find, replace)) && (elem.style.display =
+                            'block'));
+                        var b = elem.querySelector("param[name='movie']");
+                        this.reloadPlugin(elem);
+                    },
+                    reloadPlugin: function (elem) {
+                        var nextSibling = elem.nextSibling;
+                        var parentNode = elem.parentNode;
+                        parentNode.removeChild(elem);
+                        var newElem = elem.cloneNode(true);
+                        this.done.push(newElem);
+                        if (nextSibling) {
+                            parentNode.insertBefore(newElem, nextSibling);
+                        } else {
+                            parentNode.appendChild(newElem);
+                        }
+                    },
+                    init: function () {
+                        var handler = this.animationsHandler.bind(this);
+                        document.body.addEventListener('webkitAnimationStart', handler, false);
+                        document.body.addEventListener('msAnimationStart', handler, false);
+                        document.body.addEventListener('oAnimationStart', handler, false);
+                        document.body.addEventListener('animationstart', handler, false);
+                        this.addAnimations();
+                    }
+                };
+                new A().init();
+            })();
+        }
+        //remove baidu search ad
+        if (document.URL.indexOf('www.baidu.com') >= 0) {
+            if (document && document.getElementsByTagName && document.getElementById && document.body) {
+                var aa = function () {
+                    var all = document.body.querySelectorAll("#content_left div,#content_left table");
+                    for (var i = 0; i < all.length; i++) {
+                        if (/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
+                    }
+                    all = document.body.querySelectorAll('.result.c-container[id="1"]');
+                    //if(all.length == 1) return;
+                    for (var i = 0; i < all.length; i++) {
+                        if (all[i].innerHTML && all[i].innerHTML.indexOf('广告') > -1) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
                     }
                 }
-            },
-            reallyReplace: function(elem, find, replace) {
-                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
-                var b = elem.querySelector("param[name='movie']");
-                this.reloadPlugin(elem);
-            },
-            reloadPlugin: function(elem) {
-                var nextSibling = elem.nextSibling;
-                var parentNode = elem.parentNode;
-                parentNode.removeChild(elem);
-                var newElem = elem.cloneNode(true);
-                this.done.push(newElem);
-                if(nextSibling) {
-                    parentNode.insertBefore(newElem, nextSibling);
+                aa();
+                document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified', aa)
+            };
+        }
+        //remove sohu video ad
+        if (document.URL.indexOf("tv.sohu.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //remove 56.com video ad
+        if (document.URL.indexOf("56.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //fore iqiyi enable html5 player function
+        if (document.URL.indexOf("iqiyi.com") >= 0) {
+            if (document.cookie.indexOf("player_forcedType=h5_VOD") == -1) {
+                document.cookie = 'player_forcedType=h5_VOD'
+                if (localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime) < 60000) {
+                    console.log('no reload')
                 } else {
-                    parentNode.appendChild(newElem);
-                }
-            },
-            init: function() {
-                var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
-                document.body.addEventListener('animationstart', handler, false);
-                this.addAnimations();
-            }
-        };
-        new A().init();
-    })();
-}
-//remove baidu search ad
-if(document.URL.indexOf('www.baidu.com') >= 0){
-    if(document && document.getElementsByTagName && document.getElementById && document.body){
-        var aa = function(){
-            var all = document.body.querySelectorAll("#content_left div,#content_left table");
-            for(var i = 0; i < all.length; i++){
-                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
-            }
-            all = document.body.querySelectorAll('.result.c-container[id="1"]');
-            //if(all.length == 1) return;
-            for(var i = 0; i < all.length; i++){
-                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
-                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                    location.reload()
+                    localStorage.reloadTime = Date.now();
                 }
             }
         }
-        aa();
-        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
-    };
-}
-//remove sohu video ad
-if (document.URL.indexOf("tv.sohu.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//remove 56.com video ad
-if (document.URL.indexOf("56.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//fore iqiyi enable html5 player function
-if (document.URL.indexOf("iqiyi.com") >= 0){
-    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
-        document.cookie='player_forcedType=h5_VOD'
-        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
-            console.log('no reload')
-        }else{
-            location.reload()
-            localStorage.reloadTime = Date.now();
+    </script>
+    <style type="text/css">
+        object,
+        embed {
+            -webkit-animation-duration: .001s;
+            -webkit-animation-name: playerInserted;
+            -ms-animation-duration: .001s;
+            -ms-animation-name: playerInserted;
+            -o-animation-duration: .001s;
+            -o-animation-name: playerInserted;
+            animation-duration: .001s;
+            animation-name: playerInserted;
         }
-    }
-}
-</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+
+        @-webkit-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-ms-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
 <body>
-<div class="nav" style="height: 81px;">
-    <div class="logo">
-        
-            珠峰架构师成长计划
-        
-    </div>
-<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+   
 
+    <div class="warpper">
 
-<div class="warpper">
+        <div class="page-toc">
+            <ul>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t01.%20Redis%E7%AE%80%E4%BB%8B">1.
+                        Redis简介</a></li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t12.Redis%20%E4%BC%98%E5%8A%BF">2.Redis
+                        优势</a></li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t23.%20%E5%AE%89%E8%A3%85">3.
+                        安装</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t33.1%20Window%E4%B8%8B%E5%AE%89%E8%A3%85">3.1
+                                Window下安装</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t43.2%20Mac%E4%B8%8B%E5%AE%89%E8%A3%85">3.2
+                                Mac下安装</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t53.3%20%E9%85%8D%E7%BD%AE">3.3
+                                配置</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t64.%20%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">4.
+                        数据类型</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t74.1%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2">4.1
+                                字符串</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t84.1.1%20SET%20%E8%AE%BE%E7%BD%AE%E5%80%BC">4.1.1
+                                        SET 设置值</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t94.1.2%20GET%20%E8%8E%B7%E5%8F%96%E5%80%BC">4.1.2
+                                        GET 获取值</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t104.1.3%20GETRANGE%20%E8%8E%B7%E5%8F%96%E5%AD%90%E4%B8%B2">4.1.3
+                                        GETRANGE 获取子串</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t114.1.4%20INCR%20INCRBY%20%E9%80%92%E5%A2%9E">4.1.4
+                                        INCR INCRBY 递增</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t124.1.5%20%20%E9%94%AE">4.1.5
+                                        键</a></li>
+                            </ul>
+                        </li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t134.2%20%20%E5%93%88%E5%B8%8C%E5%80%BC">4.2
+                                哈希值</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t144.2.1%20HSET%20HMSET%20%E8%AE%BE%E7%BD%AE%E5%80%BC">4.2.1
+                                        HSET HMSET 设置值</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t154.2.2%20HGET%20HGETALL%20%E8%8E%B7%E5%8F%96%E5%80%BC">4.2.2
+                                        HGET HGETALL 获取值</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t164.2.3%20HDEL%20key%20field%20%E5%88%A0%E9%99%A4%E9%94%AE">4.2.3
+                                        HDEL key field 删除键</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t174.2.3%20HKEYS%20%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E7%9A%84KEYS">4.2.3
+                                        HKEYS 获取所有的KEYS</a></li>
+                            </ul>
+                        </li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t184.3%20%20%E5%88%97%E8%A1%A8">4.3
+                                列表</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t194.3.1%20LPUSH%20RPUSH%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0">4.3.1
+                                        LPUSH RPUSH 添加元素</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t204.3.2%20LRANGE%20%E6%9F%A5%E7%9C%8B%E5%85%83%E7%B4%A0">4.3.2
+                                        LRANGE 查看元素</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t214.3.3%20LPOP%20RPOP%20%E5%BC%B9%E5%87%BA%E5%85%83%E7%B4%A0">4.3.3
+                                        LPOP RPOP 弹出元素</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t224.3.4%20LINDEX%20ids%201">4.3.4
+                                        LINDEX ids 1</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t234.3.5%20LLEN%20key">4.3.5
+                                        LLEN key</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t244.3.6%20LREM%20key%20count%20value">4.3.6
+                                        LREM key count value</a></li>
+                            </ul>
+                        </li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t254.4%20%20%E9%9B%86%E5%90%88">4.4
+                                集合</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t264.4.1%20SADD%20%E6%B7%BB%E5%8A%A0">4.4.1
+                                        SADD 添加</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t274.4.2%20SMEMBERS%20%E6%9F%A5%E7%9C%8B%E9%9B%86%E5%90%88">4.4.2
+                                        SMEMBERS 查看集合</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t284.4.3%20SCARD%20%E8%8E%B7%E5%8F%96%E9%9B%86%E5%90%88%E5%85%83%E7%B4%A0%E4%B8%AA%E6%95%B0">4.4.3
+                                        SCARD 获取集合元素个数</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t294.4.4%20SREM%20%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0">4.4.4
+                                        SREM 删除元素</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t304.4.5%20%E9%9B%86%E5%90%88%E8%BF%90%E7%AE%97">4.4.5
+                                        集合运算</a></li>
+                            </ul>
+                        </li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t314.5%20%20%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88">4.5
+                                有序集合</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t324.5.1%20ZADD%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0">4.5.1
+                                        ZADD 添加元素</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t334.5.2%20ZCARD%20%E8%8E%B7%E5%8F%96%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E7%9A%84%E6%88%90%E5%91%98%E6%95%B0">4.5.2
+                                        ZCARD 获取有序集合的成员数</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t344.5.3%20ZRANGE%20%E6%9F%A5%E7%9C%8B%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88">4.5.3
+                                        ZRANGE 查看有序集合</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t354.5.4%20ZREM%20%E7%A7%BB%E9%99%A4%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%88%90%E5%91%98">4.5.4
+                                        ZREM 移除有序集合中的一个或多个成员</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t365.%20Node.js%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8">5.
+                        Node.js中的使用</a></li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t376.%20Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">6.
+                        Redis发布订阅</a></li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t387.%20Redis%E4%BA%8B%E5%8A%A1">7.
+                        Redis事务</a></li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t398.%20%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D">8.
+                        备份与恢复</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t408.1%20%E5%A4%87%E4%BB%BD">8.1
+                                备份</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t418.2%20%E6%81%A2%E5%A4%8D">8.2
+                                恢复</a></li>
+                    </ul>
+                </li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t428.%20%E5%AE%89%E5%85%A8">8.
+                        安全</a></li>
+            </ul>
+        </div>
 
-    <div class="page-toc">
-        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t01.%20Redis%E7%AE%80%E4%BB%8B">1. Redis简介</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t12.Redis%20%E4%BC%98%E5%8A%BF">2.Redis 优势</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t23.%20%E5%AE%89%E8%A3%85">3. 安装</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t33.1%20Window%E4%B8%8B%E5%AE%89%E8%A3%85">3.1 Window下安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t43.2%20Mac%E4%B8%8B%E5%AE%89%E8%A3%85">3.2 Mac下安装</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t53.3%20%E9%85%8D%E7%BD%AE">3.3 配置</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t64.%20%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">4. 数据类型</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t74.1%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2">4.1  字符串</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t84.1.1%20SET%20%E8%AE%BE%E7%BD%AE%E5%80%BC">4.1.1 SET 设置值</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t94.1.2%20GET%20%E8%8E%B7%E5%8F%96%E5%80%BC">4.1.2 GET 获取值</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t104.1.3%20GETRANGE%20%E8%8E%B7%E5%8F%96%E5%AD%90%E4%B8%B2">4.1.3 GETRANGE 获取子串</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t114.1.4%20INCR%20INCRBY%20%E9%80%92%E5%A2%9E">4.1.4 INCR INCRBY 递增</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t124.1.5%20%20%E9%94%AE">4.1.5  键</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t134.2%20%20%E5%93%88%E5%B8%8C%E5%80%BC">4.2  哈希值</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t144.2.1%20HSET%20HMSET%20%E8%AE%BE%E7%BD%AE%E5%80%BC">4.2.1 HSET HMSET 设置值</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t154.2.2%20HGET%20HGETALL%20%E8%8E%B7%E5%8F%96%E5%80%BC">4.2.2 HGET HGETALL 获取值</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t164.2.3%20HDEL%20key%20field%20%E5%88%A0%E9%99%A4%E9%94%AE">4.2.3 HDEL key field 删除键</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t174.2.3%20HKEYS%20%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E7%9A%84KEYS">4.2.3 HKEYS 获取所有的KEYS</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t184.3%20%20%E5%88%97%E8%A1%A8">4.3  列表</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t194.3.1%20LPUSH%20RPUSH%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0">4.3.1 LPUSH RPUSH 添加元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t204.3.2%20LRANGE%20%E6%9F%A5%E7%9C%8B%E5%85%83%E7%B4%A0">4.3.2 LRANGE 查看元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t214.3.3%20LPOP%20RPOP%20%E5%BC%B9%E5%87%BA%E5%85%83%E7%B4%A0">4.3.3 LPOP RPOP 弹出元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t224.3.4%20LINDEX%20ids%201">4.3.4 LINDEX ids 1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t234.3.5%20LLEN%20key">4.3.5 LLEN key</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t244.3.6%20LREM%20key%20count%20value">4.3.6 LREM key count value</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t254.4%20%20%E9%9B%86%E5%90%88">4.4  集合</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t264.4.1%20SADD%20%E6%B7%BB%E5%8A%A0">4.4.1 SADD 添加</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t274.4.2%20SMEMBERS%20%E6%9F%A5%E7%9C%8B%E9%9B%86%E5%90%88">4.4.2 SMEMBERS 查看集合</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t284.4.3%20SCARD%20%E8%8E%B7%E5%8F%96%E9%9B%86%E5%90%88%E5%85%83%E7%B4%A0%E4%B8%AA%E6%95%B0">4.4.3 SCARD 获取集合元素个数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t294.4.4%20SREM%20%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0">4.4.4 SREM 删除元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t304.4.5%20%E9%9B%86%E5%90%88%E8%BF%90%E7%AE%97">4.4.5 集合运算</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t314.5%20%20%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88">4.5  有序集合</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t324.5.1%20ZADD%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0">4.5.1 ZADD 添加元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t334.5.2%20ZCARD%20%E8%8E%B7%E5%8F%96%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E7%9A%84%E6%88%90%E5%91%98%E6%95%B0">4.5.2 ZCARD 获取有序集合的成员数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t344.5.3%20ZRANGE%20%E6%9F%A5%E7%9C%8B%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88">4.5.3 ZRANGE 查看有序集合</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t354.5.4%20ZREM%20%E7%A7%BB%E9%99%A4%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%88%90%E5%91%98">4.5.4 ZREM 移除有序集合中的一个或多个成员</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t365.%20Node.js%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8">5. Node.js中的使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t376.%20Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">6. Redis发布订阅</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t387.%20Redis%E4%BA%8B%E5%8A%A1">7. Redis事务</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t398.%20%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D">8. 备份与恢复</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t408.1%20%E5%A4%87%E4%BB%BD">8.1 备份</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t418.2%20%E6%81%A2%E5%A4%8D">8.2 恢复</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t428.%20%E5%AE%89%E5%85%A8">8. 安全</a></li></ul>
-    </div>
-    
-    <div class="content markdown-body">
-        <h2 id="t01. Redis简介">1. Redis简介 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t01.%20Redis%E7%AE%80%E4%BB%8B"> # </a></h2>
-<p>Redis 是完全开源免费的，遵守BSD协议，是一个高性能的key-value数据库。</p>
-<h2 id="t12.Redis 优势">2.Redis 优势 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t12.Redis%20%E4%BC%98%E5%8A%BF"> # </a></h2>
-<ul>
-<li>性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。</li>
-<li>丰富的数据类型 – Redis支持二进制的字符串、列表、哈希值、集合和有序集合等数据类型操作。</li>
-<li>原子性 – Redis的所有操作都是原子性的，意思就是要么成功执行要么失败完全不执行</li>
-<li>单个操作是原子性的。多个操作也支持事务，即原子性，通过MULTI和EXEC指令包起来。</li>
-<li>丰富的特性 – Redis还支持 发布/订阅, 通知, key 过期等等特性。</li>
-<li><h2 id="t23. 安装">3. 安装 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t23.%20%E5%AE%89%E8%A3%85"> # </a></h2>
-<h3 id="t33.1 Window下安装">3.1 Window下安装 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t33.1%20Window%E4%B8%8B%E5%AE%89%E8%A3%85"> # </a></h3>
-</li>
-<li><a href="https://github.com/ServiceStack/redis-windows">redis-windows</a></li>
-<li><a href="https://github.com/ServiceStack/redis-windows/raw/master/downloads/redis-latest.zip">redis服务端下载</a></li>
-<li><a href="https://redisdesktop.com/download">redis客户端下载</a></li>
-<li><a href="https://redis.io/">redis官网</a></li>
-<li><a href="http://www.redis.cn/documentation.html">redis中文网</a></li>
-</ul>
-<pre><code class="lang-js">redis-server.exe redis.windows.conf 
+        <div class="content markdown-body">
+            <h2 id="t01. Redis简介">1. Redis简介 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t01.%20Redis%E7%AE%80%E4%BB%8B"> #
+                </a></h2>
+            <p>Redis 是完全开源免费的，遵守BSD协议，是一个高性能的key-value数据库。</p>
+            <h2 id="t12.Redis 优势">2.Redis 优势 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t12.Redis%20%E4%BC%98%E5%8A%BF"> #
+                </a></h2>
+            <ul>
+                <li>性能极高 – Redis能读的速度是110000次/s,写的速度是81000次/s 。</li>
+                <li>丰富的数据类型 – Redis支持二进制的字符串、列表、哈希值、集合和有序集合等数据类型操作。</li>
+                <li>原子性 – Redis的所有操作都是原子性的，意思就是要么成功执行要么失败完全不执行</li>
+                <li>单个操作是原子性的。多个操作也支持事务，即原子性，通过MULTI和EXEC指令包起来。</li>
+                <li>丰富的特性 – Redis还支持 发布/订阅, 通知, key 过期等等特性。</li>
+                <li>
+                    <h2 id="t23. 安装">3. 安装 <a
+                            href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t23.%20%E5%AE%89%E8%A3%85">
+                            # </a></h2>
+                    <h3 id="t33.1 Window下安装">3.1 Window下安装 <a
+                            href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t33.1%20Window%E4%B8%8B%E5%AE%89%E8%A3%85">
+                            # </a></h3>
+                </li>
+                <li><a href="https://github.com/ServiceStack/redis-windows">redis-windows</a></li>
+                <li><a
+                        href="https://github.com/ServiceStack/redis-windows/raw/master/downloads/redis-latest.zip">redis服务端下载</a>
+                </li>
+                <li><a href="https://redisdesktop.com/download">redis客户端下载</a></li>
+                <li><a href="https://redis.io/">redis官网</a></li>
+                <li><a href="http://www.redis.cn/documentation.html">redis中文网</a></li>
+            </ul>
+            <pre><code class="lang-js">redis-server.exe redis.windows.conf 
  redis-cli.exe -h <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> -p <span class="hljs-number">6379</span> 。
 </code></pre>
-<h3 id="t43.2 Mac下安装">3.2 Mac下安装 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t43.2%20Mac%E4%B8%8B%E5%AE%89%E8%A3%85"> # </a></h3>
-<pre><code class="lang-js">brew install redis
+            <h3 id="t43.2 Mac下安装">3.2 Mac下安装 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t43.2%20Mac%E4%B8%8B%E5%AE%89%E8%A3%85">
+                    # </a></h3>
+            <pre><code class="lang-js">brew install redis
 brew services start redis
 redis-server /usr/local/etc/redis.conf
 </code></pre>
-<h3 id="t53.3 配置">3.3 配置 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t53.3%20%E9%85%8D%E7%BD%AE"> # </a></h3>
-<pre><code class="lang-js">CONFIG GET CONFIG_SETTING_NAME
+            <h3 id="t53.3 配置">3.3 配置 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t53.3%20%E9%85%8D%E7%BD%AE"> #
+                </a></h3>
+            <pre><code class="lang-js">CONFIG GET CONFIG_SETTING_NAME
 CONFIG GET port
 </code></pre>
-<h2 id="t64. 数据类型">4. 数据类型 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t64.%20%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"> # </a></h2>
-<ul>
-<li>字符串</li>
-<li>哈希值</li>
-<li>链表</li>
-<li>集合</li>
-<li>有序列表</li>
-</ul>
-<h3 id="t74.1  字符串">4.1  字符串 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t74.1%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2"> # </a></h3>
-<p>字符串是最基本的类型,一个key对应一个value</p>
-<h4 id="t84.1.1 SET 设置值">4.1.1 SET 设置值 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t84.1.1%20SET%20%E8%AE%BE%E7%BD%AE%E5%80%BC"> # </a></h4>
-<pre><code class="lang-js">SET name zfpx
+            <h2 id="t64. 数据类型">4. 数据类型 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t64.%20%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">
+                    # </a></h2>
+            <ul>
+                <li>字符串</li>
+                <li>哈希值</li>
+                <li>链表</li>
+                <li>集合</li>
+                <li>有序列表</li>
+            </ul>
+            <h3 id="t74.1  字符串">4.1 字符串 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t74.1%20%20%E5%AD%97%E7%AC%A6%E4%B8%B2">
+                    # </a></h3>
+            <p>字符串是最基本的类型,一个key对应一个value</p>
+            <h4 id="t84.1.1 SET 设置值">4.1.1 SET 设置值 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t84.1.1%20SET%20%E8%AE%BE%E7%BD%AE%E5%80%BC">
+                    # </a></h4>
+            <pre><code class="lang-js">SET name zfpx
 </code></pre>
-<h4 id="t94.1.2 GET 获取值">4.1.2 GET 获取值 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t94.1.2%20GET%20%E8%8E%B7%E5%8F%96%E5%80%BC"> # </a></h4>
-<pre><code class="lang-js">GET name
+            <h4 id="t94.1.2 GET 获取值">4.1.2 GET 获取值 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t94.1.2%20GET%20%E8%8E%B7%E5%8F%96%E5%80%BC">
+                    # </a></h4>
+            <pre><code class="lang-js">GET name
 </code></pre>
-<h4 id="t104.1.3 GETRANGE 获取子串">4.1.3 GETRANGE 获取子串 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t104.1.3%20GETRANGE%20%E8%8E%B7%E5%8F%96%E5%AD%90%E4%B8%B2"> # </a></h4>
-<pre><code class="lang-js">GETRANGE key start end 
+            <h4 id="t104.1.3 GETRANGE 获取子串">4.1.3 GETRANGE 获取子串 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t104.1.3%20GETRANGE%20%E8%8E%B7%E5%8F%96%E5%AD%90%E4%B8%B2">
+                    # </a></h4>
+            <pre><code class="lang-js">GETRANGE key start end 
 getrange name <span class="hljs-number">1</span> <span class="hljs-number">2</span>
 <span class="hljs-string">"fp"</span>
 </code></pre>
-<h4 id="t114.1.4 INCR INCRBY 递增">4.1.4 INCR INCRBY 递增 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t114.1.4%20INCR%20INCRBY%20%E9%80%92%E5%A2%9E"> # </a></h4>
-<pre><code class="lang-js">SET age <span class="hljs-number">1</span>
+            <h4 id="t114.1.4 INCR INCRBY 递增">4.1.4 INCR INCRBY 递增 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t114.1.4%20INCR%20INCRBY%20%E9%80%92%E5%A2%9E">
+                    # </a></h4>
+            <pre><code class="lang-js">SET age <span class="hljs-number">1</span>
 INCR age
 INCRBY age <span class="hljs-number">6</span>
 DECR age
 DECRBY age  <span class="hljs-number">9</span>
 </code></pre>
-<h4 id="t124.1.5  键">4.1.5  键 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t124.1.5%20%20%E9%94%AE"> # </a></h4>
-<pre><code class="lang-js">DEL key 删除 key
+            <h4 id="t124.1.5  键">4.1.5 键 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t124.1.5%20%20%E9%94%AE"> # </a>
+            </h4>
+            <pre><code class="lang-js">DEL key 删除 key
 DEL user 
 EXISTS key 判断一个key是否存在
 EXISTS user 
@@ -232,58 +479,83 @@ TTL user
 TYPE key 返回key所存储的值的类型
 TYPE user
 </code></pre>
-<h3 id="t134.2  哈希值">4.2  哈希值 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t134.2%20%20%E5%93%88%E5%B8%8C%E5%80%BC"> # </a></h3>
-<p>哈希值是一个字符串类型的Key和值的映射表,特别适合用于存储对象。</p>
-<h4 id="t144.2.1 HSET HMSET 设置值">4.2.1 HSET HMSET 设置值 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t144.2.1%20HSET%20HMSET%20%E8%AE%BE%E7%BD%AE%E5%80%BC"> # </a></h4>
-<pre><code class="lang-js">HSET person name 设置单个值
+            <h3 id="t134.2  哈希值">4.2 哈希值 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t134.2%20%20%E5%93%88%E5%B8%8C%E5%80%BC">
+                    # </a></h3>
+            <p>哈希值是一个字符串类型的Key和值的映射表,特别适合用于存储对象。</p>
+            <h4 id="t144.2.1 HSET HMSET 设置值">4.2.1 HSET HMSET 设置值 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t144.2.1%20HSET%20HMSET%20%E8%AE%BE%E7%BD%AE%E5%80%BC">
+                    # </a></h4>
+            <pre><code class="lang-js">HSET person name 设置单个值
 HMSET user name zfpx age <span class="hljs-number">9</span>  设置多个值
 </code></pre>
-<h4 id="t154.2.2 HGET HGETALL 获取值">4.2.2 HGET HGETALL 获取值 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t154.2.2%20HGET%20HGETALL%20%E8%8E%B7%E5%8F%96%E5%80%BC"> # </a></h4>
-<pre><code class="lang-js">HGET user name 获取单个值
+            <h4 id="t154.2.2 HGET HGETALL 获取值">4.2.2 HGET HGETALL 获取值 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t154.2.2%20HGET%20HGETALL%20%E8%8E%B7%E5%8F%96%E5%80%BC">
+                    # </a></h4>
+            <pre><code class="lang-js">HGET user name 获取单个值
 HMGET user name age 获取多个值
 HGETALL user 获取多有值
 </code></pre>
-<h4 id="t164.2.3 HDEL key field 删除键">4.2.3 HDEL key field 删除键 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t164.2.3%20HDEL%20key%20field%20%E5%88%A0%E9%99%A4%E9%94%AE"> # </a></h4>
-<pre><code class="lang-js">HDEL key field
+            <h4 id="t164.2.3 HDEL key field 删除键">4.2.3 HDEL key field 删除键 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t164.2.3%20HDEL%20key%20field%20%E5%88%A0%E9%99%A4%E9%94%AE">
+                    # </a></h4>
+            <pre><code class="lang-js">HDEL key field
 HDEL user name
 HGETALL user
 </code></pre>
-<h4 id="t174.2.3 HKEYS 获取所有的KEYS">4.2.3 HKEYS 获取所有的KEYS <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t174.2.3%20HKEYS%20%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E7%9A%84KEYS"> # </a></h4>
-<pre><code class="lang-js"> HKEYS user
+            <h4 id="t174.2.3 HKEYS 获取所有的KEYS">4.2.3 HKEYS 获取所有的KEYS <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t174.2.3%20HKEYS%20%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E7%9A%84KEYS">
+                    # </a></h4>
+            <pre><code class="lang-js"> HKEYS user
 </code></pre>
-<h3 id="t184.3  列表">4.3  列表 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t184.3%20%20%E5%88%97%E8%A1%A8"> # </a></h3>
-<p>列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部（左边）或者尾部（右边）。</p>
-<h4 id="t194.3.1 LPUSH RPUSH 添加元素">4.3.1 LPUSH RPUSH 添加元素 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t194.3.1%20LPUSH%20RPUSH%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0"> # </a></h4>
-<p>返回列表的长度</p>
-<pre><code class="lang-js">LPUSH ids <span class="hljs-number">2</span>
+            <h3 id="t184.3  列表">4.3 列表 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t184.3%20%20%E5%88%97%E8%A1%A8"> #
+                </a></h3>
+            <p>列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部（左边）或者尾部（右边）。</p>
+            <h4 id="t194.3.1 LPUSH RPUSH 添加元素">4.3.1 LPUSH RPUSH 添加元素 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t194.3.1%20LPUSH%20RPUSH%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0">
+                    # </a></h4>
+            <p>返回列表的长度</p>
+            <pre><code class="lang-js">LPUSH ids <span class="hljs-number">2</span>
 LPUSH ids <span class="hljs-number">1</span>
 RPUSH ids <span class="hljs-number">3</span>
 RPUSH ids <span class="hljs-number">4</span>
 RPUSH ids  <span class="hljs-number">5</span> <span class="hljs-number">6</span> 
 </code></pre>
-<h4 id="t204.3.2 LRANGE 查看元素">4.3.2 LRANGE 查看元素 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t204.3.2%20LRANGE%20%E6%9F%A5%E7%9C%8B%E5%85%83%E7%B4%A0"> # </a></h4>
-<pre><code class="lang-js">LRANGE ids <span class="hljs-number">0</span> <span class="hljs-number">2</span>
+            <h4 id="t204.3.2 LRANGE 查看元素">4.3.2 LRANGE 查看元素 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t204.3.2%20LRANGE%20%E6%9F%A5%E7%9C%8B%E5%85%83%E7%B4%A0">
+                    # </a></h4>
+            <pre><code class="lang-js">LRANGE ids <span class="hljs-number">0</span> <span class="hljs-number">2</span>
 LRANGE ids <span class="hljs-number">0</span> <span class="hljs-number">-1</span>
 </code></pre>
-<h4 id="t214.3.3 LPOP RPOP 弹出元素">4.3.3 LPOP RPOP 弹出元素 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t214.3.3%20LPOP%20RPOP%20%E5%BC%B9%E5%87%BA%E5%85%83%E7%B4%A0"> # </a></h4>
-<p>查看并删除</p>
-<pre><code class="lang-js">LPOP ids 
+            <h4 id="t214.3.3 LPOP RPOP 弹出元素">4.3.3 LPOP RPOP 弹出元素 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t214.3.3%20LPOP%20RPOP%20%E5%BC%B9%E5%87%BA%E5%85%83%E7%B4%A0">
+                    # </a></h4>
+            <p>查看并删除</p>
+            <pre><code class="lang-js">LPOP ids 
 RPOP ids
 </code></pre>
-<h4 id="t224.3.4 LINDEX ids 1">4.3.4 LINDEX ids 1 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t224.3.4%20LINDEX%20ids%201"> # </a></h4>
-<p>通过索引获取列表中的元素</p>
-<pre><code class="lang-js">LINDEX ids <span class="hljs-number">0</span>
+            <h4 id="t224.3.4 LINDEX ids 1">4.3.4 LINDEX ids 1 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t224.3.4%20LINDEX%20ids%201"> #
+                </a></h4>
+            <p>通过索引获取列表中的元素</p>
+            <pre><code class="lang-js">LINDEX ids <span class="hljs-number">0</span>
 </code></pre>
-<h4 id="t234.3.5 LLEN key">4.3.5 LLEN key <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t234.3.5%20LLEN%20key"> # </a></h4>
-<p>获取列表长度</p>
-<pre><code class="lang-js">LLEN ids
+            <h4 id="t234.3.5 LLEN key">4.3.5 LLEN key <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t234.3.5%20LLEN%20key"> # </a>
+            </h4>
+            <p>获取列表长度</p>
+            <pre><code class="lang-js">LLEN ids
 </code></pre>
-<h4 id="t244.3.6 LREM key count value">4.3.6 LREM key count value <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t244.3.6%20LREM%20key%20count%20value"> # </a></h4>
-<p>移除列表元素</p>
-<ul>
-<li>count &gt; 0 : 从表头开始向表尾搜索，移除与 VALUE 相等的元素，数量为 COUNT 。</li>
-<li>count &lt; 0 : 从表尾开始向表头搜索，移除与 VALUE 相等的元素，数量为 COUNT 的绝对值。</li>
-<li>count = 0 : 移除表中所有与 VALUE 相等的值。<pre><code class="lang-js">LREM ids count value
+            <h4 id="t244.3.6 LREM key count value">4.3.6 LREM key count value <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t244.3.6%20LREM%20key%20count%20value">
+                    # </a></h4>
+            <p>移除列表元素</p>
+            <ul>
+                <li>count &gt; 0 : 从表头开始向表尾搜索，移除与 VALUE 相等的元素，数量为 COUNT 。</li>
+                <li>count &lt; 0 : 从表尾开始向表头搜索，移除与 VALUE 相等的元素，数量为 COUNT 的绝对值。</li>
+                <li>count = 0 : 移除表中所有与 VALUE 相等的值。
+                    <pre><code class="lang-js">LREM ids count value
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lpush my <span class="hljs-number">1</span>
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lpush my <span class="hljs-number">2</span>
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; lpush my <span class="hljs-number">2</span>
@@ -302,68 +574,92 @@ RPOP ids
 <span class="hljs-number">2</span>) <span class="hljs-string">"2"</span>
 <span class="hljs-number">3</span>) <span class="hljs-string">"1"</span>
 </code></pre>
-</li>
-</ul>
-<h3 id="t254.4  集合">4.4  集合 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t254.4%20%20%E9%9B%86%E5%90%88"> # </a></h3>
-<p>集合是字符串类型的无序集合</p>
-<h4 id="t264.4.1 SADD 添加">4.4.1 SADD 添加 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t264.4.1%20SADD%20%E6%B7%BB%E5%8A%A0"> # </a></h4>
-<p>如果集合中已经存在指定的元素则返回0,如果不存在则添加成功返回1</p>
-<pre><code class="lang-js">SADD tags <span class="hljs-number">1</span>
+                </li>
+            </ul>
+            <h3 id="t254.4  集合">4.4 集合 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t254.4%20%20%E9%9B%86%E5%90%88"> #
+                </a></h3>
+            <p>集合是字符串类型的无序集合</p>
+            <h4 id="t264.4.1 SADD 添加">4.4.1 SADD 添加 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t264.4.1%20SADD%20%E6%B7%BB%E5%8A%A0">
+                    # </a></h4>
+            <p>如果集合中已经存在指定的元素则返回0,如果不存在则添加成功返回1</p>
+            <pre><code class="lang-js">SADD tags <span class="hljs-number">1</span>
 SADD tags <span class="hljs-number">2</span>
 SADD tags <span class="hljs-number">2</span>
 SADD tags <span class="hljs-number">3</span>
 SADD tags  <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> 
 SMEMBERS tags
 </code></pre>
-<h4 id="t274.4.2 SMEMBERS 查看集合">4.4.2 SMEMBERS 查看集合 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t274.4.2%20SMEMBERS%20%E6%9F%A5%E7%9C%8B%E9%9B%86%E5%90%88"> # </a></h4>
-<pre><code class="lang-js">SMEMBERS tags
+            <h4 id="t274.4.2 SMEMBERS 查看集合">4.4.2 SMEMBERS 查看集合 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t274.4.2%20SMEMBERS%20%E6%9F%A5%E7%9C%8B%E9%9B%86%E5%90%88">
+                    # </a></h4>
+            <pre><code class="lang-js">SMEMBERS tags
 </code></pre>
-<h4 id="t284.4.3 SCARD 获取集合元素个数">4.4.3 SCARD 获取集合元素个数 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t284.4.3%20SCARD%20%E8%8E%B7%E5%8F%96%E9%9B%86%E5%90%88%E5%85%83%E7%B4%A0%E4%B8%AA%E6%95%B0"> # </a></h4>
-<pre><code class="lang-js">SCARD tags
+            <h4 id="t284.4.3 SCARD 获取集合元素个数">4.4.3 SCARD 获取集合元素个数 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t284.4.3%20SCARD%20%E8%8E%B7%E5%8F%96%E9%9B%86%E5%90%88%E5%85%83%E7%B4%A0%E4%B8%AA%E6%95%B0">
+                    # </a></h4>
+            <pre><code class="lang-js">SCARD tags
 </code></pre>
-<h4 id="t294.4.4 SREM 删除元素">4.4.4 SREM 删除元素 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t294.4.4%20SREM%20%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0"> # </a></h4>
-<pre><code class="lang-js">SREM tags member
+            <h4 id="t294.4.4 SREM 删除元素">4.4.4 SREM 删除元素 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t294.4.4%20SREM%20%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0">
+                    # </a></h4>
+            <pre><code class="lang-js">SREM tags member
 SREM tags <span class="hljs-number">4</span>
 SMEMBERS tags
 </code></pre>
-<h4 id="t304.4.5 集合运算">4.4.5 集合运算 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t304.4.5%20%E9%9B%86%E5%90%88%E8%BF%90%E7%AE%97"> # </a></h4>
-<pre><code class="lang-js">SADD A <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> 
+            <h4 id="t304.4.5 集合运算">4.4.5 集合运算 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t304.4.5%20%E9%9B%86%E5%90%88%E8%BF%90%E7%AE%97">
+                    # </a></h4>
+            <pre><code class="lang-js">SADD A <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> 
 SADD B <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span>
 SINTER A B 交集
 SDIFF A B 差集
 SUNION A B 并集
 </code></pre>
-<h3 id="t314.5  有序集合">4.5  有序集合 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t314.5%20%20%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"> # </a></h3>
-<p>有序集合和集合一样也是字符串的集合，而且不能重复
-不同之外是每个集合都会关联一个double类型的分数，redis可以通过这个分类来为集合中的元素进行从小到大排序,元素不能重复，但分数可以重复</p>
-<h4 id="t324.5.1 ZADD 添加元素">4.5.1 ZADD 添加元素 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t324.5.1%20ZADD%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0"> # </a></h4>
-<pre><code class="lang-js">ZADD key score1 member1 [score2 member2] 
+            <h3 id="t314.5  有序集合">4.5 有序集合 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t314.5%20%20%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88">
+                    # </a></h3>
+            <p>有序集合和集合一样也是字符串的集合，而且不能重复
+                不同之外是每个集合都会关联一个double类型的分数，redis可以通过这个分类来为集合中的元素进行从小到大排序,元素不能重复，但分数可以重复</p>
+            <h4 id="t324.5.1 ZADD 添加元素">4.5.1 ZADD 添加元素 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t324.5.1%20ZADD%20%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0">
+                    # </a></h4>
+            <pre><code class="lang-js">ZADD key score1 member1 [score2 member2] 
 
 ZADD levels <span class="hljs-number">1</span> one
 ZADD levels <span class="hljs-number">2</span> two
 ZADD levels <span class="hljs-number">3</span> three
 ZADD levels <span class="hljs-number">4</span> four
 </code></pre>
-<h4 id="t334.5.2 ZCARD 获取有序集合的成员数">4.5.2 ZCARD 获取有序集合的成员数 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t334.5.2%20ZCARD%20%E8%8E%B7%E5%8F%96%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E7%9A%84%E6%88%90%E5%91%98%E6%95%B0"> # </a></h4>
-<pre><code class="lang-js">ZCARD key
+            <h4 id="t334.5.2 ZCARD 获取有序集合的成员数">4.5.2 ZCARD 获取有序集合的成员数 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t334.5.2%20ZCARD%20%E8%8E%B7%E5%8F%96%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E7%9A%84%E6%88%90%E5%91%98%E6%95%B0">
+                    # </a></h4>
+            <pre><code class="lang-js">ZCARD key
 ZCARD levels
 </code></pre>
-<h4 id="t344.5.3 ZRANGE 查看有序集合">4.5.3 ZRANGE 查看有序集合 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t344.5.3%20ZRANGE%20%E6%9F%A5%E7%9C%8B%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88"> # </a></h4>
-<pre><code class="lang-js">ZRANGE levels  <span class="hljs-number">0</span> <span class="hljs-number">-1</span> 按范围查看
+            <h4 id="t344.5.3 ZRANGE 查看有序集合">4.5.3 ZRANGE 查看有序集合 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t344.5.3%20ZRANGE%20%E6%9F%A5%E7%9C%8B%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88">
+                    # </a></h4>
+            <pre><code class="lang-js">ZRANGE levels  <span class="hljs-number">0</span> <span class="hljs-number">-1</span> 按范围查看
 ZRANGE levels  <span class="hljs-number">0</span> <span class="hljs-number">2</span> WITHSCORES 按范围查看，并显示分数
 </code></pre>
-<h4 id="t354.5.4 ZREM 移除有序集合中的一个或多个成员">4.5.4 ZREM 移除有序集合中的一个或多个成员 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t354.5.4%20ZREM%20%E7%A7%BB%E9%99%A4%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%88%90%E5%91%98"> # </a></h4>
-<pre><code class="lang-js">ZREM key member [member ...] 
+            <h4 id="t354.5.4 ZREM 移除有序集合中的一个或多个成员">4.5.4 ZREM 移除有序集合中的一个或多个成员 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t354.5.4%20ZREM%20%E7%A7%BB%E9%99%A4%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E4%B8%AD%E7%9A%84%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%88%90%E5%91%98">
+                    # </a></h4>
+            <pre><code class="lang-js">ZREM key member [member ...] 
 ZADD levels <span class="hljs-number">1</span> one
 ZADD levels <span class="hljs-number">2</span> two
 ZREM levels one
  ZRANGE levels  <span class="hljs-number">0</span> <span class="hljs-number">-1</span>
 </code></pre>
-<h2 id="t365. Node.js中的使用">5. Node.js中的使用 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t365.%20Node.js%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8"> # </a></h2>
-<ul>
-<li><a href="https://www.npmjs.com/package/redis">redis</a></li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> redis = <span class="hljs-built_in">require</span>(<span class="hljs-string">'redis'</span>);
+            <h2 id="t365. Node.js中的使用">5. Node.js中的使用 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t365.%20Node.js%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8">
+                    # </a></h2>
+            <ul>
+                <li><a href="https://www.npmjs.com/package/redis">redis</a></li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">const</span> redis = <span class="hljs-built_in">require</span>(<span class="hljs-string">'redis'</span>);
 <span class="hljs-keyword">let</span> client = redis.createClient(<span class="hljs-number">6379</span>, <span class="hljs-string">'127.0.0.1'</span>);
 client.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
     <span class="hljs-built_in">console</span>.error(error);
@@ -381,13 +677,15 @@ client.hkeys(<span class="hljs-string">'user'</span>, <span class="hljs-function
     });
 });
 </code></pre>
-<h2 id="t376. Redis发布订阅">6. Redis发布订阅 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t376.%20Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85"> # </a></h2>
-<p>Redis 发布订阅是一种消息通信模式：发送者发送消息，订阅者接收消息，客户端可以订阅任意数量的频道。</p>
-<p><img src="./33.redis_files/redissubscribe.jpg" alt="redissubscribe"></p>
-<pre><code class="lang-js">SUBSCRIBE chat
+            <h2 id="t376. Redis发布订阅">6. Redis发布订阅 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t376.%20Redis%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85">
+                    # </a></h2>
+            <p>Redis 发布订阅是一种消息通信模式：发送者发送消息，订阅者接收消息，客户端可以订阅任意数量的频道。</p>
+            <p><img src="./33.redis_files/redissubscribe.jpg" alt="redissubscribe"></p>
+            <pre><code class="lang-js">SUBSCRIBE chat
 PUBLISH chat zfpx
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-keyword">let</span> client1 = redis.createClient(<span class="hljs-number">6379</span>, <span class="hljs-string">'127.0.0.1'</span>);
+            <pre><code class="lang-js"><span class="hljs-keyword">let</span> client1 = redis.createClient(<span class="hljs-number">6379</span>, <span class="hljs-string">'127.0.0.1'</span>);
 <span class="hljs-keyword">let</span> client2 = redis.createClient(<span class="hljs-number">6379</span>, <span class="hljs-string">'127.0.0.1'</span>);
 <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
 client1.subscribe(<span class="hljs-string">'food'</span>);
@@ -404,14 +702,17 @@ setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;
     client2.publish(<span class="hljs-string">'drink'</span>, <span class="hljs-string">'桔汁2'</span>);
 }, <span class="hljs-number">2000</span>);
 </code></pre>
-<h2 id="t387. Redis事务">7. Redis事务 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t387.%20Redis%E4%BA%8B%E5%8A%A1"> # </a></h2>
-<p>Redis 事务可以一次执行多个命令</p>
-<ul>
-<li>多个命令可以在执行EXEC命令之前放入缓存队列</li>
-<li>收到EXEC命令后会将缓存队列执行</li>
-<li>在执行事务的过程中，新提交的并不能被插入到事务执行序列中</li>
-<li><p>DISCARD 可以取消事务，放弃执行事务块内的所有命令</p>
-<pre><code class="lang-js"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; MULTI
+            <h2 id="t387. Redis事务">7. Redis事务 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t387.%20Redis%E4%BA%8B%E5%8A%A1">
+                    # </a></h2>
+            <p>Redis 事务可以一次执行多个命令</p>
+            <ul>
+                <li>多个命令可以在执行EXEC命令之前放入缓存队列</li>
+                <li>收到EXEC命令后会将缓存队列执行</li>
+                <li>在执行事务的过程中，新提交的并不能被插入到事务执行序列中</li>
+                <li>
+                    <p>DISCARD 可以取消事务，放弃执行事务块内的所有命令</p>
+                    <pre><code class="lang-js"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; MULTI
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; SET account1 <span class="hljs-number">1</span>
 QUEUED
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; SET account2 <span class="hljs-number">3</span>
@@ -424,31 +725,40 @@ QUEUED
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; GET account2
 <span class="hljs-string">"3"</span>
 </code></pre>
-</li>
-<li><p>单个 Redis 命令的执行是原子性的，但 Redis 没有在事务上增加任何维持原子性的机制，所以 Redis 事务的执行并不是原子性的</p>
-</li>
-<li>事务可以理解为一个打包的批量执行脚本，但批量指令并非原子化的操作，中间某条指令的失败不会导致前面已做指令的回滚，也不会造成后续的指令不做</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">let</span> redis = <span class="hljs-built_in">require</span>(<span class="hljs-string">'redis'</span>);
+                </li>
+                <li>
+                    <p>单个 Redis 命令的执行是原子性的，但 Redis 没有在事务上增加任何维持原子性的机制，所以 Redis 事务的执行并不是原子性的</p>
+                </li>
+                <li>事务可以理解为一个打包的批量执行脚本，但批量指令并非原子化的操作，中间某条指令的失败不会导致前面已做指令的回滚，也不会造成后续的指令不做</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">let</span> redis = <span class="hljs-built_in">require</span>(<span class="hljs-string">'redis'</span>);
 <span class="hljs-keyword">let</span> client = redis.createClient(<span class="hljs-number">6379</span>, <span class="hljs-string">'127.0.0.1'</span>);
 client.multi().hset(<span class="hljs-string">'user2'</span>, <span class="hljs-string">'name2'</span>, <span class="hljs-string">'zfpx2'</span>).hset(<span class="hljs-string">'user2'</span>, <span class="hljs-string">'age2'</span>, <span class="hljs-string">'92'</span>).exec(redis.print);
 </code></pre>
-<h2 id="t398. 备份与恢复">8. 备份与恢复 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t398.%20%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D"> # </a></h2>
-<h3 id="t408.1 备份">8.1 备份 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t408.1%20%E5%A4%87%E4%BB%BD"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; SAVE
+            <h2 id="t398. 备份与恢复">8. 备份与恢复 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t398.%20%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D">
+                    # </a></h2>
+            <h3 id="t408.1 备份">8.1 备份 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t408.1%20%E5%A4%87%E4%BB%BD"> #
+                </a></h3>
+            <pre><code class="lang-js"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; SAVE
 OK
 </code></pre>
-<blockquote>
-<p>该命令将在 redis 安装目录中创建dump.rdb文件。</p>
-</blockquote>
-<h3 id="t418.2 恢复">8.2 恢复 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t418.2%20%E6%81%A2%E5%A4%8D"> # </a></h3>
-<p>将备份文件 (dump.rdb) 移动到 redis 安装目录并启动服务</p>
-<pre><code class="lang-js"> CONFIG GET dir
+            <blockquote>
+                <p>该命令将在 redis 安装目录中创建dump.rdb文件。</p>
+            </blockquote>
+            <h3 id="t418.2 恢复">8.2 恢复 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t418.2%20%E6%81%A2%E5%A4%8D"> #
+                </a></h3>
+            <p>将备份文件 (dump.rdb) 移动到 redis 安装目录并启动服务</p>
+            <pre><code class="lang-js"> CONFIG GET dir
  BGSAVE
 </code></pre>
-<h2 id="t428. 安全">8. 安全 <a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t428.%20%E5%AE%89%E5%85%A8"> # </a></h2>
-<p>可以通过 redis 的配置文件设置密码参数，这样客户端连接到 redis 服务就需要密码验证，这样可以让你的 redis 服务更安全。</p>
-<pre><code class="lang-js"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; CONFIG get requirepass
+            <h2 id="t428. 安全">8. 安全 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html#t428.%20%E5%AE%89%E5%85%A8"> #
+                </a></h2>
+            <p>可以通过 redis 的配置文件设置密码参数，这样客户端连接到 redis 服务就需要密码验证，这样可以让你的 redis 服务更安全。</p>
+            <pre><code class="lang-js"><span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; CONFIG get requirepass
 <span class="hljs-number">1</span>) <span class="hljs-string">"requirepass"</span>
 <span class="hljs-number">2</span>) <span class="hljs-string">""</span>
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; CONFIG set requirepass <span class="hljs-string">'zfpx'</span>
@@ -460,83 +770,80 @@ OK
 <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">6379</span>&gt; CONFIG get requirepass
 </code></pre>
 
-        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+            <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>.
+                Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+        </div>
+
     </div>
-    
-</div>
 
-<script src="./33.redis_files/jquery.js"></script>
-<script>
-$('.warpper .page-toc ul ul li a').on('click',function(){
-  $('.warpper .page-toc ul ul li a').removeClass('my-active')
-  $(this).addClass('my-active')
-})
+    <script src="./33.redis_files/jquery.js"></script>
+    <script>
+        $('.warpper .page-toc ul ul li a').on('click', function () {
+            $('.warpper .page-toc ul ul li a').removeClass('my-active')
+            $(this).addClass('my-active')
+        })
 
-$('.logo').on('mouseenter',function(){
-  $('.nav').height('400px');
-})
-$('.nav').on('mouseleave',function(){
-  $('.nav').height('80px');
-})
-$('.logo').on('click',function(){
-  $('.nav').css('display','none');
- $('.warpper').css('padding','0px');
-})
-// if (!$('.understand-me').length) {
-  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-  //   var count = bar / 26 / 2;
-  //   var barHeight = $('.page-toc').outerHeight();
-  //   $('.page-toc li').eq(0).children('a').addClass('red');
-  //   var arr = [];
-  //   $("h1,h2,h3,h4,h5,h6").each(function () {
-  //     arr.push($(this).position().top);
-  //   });
-  //   var timer
-  //   function dark() {
-  //     clearTimeout(timer)
-  //      timer = setTimeout(function () {
-  //      var top = Math.abs($('.page-toc > ul').position().top);
-  //      var cur = $('.content').scrollTop();
-  //      for (var i = arr.length; i >= 0; i--) {
-  //        if (arr[i] <= cur) {
-  //          break;
-  //        }
-  //      }
-  //      if (i === -1) {
-  //        i = 0;
-  //      }
-  //      $('.page-toc li a').removeClass('red');
-  //      $('.page-toc li').eq(i).children('a').addClass('red');
-  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-  //    },200)
-  //   }
+        $('.logo').on('mouseenter', function () {
+            $('.nav').height('400px');
+        })
+        $('.nav').on('mouseleave', function () {
+            $('.nav').height('80px');
+        })
+        $('.logo').on('click', function () {
+            $('.nav').css('display', 'none');
+            $('.warpper').css('padding', '0px');
+        })
+        // if (!$('.understand-me').length) {
+        //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+        //   var count = bar / 26 / 2;
+        //   var barHeight = $('.page-toc').outerHeight();
+        //   $('.page-toc li').eq(0).children('a').addClass('red');
+        //   var arr = [];
+        //   $("h1,h2,h3,h4,h5,h6").each(function () {
+        //     arr.push($(this).position().top);
+        //   });
+        //   var timer
+        //   function dark() {
+        //     clearTimeout(timer)
+        //      timer = setTimeout(function () {
+        //      var top = Math.abs($('.page-toc > ul').position().top);
+        //      var cur = $('.content').scrollTop();
+        //      for (var i = arr.length; i >= 0; i--) {
+        //        if (arr[i] <= cur) {
+        //          break;
+        //        }
+        //      }
+        //      if (i === -1) {
+        //        i = 0;
+        //      }
+        //      $('.page-toc li a').removeClass('red');
+        //      $('.page-toc li').eq(i).children('a').addClass('red');
+        //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+        //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+        //    },200)
+        //   }
 
-  //   $('.content').on('scroll', dark);
-  // }
-</script>
-<style>
-
-    /* ::-webkit-scrollbar{width:14px;}
+        //   $('.content').on('scroll', dark);
+        // }
+    </script>
+    <style>
+        /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
     ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
-    .page-toc > ul .red {
-        background: #f3f3f3;
-        z-index: 1;
-        border-left: 3px solid #009a61;
-        -webkit-transition: all .2s ease;
-        transition: all .2s ease;
-        color: #000
-    }
+        .page-toc>ul .red {
+            background: #f3f3f3;
+            z-index: 1;
+            border-left: 3px solid #009a61;
+            -webkit-transition: all .2s ease;
+            transition: all .2s ease;
+            color: #000
+        }
+    </style>
 
 
+</body>
 
-
-
-</style>
-
-
-</body></html>
+</html>

@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <!-- saved from url=(0061)http://www.zhufengpeixun.cn/architecture/html/60.react-1.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>珠峰架构师成长计划</title>
     <link rel="stylesheet" type="text/css" href="./60.react-1_files/main.css">
-<style type="text/css" abt="234"></style><script>//console.log('a')
-</script><script>//remove 17173 video ad
-doAdblock();
-function doAdblock(){
-    (function() {
-        function A() {}
-        A.prototype = {
-            rules: {
-                '17173_in':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
-                },
-                '17173_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
-                },
-                '17173_live':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
-                },
-                '17173_live_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
-                }
-            },
-            _done: null,
-            get done() {
-                if(!this._done) {
-                    this._done = new Array();
-                }
-                return this._done;
-            },
-            addAnimations: function() {
-                var style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = 'object,embed{\
+    <style type="text/css" abt="234"></style>
+    <script>
+        //console.log('a')
+    </script>
+    <script>
+        //remove 17173 video ad
+        doAdblock();
+
+        function doAdblock() {
+            (function () {
+                function A() {}
+                A.prototype = {
+                    rules: {
+                        '17173_in': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_in_20150522.swf"
+                        },
+                        '17173_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_out_20150522.swf"
+                        },
+                        '17173_live': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_stream_20150522.swf"
+                        },
+                        '17173_live_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173.out.Live.swf"
+                        }
+                    },
+                    _done: null,
+                    get done() {
+                        if (!this._done) {
+                            this._done = new Array();
+                        }
+                        return this._done;
+                    },
+                    addAnimations: function () {
+                        var style = document.createElement('style');
+                        style.type = 'text/css';
+                        style.innerHTML = 'object,embed{\
                 -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
                 -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
                 -o-animation-duration:.001s;-o-animation-name:playerInserted;\
@@ -49,141 +57,401 @@ function doAdblock(){
                 @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
-                document.getElementsByTagName('head')[0].appendChild(style);
-            },
-            animationsHandler: function(e) {
-                if(e.animationName === 'playerInserted') {
-                    this.replace(e.target);
-                }
-            },
-            replace: function(elem) {
-                if(this.done.indexOf(elem) != -1) return;
-                this.done.push(elem);
-                var player = elem.data || elem.src;
-                if(!player) return;
-                var i, find, replace = false;
-                for(i in this.rules) {
-                    find = this.rules[i]['find'];
-                    if(find.test(player)) {
-                        replace = this.rules[i]['replace'];
-                        if('function' === typeof this.rules[i]['preHandle']) {
-                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
-                        }else{
-                            this.reallyReplace.bind(this, elem, find, replace)();
+                        document.getElementsByTagName('head')[0].appendChild(style);
+                    },
+                    animationsHandler: function (e) {
+                        if (e.animationName === 'playerInserted') {
+                            this.replace(e.target);
                         }
-                        break;
+                    },
+                    replace: function (elem) {
+                        if (this.done.indexOf(elem) != -1) return;
+                        this.done.push(elem);
+                        var player = elem.data || elem.src;
+                        if (!player) return;
+                        var i, find, replace = false;
+                        for (i in this.rules) {
+                            find = this.rules[i]['find'];
+                            if (find.test(player)) {
+                                replace = this.rules[i]['replace'];
+                                if ('function' === typeof this.rules[i]['preHandle']) {
+                                    this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                                } else {
+                                    this.reallyReplace.bind(this, elem, find, replace)();
+                                }
+                                break;
+                            }
+                        }
+                    },
+                    reallyReplace: function (elem, find, replace) {
+                        elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem
+                            .src = elem.src.replace(find, replace)) && (elem.style.display =
+                            'block'));
+                        var b = elem.querySelector("param[name='movie']");
+                        this.reloadPlugin(elem);
+                    },
+                    reloadPlugin: function (elem) {
+                        var nextSibling = elem.nextSibling;
+                        var parentNode = elem.parentNode;
+                        parentNode.removeChild(elem);
+                        var newElem = elem.cloneNode(true);
+                        this.done.push(newElem);
+                        if (nextSibling) {
+                            parentNode.insertBefore(newElem, nextSibling);
+                        } else {
+                            parentNode.appendChild(newElem);
+                        }
+                    },
+                    init: function () {
+                        var handler = this.animationsHandler.bind(this);
+                        document.body.addEventListener('webkitAnimationStart', handler, false);
+                        document.body.addEventListener('msAnimationStart', handler, false);
+                        document.body.addEventListener('oAnimationStart', handler, false);
+                        document.body.addEventListener('animationstart', handler, false);
+                        this.addAnimations();
+                    }
+                };
+                new A().init();
+            })();
+        }
+        //remove baidu search ad
+        if (document.URL.indexOf('www.baidu.com') >= 0) {
+            if (document && document.getElementsByTagName && document.getElementById && document.body) {
+                var aa = function () {
+                    var all = document.body.querySelectorAll("#content_left div,#content_left table");
+                    for (var i = 0; i < all.length; i++) {
+                        if (/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
+                    }
+                    all = document.body.querySelectorAll('.result.c-container[id="1"]');
+                    //if(all.length == 1) return;
+                    for (var i = 0; i < all.length; i++) {
+                        if (all[i].innerHTML && all[i].innerHTML.indexOf('广告') > -1) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
                     }
                 }
-            },
-            reallyReplace: function(elem, find, replace) {
-                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
-                var b = elem.querySelector("param[name='movie']");
-                this.reloadPlugin(elem);
-            },
-            reloadPlugin: function(elem) {
-                var nextSibling = elem.nextSibling;
-                var parentNode = elem.parentNode;
-                parentNode.removeChild(elem);
-                var newElem = elem.cloneNode(true);
-                this.done.push(newElem);
-                if(nextSibling) {
-                    parentNode.insertBefore(newElem, nextSibling);
+                aa();
+                document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified', aa)
+            };
+        }
+        //remove sohu video ad
+        if (document.URL.indexOf("tv.sohu.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //remove 56.com video ad
+        if (document.URL.indexOf("56.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //fore iqiyi enable html5 player function
+        if (document.URL.indexOf("iqiyi.com") >= 0) {
+            if (document.cookie.indexOf("player_forcedType=h5_VOD") == -1) {
+                document.cookie = 'player_forcedType=h5_VOD'
+                if (localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime) < 60000) {
+                    console.log('no reload')
                 } else {
-                    parentNode.appendChild(newElem);
-                }
-            },
-            init: function() {
-                var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
-                document.body.addEventListener('animationstart', handler, false);
-                this.addAnimations();
-            }
-        };
-        new A().init();
-    })();
-}
-//remove baidu search ad
-if(document.URL.indexOf('www.baidu.com') >= 0){
-    if(document && document.getElementsByTagName && document.getElementById && document.body){
-        var aa = function(){
-            var all = document.body.querySelectorAll("#content_left div,#content_left table");
-            for(var i = 0; i < all.length; i++){
-                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
-            }
-            all = document.body.querySelectorAll('.result.c-container[id="1"]');
-            //if(all.length == 1) return;
-            for(var i = 0; i < all.length; i++){
-                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
-                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                    location.reload()
+                    localStorage.reloadTime = Date.now();
                 }
             }
         }
-        aa();
-        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
-    };
-}
-//remove sohu video ad
-if (document.URL.indexOf("tv.sohu.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//remove 56.com video ad
-if (document.URL.indexOf("56.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//fore iqiyi enable html5 player function
-if (document.URL.indexOf("iqiyi.com") >= 0){
-    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
-        document.cookie='player_forcedType=h5_VOD'
-        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
-            console.log('no reload')
-        }else{
-            location.reload()
-            localStorage.reloadTime = Date.now();
+    </script>
+    <style type="text/css">
+        object,
+        embed {
+            -webkit-animation-duration: .001s;
+            -webkit-animation-name: playerInserted;
+            -ms-animation-duration: .001s;
+            -ms-animation-name: playerInserted;
+            -o-animation-duration: .001s;
+            -o-animation-name: playerInserted;
+            animation-duration: .001s;
+            animation-name: playerInserted;
         }
-    }
-}
-</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+
+        @-webkit-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-ms-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
 <body>
-<div class="nav" style="height: 81px;">
-    <div class="logo">
-        
-            珠峰架构师成长计划
-        
-    </div>
-<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
-
-
-<div class="warpper">
-
-    <div class="page-toc">
-        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t01.%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">1.初始化项目</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t12.%20%E6%B8%B2%E6%9F%93%E6%96%87%E6%9C%AC">2. 渲染文本</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t22.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">2.1 渲染效果</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t32.2%20%E7%B1%BB%E5%9B%BE">2.2 类图</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t42.3%20%E5%AE%9E%E7%8E%B0">2.3 实现</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t52.3.1%20index.js">2.3.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t62.3.2%20react\index.js">2.3.2 react\index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t72.3.3%20react\unit.js">2.3.3 react\unit.js</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t83.%20%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%94%9FDOM%E7%BB%84%E4%BB%B6">3. 渲染原生DOM组件</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t93.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">3.1 渲染效果</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t103.2%20%E7%B1%BB%E5%9B%BE">3.2 类图</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t113.3%20JSX%E8%AF%AD%E6%B3%95">3.3 JSX语法</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t123.3.1%20JSX">3.3.1 JSX</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t133.3.2%20JavaScript">3.3.2 JavaScript</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t143.4%20%E5%AE%9E%E7%8E%B0">3.4 实现</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t153.4.1%20%20index.js">3.4.1  index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t163.4.2%20react/index.js">3.4.2 react/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t173.4.3%20react/element.js">3.4.3 react/element.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t183.4.4%20react/unit.js">3.4.4 react/unit.js</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t194.%20%E6%B8%B2%E6%9F%93%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6">4. 渲染自定义组件</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t204.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">4.1 渲染效果</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t214.2%20%E7%B1%BB%E5%9B%BE">4.2 类图</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t224.3%20%E5%AE%9E%E7%8E%B0">4.3 实现</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t234.3.1%20src/index.js">4.3.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t244.3.2%20react/index.js">4.3.2 react/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t254.3.3%20react/component.js">4.3.3 react/component.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t264.3.4%20react/unit.js">4.3.4 react/unit.js</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t275.%20%E5%AE%9E%E7%8E%B0setState">5. 实现setState</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t285.1%20src/index.js">5.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t295.2%20react/component.js">5.2 react/component.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t305.3%20react/unit.js">5.3 react/unit.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t315.4%20react/element.js">5.4 react/element.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t326.%20%E5%AF%B9%E6%AF%94%E5%B1%9E%E6%80%A7">6. 对比属性</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t336.1%20%20src/index.js">6.1  src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t346.2%20react/unit.js">6.2 react/unit.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t357.%20%E8%8E%B7%E5%BE%97%E8%A1%A5%E4%B8%81%E6%95%B0%E7%BB%84">7. 获得补丁数组</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t367.1%20src/index.js">7.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t377.2%20src/react/unit.js">7.2 src/react/unit.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t388.%20%E6%89%93%E8%A1%A5%E4%B8%81">8. 打补丁</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t398.1%20src/index.js">8.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t408.2%20react/unit.js">8.2 react/unit.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t419.%20todos">9. todos</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t429.1%20src/index.js">9.1 src/index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t439.2%20react/unit.js">9.2 react/unit.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4410.%20diff%20%E7%AD%96%E7%95%A5">10. diff 策略</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4510.1%20tree%20diff">10.1 tree diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4610.2%20component%20%20diff">10.2 component  diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4710.3%20element%20diff">10.3 element diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4810.4%20key">10.4 key</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4911.delegate">11.delegate</a></li></ul>
-    </div>
     
-    <div class="content markdown-body">
-        <h2 id="t01.初始化项目">1.初始化项目 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t01.%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"> # </a></h2>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commits/master">commit</a></p>
-<pre><code class="lang-js">create-react-app zhufeng_react2
+
+    <div class="warpper">
+
+        <div class="page-toc">
+            <ul>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t01.%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">1.初始化项目</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t12.%20%E6%B8%B2%E6%9F%93%E6%96%87%E6%9C%AC">2.
+                        渲染文本</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t22.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">2.1
+                                渲染效果</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t32.2%20%E7%B1%BB%E5%9B%BE">2.2
+                                类图</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t42.3%20%E5%AE%9E%E7%8E%B0">2.3
+                                实现</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t52.3.1%20index.js">2.3.1
+                                        index.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t62.3.2%20react\index.js">2.3.2
+                                        react\index.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t72.3.3%20react\unit.js">2.3.3
+                                        react\unit.js</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t83.%20%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%94%9FDOM%E7%BB%84%E4%BB%B6">3.
+                        渲染原生DOM组件</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t93.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">3.1
+                                渲染效果</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t103.2%20%E7%B1%BB%E5%9B%BE">3.2
+                                类图</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t113.3%20JSX%E8%AF%AD%E6%B3%95">3.3
+                                JSX语法</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t123.3.1%20JSX">3.3.1
+                                        JSX</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t133.3.2%20JavaScript">3.3.2
+                                        JavaScript</a></li>
+                            </ul>
+                        </li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t143.4%20%E5%AE%9E%E7%8E%B0">3.4
+                                实现</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t153.4.1%20%20index.js">3.4.1
+                                        index.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t163.4.2%20react/index.js">3.4.2
+                                        react/index.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t173.4.3%20react/element.js">3.4.3
+                                        react/element.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t183.4.4%20react/unit.js">3.4.4
+                                        react/unit.js</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t194.%20%E6%B8%B2%E6%9F%93%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6">4.
+                        渲染自定义组件</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t204.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">4.1
+                                渲染效果</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t214.2%20%E7%B1%BB%E5%9B%BE">4.2
+                                类图</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t224.3%20%E5%AE%9E%E7%8E%B0">4.3
+                                实现</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t234.3.1%20src/index.js">4.3.1
+                                        src/index.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t244.3.2%20react/index.js">4.3.2
+                                        react/index.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t254.3.3%20react/component.js">4.3.3
+                                        react/component.js</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t264.3.4%20react/unit.js">4.3.4
+                                        react/unit.js</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t275.%20%E5%AE%9E%E7%8E%B0setState">5.
+                        实现setState</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t285.1%20src/index.js">5.1
+                                src/index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t295.2%20react/component.js">5.2
+                                react/component.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t305.3%20react/unit.js">5.3
+                                react/unit.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t315.4%20react/element.js">5.4
+                                react/element.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t326.%20%E5%AF%B9%E6%AF%94%E5%B1%9E%E6%80%A7">6.
+                        对比属性</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t336.1%20%20src/index.js">6.1
+                                src/index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t346.2%20react/unit.js">6.2
+                                react/unit.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t357.%20%E8%8E%B7%E5%BE%97%E8%A1%A5%E4%B8%81%E6%95%B0%E7%BB%84">7.
+                        获得补丁数组</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t367.1%20src/index.js">7.1
+                                src/index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t377.2%20src/react/unit.js">7.2
+                                src/react/unit.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t388.%20%E6%89%93%E8%A1%A5%E4%B8%81">8.
+                        打补丁</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t398.1%20src/index.js">8.1
+                                src/index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t408.2%20react/unit.js">8.2
+                                react/unit.js</a></li>
+                    </ul>
+                </li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t419.%20todos">9. todos</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t429.1%20src/index.js">9.1
+                                src/index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t439.2%20react/unit.js">9.2
+                                react/unit.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4410.%20diff%20%E7%AD%96%E7%95%A5">10.
+                        diff 策略</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4510.1%20tree%20diff">10.1
+                                tree diff</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4610.2%20component%20%20diff">10.2
+                                component diff</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4710.3%20element%20diff">10.3
+                                element diff</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4810.4%20key">10.4
+                                key</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4911.delegate">11.delegate</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content markdown-body">
+            <h2 id="t01.初始化项目">1.初始化项目 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t01.%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">
+                    # </a></h2>
+            <p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commits/master">commit</a></p>
+            <pre><code class="lang-js">create-react-app zhufeng_react2
 cd zhufeng_react2
 cnpm i jquery -S
 npm start
 </code></pre>
-<h2 id="t12. 渲染文本">2. 渲染文本 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t12.%20%E6%B8%B2%E6%9F%93%E6%96%87%E6%9C%AC"> # </a></h2>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/0494c0f1d43dfecda0a0617c1b9c5c942be90d2d">commit</a></p>
-<h3 id="t22.1 渲染效果">2.1 渲染效果 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t22.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C"> # </a></h3>
-<p><img src="./60.react-1_files/1.initrenderhtml.png" alt="initrenderhtml"></p>
-<h3 id="t32.2 类图">2.2 类图 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t32.2%20%E7%B1%BB%E5%9B%BE"> # </a></h3>
-<p><img src="./60.react-1_files/2.rendertext.jpg" alt="2.rendertext"></p>
-<h3 id="t42.3 实现">2.3 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t42.3%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
-<h4 id="t52.3.1 index.js">2.3.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t52.3.1%20index.js"> # </a></h4>
-<p>src\index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t12. 渲染文本">2. 渲染文本 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t12.%20%E6%B8%B2%E6%9F%93%E6%96%87%E6%9C%AC">
+                    # </a></h2>
+            <p><a
+                    href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/0494c0f1d43dfecda0a0617c1b9c5c942be90d2d">commit</a>
+            </p>
+            <h3 id="t22.1 渲染效果">2.1 渲染效果 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t22.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">
+                    # </a></h3>
+            <p><img src="./60.react-1_files/1.initrenderhtml.png" alt="initrenderhtml"></p>
+            <h3 id="t32.2 类图">2.2 类图 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t32.2%20%E7%B1%BB%E5%9B%BE"> #
+                </a></h3>
+            <p><img src="./60.react-1_files/2.rendertext.jpg" alt="2.rendertext"></p>
+            <h3 id="t42.3 实现">2.3 实现 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t42.3%20%E5%AE%9E%E7%8E%B0"> #
+                </a></h3>
+            <h4 id="t52.3.1 index.js">2.3.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t52.3.1%20index.js"> # </a></h4>
+            <p>src\index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 React.render(<span class="hljs-string">'hello'</span>,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h4 id="t62.3.2 react\index.js">2.3.2 react\index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t62.3.2%20react\index.js"> # </a></h4>
-<p>src\react\index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+            <h4 id="t62.3.2 react\index.js">2.3.2 react\index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t62.3.2%20react\index.js"> #
+                </a></h4>
+            <p>src\react\index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
 <span class="hljs-keyword">import</span> {createReactUnit} <span class="hljs-keyword">from</span> <span class="hljs-string">'./unit'</span>;
 <span class="hljs-keyword">let</span> React = {
     <span class="hljs-attr">nextRootIndex</span>:<span class="hljs-number">0</span>,
@@ -208,9 +476,11 @@ React.render(<span class="hljs-string">'hello'</span>,<span class="hljs-built_in
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> React;
 </code></pre>
-<h4 id="t72.3.3 react\unit.js">2.3.3 react\unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t72.3.3%20react\unit.js"> # </a></h4>
-<p>src\react\unit.js</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Unit</span></span>{
+            <h4 id="t72.3.3 react\unit.js">2.3.3 react\unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t72.3.3%20react\unit.js"> # </a>
+            </h4>
+            <p>src\react\unit.js</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Unit</span></span>{
     <span class="hljs-keyword">constructor</span>(element){
         <span class="hljs-comment">//把虚拟DOM本身保存到this._currentElement上</span>
         <span class="hljs-keyword">this</span>._currentElement = element;
@@ -236,30 +506,46 @@ React.render(<span class="hljs-string">'hello'</span>,<span class="hljs-built_in
     createReactUnit
 }
 </code></pre>
-<h2 id="t83. 渲染原生DOM组件">3. 渲染原生DOM组件 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t83.%20%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%94%9FDOM%E7%BB%84%E4%BB%B6"> # </a></h2>
-<ul>
-<li><a href="http://https//babeljs.io/repl/">babeljs</a></li>
-</ul>
-<h3 id="t93.1 渲染效果">3.1 渲染效果 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t93.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C"> # </a></h3>
-<p><img src="./60.react-1_files/3.renderdom.png" alt="renderdom"></p>
-<h3 id="t103.2 类图">3.2 类图 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t103.2%20%E7%B1%BB%E5%9B%BE"> # </a></h3>
-<p><img src="./60.react-1_files/3. rendernativeunit.jpg" alt="20rendernativeunit"></p>
-<h3 id="t113.3 JSX语法">3.3 JSX语法 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t113.3%20JSX%E8%AF%AD%E6%B3%95"> # </a></h3>
-<p><img src="./60.react-1_files/2.compile.png" alt="compile"></p>
-<h4 id="t123.3.1 JSX">3.3.1 JSX <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t123.3.1%20JSX"> # </a></h4>
-<pre><code class="lang-js">&lt;button id=<span class="hljs-string">"sayHello"</span> onClick={sayHello}&gt;say&lt;b&gt;Hello&lt;<span class="hljs-regexp">/b&gt;&lt;/</span>button&gt;
+            <h2 id="t83. 渲染原生DOM组件">3. 渲染原生DOM组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t83.%20%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%94%9FDOM%E7%BB%84%E4%BB%B6">
+                    # </a></h2>
+            <ul>
+                <li><a href="http://https//babeljs.io/repl/">babeljs</a></li>
+            </ul>
+            <h3 id="t93.1 渲染效果">3.1 渲染效果 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t93.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">
+                    # </a></h3>
+            <p><img src="./60.react-1_files/3.renderdom.png" alt="renderdom"></p>
+            <h3 id="t103.2 类图">3.2 类图 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t103.2%20%E7%B1%BB%E5%9B%BE"> #
+                </a></h3>
+            <p><img src="./60.react-1_files/3. rendernativeunit.jpg" alt="20rendernativeunit"></p>
+            <h3 id="t113.3 JSX语法">3.3 JSX语法 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t113.3%20JSX%E8%AF%AD%E6%B3%95">
+                    # </a></h3>
+            <p><img src="./60.react-1_files/2.compile.png" alt="compile"></p>
+            <h4 id="t123.3.1 JSX">3.3.1 JSX <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t123.3.1%20JSX"> # </a></h4>
+            <pre><code class="lang-js">&lt;button id=<span class="hljs-string">"sayHello"</span> onClick={sayHello}&gt;say&lt;b&gt;Hello&lt;<span class="hljs-regexp">/b&gt;&lt;/</span>button&gt;
 </code></pre>
-<h4 id="t133.3.2 JavaScript">3.3.2 JavaScript <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t133.3.2%20JavaScript"> # </a></h4>
-<pre><code class="lang-js"><span class="hljs-keyword">let</span> element = React.createElement(<span class="hljs-string">"button"</span>, {
+            <h4 id="t133.3.2 JavaScript">3.3.2 JavaScript <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t133.3.2%20JavaScript"> # </a>
+            </h4>
+            <pre><code class="lang-js"><span class="hljs-keyword">let</span> element = React.createElement(<span class="hljs-string">"button"</span>, {
     <span class="hljs-attr">id</span>: <span class="hljs-string">"sayHello"</span>,
     <span class="hljs-attr">onClick</span>: sayHello
   }, <span class="hljs-string">"say"</span>, React.createElement(<span class="hljs-string">"b"</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">"Hello"</span>));
 </code></pre>
-<h3 id="t143.4 实现">3.4 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t143.4%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/82fa036038b63653ad7539e9715f1236c727ca66">3. 渲染原生DOM组件</a></p>
-<h4 id="t153.4.1  index.js">3.4.1  index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t153.4.1%20%20index.js"> # </a></h4>
-<p>src/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h3 id="t143.4 实现">3.4 实现 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t143.4%20%E5%AE%9E%E7%8E%B0"> #
+                </a></h3>
+            <p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/82fa036038b63653ad7539e9715f1236c727ca66">3.
+                    渲染原生DOM组件</a></p>
+            <h4 id="t153.4.1  index.js">3.4.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t153.4.1%20%20index.js"> # </a>
+            </h4>
+            <p>src/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sayHello</span>(<span class="hljs-params"></span>)</span>{
     alert(<span class="hljs-string">'hello'</span>);
 }
@@ -270,9 +556,11 @@ React.render(<span class="hljs-string">'hello'</span>,<span class="hljs-built_in
   }, <span class="hljs-string">"say"</span>, React.createElement(<span class="hljs-string">"b"</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">"Hello"</span>));
 React.render(element,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h4 id="t163.4.2 react/index.js">3.4.2 react/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t163.4.2%20react/index.js"> # </a></h4>
-<p>src/react/index.js</p>
-<pre><code class="lang-diff">import {createReactUnit} from './unit';
+            <h4 id="t163.4.2 react/index.js">3.4.2 react/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t163.4.2%20react/index.js"> #
+                </a></h4>
+            <p>src/react/index.js</p>
+            <pre><code class="lang-diff">import {createReactUnit} from './unit';
 <span class="hljs-addition">+ import {createElement} from './element';</span>
 let React = {
     nextRootIndex:0,
@@ -280,9 +568,11 @@ let React = {
 <span class="hljs-addition">+    createElement</span>
 }
 </code></pre>
-<h4 id="t173.4.3 react/element.js">3.4.3 react/element.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t173.4.3%20react/element.js"> # </a></h4>
-<p>src/react/element.js</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Element</span></span>{
+            <h4 id="t173.4.3 react/element.js">3.4.3 react/element.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t173.4.3%20react/element.js"> #
+                </a></h4>
+            <p>src/react/element.js</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Element</span></span>{
     <span class="hljs-keyword">constructor</span>(type,props){
         <span class="hljs-keyword">this</span>.type = type;
         <span class="hljs-keyword">this</span>.props = props;
@@ -298,9 +588,11 @@ let React = {
     createElement
 }
 </code></pre>
-<h4 id="t183.4.4 react/unit.js">3.4.4 react/unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t183.4.4%20react/unit.js"> # </a></h4>
-<p>src/react/unit.js</p>
-<pre><code class="lang-diff"><span class="hljs-addition">+class ReactNativeUnit extends Unit{</span>
+            <h4 id="t183.4.4 react/unit.js">3.4.4 react/unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t183.4.4%20react/unit.js"> #
+                </a></h4>
+            <p>src/react/unit.js</p>
+            <pre><code class="lang-diff"><span class="hljs-addition">+class ReactNativeUnit extends Unit{</span>
 <span class="hljs-addition">+    getMarkup(rootId){</span>
 <span class="hljs-addition">+        this._rootId = rootId;</span>
 <span class="hljs-addition">+        let {type,props} = this._currentElement;</span>
@@ -337,15 +629,27 @@ function createReactUnit(element){
 <span class="hljs-addition">+    }</span>
 }
 </code></pre>
-<h2 id="t194. 渲染自定义组件">4. 渲染自定义组件 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t194.%20%E6%B8%B2%E6%9F%93%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6"> # </a></h2>
-<h3 id="t204.1 渲染效果">4.1 渲染效果 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t204.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C"> # </a></h3>
-<p><img src="./60.react-1_files/5.customercomponent.png" alt="customercomponent"></p>
-<h3 id="t214.2 类图">4.2 类图 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t214.2%20%E7%B1%BB%E5%9B%BE"> # </a></h3>
-<p><img src="./60.react-1_files/4. rendercustomerunit.jpg" alt="20rendercustomerunit"></p>
-<h3 id="t224.3 实现">4.3 实现 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t224.3%20%E5%AE%9E%E7%8E%B0"> # </a></h3>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/9f7c62f2a65221605ad6de1200a793fb8c458b7c">commit</a></p>
-<h4 id="t234.3.1 src/index.js">4.3.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t234.3.1%20src/index.js"> # </a></h4>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t194. 渲染自定义组件">4. 渲染自定义组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t194.%20%E6%B8%B2%E6%9F%93%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6">
+                    # </a></h2>
+            <h3 id="t204.1 渲染效果">4.1 渲染效果 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t204.1%20%E6%B8%B2%E6%9F%93%E6%95%88%E6%9E%9C">
+                    # </a></h3>
+            <p><img src="./60.react-1_files/5.customercomponent.png" alt="customercomponent"></p>
+            <h3 id="t214.2 类图">4.2 类图 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t214.2%20%E7%B1%BB%E5%9B%BE"> #
+                </a></h3>
+            <p><img src="./60.react-1_files/4. rendercustomerunit.jpg" alt="20rendercustomerunit"></p>
+            <h3 id="t224.3 实现">4.3 实现 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t224.3%20%E5%AE%9E%E7%8E%B0"> #
+                </a></h3>
+            <p><a
+                    href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/9f7c62f2a65221605ad6de1200a793fb8c458b7c">commit</a>
+            </p>
+            <h4 id="t234.3.1 src/index.js">4.3.1 src/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t234.3.1%20src/index.js"> # </a>
+            </h4>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
   <span class="hljs-keyword">constructor</span>(props){
     <span class="hljs-keyword">super</span>(props);
@@ -369,9 +673,11 @@ function createReactUnit(element){
 <span class="hljs-keyword">let</span> element = React.createElement(Counter);
 React.render(element,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h4 id="t244.3.2 react/index.js">4.3.2 react/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t244.3.2%20react/index.js"> # </a></h4>
-<p>src/react/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+            <h4 id="t244.3.2 react/index.js">4.3.2 react/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t244.3.2%20react/index.js"> #
+                </a></h4>
+            <p>src/react/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
 <span class="hljs-keyword">import</span> {createReactUnit} <span class="hljs-keyword">from</span> <span class="hljs-string">'./unit'</span>;
 <span class="hljs-keyword">import</span> {createElement} <span class="hljs-keyword">from</span> <span class="hljs-string">'./element'</span>;
 + <span class="hljs-keyword">import</span> {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'./component'</span>;
@@ -382,18 +688,22 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
 +    Component
 }
 </code></pre>
-<h4 id="t254.3.3 react/component.js">4.3.3 react/component.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t254.3.3%20react/component.js"> # </a></h4>
-<p>src/react/component.js</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span></span>{
+            <h4 id="t254.3.3 react/component.js">4.3.3 react/component.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t254.3.3%20react/component.js">
+                    # </a></h4>
+            <p>src/react/component.js</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(props){
       <span class="hljs-keyword">this</span>.props = props;
     }
 }
 <span class="hljs-keyword">export</span> {Component}
 </code></pre>
-<h4 id="t264.3.4 react/unit.js">4.3.4 react/unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t264.3.4%20react/unit.js"> # </a></h4>
-<p>src/react/unit.js</p>
-<pre><code class="lang-diff">//自定义组件
+            <h4 id="t264.3.4 react/unit.js">4.3.4 react/unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t264.3.4%20react/unit.js"> #
+                </a></h4>
+            <p>src/react/unit.js</p>
+            <pre><code class="lang-diff">//自定义组件
 <span class="hljs-addition">+class ReactCompositeUnit extends Unit{</span>
 <span class="hljs-addition">+    getMarkup(rootId){</span>
 <span class="hljs-addition">+        this._rootId = rootId;</span>
@@ -431,10 +741,16 @@ function createReactUnit(element){
 <span class="hljs-addition">+    }</span>
 }
 </code></pre>
-<h2 id="t275. 实现setState">5. 实现setState <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t275.%20%E5%AE%9E%E7%8E%B0setState"> # </a></h2>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/ee4676555677b097a784614193f61f4084c879fd">commit</a></p>
-<h3 id="t285.1 src/index.js">5.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t285.1%20src/index.js"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t275. 实现setState">5. 实现setState <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t275.%20%E5%AE%9E%E7%8E%B0setState">
+                    # </a></h2>
+            <p><a
+                    href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/ee4676555677b097a784614193f61f4084c879fd">commit</a>
+            </p>
+            <h3 id="t285.1 src/index.js">5.1 src/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t285.1%20src/index.js"> # </a>
+            </h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
   <span class="hljs-keyword">constructor</span>(props){
     <span class="hljs-keyword">super</span>(props);
@@ -452,9 +768,11 @@ function createReactUnit(element){
 <span class="hljs-keyword">let</span> element = React.createElement(Counter);
 React.render(element,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h3 id="t295.2 react/component.js">5.2 react/component.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t295.2%20react/component.js"> # </a></h3>
-<p>src/react/component.js</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span></span>{
+            <h3 id="t295.2 react/component.js">5.2 react/component.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t295.2%20react/component.js"> #
+                </a></h3>
+            <p>src/react/component.js</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(props){
       <span class="hljs-keyword">this</span>.props = props;
     }
@@ -465,9 +783,11 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
 }
 <span class="hljs-keyword">export</span> {Component}
 </code></pre>
-<h3 id="t305.3 react/unit.js">5.3 react/unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t305.3%20react/unit.js"> # </a></h3>
-<p>src/react/unit.js</p>
-<pre><code class="lang-js">
+            <h3 id="t305.3 react/unit.js">5.3 react/unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t305.3%20react/unit.js"> # </a>
+            </h3>
+            <p>src/react/unit.js</p>
+            <pre><code class="lang-js">
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReactTextUnit</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Unit</span></span>{
     getMarkup(rootId){
         <span class="hljs-keyword">this</span>._rootId = rootId;<span class="hljs-comment">//保存记录rootId</span>
@@ -576,9 +896,11 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
     createReactUnit
 }
 </code></pre>
-<h3 id="t315.4 react/element.js">5.4 react/element.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t315.4%20react/element.js"> # </a></h3>
-<p>src/react/element.js</p>
-<pre><code class="lang-diff">class Element{
+            <h3 id="t315.4 react/element.js">5.4 react/element.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t315.4%20react/element.js"> #
+                </a></h3>
+            <p>src/react/element.js</p>
+            <pre><code class="lang-diff">class Element{
     constructor(type,props){
         this.type = type;
 <span class="hljs-addition">+        this.key = props.key;</span>
@@ -586,11 +908,17 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
     }
 }
 </code></pre>
-<h2 id="t326. 对比属性">6. 对比属性 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t326.%20%E5%AF%B9%E6%AF%94%E5%B1%9E%E6%80%A7"> # </a></h2>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/e01903bcdd33b5d08398aaa6463c01cb4d3d2780">commit</a></p>
-<h3 id="t336.1  src/index.js">6.1  src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t336.1%20%20src/index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t326. 对比属性">6. 对比属性 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t326.%20%E5%AF%B9%E6%AF%94%E5%B1%9E%E6%80%A7">
+                    # </a></h2>
+            <p><a
+                    href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/e01903bcdd33b5d08398aaa6463c01cb4d3d2780">commit</a>
+            </p>
+            <h3 id="t336.1  src/index.js">6.1 src/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t336.1%20%20src/index.js"> #
+                </a></h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
   <span class="hljs-keyword">constructor</span>(props){
     <span class="hljs-keyword">super</span>(props);
@@ -614,9 +942,11 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
 <span class="hljs-keyword">let</span> element = React.createElement(Counter);
 React.render(element,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h3 id="t346.2 react/unit.js">6.2 react/unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t346.2%20react/unit.js"> # </a></h3>
-<p>src/react/unit.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+            <h3 id="t346.2 react/unit.js">6.2 react/unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t346.2%20react/unit.js"> # </a>
+            </h3>
+            <p>src/react/unit.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
 <span class="hljs-keyword">import</span> types <span class="hljs-keyword">from</span> <span class="hljs-string">'./types'</span>;
 <span class="hljs-keyword">let</span> updateDepth=<span class="hljs-number">0</span>;
 <span class="hljs-keyword">let</span> diffQueue=[];
@@ -828,14 +1158,20 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
     createReactUnit
 }
 </code></pre>
-<h2 id="t357. 获得补丁数组">7. 获得补丁数组 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t357.%20%E8%8E%B7%E5%BE%97%E8%A1%A5%E4%B8%81%E6%95%B0%E7%BB%84"> # </a></h2>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/5246c661ccc8c5f34496462683ab0b015c7469d5">commit</a></p>
-<p><img src="./60.react-1_files/diffold.png" alt="diffold"></p>
-<p><img src="./60.react-1_files/diffnew.png" alt="diffnew"></p>
-<p><img src="./60.react-1_files/domdiff2.gif" alt="domdiff2"></p>
-<h3 id="t367.1 src/index.js">7.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t367.1%20src/index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t357. 获得补丁数组">7. 获得补丁数组 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t357.%20%E8%8E%B7%E5%BE%97%E8%A1%A5%E4%B8%81%E6%95%B0%E7%BB%84">
+                    # </a></h2>
+            <p><a
+                    href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/5246c661ccc8c5f34496462683ab0b015c7469d5">commit</a>
+            </p>
+            <p><img src="./60.react-1_files/diffold.png" alt="diffold"></p>
+            <p><img src="./60.react-1_files/diffnew.png" alt="diffnew"></p>
+            <p><img src="./60.react-1_files/domdiff2.gif" alt="domdiff2"></p>
+            <h3 id="t367.1 src/index.js">7.1 src/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t367.1%20src/index.js"> # </a>
+            </h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
   <span class="hljs-keyword">constructor</span>(props){
     <span class="hljs-keyword">super</span>(props);
@@ -867,9 +1203,11 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
 <span class="hljs-keyword">let</span> element = React.createElement(Counter);
 React.render(element,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h3 id="t377.2 src/react/unit.js">7.2 src/react/unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t377.2%20src/react/unit.js"> # </a></h3>
-<p>src/react/unit.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+            <h3 id="t377.2 src/react/unit.js">7.2 src/react/unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t377.2%20src/react/unit.js"> #
+                </a></h3>
+            <p>src/react/unit.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
 <span class="hljs-keyword">import</span> types <span class="hljs-keyword">from</span> <span class="hljs-string">'./types'</span>;
 <span class="hljs-keyword">let</span> updateDepth=<span class="hljs-number">0</span>;
 <span class="hljs-keyword">let</span> diffQueue=[];
@@ -1140,11 +1478,17 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
     createReactUnit
 }
 </code></pre>
-<h2 id="t388. 打补丁">8. 打补丁 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t388.%20%E6%89%93%E8%A1%A5%E4%B8%81"> # </a></h2>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/9972e6729f656aa71b27d235610a59a20287518c">commit</a></p>
-<h3 id="t398.1 src/index.js">8.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t398.1%20src/index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t388. 打补丁">8. 打补丁 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t388.%20%E6%89%93%E8%A1%A5%E4%B8%81">
+                    # </a></h2>
+            <p><a
+                    href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/9972e6729f656aa71b27d235610a59a20287518c">commit</a>
+            </p>
+            <h3 id="t398.1 src/index.js">8.1 src/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t398.1%20src/index.js"> # </a>
+            </h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
   <span class="hljs-keyword">constructor</span>(props){
     <span class="hljs-keyword">super</span>(props);
@@ -1176,9 +1520,11 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
 <span class="hljs-keyword">let</span> element = React.createElement(Counter);
 React.render(element,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h3 id="t408.2 react/unit.js">8.2 react/unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t408.2%20react/unit.js"> # </a></h3>
-<p>src/react/unit.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
+            <h3 id="t408.2 react/unit.js">8.2 react/unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t408.2%20react/unit.js"> # </a>
+            </h3>
+            <p>src/react/unit.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> $ <span class="hljs-keyword">from</span> <span class="hljs-string">'jquery'</span>;
 <span class="hljs-keyword">import</span> types <span class="hljs-keyword">from</span> <span class="hljs-string">'./types'</span>;
 <span class="hljs-keyword">let</span> updateDepth=<span class="hljs-number">0</span>;
 <span class="hljs-keyword">let</span> diffQueue=[];
@@ -1483,11 +1829,16 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
     createReactUnit
 }
 </code></pre>
-<h2 id="t419. todos">9. todos <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t419.%20todos"> # </a></h2>
-<p><a href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/466915a20e4bb8d0d019b3325ad47867a3891fae">commit</a></p>
-<h3 id="t429.1 src/index.js">9.1 src/index.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t429.1%20src/index.js"> # </a></h3>
-<p>src/index.js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t419. todos">9. todos <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t419.%20todos"> # </a></h2>
+            <p><a
+                    href="https://gitee.com/zhufengpeixun/zhufeng_react2/commit/466915a20e4bb8d0d019b3325ad47867a3891fae">commit</a>
+            </p>
+            <h3 id="t429.1 src/index.js">9.1 src/index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t429.1%20src/index.js"> # </a>
+            </h3>
+            <p>src/index.js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(props){
         <span class="hljs-keyword">super</span>(props);
@@ -1520,9 +1871,11 @@ React.render(element,<span class="hljs-built_in">document</span>.getElementById(
 <span class="hljs-keyword">let</span> todos = React.createElement(Todos);
 React.render(todos,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h3 id="t439.2 react/unit.js">9.2 react/unit.js <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t439.2%20react/unit.js"> # </a></h3>
-<p>src/react/unit.js</p>
-<pre><code class="lang-js">        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> oldKey <span class="hljs-keyword">in</span> oldChildrenMap){
+            <h3 id="t439.2 react/unit.js">9.2 react/unit.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t439.2%20react/unit.js"> # </a>
+            </h3>
+            <p>src/react/unit.js</p>
+            <pre><code class="lang-js">        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> oldKey <span class="hljs-keyword">in</span> oldChildrenMap){
             <span class="hljs-keyword">if</span>(!newMap.hasOwnProperty(oldKey)){
                 <span class="hljs-keyword">let</span> oldChild = oldChildrenMap[oldKey];
                 diffQueue.push({
@@ -1560,43 +1913,53 @@ getNewChildren(oldChildrenMap,newChildrenElements){
        <span class="hljs-keyword">return</span> {newMap,newChildren};
     }        
 </code></pre>
-<h2 id="t4410. diff 策略">10. diff 策略 <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4410.%20diff%20%E7%AD%96%E7%95%A5"> # </a></h2>
-<ul>
-<li>Web UI 中 DOM 节点跨层级的移动操作特别少，可以忽略不计。</li>
-<li>拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构。</li>
-<li>对于同一层级的一组子节点，它们可以通过唯一<code>key</code>进行区分。</li>
-</ul>
-<h3 id="t4510.1 tree diff">10.1 tree diff <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4510.1%20tree%20diff"> # </a></h3>
-<ul>
-<li>React 对树的算法进行了简洁明了的优化，即对树进行分层比较，两棵树只会对同一层次的节点进行比较</li>
-</ul>
-<p><img src="./60.react-1_files/sametree.png" alt="sametree"></p>
-<ul>
-<li>当出现节点跨层级移动时，并不会出现想象中的移动操作，而是以 A 为根节点的树被整个重新创建</li>
-</ul>
-<p><img src="./60.react-1_files/movemytree.png" alt="movemytree"></p>
-<h3 id="t4610.2 component  diff">10.2 component  diff <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4610.2%20component%20%20diff"> # </a></h3>
-<ul>
-<li>如果是同一类型的组件，按照原策略继续比较 <code>virtual DOM tree</code></li>
-<li>如果不是，则将该组件判断为<code>dirty component</code>,从而替换整个组件下的所有子节点</li>
-</ul>
-<p><img src="./60.react-1_files/deleteall.png" alt="deleteall"></p>
-<h3 id="t4710.3 element diff">10.3 element diff <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4710.3%20element%20diff"> # </a></h3>
-<ul>
-<li>当节点处于同一层级时，React diff 提供了三种节点操作,分别为：INSERT(插入)、MOVE(移动)和 REMOVE(删除)</li>
-<li>INSERT 新的 component 类型不在老集合里， 即是全新的节点，需要对新节点执行插入操作</li>
-<li>MOVE 在老集合有新 component 类型，就需要做移动操作，可以复用以前的 DOM 节点</li>
-<li>REMOVE 老 component 不在新集合里的，也需要执行删除操作</li>
-</ul>
-<h3 id="t4810.4 key">10.4 key <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4810.4%20key"> # </a></h3>
-<p><img src="./60.react-1_files/oldnewmove.png" alt="oldnewmove"></p>
-<p><img src="./60.react-1_files/oldnewmove2.png" alt="oldnewmove2"></p>
-<p><img src="./60.react-1_files/oldnewmove3.png" alt="oldnewmove3"></p>
-<h2 id="t4911.delegate">11.delegate <a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4911.delegate"> # </a></h2>
-<ul>
-<li><a href="http://api.jquery.com/undelegate/">delegate</a></li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> $<span class="hljs-built_in">document</span> = $(<span class="hljs-built_in">document</span>);
+            <h2 id="t4410. diff 策略">10. diff 策略 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4410.%20diff%20%E7%AD%96%E7%95%A5">
+                    # </a></h2>
+            <ul>
+                <li>Web UI 中 DOM 节点跨层级的移动操作特别少，可以忽略不计。</li>
+                <li>拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构。</li>
+                <li>对于同一层级的一组子节点，它们可以通过唯一<code>key</code>进行区分。</li>
+            </ul>
+            <h3 id="t4510.1 tree diff">10.1 tree diff <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4510.1%20tree%20diff"> # </a>
+            </h3>
+            <ul>
+                <li>React 对树的算法进行了简洁明了的优化，即对树进行分层比较，两棵树只会对同一层次的节点进行比较</li>
+            </ul>
+            <p><img src="./60.react-1_files/sametree.png" alt="sametree"></p>
+            <ul>
+                <li>当出现节点跨层级移动时，并不会出现想象中的移动操作，而是以 A 为根节点的树被整个重新创建</li>
+            </ul>
+            <p><img src="./60.react-1_files/movemytree.png" alt="movemytree"></p>
+            <h3 id="t4610.2 component  diff">10.2 component diff <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4610.2%20component%20%20diff">
+                    # </a></h3>
+            <ul>
+                <li>如果是同一类型的组件，按照原策略继续比较 <code>virtual DOM tree</code></li>
+                <li>如果不是，则将该组件判断为<code>dirty component</code>,从而替换整个组件下的所有子节点</li>
+            </ul>
+            <p><img src="./60.react-1_files/deleteall.png" alt="deleteall"></p>
+            <h3 id="t4710.3 element diff">10.3 element diff <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4710.3%20element%20diff"> #
+                </a></h3>
+            <ul>
+                <li>当节点处于同一层级时，React diff 提供了三种节点操作,分别为：INSERT(插入)、MOVE(移动)和 REMOVE(删除)</li>
+                <li>INSERT 新的 component 类型不在老集合里， 即是全新的节点，需要对新节点执行插入操作</li>
+                <li>MOVE 在老集合有新 component 类型，就需要做移动操作，可以复用以前的 DOM 节点</li>
+                <li>REMOVE 老 component 不在新集合里的，也需要执行删除操作</li>
+            </ul>
+            <h3 id="t4810.4 key">10.4 key <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4810.4%20key"> # </a></h3>
+            <p><img src="./60.react-1_files/oldnewmove.png" alt="oldnewmove"></p>
+            <p><img src="./60.react-1_files/oldnewmove2.png" alt="oldnewmove2"></p>
+            <p><img src="./60.react-1_files/oldnewmove3.png" alt="oldnewmove3"></p>
+            <h2 id="t4911.delegate">11.delegate <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html#t4911.delegate"> # </a></h2>
+            <ul>
+                <li><a href="http://api.jquery.com/undelegate/">delegate</a></li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">var</span> $<span class="hljs-built_in">document</span> = $(<span class="hljs-built_in">document</span>);
 
 $<span class="hljs-built_in">document</span>.delegate(<span class="hljs-string">"#btn1"</span>, <span class="hljs-string">"click.foo.bar"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>)</span>{
     alert(<span class="hljs-string">"click-1"</span>);
@@ -1617,83 +1980,80 @@ $<span class="hljs-built_in">document</span>.delegate(<span class="hljs-string">
 <span class="hljs-comment">// $document.undelegate(".foo.bar");  // 移除click-1</span>
 </code></pre>
 
-        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+            <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>.
+                Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+        </div>
+
     </div>
-    
-</div>
 
-<script src="./60.react-1_files/jquery.js"></script>
-<script>
-$('.warpper .page-toc ul ul li a').on('click',function(){
-  $('.warpper .page-toc ul ul li a').removeClass('my-active')
-  $(this).addClass('my-active')
-})
+    <script src="./60.react-1_files/jquery.js"></script>
+    <script>
+        $('.warpper .page-toc ul ul li a').on('click', function () {
+            $('.warpper .page-toc ul ul li a').removeClass('my-active')
+            $(this).addClass('my-active')
+        })
 
-$('.logo').on('mouseenter',function(){
-  $('.nav').height('400px');
-})
-$('.nav').on('mouseleave',function(){
-  $('.nav').height('80px');
-})
-$('.logo').on('click',function(){
-  $('.nav').css('display','none');
- $('.warpper').css('padding','0px');
-})
-// if (!$('.understand-me').length) {
-  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-  //   var count = bar / 26 / 2;
-  //   var barHeight = $('.page-toc').outerHeight();
-  //   $('.page-toc li').eq(0).children('a').addClass('red');
-  //   var arr = [];
-  //   $("h1,h2,h3,h4,h5,h6").each(function () {
-  //     arr.push($(this).position().top);
-  //   });
-  //   var timer
-  //   function dark() {
-  //     clearTimeout(timer)
-  //      timer = setTimeout(function () {
-  //      var top = Math.abs($('.page-toc > ul').position().top);
-  //      var cur = $('.content').scrollTop();
-  //      for (var i = arr.length; i >= 0; i--) {
-  //        if (arr[i] <= cur) {
-  //          break;
-  //        }
-  //      }
-  //      if (i === -1) {
-  //        i = 0;
-  //      }
-  //      $('.page-toc li a').removeClass('red');
-  //      $('.page-toc li').eq(i).children('a').addClass('red');
-  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-  //    },200)
-  //   }
+        $('.logo').on('mouseenter', function () {
+            $('.nav').height('400px');
+        })
+        $('.nav').on('mouseleave', function () {
+            $('.nav').height('80px');
+        })
+        $('.logo').on('click', function () {
+            $('.nav').css('display', 'none');
+            $('.warpper').css('padding', '0px');
+        })
+        // if (!$('.understand-me').length) {
+        //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+        //   var count = bar / 26 / 2;
+        //   var barHeight = $('.page-toc').outerHeight();
+        //   $('.page-toc li').eq(0).children('a').addClass('red');
+        //   var arr = [];
+        //   $("h1,h2,h3,h4,h5,h6").each(function () {
+        //     arr.push($(this).position().top);
+        //   });
+        //   var timer
+        //   function dark() {
+        //     clearTimeout(timer)
+        //      timer = setTimeout(function () {
+        //      var top = Math.abs($('.page-toc > ul').position().top);
+        //      var cur = $('.content').scrollTop();
+        //      for (var i = arr.length; i >= 0; i--) {
+        //        if (arr[i] <= cur) {
+        //          break;
+        //        }
+        //      }
+        //      if (i === -1) {
+        //        i = 0;
+        //      }
+        //      $('.page-toc li a').removeClass('red');
+        //      $('.page-toc li').eq(i).children('a').addClass('red');
+        //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+        //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+        //    },200)
+        //   }
 
-  //   $('.content').on('scroll', dark);
-  // }
-</script>
-<style>
-
-    /* ::-webkit-scrollbar{width:14px;}
+        //   $('.content').on('scroll', dark);
+        // }
+    </script>
+    <style>
+        /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
     ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
-    .page-toc > ul .red {
-        background: #f3f3f3;
-        z-index: 1;
-        border-left: 3px solid #009a61;
-        -webkit-transition: all .2s ease;
-        transition: all .2s ease;
-        color: #000
-    }
+        .page-toc>ul .red {
+            background: #f3f3f3;
+            z-index: 1;
+            border-left: 3px solid #009a61;
+            -webkit-transition: all .2s ease;
+            transition: all .2s ease;
+            color: #000
+        }
+    </style>
 
 
+</body>
 
-
-
-</style>
-
-
-</body></html>
+</html>

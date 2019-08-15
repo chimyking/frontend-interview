@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <!-- saved from url=(0067)http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>珠峰架构师成长计划</title>
-    <link rel="stylesheet" type="text/css" href="./62.4.react-hooks_files/main.css">
-<style type="text/css" abt="234"></style><script>//console.log('a')
-</script><script>//remove 17173 video ad
-doAdblock();
-function doAdblock(){
-    (function() {
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>珠峰架构师成长计划</title>
+  <link rel="stylesheet" type="text/css" href="./62.4.react-hooks_files/main.css">
+  <style type="text/css" abt="234"></style>
+  <script>
+    //console.log('a')
+  </script>
+  <script>
+    //remove 17173 video ad
+    doAdblock();
+
+    function doAdblock() {
+      (function () {
         function A() {}
         A.prototype = {
-            rules: {
-                '17173_in':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
-                },
-                '17173_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
-                },
-                '17173_live':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
-                },
-                '17173_live_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
-                }
+          rules: {
+            '17173_in': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+              'replace': "http://swf.adtchrome.com/17173_in_20150522.swf"
             },
-            _done: null,
-            get done() {
-                if(!this._done) {
-                    this._done = new Array();
-                }
-                return this._done;
+            '17173_out': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+              'replace': "http://swf.adtchrome.com/17173_out_20150522.swf"
             },
-            addAnimations: function() {
-                var style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = 'object,embed{\
+            '17173_live': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+              'replace': "http://swf.adtchrome.com/17173_stream_20150522.swf"
+            },
+            '17173_live_out': {
+              'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+              'replace': "http://swf.adtchrome.com/17173.out.Live.swf"
+            }
+          },
+          _done: null,
+          get done() {
+            if (!this._done) {
+              this._done = new Array();
+            }
+            return this._done;
+          },
+          addAnimations: function () {
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = 'object,embed{\
                 -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
                 -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
                 -o-animation-duration:.001s;-o-animation-name:playerInserted;\
@@ -49,151 +57,303 @@ function doAdblock(){
                 @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
-                document.getElementsByTagName('head')[0].appendChild(style);
-            },
-            animationsHandler: function(e) {
-                if(e.animationName === 'playerInserted') {
-                    this.replace(e.target);
-                }
-            },
-            replace: function(elem) {
-                if(this.done.indexOf(elem) != -1) return;
-                this.done.push(elem);
-                var player = elem.data || elem.src;
-                if(!player) return;
-                var i, find, replace = false;
-                for(i in this.rules) {
-                    find = this.rules[i]['find'];
-                    if(find.test(player)) {
-                        replace = this.rules[i]['replace'];
-                        if('function' === typeof this.rules[i]['preHandle']) {
-                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
-                        }else{
-                            this.reallyReplace.bind(this, elem, find, replace)();
-                        }
-                        break;
-                    }
-                }
-            },
-            reallyReplace: function(elem, find, replace) {
-                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
-                var b = elem.querySelector("param[name='movie']");
-                this.reloadPlugin(elem);
-            },
-            reloadPlugin: function(elem) {
-                var nextSibling = elem.nextSibling;
-                var parentNode = elem.parentNode;
-                parentNode.removeChild(elem);
-                var newElem = elem.cloneNode(true);
-                this.done.push(newElem);
-                if(nextSibling) {
-                    parentNode.insertBefore(newElem, nextSibling);
-                } else {
-                    parentNode.appendChild(newElem);
-                }
-            },
-            init: function() {
-                var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
-                document.body.addEventListener('animationstart', handler, false);
-                this.addAnimations();
+            document.getElementsByTagName('head')[0].appendChild(style);
+          },
+          animationsHandler: function (e) {
+            if (e.animationName === 'playerInserted') {
+              this.replace(e.target);
             }
+          },
+          replace: function (elem) {
+            if (this.done.indexOf(elem) != -1) return;
+            this.done.push(elem);
+            var player = elem.data || elem.src;
+            if (!player) return;
+            var i, find, replace = false;
+            for (i in this.rules) {
+              find = this.rules[i]['find'];
+              if (find.test(player)) {
+                replace = this.rules[i]['replace'];
+                if ('function' === typeof this.rules[i]['preHandle']) {
+                  this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                } else {
+                  this.reallyReplace.bind(this, elem, find, replace)();
+                }
+                break;
+              }
+            }
+          },
+          reallyReplace: function (elem, find, replace) {
+            elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src
+              .replace(find, replace)) && (elem.style.display = 'block'));
+            var b = elem.querySelector("param[name='movie']");
+            this.reloadPlugin(elem);
+          },
+          reloadPlugin: function (elem) {
+            var nextSibling = elem.nextSibling;
+            var parentNode = elem.parentNode;
+            parentNode.removeChild(elem);
+            var newElem = elem.cloneNode(true);
+            this.done.push(newElem);
+            if (nextSibling) {
+              parentNode.insertBefore(newElem, nextSibling);
+            } else {
+              parentNode.appendChild(newElem);
+            }
+          },
+          init: function () {
+            var handler = this.animationsHandler.bind(this);
+            document.body.addEventListener('webkitAnimationStart', handler, false);
+            document.body.addEventListener('msAnimationStart', handler, false);
+            document.body.addEventListener('oAnimationStart', handler, false);
+            document.body.addEventListener('animationstart', handler, false);
+            this.addAnimations();
+          }
         };
         new A().init();
-    })();
-}
-//remove baidu search ad
-if(document.URL.indexOf('www.baidu.com') >= 0){
-    if(document && document.getElementsByTagName && document.getElementById && document.body){
-        var aa = function(){
-            var all = document.body.querySelectorAll("#content_left div,#content_left table");
-            for(var i = 0; i < all.length; i++){
-                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+      })();
+    }
+    //remove baidu search ad
+    if (document.URL.indexOf('www.baidu.com') >= 0) {
+      if (document && document.getElementsByTagName && document.getElementById && document.body) {
+        var aa = function () {
+          var all = document.body.querySelectorAll("#content_left div,#content_left table");
+          for (var i = 0; i < all.length; i++) {
+            if (/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))) {
+              all[i].style.display = "none";
+              all[i].style.visibility = 'hidden';
             }
-            all = document.body.querySelectorAll('.result.c-container[id="1"]');
-            //if(all.length == 1) return;
-            for(var i = 0; i < all.length; i++){
-                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
-                    all[i].style.display= "none";all[i].style.visibility='hidden';
-                }
+          }
+          all = document.body.querySelectorAll('.result.c-container[id="1"]');
+          //if(all.length == 1) return;
+          for (var i = 0; i < all.length; i++) {
+            if (all[i].innerHTML && all[i].innerHTML.indexOf('广告') > -1) {
+              all[i].style.display = "none";
+              all[i].style.visibility = 'hidden';
             }
+          }
         }
         aa();
-        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
-    };
-}
-//remove sohu video ad
-if (document.URL.indexOf("tv.sohu.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//remove 56.com video ad
-if (document.URL.indexOf("56.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//fore iqiyi enable html5 player function
-if (document.URL.indexOf("iqiyi.com") >= 0){
-    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
-        document.cookie='player_forcedType=h5_VOD'
-        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
-            console.log('no reload')
-        }else{
-            location.reload()
-            localStorage.reloadTime = Date.now();
-        }
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified', aa)
+      };
     }
-}
-</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+    //remove sohu video ad
+    if (document.URL.indexOf("tv.sohu.com") >= 0) {
+      if (document.cookie.indexOf("fee_status=true") == -1) {
+        document.cookie = 'fee_status=true'
+      };
+    }
+    //remove 56.com video ad
+    if (document.URL.indexOf("56.com") >= 0) {
+      if (document.cookie.indexOf("fee_status=true") == -1) {
+        document.cookie = 'fee_status=true'
+      };
+    }
+    //fore iqiyi enable html5 player function
+    if (document.URL.indexOf("iqiyi.com") >= 0) {
+      if (document.cookie.indexOf("player_forcedType=h5_VOD") == -1) {
+        document.cookie = 'player_forcedType=h5_VOD'
+        if (localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime) < 60000) {
+          console.log('no reload')
+        } else {
+          location.reload()
+          localStorage.reloadTime = Date.now();
+        }
+      }
+    }
+  </script>
+  <style type="text/css">
+    object,
+    embed {
+      -webkit-animation-duration: .001s;
+      -webkit-animation-name: playerInserted;
+      -ms-animation-duration: .001s;
+      -ms-animation-name: playerInserted;
+      -o-animation-duration: .001s;
+      -o-animation-name: playerInserted;
+      animation-duration: .001s;
+      animation-name: playerInserted;
+    }
+
+    @-webkit-keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @-ms-keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @-o-keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes playerInserted {
+      from {
+        opacity: 0.99;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
 <body>
-<div class="nav" style="height: 81px;">
-    <div class="logo">
-        
-            珠峰架构师成长计划
-        
-    </div>
-<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+ 
 
 
-<div class="warpper">
+  <div class="warpper">
 
     <div class="page-toc">
-        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t01.%20React%20Hooks">1. React Hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t12.%20%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98">2. 解决的问题</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t23.%20%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">3. 注意事项</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t34.%20useState">4. useState</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t44.1%20%E8%AE%A1%E6%95%B0%E5%99%A8">4.1 计数器</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t54.2%20%E6%AF%8F%E6%AC%A1%E6%B8%B2%E6%9F%93%E9%83%BD%E6%98%AF%E7%8B%AC%E7%AB%8B%E7%9A%84%E9%97%AD%E5%8C%85">4.2 每次渲染都是独立的闭包</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t64.3%20%E5%87%BD%E6%95%B0%E5%BC%8F%E6%9B%B4%E6%96%B0">4.3 函数式更新</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t74.4%20%E6%83%B0%E6%80%A7%E5%88%9D%E5%A7%8B%20state">4.4 惰性初始 state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t84.5%20%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">4.5 性能优化</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t94.5.1%20Object.is">4.5.1 Object.is</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t104.5.2%20%E5%87%8F%E5%B0%91%E6%B8%B2%E6%9F%93%E6%AC%A1%E6%95%B0">4.5.2 减少渲染次数</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t115.%20useReducer">5. useReducer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t126.%20useContext">6. useContext</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t137.%20effect">7. effect</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t147.1%20%E9%80%9A%E8%BF%87class%E5%AE%9E%E7%8E%B0%E4%BF%AE%E6%A0%87%E9%A2%98">7.1 通过class实现修标题</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t157.2%20%E9%80%9A%E8%BF%87effect%E5%AE%9E%E7%8E%B0">7.2 通过effect实现</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t167.3%20%E6%B8%85%E9%99%A4%E5%89%AF%E4%BD%9C%E7%94%A8">7.3 清除副作用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t177.4%20%E8%B7%B3%E8%BF%87%20Effect%20%E8%BF%9B%E8%A1%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">7.4 跳过 Effect 进行性能优化</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t187.5%20useRef">7.5 useRef</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t197.5.1%20useRef">7.5.1 useRef</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t207.5.2%20forwardRef">7.5.2 forwardRef</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t217.5.3%20useImperativeHandle">7.5.3 useImperativeHandle</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t228.%20useLayoutEffect">8. useLayoutEffect</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t239.%20%E8%87%AA%E5%AE%9A%E4%B9%89%20Hook">9. 自定义 Hook</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2410.%E9%99%84%E5%BD%95">10.附录</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2510.1%20%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%91%88%E7%8E%B0%E4%B8%80%E5%BC%A0%E9%A1%B5%E9%9D%A2%E7%9A%84">10.1 浏览器是如何呈现一张页面的</a></li></ul></li></ul>
+      <ul>
+        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t01.%20React%20Hooks">1. React
+            Hooks</a></li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t12.%20%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98">2.
+            解决的问题</a></li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t23.%20%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">3.
+            注意事项</a></li>
+        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t34.%20useState">4.
+            useState</a>
+          <ul>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t44.1%20%E8%AE%A1%E6%95%B0%E5%99%A8">4.1
+                计数器</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t54.2%20%E6%AF%8F%E6%AC%A1%E6%B8%B2%E6%9F%93%E9%83%BD%E6%98%AF%E7%8B%AC%E7%AB%8B%E7%9A%84%E9%97%AD%E5%8C%85">4.2
+                每次渲染都是独立的闭包</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t64.3%20%E5%87%BD%E6%95%B0%E5%BC%8F%E6%9B%B4%E6%96%B0">4.3
+                函数式更新</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t74.4%20%E6%83%B0%E6%80%A7%E5%88%9D%E5%A7%8B%20state">4.4
+                惰性初始 state</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t84.5%20%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">4.5
+                性能优化</a>
+              <ul>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t94.5.1%20Object.is">4.5.1
+                    Object.is</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t104.5.2%20%E5%87%8F%E5%B0%91%E6%B8%B2%E6%9F%93%E6%AC%A1%E6%95%B0">4.5.2
+                    减少渲染次数</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t115.%20useReducer">5.
+            useReducer</a></li>
+        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t126.%20useContext">6.
+            useContext</a></li>
+        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t137.%20effect">7. effect</a>
+          <ul>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t147.1%20%E9%80%9A%E8%BF%87class%E5%AE%9E%E7%8E%B0%E4%BF%AE%E6%A0%87%E9%A2%98">7.1
+                通过class实现修标题</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t157.2%20%E9%80%9A%E8%BF%87effect%E5%AE%9E%E7%8E%B0">7.2
+                通过effect实现</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t167.3%20%E6%B8%85%E9%99%A4%E5%89%AF%E4%BD%9C%E7%94%A8">7.3
+                清除副作用</a></li>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t177.4%20%E8%B7%B3%E8%BF%87%20Effect%20%E8%BF%9B%E8%A1%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">7.4
+                跳过 Effect 进行性能优化</a></li>
+            <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t187.5%20useRef">7.5
+                useRef</a>
+              <ul>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t197.5.1%20useRef">7.5.1
+                    useRef</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t207.5.2%20forwardRef">7.5.2
+                    forwardRef</a></li>
+                <li><a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t217.5.3%20useImperativeHandle">7.5.3
+                    useImperativeHandle</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t228.%20useLayoutEffect">8.
+            useLayoutEffect</a></li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t239.%20%E8%87%AA%E5%AE%9A%E4%B9%89%20Hook">9.
+            自定义 Hook</a></li>
+        <li><a
+            href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2410.%E9%99%84%E5%BD%95">10.附录</a>
+          <ul>
+            <li><a
+                href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2510.1%20%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%91%88%E7%8E%B0%E4%B8%80%E5%BC%A0%E9%A1%B5%E9%9D%A2%E7%9A%84">10.1
+                浏览器是如何呈现一张页面的</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
-    
+
     <div class="content markdown-body">
-        <h2 id="t01. React Hooks">1. React Hooks <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t01.%20React%20Hooks"> # </a></h2>
-<ul>
-<li>Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性</li>
-<li>如果你在编写函数组件并意识到需要向其添加一些 state，以前的做法是必须将其它转化为 class。现在你可以在现有的函数组件中使用 Hook</li>
-</ul>
-<h2 id="t12. 解决的问题">2. 解决的问题 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t12.%20%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"> # </a></h2>
-<ul>
-<li>在组件之间复用状态逻辑很难,可能要用到render props和高阶组件，React 需要为共享状态逻辑提供更好的原生途径，Hook 使你在无需修改组件结构的情况下复用状态逻辑</li>
-<li>复杂组件变得难以理解，Hook 将组件中相互关联的部分拆分成更小的函数（比如设置订阅或请求数据）</li>
-<li>难以理解的 class,包括难以捉摸的<code>this</code></li>
-</ul>
-<h2 id="t23. 注意事项">3. 注意事项 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t23.%20%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"> # </a></h2>
-<ul>
-<li>只能在函数最外层调用 Hook。不要在循环、条件判断或者子函数中调用。</li>
-<li>只能在 React 的函数组件中调用 Hook。不要在其他 JavaScript 函数中调用</li>
-</ul>
-<h2 id="t34. useState">4. useState <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t34.%20useState"> # </a></h2>
-<ul>
-<li>useState 就是一个 Hook</li>
-<li>通过在函数组件里调用它来给组件添加一些内部 state,React 会在重复渲染时保留这个 state</li>
-<li>useState 会返回一对值：当前状态和一个让你更新它的函数，你可以在事件处理函数中或其他一些地方调用这个函数。它类似 class 组件的 this.setState，但是它不会把新的 state 和旧的 state 进行合并</li>
-<li>useState 唯一的参数就是初始 state</li>
-<li>返回一个 state，以及更新 state 的函数<ul>
-<li>在初始渲染期间，返回的状态 (state) 与传入的第一个参数 (initialState) 值相同</li>
-<li>setState 函数用于更新 state。它接收一个新的 state 值并将组件的一次重新渲染加入队列</li>
-</ul>
-</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> [state, setState] = useState(initialState);
+      <h2 id="t01. React Hooks">1. React Hooks <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t01.%20React%20Hooks"> # </a></h2>
+      <ul>
+        <li>Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性</li>
+        <li>如果你在编写函数组件并意识到需要向其添加一些 state，以前的做法是必须将其它转化为 class。现在你可以在现有的函数组件中使用 Hook</li>
+      </ul>
+      <h2 id="t12. 解决的问题">2. 解决的问题 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t12.%20%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98">
+          # </a></h2>
+      <ul>
+        <li>在组件之间复用状态逻辑很难,可能要用到render props和高阶组件，React 需要为共享状态逻辑提供更好的原生途径，Hook 使你在无需修改组件结构的情况下复用状态逻辑</li>
+        <li>复杂组件变得难以理解，Hook 将组件中相互关联的部分拆分成更小的函数（比如设置订阅或请求数据）</li>
+        <li>难以理解的 class,包括难以捉摸的<code>this</code></li>
+      </ul>
+      <h2 id="t23. 注意事项">3. 注意事项 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t23.%20%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">
+          # </a></h2>
+      <ul>
+        <li>只能在函数最外层调用 Hook。不要在循环、条件判断或者子函数中调用。</li>
+        <li>只能在 React 的函数组件中调用 Hook。不要在其他 JavaScript 函数中调用</li>
+      </ul>
+      <h2 id="t34. useState">4. useState <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t34.%20useState"> # </a></h2>
+      <ul>
+        <li>useState 就是一个 Hook</li>
+        <li>通过在函数组件里调用它来给组件添加一些内部 state,React 会在重复渲染时保留这个 state</li>
+        <li>useState 会返回一对值：当前状态和一个让你更新它的函数，你可以在事件处理函数中或其他一些地方调用这个函数。它类似 class 组件的 this.setState，但是它不会把新的 state 和旧的
+          state 进行合并</li>
+        <li>useState 唯一的参数就是初始 state</li>
+        <li>返回一个 state，以及更新 state 的函数<ul>
+            <li>在初始渲染期间，返回的状态 (state) 与传入的第一个参数 (initialState) 值相同</li>
+            <li>setState 函数用于更新 state。它接收一个新的 state 值并将组件的一次重新渲染加入队列</li>
+          </ul>
+        </li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-keyword">const</span> [state, setState] = useState(initialState);
 </code></pre>
-<h3 id="t44.1 计数器">4.1 计数器 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t44.1%20%E8%AE%A1%E6%95%B0%E5%99%A8"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{useState} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+      <h3 id="t44.1 计数器">4.1 计数器 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t44.1%20%E8%AE%A1%E6%95%B0%E5%99%A8">
+          # </a></h3>
+      <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{useState} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
   <span class="hljs-keyword">constructor</span>(props) {
       <span class="hljs-keyword">super</span>(props);
@@ -223,15 +383,17 @@ if (document.URL.indexOf("iqiyi.com") >= 0){
 }
 export default Counter2;
 </span></code></pre>
-<h3 id="t54.2 每次渲染都是独立的闭包">4.2 每次渲染都是独立的闭包 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t54.2%20%E6%AF%8F%E6%AC%A1%E6%B8%B2%E6%9F%93%E9%83%BD%E6%98%AF%E7%8B%AC%E7%AB%8B%E7%9A%84%E9%97%AD%E5%8C%85"> # </a></h3>
-<ul>
-<li>每一次渲染都有它自己的 Props and State</li>
-<li>每一次渲染都有它自己的事件处理函数</li>
-<li>alert会“捕获”我点击按钮时候的状态。</li>
-<li>我们的组件函数每次渲染都会被调用，但是每一次调用中number值都是常量，并且它被赋予了当前渲染中的状态值</li>
-<li>在单次渲染的范围内，props和state始终保持不变</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter2</span>(<span class="hljs-params"></span>)</span>{
+      <h3 id="t54.2 每次渲染都是独立的闭包">4.2 每次渲染都是独立的闭包 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t54.2%20%E6%AF%8F%E6%AC%A1%E6%B8%B2%E6%9F%93%E9%83%BD%E6%98%AF%E7%8B%AC%E7%AB%8B%E7%9A%84%E9%97%AD%E5%8C%85">
+          # </a></h3>
+      <ul>
+        <li>每一次渲染都有它自己的 Props and State</li>
+        <li>每一次渲染都有它自己的事件处理函数</li>
+        <li>alert会“捕获”我点击按钮时候的状态。</li>
+        <li>我们的组件函数每次渲染都会被调用，但是每一次调用中number值都是常量，并且它被赋予了当前渲染中的状态值</li>
+        <li>在单次渲染的范围内，props和state始终保持不变</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter2</span>(<span class="hljs-params"></span>)</span>{
   <span class="hljs-keyword">const</span> [number,setNumber] = useState(<span class="hljs-number">0</span>);
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">alertNumber</span>(<span class="hljs-params"></span>)</span>{
     setTimeout(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
@@ -247,11 +409,13 @@ export default Counter2;
   )
 }
 </span></code></pre>
-<h3 id="t64.3 函数式更新">4.3 函数式更新 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t64.3%20%E5%87%BD%E6%95%B0%E5%BC%8F%E6%9B%B4%E6%96%B0"> # </a></h3>
-<ul>
-<li>如果新的 state 需要通过使用先前的 state 计算得出，那么可以将函数传递给 setState。该函数将接收先前的 state，并返回一个更新后的值</li>
-</ul>
-<pre><code class="lang-diff">function Counter2(){
+      <h3 id="t64.3 函数式更新">4.3 函数式更新 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t64.3%20%E5%87%BD%E6%95%B0%E5%BC%8F%E6%9B%B4%E6%96%B0">
+          # </a></h3>
+      <ul>
+        <li>如果新的 state 需要通过使用先前的 state 计算得出，那么可以将函数传递给 setState。该函数将接收先前的 state，并返回一个更新后的值</li>
+      </ul>
+      <pre><code class="lang-diff">function Counter2(){
   const [number,setNumber] = useState(0);
   let numberRef = useRef(number);
   numberRef.current = number;
@@ -281,13 +445,15 @@ export default Counter2;
   )
 }
 </code></pre>
-<h3 id="t74.4 惰性初始 state">4.4 惰性初始 state <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t74.4%20%E6%83%B0%E6%80%A7%E5%88%9D%E5%A7%8B%20state"> # </a></h3>
-<ul>
-<li>initialState 参数只会在组件的初始渲染中起作用，后续渲染时会被忽略</li>
-<li>如果初始 state 需要通过复杂计算获得，则可以传入一个函数，在函数中计算并返回初始的 state，此函数只在初始渲染时被调用</li>
-<li>与 class 组件中的 setState 方法不同，useState 不会自动合并更新对象。你可以用函数式的 setState 结合展开运算符来达到合并更新对象的效果</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter3</span>(<span class="hljs-params"></span>)</span>{
+      <h3 id="t74.4 惰性初始 state">4.4 惰性初始 state <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t74.4%20%E6%83%B0%E6%80%A7%E5%88%9D%E5%A7%8B%20state">
+          # </a></h3>
+      <ul>
+        <li>initialState 参数只会在组件的初始渲染中起作用，后续渲染时会被忽略</li>
+        <li>如果初始 state 需要通过复杂计算获得，则可以传入一个函数，在函数中计算并返回初始的 state，此函数只在初始渲染时被调用</li>
+        <li>与 class 组件中的 setState 方法不同，useState 不会自动合并更新对象。你可以用函数式的 setState 结合展开运算符来达到合并更新对象的效果</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter3</span>(<span class="hljs-params"></span>)</span>{
   <span class="hljs-keyword">const</span> [{name,number},setValue] = useState(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
     <span class="hljs-keyword">return</span> {<span class="hljs-attr">name</span>:<span class="hljs-string">'计数器'</span>,<span class="hljs-attr">number</span>:<span class="hljs-number">0</span>};
   });
@@ -299,10 +465,14 @@ export default Counter2;
   )
 }
 </span></code></pre>
-<h3 id="t84.5 性能优化">4.5 性能优化 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t84.5%20%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"> # </a></h3>
-<h4 id="t94.5.1 Object.is">4.5.1 Object.is <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t94.5.1%20Object.is"> # </a></h4>
-<ul>
-<li>调用 State Hook 的更新函数并传入当前的 state 时，React 将跳过子组件的渲染及 effect 的执行。（React 使用 Object.is 比较算法 来比较 state。）<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter4</span>(<span class="hljs-params"></span>)</span>{
+      <h3 id="t84.5 性能优化">4.5 性能优化 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t84.5%20%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">
+          # </a></h3>
+      <h4 id="t94.5.1 Object.is">4.5.1 Object.is <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t94.5.1%20Object.is"> # </a></h4>
+      <ul>
+        <li>调用 State Hook 的更新函数并传入当前的 state 时，React 将跳过子组件的渲染及 effect 的执行。（React 使用 Object.is 比较算法 来比较 state。）
+          <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter4</span>(<span class="hljs-params"></span>)</span>{
 <span class="hljs-keyword">const</span> [counter,setCounter] = useState({<span class="hljs-attr">name</span>:<span class="hljs-string">'计数器'</span>,<span class="hljs-attr">number</span>:<span class="hljs-number">0</span>});
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'render Counter'</span>)
 <span class="hljs-keyword">return</span> (
@@ -314,14 +484,16 @@ export default Counter2;
 )
 }
 </span></code></pre>
-</li>
-</ul>
-<h4 id="t104.5.2 减少渲染次数">4.5.2 减少渲染次数 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t104.5.2%20%E5%87%8F%E5%B0%91%E6%B8%B2%E6%9F%93%E6%AC%A1%E6%95%B0"> # </a></h4>
-<ul>
-<li>把内联回调函数及依赖项数组作为参数传入 <code>useCallback</code>，它将返回该回调函数的 memoized 版本，该回调函数仅在某个依赖项改变时才会更新</li>
-<li>把创建函数和依赖项数组作为参数传入 <code>useMemo</code>，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Child</span>(<span class="hljs-params">{onButtonClick,data}</span>)</span>{
+        </li>
+      </ul>
+      <h4 id="t104.5.2 减少渲染次数">4.5.2 减少渲染次数 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t104.5.2%20%E5%87%8F%E5%B0%91%E6%B8%B2%E6%9F%93%E6%AC%A1%E6%95%B0">
+          # </a></h4>
+      <ul>
+        <li>把内联回调函数及依赖项数组作为参数传入 <code>useCallback</code>，它将返回该回调函数的 memoized 版本，该回调函数仅在某个依赖项改变时才会更新</li>
+        <li>把创建函数和依赖项数组作为参数传入 <code>useMemo</code>，它仅会在某个依赖项改变时才重新计算 memoized 值。这种优化有助于避免在每次渲染时都进行高开销的计算</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Child</span>(<span class="hljs-params">{onButtonClick,data}</span>)</span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Child render'</span>);
   <span class="hljs-keyword">return</span> (
     <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{onButtonClick}</span> &gt;</span>{data.number}<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>
@@ -341,14 +513,15 @@ Child = memo(Child);
   )
 }
 </code></pre>
-<h2 id="t115. useReducer">5. useReducer <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t115.%20useReducer"> # </a></h2>
-<ul>
-<li>useState 的替代方案。它接收一个形如 (state, action) =&gt; newState 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法</li>
-<li>在某些场景下，useReducer 会比 useState 更适用，例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> [state, dispatch] = useReducer(reducer, initialArg, init);
+      <h2 id="t115. useReducer">5. useReducer <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t115.%20useReducer"> # </a></h2>
+      <ul>
+        <li>useState 的替代方案。它接收一个形如 (state, action) =&gt; newState 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法</li>
+        <li>在某些场景下，useReducer 会比 useState 更适用，例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-keyword">const</span> [state, dispatch] = useReducer(reducer, initialArg, init);
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> initialState = <span class="hljs-number">0</span>;
+      <pre><code class="lang-js"><span class="hljs-keyword">const</span> initialState = <span class="hljs-number">0</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reducer</span>(<span class="hljs-params">state, action</span>) </span>{
   <span class="hljs-keyword">switch</span> (action.type) {
@@ -374,15 +547,18 @@ Child = memo(Child);
     )
 }
 </span></code></pre>
-<h2 id="t126. useContext">6. useContext <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t126.%20useContext"> # </a></h2>
-<ul>
-<li>接收一个 context 对象（React.createContext 的返回值）并返回该 context 的当前值</li>
-<li>当前的 context 值由上层组件中距离当前组件最近的 &lt;MyContext.Provider&gt; 的 value prop 决定</li>
-<li>当组件上层最近的 &lt;MyContext.Provider&gt; 更新时，该 Hook 会触发重渲染，并使用最新传递给 MyContext provider 的 context value 值</li>
-<li>useContext(MyContext) 相当于 class 组件中的 <code>static contextType = MyContext</code> 或者 <code>&lt;MyContext.Consumer&gt;</code></li>
-<li>useContext(MyContext) 只是让你能够读取 context 的值以及订阅 context 的变化。你仍然需要在上层组件树中使用 &lt;MyContext.Provider&gt; 来为下层组件提供 context</li>
-</ul>
-<pre><code class="lang-js">
+      <h2 id="t126. useContext">6. useContext <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t126.%20useContext"> # </a></h2>
+      <ul>
+        <li>接收一个 context 对象（React.createContext 的返回值）并返回该 context 的当前值</li>
+        <li>当前的 context 值由上层组件中距离当前组件最近的 &lt;MyContext.Provider&gt; 的 value prop 决定</li>
+        <li>当组件上层最近的 &lt;MyContext.Provider&gt; 更新时，该 Hook 会触发重渲染，并使用最新传递给 MyContext provider 的 context value 值</li>
+        <li>useContext(MyContext) 相当于 class 组件中的 <code>static contextType = MyContext</code> 或者
+          <code>&lt;MyContext.Consumer&gt;</code></li>
+        <li>useContext(MyContext) 只是让你能够读取 context 的值以及订阅 context 的变化。你仍然需要在上层组件树中使用 &lt;MyContext.Provider&gt; 来为下层组件提供
+          context</li>
+      </ul>
+      <pre><code class="lang-js">
 <span class="hljs-keyword">const</span> CounterContext = React.createContext();
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reducer</span>(<span class="hljs-params">state, action</span>) </span>{
@@ -415,17 +591,22 @@ function App(){
 
 }
 </code></pre>
-<h2 id="t137. effect">7. effect <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t137.%20effect"> # </a></h2>
-<ul>
-<li>在函数组件主体内（这里指在 React 渲染阶段）改变 DOM、添加订阅、设置定时器、记录日志以及执行其他包含副作用的操作都是不被允许的，因为这可能会产生莫名其妙的 bug 并破坏 UI 的一致性</li>
-<li>使用 useEffect 完成副作用操作。赋值给 useEffect 的函数会在组件渲染到屏幕之后执行。你可以把 effect 看作从 React 的纯函数式世界通往命令式世界的逃生通道</li>
-<li>useEffect 就是一个 Effect Hook，给函数组件增加了操作副作用的能力。它跟 class 组件中的 <code>componentDidMount</code>、<code>componentDidUpdate</code> 和 <code>componentWillUnmount</code> 具有相同的用途，只不过被合并成了一个 API</li>
-<li>该 Hook 接收一个包含命令式、且可能有副作用代码的函数</li>
-</ul>
-<pre><code class="lang-js">useEffect(didUpdate);
+      <h2 id="t137. effect">7. effect <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t137.%20effect"> # </a></h2>
+      <ul>
+        <li>在函数组件主体内（这里指在 React 渲染阶段）改变 DOM、添加订阅、设置定时器、记录日志以及执行其他包含副作用的操作都是不被允许的，因为这可能会产生莫名其妙的 bug 并破坏 UI 的一致性</li>
+        <li>使用 useEffect 完成副作用操作。赋值给 useEffect 的函数会在组件渲染到屏幕之后执行。你可以把 effect 看作从 React 的纯函数式世界通往命令式世界的逃生通道</li>
+        <li>useEffect 就是一个 Effect Hook，给函数组件增加了操作副作用的能力。它跟 class 组件中的
+          <code>componentDidMount</code>、<code>componentDidUpdate</code> 和 <code>componentWillUnmount</code>
+          具有相同的用途，只不过被合并成了一个 API</li>
+        <li>该 Hook 接收一个包含命令式、且可能有副作用代码的函数</li>
+      </ul>
+      <pre><code class="lang-js">useEffect(didUpdate);
 </code></pre>
-<h3 id="t147.1 通过class实现修标题">7.1 通过class实现修标题 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t147.1%20%E9%80%9A%E8%BF%87class%E5%AE%9E%E7%8E%B0%E4%BF%AE%E6%A0%87%E9%A2%98"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+      <h3 id="t147.1 通过class实现修标题">7.1 通过class实现修标题 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t147.1%20%E9%80%9A%E8%BF%87class%E5%AE%9E%E7%8E%B0%E4%BF%AE%E6%A0%87%E9%A2%98">
+          # </a></h3>
+      <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props) {
       <span class="hljs-keyword">super</span>(props);
       <span class="hljs-keyword">this</span>.state = {
@@ -453,11 +634,14 @@ function App(){
     }
   }
 </code></pre>
-<blockquote>
-<p>在这个 class 中，我们需要在两个生命周期函数中编写重复的代码,这是因为很多情况下，我们希望在组件加载和更新时执行同样的操作。我们希望它在每次渲染之后执行，但 React 的 class 组件没有提供这样的方法。即使我们提取出一个方法，我们还是要在两个地方调用它。useEffect会在第一次渲染之后和每次更新之后都会执行</p>
-</blockquote>
-<h3 id="t157.2 通过effect实现">7.2 通过effect实现 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t157.2%20%E9%80%9A%E8%BF%87effect%E5%AE%9E%E7%8E%B0"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component,useState,useEffect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+      <blockquote>
+        <p>在这个 class 中，我们需要在两个生命周期函数中编写重复的代码,这是因为很多情况下，我们希望在组件加载和更新时执行同样的操作。我们希望它在每次渲染之后执行，但 React 的 class
+          组件没有提供这样的方法。即使我们提取出一个方法，我们还是要在两个地方调用它。useEffect会在第一次渲染之后和每次更新之后都会执行</p>
+      </blockquote>
+      <h3 id="t157.2 通过effect实现">7.2 通过effect实现 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t157.2%20%E9%80%9A%E8%BF%87effect%E5%AE%9E%E7%8E%B0">
+          # </a></h3>
+      <pre><code class="lang-js"><span class="hljs-keyword">import</span> React,{Component,useState,useEffect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter</span>(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">const</span> [number,setNumber] = useState(<span class="hljs-number">0</span>);
@@ -475,15 +659,17 @@ function App(){
 }
 ReactDOM.render(<span class="hljs-tag">&lt;<span class="hljs-name">Counter</span> /&gt;</span>, document.getElementById('root'));
 </span></code></pre>
-<blockquote>
-<p>每次我们重新渲染，都会生成新的 effect，替换掉之前的。某种意义上讲，effect 更像是渲染结果的一部分 —— 每个 effect 属于一次特定的渲染。</p>
-</blockquote>
-<h3 id="t167.3 清除副作用">7.3 清除副作用 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t167.3%20%E6%B8%85%E9%99%A4%E5%89%AF%E4%BD%9C%E7%94%A8"> # </a></h3>
-<ul>
-<li>副作用函数还可以通过返回一个函数来指定如何清除副作用</li>
-<li>为防止内存泄漏，清除函数会在组件卸载前执行。另外，如果组件多次渲染，则在执行下一个 effect 之前，上一个 effect 就已被清除</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter</span>(<span class="hljs-params"></span>)</span>{
+      <blockquote>
+        <p>每次我们重新渲染，都会生成新的 effect，替换掉之前的。某种意义上讲，effect 更像是渲染结果的一部分 —— 每个 effect 属于一次特定的渲染。</p>
+      </blockquote>
+      <h3 id="t167.3 清除副作用">7.3 清除副作用 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t167.3%20%E6%B8%85%E9%99%A4%E5%89%AF%E4%BD%9C%E7%94%A8">
+          # </a></h3>
+      <ul>
+        <li>副作用函数还可以通过返回一个函数来指定如何清除副作用</li>
+        <li>为防止内存泄漏，清除函数会在组件卸载前执行。另外，如果组件多次渲染，则在执行下一个 effect 之前，上一个 effect 就已被清除</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter</span>(<span class="hljs-params"></span>)</span>{
   <span class="hljs-keyword">const</span> [number,setNumber] = useState(<span class="hljs-number">0</span>);
   <span class="hljs-comment">// 相当于componentDidMount 和 componentDidUpdate</span>
   useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
@@ -503,12 +689,15 @@ ReactDOM.render(<span class="hljs-tag">&lt;<span class="hljs-name">Counter</span
   )
 }
 </span></code></pre>
-<h3 id="t177.4 跳过 Effect 进行性能优化">7.4 跳过 Effect 进行性能优化 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t177.4%20%E8%B7%B3%E8%BF%87%20Effect%20%E8%BF%9B%E8%A1%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"> # </a></h3>
-<ul>
-<li>如果某些特定值在两次重渲染之间没有发生变化，你可以通知 React 跳过对 effect 的调用，只要传递数组作为 useEffect 的第二个可选参数即可</li>
-<li>如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。这就告诉 React 你的 effect 不依赖于 props 或 state 中的任何值，所以它永远都不需要重复执行</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter</span>(<span class="hljs-params"></span>)</span>{
+      <h3 id="t177.4 跳过 Effect 进行性能优化">7.4 跳过 Effect 进行性能优化 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t177.4%20%E8%B7%B3%E8%BF%87%20Effect%20%E8%BF%9B%E8%A1%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">
+          # </a></h3>
+      <ul>
+        <li>如果某些特定值在两次重渲染之间没有发生变化，你可以通知 React 跳过对 effect 的调用，只要传递数组作为 useEffect 的第二个可选参数即可</li>
+        <li>如果想执行只运行一次的 effect（仅在组件挂载和卸载时执行），可以传递一个空数组（[]）作为第二个参数。这就告诉 React 你的 effect 不依赖于 props 或 state
+          中的任何值，所以它永远都不需要重复执行</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter</span>(<span class="hljs-params"></span>)</span>{
   <span class="hljs-keyword">const</span> [number,setNumber] = useState(<span class="hljs-number">0</span>);
   <span class="hljs-comment">// 相当于componentDidMount 和 componentDidUpdate</span>
   useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
@@ -524,15 +713,17 @@ ReactDOM.render(<span class="hljs-tag">&lt;<span class="hljs-name">Counter</span
   )
 }
 </span></code></pre>
-<h3 id="t187.5 useRef">7.5 useRef <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t187.5%20useRef"> # </a></h3>
-<ul>
-<li>useRef 返回一个可变的 ref 对象，其 <code>.current</code> 属性被初始化为传入的参数（initialValue）</li>
-<li>返回的 ref 对象在组件的整个生命周期内保持不变</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> refContainer = useRef(initialValue);
+      <h3 id="t187.5 useRef">7.5 useRef <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t187.5%20useRef"> # </a></h3>
+      <ul>
+        <li>useRef 返回一个可变的 ref 对象，其 <code>.current</code> 属性被初始化为传入的参数（initialValue）</li>
+        <li>返回的 ref 对象在组件的整个生命周期内保持不变</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-keyword">const</span> refContainer = useRef(initialValue);
 </code></pre>
-<h4 id="t197.5.1 useRef">7.5.1 useRef <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t197.5.1%20useRef"> # </a></h4>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { useState, useEffect, useRef } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+      <h4 id="t197.5.1 useRef">7.5.1 useRef <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t197.5.1%20useRef"> # </a></h4>
+      <pre><code class="lang-js"><span class="hljs-keyword">import</span> React, { useState, useEffect, useRef } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Parent</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">let</span> [number, setNumber] = useState(<span class="hljs-number">0</span>);
@@ -560,12 +751,13 @@ function Child() {
 }
 ReactDOM.render(&lt;Parent /&gt;, document.getElementById('root'));
 </code></pre>
-<h4 id="t207.5.2 forwardRef">7.5.2 forwardRef <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t207.5.2%20forwardRef"> # </a></h4>
-<ul>
-<li>将ref从父组件中转发到子组件中的dom元素上</li>
-<li>子组件接受props和ref作为参数</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Child</span>(<span class="hljs-params">props,ref</span>)</span>{
+      <h4 id="t207.5.2 forwardRef">7.5.2 forwardRef <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t207.5.2%20forwardRef"> # </a></h4>
+      <ul>
+        <li>将ref从父组件中转发到子组件中的dom元素上</li>
+        <li>子组件接受props和ref作为参数</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Child</span>(<span class="hljs-params">props,ref</span>)</span>{
   <span class="hljs-keyword">return</span> (
     &lt;input type="text" ref={ref}/&gt;
   )
@@ -587,12 +779,14 @@ function Parent(){
   )
 }
 </code></pre>
-<h4 id="t217.5.3 useImperativeHandle">7.5.3 useImperativeHandle <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t217.5.3%20useImperativeHandle"> # </a></h4>
-<ul>
-<li><code>useImperativeHandle</code> 可以让你在使用 ref 时自定义暴露给父组件的实例值</li>
-<li>在大多数情况下，应当避免使用 ref 这样的命令式代码。useImperativeHandle 应当与 forwardRef 一起使用</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Child</span>(<span class="hljs-params">props,ref</span>)</span>{
+      <h4 id="t217.5.3 useImperativeHandle">7.5.3 useImperativeHandle <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t217.5.3%20useImperativeHandle"> #
+        </a></h4>
+      <ul>
+        <li><code>useImperativeHandle</code> 可以让你在使用 ref 时自定义暴露给父组件的实例值</li>
+        <li>在大多数情况下，应当避免使用 ref 这样的命令式代码。useImperativeHandle 应当与 forwardRef 一起使用</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Child</span>(<span class="hljs-params">props,ref</span>)</span>{
   <span class="hljs-keyword">const</span> inputRef = useRef();
   useImperativeHandle(ref,()=&gt;(
     {
@@ -623,14 +817,16 @@ function Parent(){
   )
 }
 </code></pre>
-<h2 id="t228. useLayoutEffect">8. useLayoutEffect <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t228.%20useLayoutEffect"> # </a></h2>
-<ul>
-<li>其函数签名与 useEffect 相同，但它会在所有的 DOM 变更之后同步调用 effect</li>
-<li>可以使用它来读取 DOM 布局并同步触发重渲染</li>
-<li>在浏览器执行绘制之前useLayoutEffect内部的更新计划将被同步刷新</li>
-<li>尽可能使用标准的 useEffect 以避免阻塞视图更新</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">LayoutEffect</span>(<span class="hljs-params"></span>) </span>{
+      <h2 id="t228. useLayoutEffect">8. useLayoutEffect <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t228.%20useLayoutEffect"> # </a>
+      </h2>
+      <ul>
+        <li>其函数签名与 useEffect 相同，但它会在所有的 DOM 变更之后同步调用 effect</li>
+        <li>可以使用它来读取 DOM 布局并同步触发重渲染</li>
+        <li>在浏览器执行绘制之前useLayoutEffect内部的更新计划将被同步刷新</li>
+        <li>尽可能使用标准的 useEffect 以避免阻塞视图更新</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">LayoutEffect</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">const</span> [color, setColor] = useState(<span class="hljs-string">'red'</span>);
     useLayoutEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
         alert(color);
@@ -648,15 +844,17 @@ function Parent(){
     );
 }
 </span></code></pre>
-<h2 id="t239. 自定义 Hook">9. 自定义 Hook <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t239.%20%E8%87%AA%E5%AE%9A%E4%B9%89%20Hook"> # </a></h2>
-<ul>
-<li>有时候我们会想要在组件之间重用一些状态逻辑</li>
-<li>自定义 Hook 可以让你在不增加组件的情况下达到同样的目的</li>
-<li>Hook 是一种复用状态逻辑的方式，它不复用 state 本身</li>
-<li>事实上 Hook 的每次调用都有一个完全独立的 state</li>
-<li>自定义 Hook 更像是一种约定，而不是一种功能。如果函数的名字以 use 开头，并且调用了其他的 Hook，则就称其为一个自定义 Hook</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useNumber</span>(<span class="hljs-params"></span>)</span>{
+      <h2 id="t239. 自定义 Hook">9. 自定义 Hook <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t239.%20%E8%87%AA%E5%AE%9A%E4%B9%89%20Hook">
+          # </a></h2>
+      <ul>
+        <li>有时候我们会想要在组件之间重用一些状态逻辑</li>
+        <li>自定义 Hook 可以让你在不增加组件的情况下达到同样的目的</li>
+        <li>Hook 是一种复用状态逻辑的方式，它不复用 state 本身</li>
+        <li>事实上 Hook 的每次调用都有一个完全独立的 state</li>
+        <li>自定义 Hook 更像是一种约定，而不是一种功能。如果函数的名字以 use 开头，并且调用了其他的 Hook，则就称其为一个自定义 Hook</li>
+      </ul>
+      <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">useNumber</span>(<span class="hljs-params"></span>)</span>{
   <span class="hljs-keyword">const</span> [number,setNumber] = useState(<span class="hljs-number">0</span>);
   useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'开启一个新的定时器'</span>)
@@ -690,93 +888,94 @@ function App(){
   return <span class="hljs-tag">&lt;&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Counter1</span>/&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">Counter2</span>/&gt;</span><span class="hljs-tag">&lt;/&gt;</span>
 }
 </span></code></pre>
-<h2 id="t2410.附录">10.附录 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2410.%E9%99%84%E5%BD%95"> # </a></h2>
-<h3 id="t2510.1 浏览器是如何呈现一张页面的">10.1 浏览器是如何呈现一张页面的 <a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2510.1%20%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%91%88%E7%8E%B0%E4%B8%80%E5%BC%A0%E9%A1%B5%E9%9D%A2%E7%9A%84"> # </a></h3>
-<ul>
-<li>解析HTML，并生成一棵DOM tree</li>
-<li>解析各种样式并结合DOM tree生成一棵Render tree</li>
-<li>对Render tree的各个节点计算布局信息，比如box的位置与尺寸</li>
-<li>根据Render tree并利用浏览器的UI层进行绘制</li>
-</ul>
-<p><img src="./62.4.react-hooks_files/domrender.jpg" alt="domrender"></p>
+      <h2 id="t2410.附录">10.附录 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2410.%E9%99%84%E5%BD%95"> # </a>
+      </h2>
+      <h3 id="t2510.1 浏览器是如何呈现一张页面的">10.1 浏览器是如何呈现一张页面的 <a
+          href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html#t2510.1%20%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%91%88%E7%8E%B0%E4%B8%80%E5%BC%A0%E9%A1%B5%E9%9D%A2%E7%9A%84">
+          # </a></h3>
+      <ul>
+        <li>解析HTML，并生成一棵DOM tree</li>
+        <li>解析各种样式并结合DOM tree生成一棵Render tree</li>
+        <li>对Render tree的各个节点计算布局信息，比如box的位置与尺寸</li>
+        <li>根据Render tree并利用浏览器的UI层进行绘制</li>
+      </ul>
+      <p><img src="./62.4.react-hooks_files/domrender.jpg" alt="domrender"></p>
 
-        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+      <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>.
+        Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
     </div>
-    
-</div>
 
-<script src="./62.4.react-hooks_files/jquery.js"></script>
-<script>
-$('.warpper .page-toc ul ul li a').on('click',function(){
-  $('.warpper .page-toc ul ul li a').removeClass('my-active')
-  $(this).addClass('my-active')
-})
+  </div>
 
-$('.logo').on('mouseenter',function(){
-  $('.nav').height('400px');
-})
-$('.nav').on('mouseleave',function(){
-  $('.nav').height('80px');
-})
-$('.logo').on('click',function(){
-  $('.nav').css('display','none');
- $('.warpper').css('padding','0px');
-})
-// if (!$('.understand-me').length) {
-  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-  //   var count = bar / 26 / 2;
-  //   var barHeight = $('.page-toc').outerHeight();
-  //   $('.page-toc li').eq(0).children('a').addClass('red');
-  //   var arr = [];
-  //   $("h1,h2,h3,h4,h5,h6").each(function () {
-  //     arr.push($(this).position().top);
-  //   });
-  //   var timer
-  //   function dark() {
-  //     clearTimeout(timer)
-  //      timer = setTimeout(function () {
-  //      var top = Math.abs($('.page-toc > ul').position().top);
-  //      var cur = $('.content').scrollTop();
-  //      for (var i = arr.length; i >= 0; i--) {
-  //        if (arr[i] <= cur) {
-  //          break;
-  //        }
-  //      }
-  //      if (i === -1) {
-  //        i = 0;
-  //      }
-  //      $('.page-toc li a').removeClass('red');
-  //      $('.page-toc li').eq(i).children('a').addClass('red');
-  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-  //    },200)
-  //   }
+  <script src="./62.4.react-hooks_files/jquery.js"></script>
+  <script>
+    $('.warpper .page-toc ul ul li a').on('click', function () {
+      $('.warpper .page-toc ul ul li a').removeClass('my-active')
+      $(this).addClass('my-active')
+    })
 
-  //   $('.content').on('scroll', dark);
-  // }
-</script>
-<style>
+    $('.logo').on('mouseenter', function () {
+      $('.nav').height('400px');
+    })
+    $('.nav').on('mouseleave', function () {
+      $('.nav').height('80px');
+    })
+    $('.logo').on('click', function () {
+      $('.nav').css('display', 'none');
+      $('.warpper').css('padding', '0px');
+    })
+    // if (!$('.understand-me').length) {
+    //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+    //   var count = bar / 26 / 2;
+    //   var barHeight = $('.page-toc').outerHeight();
+    //   $('.page-toc li').eq(0).children('a').addClass('red');
+    //   var arr = [];
+    //   $("h1,h2,h3,h4,h5,h6").each(function () {
+    //     arr.push($(this).position().top);
+    //   });
+    //   var timer
+    //   function dark() {
+    //     clearTimeout(timer)
+    //      timer = setTimeout(function () {
+    //      var top = Math.abs($('.page-toc > ul').position().top);
+    //      var cur = $('.content').scrollTop();
+    //      for (var i = arr.length; i >= 0; i--) {
+    //        if (arr[i] <= cur) {
+    //          break;
+    //        }
+    //      }
+    //      if (i === -1) {
+    //        i = 0;
+    //      }
+    //      $('.page-toc li a').removeClass('red');
+    //      $('.page-toc li').eq(i).children('a').addClass('red');
+    //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+    //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+    //    },200)
+    //   }
 
+    //   $('.content').on('scroll', dark);
+    // }
+  </script>
+  <style>
     /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
     ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
-    .page-toc > ul .red {
-        background: #f3f3f3;
-        z-index: 1;
-        border-left: 3px solid #009a61;
-        -webkit-transition: all .2s ease;
-        transition: all .2s ease;
-        color: #000
+    .page-toc>ul .red {
+      background: #f3f3f3;
+      z-index: 1;
+      border-left: 3px solid #009a61;
+      -webkit-transition: all .2s ease;
+      transition: all .2s ease;
+      color: #000
     }
+  </style>
 
 
+</body>
 
-
-
-</style>
-
-
-</body></html>
+</html>

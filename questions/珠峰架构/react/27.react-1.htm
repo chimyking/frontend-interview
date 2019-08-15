@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <!-- saved from url=(0061)http://www.zhufengpeixun.cn/architecture/html/27.react-1.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>珠峰架构师成长计划</title>
     <link rel="stylesheet" type="text/css" href="./27.react-1_files/main.css">
-<style type="text/css" abt="234"></style><script>//console.log('a')
-</script><script>//remove 17173 video ad
-doAdblock();
-function doAdblock(){
-    (function() {
-        function A() {}
-        A.prototype = {
-            rules: {
-                '17173_in':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
-                },
-                '17173_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
-                },
-                '17173_live':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
-                },
-                '17173_live_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
-                }
-            },
-            _done: null,
-            get done() {
-                if(!this._done) {
-                    this._done = new Array();
-                }
-                return this._done;
-            },
-            addAnimations: function() {
-                var style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = 'object,embed{\
+    <style type="text/css" abt="234"></style>
+    <script>
+        //console.log('a')
+    </script>
+    <script>
+        //remove 17173 video ad
+        doAdblock();
+
+        function doAdblock() {
+            (function () {
+                function A() {}
+                A.prototype = {
+                    rules: {
+                        '17173_in': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_in_20150522.swf"
+                        },
+                        '17173_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_out_20150522.swf"
+                        },
+                        '17173_live': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_stream_20150522.swf"
+                        },
+                        '17173_live_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173.out.Live.swf"
+                        }
+                    },
+                    _done: null,
+                    get done() {
+                        if (!this._done) {
+                            this._done = new Array();
+                        }
+                        return this._done;
+                    },
+                    addAnimations: function () {
+                        var style = document.createElement('style');
+                        style.type = 'text/css';
+                        style.innerHTML = 'object,embed{\
                 -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
                 -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
                 -o-animation-duration:.001s;-o-animation-name:playerInserted;\
@@ -49,152 +57,278 @@ function doAdblock(){
                 @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
-                document.getElementsByTagName('head')[0].appendChild(style);
-            },
-            animationsHandler: function(e) {
-                if(e.animationName === 'playerInserted') {
-                    this.replace(e.target);
-                }
-            },
-            replace: function(elem) {
-                if(this.done.indexOf(elem) != -1) return;
-                this.done.push(elem);
-                var player = elem.data || elem.src;
-                if(!player) return;
-                var i, find, replace = false;
-                for(i in this.rules) {
-                    find = this.rules[i]['find'];
-                    if(find.test(player)) {
-                        replace = this.rules[i]['replace'];
-                        if('function' === typeof this.rules[i]['preHandle']) {
-                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
-                        }else{
-                            this.reallyReplace.bind(this, elem, find, replace)();
+                        document.getElementsByTagName('head')[0].appendChild(style);
+                    },
+                    animationsHandler: function (e) {
+                        if (e.animationName === 'playerInserted') {
+                            this.replace(e.target);
                         }
-                        break;
+                    },
+                    replace: function (elem) {
+                        if (this.done.indexOf(elem) != -1) return;
+                        this.done.push(elem);
+                        var player = elem.data || elem.src;
+                        if (!player) return;
+                        var i, find, replace = false;
+                        for (i in this.rules) {
+                            find = this.rules[i]['find'];
+                            if (find.test(player)) {
+                                replace = this.rules[i]['replace'];
+                                if ('function' === typeof this.rules[i]['preHandle']) {
+                                    this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                                } else {
+                                    this.reallyReplace.bind(this, elem, find, replace)();
+                                }
+                                break;
+                            }
+                        }
+                    },
+                    reallyReplace: function (elem, find, replace) {
+                        elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem
+                            .src = elem.src.replace(find, replace)) && (elem.style.display =
+                            'block'));
+                        var b = elem.querySelector("param[name='movie']");
+                        this.reloadPlugin(elem);
+                    },
+                    reloadPlugin: function (elem) {
+                        var nextSibling = elem.nextSibling;
+                        var parentNode = elem.parentNode;
+                        parentNode.removeChild(elem);
+                        var newElem = elem.cloneNode(true);
+                        this.done.push(newElem);
+                        if (nextSibling) {
+                            parentNode.insertBefore(newElem, nextSibling);
+                        } else {
+                            parentNode.appendChild(newElem);
+                        }
+                    },
+                    init: function () {
+                        var handler = this.animationsHandler.bind(this);
+                        document.body.addEventListener('webkitAnimationStart', handler, false);
+                        document.body.addEventListener('msAnimationStart', handler, false);
+                        document.body.addEventListener('oAnimationStart', handler, false);
+                        document.body.addEventListener('animationstart', handler, false);
+                        this.addAnimations();
+                    }
+                };
+                new A().init();
+            })();
+        }
+        //remove baidu search ad
+        if (document.URL.indexOf('www.baidu.com') >= 0) {
+            if (document && document.getElementsByTagName && document.getElementById && document.body) {
+                var aa = function () {
+                    var all = document.body.querySelectorAll("#content_left div,#content_left table");
+                    for (var i = 0; i < all.length; i++) {
+                        if (/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
+                    }
+                    all = document.body.querySelectorAll('.result.c-container[id="1"]');
+                    //if(all.length == 1) return;
+                    for (var i = 0; i < all.length; i++) {
+                        if (all[i].innerHTML && all[i].innerHTML.indexOf('广告') > -1) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
                     }
                 }
-            },
-            reallyReplace: function(elem, find, replace) {
-                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
-                var b = elem.querySelector("param[name='movie']");
-                this.reloadPlugin(elem);
-            },
-            reloadPlugin: function(elem) {
-                var nextSibling = elem.nextSibling;
-                var parentNode = elem.parentNode;
-                parentNode.removeChild(elem);
-                var newElem = elem.cloneNode(true);
-                this.done.push(newElem);
-                if(nextSibling) {
-                    parentNode.insertBefore(newElem, nextSibling);
+                aa();
+                document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified', aa)
+            };
+        }
+        //remove sohu video ad
+        if (document.URL.indexOf("tv.sohu.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //remove 56.com video ad
+        if (document.URL.indexOf("56.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //fore iqiyi enable html5 player function
+        if (document.URL.indexOf("iqiyi.com") >= 0) {
+            if (document.cookie.indexOf("player_forcedType=h5_VOD") == -1) {
+                document.cookie = 'player_forcedType=h5_VOD'
+                if (localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime) < 60000) {
+                    console.log('no reload')
                 } else {
-                    parentNode.appendChild(newElem);
-                }
-            },
-            init: function() {
-                var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
-                document.body.addEventListener('animationstart', handler, false);
-                this.addAnimations();
-            }
-        };
-        new A().init();
-    })();
-}
-//remove baidu search ad
-if(document.URL.indexOf('www.baidu.com') >= 0){
-    if(document && document.getElementsByTagName && document.getElementById && document.body){
-        var aa = function(){
-            var all = document.body.querySelectorAll("#content_left div,#content_left table");
-            for(var i = 0; i < all.length; i++){
-                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
-            }
-            all = document.body.querySelectorAll('.result.c-container[id="1"]');
-            //if(all.length == 1) return;
-            for(var i = 0; i < all.length; i++){
-                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
-                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                    location.reload()
+                    localStorage.reloadTime = Date.now();
                 }
             }
         }
-        aa();
-        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
-    };
-}
-//remove sohu video ad
-if (document.URL.indexOf("tv.sohu.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//remove 56.com video ad
-if (document.URL.indexOf("56.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//fore iqiyi enable html5 player function
-if (document.URL.indexOf("iqiyi.com") >= 0){
-    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
-        document.cookie='player_forcedType=h5_VOD'
-        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
-            console.log('no reload')
-        }else{
-            location.reload()
-            localStorage.reloadTime = Date.now();
+    </script>
+    <style type="text/css">
+        object,
+        embed {
+            -webkit-animation-duration: .001s;
+            -webkit-animation-name: playerInserted;
+            -ms-animation-duration: .001s;
+            -ms-animation-name: playerInserted;
+            -o-animation-duration: .001s;
+            -o-animation-name: playerInserted;
+            animation-duration: .001s;
+            animation-name: playerInserted;
         }
-    }
-}
-</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+
+        @-webkit-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-ms-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
 <body>
-<div class="nav" style="height: 81px;">
-    <div class="logo">
-        
-            珠峰架构师成长计划
-        
-    </div>
-<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
+    <div class="warpper">
 
+        <div class="page-toc">
+            <ul>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t0React%E5%9F%BA%E7%A1%80%E7%AF%87">React基础篇</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t11.%E4%BB%80%E4%B9%88%E6%98%AFReact?">1.什么是React?</a>
+                        </li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t22.%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5">2.组件化的概念</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t33.%E8%B7%91%E9%80%9Areact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">3.跑通react开发环境</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t44.%E7%AE%80%E4%BB%8BJSX">4.简介JSX</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t55.createElement">5.createElement</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t66.react%E5%85%83%E7%B4%A0/JSX%E5%85%83%E7%B4%A0">6.react元素/JSX元素</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t77.%E6%A8%A1%E6%8B%9Frender%E5%AE%9E%E7%8E%B0">7.模拟render实现</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t88.JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%94%A8%E6%B3%95">8.JSX表达式的用法</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t99.JSX%E5%B1%9E%E6%80%A7">9.JSX属性</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1010.%E7%BB%84%E4%BB%B6%E7%9A%84%E7%89%B9%E7%82%B9%E5%A3%B0%E6%98%8E%E6%96%B9%E5%BC%8F">10.组件的特点声明方式</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1111.%E7%BB%84%E4%BB%B6%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F">11.组件的两种定义方式</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1212.%E7%BB%84%E4%BB%B6%E4%B8%AD%E5%B1%9E%E6%80%A7%E5%92%8C%E7%8A%B6%E6%80%81%E7%9A%84%E5%8C%BA%E5%88%AB">12.组件中属性和状态的区别</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1313.%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6">13.绑定事件</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1414.%E5%B1%9E%E6%80%A7%E6%A0%A1%E9%AA%8C,%E9%BB%98%E8%AE%A4%E5%B1%9E%E6%80%A7">14.属性校验,默认属性</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1515.%E7%8A%B6%E6%80%81%E7%9A%84%E4%BD%BF%E7%94%A8">15.状态的使用</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1616.%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6">16.复合组件</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1717.%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">17.受控组件和非受控组件</a>
+                </li>
+            </ul>
+        </div>
 
-<div class="warpper">
-
-    <div class="page-toc">
-        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t0React%E5%9F%BA%E7%A1%80%E7%AF%87">React基础篇</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t11.%E4%BB%80%E4%B9%88%E6%98%AFReact?">1.什么是React?</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t22.%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5">2.组件化的概念</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t33.%E8%B7%91%E9%80%9Areact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">3.跑通react开发环境</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t44.%E7%AE%80%E4%BB%8BJSX">4.简介JSX</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t55.createElement">5.createElement</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t66.react%E5%85%83%E7%B4%A0/JSX%E5%85%83%E7%B4%A0">6.react元素/JSX元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t77.%E6%A8%A1%E6%8B%9Frender%E5%AE%9E%E7%8E%B0">7.模拟render实现</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t88.JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%94%A8%E6%B3%95">8.JSX表达式的用法</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t99.JSX%E5%B1%9E%E6%80%A7">9.JSX属性</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1010.%E7%BB%84%E4%BB%B6%E7%9A%84%E7%89%B9%E7%82%B9%E5%A3%B0%E6%98%8E%E6%96%B9%E5%BC%8F">10.组件的特点声明方式</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1111.%E7%BB%84%E4%BB%B6%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F">11.组件的两种定义方式</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1212.%E7%BB%84%E4%BB%B6%E4%B8%AD%E5%B1%9E%E6%80%A7%E5%92%8C%E7%8A%B6%E6%80%81%E7%9A%84%E5%8C%BA%E5%88%AB">12.组件中属性和状态的区别</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1313.%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6">13.绑定事件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1414.%E5%B1%9E%E6%80%A7%E6%A0%A1%E9%AA%8C,%E9%BB%98%E8%AE%A4%E5%B1%9E%E6%80%A7">14.属性校验,默认属性</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1515.%E7%8A%B6%E6%80%81%E7%9A%84%E4%BD%BF%E7%94%A8">15.状态的使用</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1616.%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6">16.复合组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1717.%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">17.受控组件和非受控组件</a></li></ul>
-    </div>
-    
-    <div class="content markdown-body">
-        <h2 id="t0React基础篇">React基础篇 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t0React%E5%9F%BA%E7%A1%80%E7%AF%87"> # </a></h2>
-<h3 id="t11.什么是React?">1.什么是React? <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t11.%E4%BB%80%E4%B9%88%E6%98%AFReact?"> # </a></h3>
-<p>React 是一个用于构建用户界面的JavaScript库
-核心专注于视图,目的实现组件化开发</p>
-<h3 id="t22.组件化的概念">2.组件化的概念 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t22.%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5"> # </a></h3>
-<p>我们可以很直观的将一个复杂的页面分割成若干个独立组件,每个组件包含自己的逻辑和样式 再将这些独立组件组合完成一个复杂的页面。 这样既减少了逻辑复杂度，又实现了代码的重用</p>
-<ul>
-<li>可组合：一个组件可以和其他的组件一起使用或者可以直接嵌套在另一个组件内部</li>
-<li>可重用：每个组件都是具有独立功能的，它可以被使用在多个场景中</li>
-<li>可维护：每个小的组件仅仅包含自身的逻辑，更容易被理解和维护</li>
-</ul>
-<p><a href="https://pan.baidu.com/s/1hsivfN2">组件化</a></p>
-<h2 id="t33.跑通react开发环境">3.跑通react开发环境 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t33.%E8%B7%91%E9%80%9Areact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"> # </a></h2>
-<pre><code class="lang-js">$ npm install create-react-app -g
+        <div class="content markdown-body">
+            <h2 id="t0React基础篇">React基础篇 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t0React%E5%9F%BA%E7%A1%80%E7%AF%87">
+                    # </a></h2>
+            <h3 id="t11.什么是React?">1.什么是React? <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t11.%E4%BB%80%E4%B9%88%E6%98%AFReact?">
+                    # </a></h3>
+            <p>React 是一个用于构建用户界面的JavaScript库
+                核心专注于视图,目的实现组件化开发</p>
+            <h3 id="t22.组件化的概念">2.组件化的概念 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t22.%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5">
+                    # </a></h3>
+            <p>我们可以很直观的将一个复杂的页面分割成若干个独立组件,每个组件包含自己的逻辑和样式 再将这些独立组件组合完成一个复杂的页面。 这样既减少了逻辑复杂度，又实现了代码的重用</p>
+            <ul>
+                <li>可组合：一个组件可以和其他的组件一起使用或者可以直接嵌套在另一个组件内部</li>
+                <li>可重用：每个组件都是具有独立功能的，它可以被使用在多个场景中</li>
+                <li>可维护：每个小的组件仅仅包含自身的逻辑，更容易被理解和维护</li>
+            </ul>
+            <p><a href="https://pan.baidu.com/s/1hsivfN2">组件化</a></p>
+            <h2 id="t33.跑通react开发环境">3.跑通react开发环境 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t33.%E8%B7%91%E9%80%9Areact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">
+                    # </a></h2>
+            <pre><code class="lang-js">$ npm install create-react-app -g
 $ create-react-app &lt;project-name&gt;
 $ cd &lt;project-name&gt; &amp;&amp; npm start
 </code></pre>
-<p>默认会自动安装React,react由两部分组成,分别是:</p>
-<ul>
-<li>react.js 是 React 的核心库</li>
-<li>react-dom.js 是提供与DOM相关的功能,会在window下增加ReactDOM属性,内部比较重要的方法是render,将react元素或者react组件插入到页面中。</li>
-</ul>
-<h2 id="t44.简介JSX">4.简介JSX <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t44.%E7%AE%80%E4%BB%8BJSX"> # </a></h2>
-<p>是一种JS和HTML混合的语法,将组件的结构、数据甚至样式都聚合在一起定义组件,会编译成普通的Javascript。
-需要注意的是JSX并不是html,在JSX中属性不能包含关键字，像class需要写成className,for需要写成htmlFor,并且属性名需要采用驼峰命名法！</p>
-<h2 id="t55.createElement">5.createElement <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t55.createElement"> # </a></h2>
-<p>JSX其实只是一种语法糖,最终会通过babel转译成createElement语法,以下代码等价</p>
-<pre><code class="lang-js">ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>姜,<span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>帅哥<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>);
+            <p>默认会自动安装React,react由两部分组成,分别是:</p>
+            <ul>
+                <li>react.js 是 React 的核心库</li>
+                <li>react-dom.js 是提供与DOM相关的功能,会在window下增加ReactDOM属性,内部比较重要的方法是render,将react元素或者react组件插入到页面中。</li>
+            </ul>
+            <h2 id="t44.简介JSX">4.简介JSX <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t44.%E7%AE%80%E4%BB%8BJSX"> #
+                </a></h2>
+            <p>是一种JS和HTML混合的语法,将组件的结构、数据甚至样式都聚合在一起定义组件,会编译成普通的Javascript。
+                需要注意的是JSX并不是html,在JSX中属性不能包含关键字，像class需要写成className,for需要写成htmlFor,并且属性名需要采用驼峰命名法！</p>
+            <h2 id="t55.createElement">5.createElement <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t55.createElement"> # </a></h2>
+            <p>JSX其实只是一种语法糖,最终会通过babel转译成createElement语法,以下代码等价</p>
+            <pre><code class="lang-js">ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>姜,<span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>帅哥<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>);
 ReactDOM.render(React.createElement(<span class="hljs-string">"div"</span>,<span class="hljs-literal">null</span>,<span class="hljs-string">"姜,"</span>,React.createElement(<span class="hljs-string">"span"</span>,<span class="hljs-literal">null</span>,<span class="hljs-string">"帅哥"</span>)));
 </code></pre>
-<p>我们一般使用React.createElement来创建一个虚拟dom元素。</p>
-<h2 id="t66.react元素/JSX元素">6.react元素/JSX元素 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t66.react%E5%85%83%E7%B4%A0/JSX%E5%85%83%E7%B4%A0"> # </a></h2>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ReactElement</span>(<span class="hljs-params">type,props</span>) </span>{
+            <p>我们一般使用React.createElement来创建一个虚拟dom元素。</p>
+            <h2 id="t66.react元素/JSX元素">6.react元素/JSX元素 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t66.react%E5%85%83%E7%B4%A0/JSX%E5%85%83%E7%B4%A0">
+                    # </a></h2>
+            <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ReactElement</span>(<span class="hljs-params">type,props</span>) </span>{
     <span class="hljs-keyword">this</span>.type = type;
     <span class="hljs-keyword">this</span>.props = props;
 }
@@ -205,9 +339,11 @@ ReactDOM.render(React.createElement(<span class="hljs-string">"div"</span>,<span
     }
 };
 </code></pre>
-<p>ReactElement就是虚拟dom的概念，具有一个type属性代表当前的节点类型，还有节点的属性props</p>
-<h2 id="t77.模拟render实现">7.模拟render实现 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t77.%E6%A8%A1%E6%8B%9Frender%E5%AE%9E%E7%8E%B0"> # </a></h2>
-<pre><code class="lang-js"><span class="hljs-keyword">let</span> render = <span class="hljs-function">(<span class="hljs-params">eleObj,container</span>)=&gt;</span>{
+            <p>ReactElement就是虚拟dom的概念，具有一个type属性代表当前的节点类型，还有节点的属性props</p>
+            <h2 id="t77.模拟render实现">7.模拟render实现 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t77.%E6%A8%A1%E6%8B%9Frender%E5%AE%9E%E7%8E%B0">
+                    # </a></h2>
+            <pre><code class="lang-js"><span class="hljs-keyword">let</span> render = <span class="hljs-function">(<span class="hljs-params">eleObj,container</span>)=&gt;</span>{
     <span class="hljs-comment">// 先取出第一层 进行创建真实dom</span>
     <span class="hljs-keyword">let</span> {type,props} = eleObj;
     <span class="hljs-keyword">let</span> elementNode = <span class="hljs-built_in">document</span>.createElement(type); <span class="hljs-comment">// 创建第一个元素</span>
@@ -233,12 +369,14 @@ ReactDOM.render(React.createElement(<span class="hljs-string">"div"</span>,<span
     container.appendChild(elementNode)
 };
 </code></pre>
-<h2 id="t88.JSX表达式的用法">8.JSX表达式的用法 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t88.JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%94%A8%E6%B3%95"> # </a></h2>
-<p>1) 可以放JS的执行结果
-2) 如果换行需要用()包裹jsx代码
-3) 可以把JSX元素当作函数的返回值
-4) &lt;{来判断是表达式还是js</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t88.JSX表达式的用法">8.JSX表达式的用法 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t88.JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%94%A8%E6%B3%95">
+                    # </a></h2>
+            <p>1) 可以放JS的执行结果
+                2) 如果换行需要用()包裹jsx代码
+                3) 可以把JSX元素当作函数的返回值
+                4) &lt;{来判断是表达式还是js</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toResult</span>(<span class="hljs-params">{name,age}</span>) </span>{
@@ -251,21 +389,27 @@ ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-n
     )))}
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>,<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<p>null也是合法元素,循环时需要带key属性</p>
-<h2 id="t99.JSX属性">9.JSX属性 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t99.JSX%E5%B1%9E%E6%80%A7"> # </a></h2>
-<p>在JSX中分为普通属性和特殊属性，像class要写成className,for要写成htmlFor
-style要采用对象的方式
-dangerouslyInnerHTML插入html</p>
-<h2 id="t1010.组件的特点声明方式">10.组件的特点声明方式 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1010.%E7%BB%84%E4%BB%B6%E7%9A%84%E7%89%B9%E7%82%B9%E5%A3%B0%E6%98%8E%E6%96%B9%E5%BC%8F"> # </a></h2>
-<p>react元素是是组件组成的基本单位</p>
-<p>首字母必须大写,目的是为了和JSX元素进行区分
-组件定义后可以像JSX元素一样进行使用
-每个组件必须返回唯一的顶级JSX元素
-可以通过render方法将组件渲染成真实DOM</p>
-<h2 id="t1111.组件的两种定义方式">11.组件的两种定义方式 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1111.%E7%BB%84%E4%BB%B6%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F"> # </a></h2>
-<p>react怎么区分是组件还是jsx元素？组件名需要开头大写，react组件当作jsx来进行使用</p>
-<p>第一种方式是函数声明</p>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Build</span>(<span class="hljs-params">props</span>) </span>{
+            <p>null也是合法元素,循环时需要带key属性</p>
+            <h2 id="t99.JSX属性">9.JSX属性 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t99.JSX%E5%B1%9E%E6%80%A7"> #
+                </a></h2>
+            <p>在JSX中分为普通属性和特殊属性，像class要写成className,for要写成htmlFor
+                style要采用对象的方式
+                dangerouslyInnerHTML插入html</p>
+            <h2 id="t1010.组件的特点声明方式">10.组件的特点声明方式 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1010.%E7%BB%84%E4%BB%B6%E7%9A%84%E7%89%B9%E7%82%B9%E5%A3%B0%E6%98%8E%E6%96%B9%E5%BC%8F">
+                    # </a></h2>
+            <p>react元素是是组件组成的基本单位</p>
+            <p>首字母必须大写,目的是为了和JSX元素进行区分
+                组件定义后可以像JSX元素一样进行使用
+                每个组件必须返回唯一的顶级JSX元素
+                可以通过render方法将组件渲染成真实DOM</p>
+            <h2 id="t1111.组件的两种定义方式">11.组件的两种定义方式 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1111.%E7%BB%84%E4%BB%B6%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%AE%9A%E4%B9%89%E6%96%B9%E5%BC%8F">
+                    # </a></h2>
+            <p>react怎么区分是组件还是jsx元素？组件名需要开头大写，react组件当作jsx来进行使用</p>
+            <p>第一种方式是函数声明</p>
+            <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Build</span>(<span class="hljs-params">props</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{props.name} {props.age}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
 }
 render(&lt;div&gt;
@@ -273,23 +417,27 @@ render(&lt;div&gt;
   &lt;Build {...school2} /&gt;
 &lt;/div&gt;,window.root);
 </code></pre>
-<p>第二种方式是类声明</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Build</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <p>第二种方式是类声明</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Build</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
   render(){
       <span class="hljs-keyword">let</span> {name,age} = <span class="hljs-keyword">this</span>.props;
       <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{name} {age}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
   }
 }
 </code></pre>
-<p>类声明有状态，this，和声明周期</p>
-<h2 id="t1212.组件中属性和状态的区别">12.组件中属性和状态的区别 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1212.%E7%BB%84%E4%BB%B6%E4%B8%AD%E5%B1%9E%E6%80%A7%E5%92%8C%E7%8A%B6%E6%80%81%E7%9A%84%E5%8C%BA%E5%88%AB"> # </a></h2>
-<p>组件的数据来源有两个地方
-props 外界传递过来的(默认属性，属性校验)
-state 状态是自己的,改变状态唯一的方式就是setState
-属性和状态的变化都会影响视图更新</p>
-<h2 id="t1313.绑定事件">13.绑定事件 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1313.%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6"> # </a></h2>
-<p>给元素绑定事件，事件绑定方式</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Clock</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+            <p>类声明有状态，this，和声明周期</p>
+            <h2 id="t1212.组件中属性和状态的区别">12.组件中属性和状态的区别 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1212.%E7%BB%84%E4%BB%B6%E4%B8%AD%E5%B1%9E%E6%80%A7%E5%92%8C%E7%8A%B6%E6%80%81%E7%9A%84%E5%8C%BA%E5%88%AB">
+                    # </a></h2>
+            <p>组件的数据来源有两个地方
+                props 外界传递过来的(默认属性，属性校验)
+                state 状态是自己的,改变状态唯一的方式就是setState
+                属性和状态的变化都会影响视图更新</p>
+            <h2 id="t1313.绑定事件">13.绑定事件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1313.%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6">
+                    # </a></h2>
+            <p>给元素绑定事件，事件绑定方式</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Clock</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(){
         <span class="hljs-keyword">super</span>();
         <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">date</span>:<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toLocaleString()}
@@ -312,11 +460,15 @@ state 状态是自己的,改变状态唯一的方式就是setState
     }
 }
 </code></pre>
-<p>// 执行顺序 constructor -&gt; render -&gt; componentDidMount -&gt; setState-&gt; render - onClick-&gt; unmountComponentAtNode -&gt; componentWillUnmount -&gt; clearInterval
-ReactDOM.render(<clock>,window.root);
-给jsx元素绑定事件要注意事件中的this指向，事件名采用 on+"开头大写事件名"的方式</clock></p>
-<h2 id="t1414.属性校验,默认属性">14.属性校验,默认属性 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1414.%E5%B1%9E%E6%80%A7%E6%A0%A1%E9%AA%8C,%E9%BB%98%E8%AE%A4%E5%B1%9E%E6%80%A7"> # </a></h2>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <p>// 执行顺序 constructor -&gt; render -&gt; componentDidMount -&gt; setState-&gt; render - onClick-&gt;
+                unmountComponentAtNode -&gt; componentWillUnmount -&gt; clearInterval
+                ReactDOM.render(<clock>,window.root);
+                    给jsx元素绑定事件要注意事件中的this指向，事件名采用 on+"开头大写事件名"的方式</clock>
+            </p>
+            <h2 id="t1414.属性校验,默认属性">14.属性校验,默认属性 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1414.%E5%B1%9E%E6%80%A7%E6%A0%A1%E9%AA%8C,%E9%BB%98%E8%AE%A4%E5%B1%9E%E6%80%A7">
+                    # </a></h2>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>; <span class="hljs-comment">//引入属性校验的模块</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">School</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{ <span class="hljs-comment">// 类上的属性就叫静态属性</span>
@@ -337,8 +489,10 @@ ReactDOM.render(<clock>,window.root);
 }
 propTypes和defaultProps名字不能更改，这是react规定好的名称
 </code></pre>
-<h2 id="t1515.状态的使用">15.状态的使用 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1515.%E7%8A%B6%E6%80%81%E7%9A%84%E4%BD%BF%E7%94%A8"> # </a></h2>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <h2 id="t1515.状态的使用">15.状态的使用 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1515.%E7%8A%B6%E6%80%81%E7%9A%84%E4%BD%BF%E7%94%A8">
+                    # </a></h2>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(){
         <span class="hljs-keyword">super</span>();
         <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">count</span>:<span class="hljs-number">0</span>}
@@ -366,11 +520,13 @@ propTypes和defaultProps名字不能更改，这是react规定好的名称
 }
 ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Counter</span>/&gt;</span></span>,<span class="hljs-built_in">window</span>.root);
 </code></pre>
-<p>如果设置多个状态setState会合并，如果下一个状态依赖于上一个状态，需要写成函数的方式</p>
-<h2 id="t1616.复合组件">16.复合组件 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1616.%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6"> # </a></h2>
-<p>复合组件就是将多个组件进行组合，结构非常复杂时可以把组件分离开</p>
-<p>父子组件的通信</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Panel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <p>如果设置多个状态setState会合并，如果下一个状态依赖于上一个状态，需要写成函数的方式</p>
+            <h2 id="t1616.复合组件">16.复合组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1616.%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6">
+                    # </a></h2>
+            <p>复合组件就是将多个组件进行组合，结构非常复杂时可以把组件分离开</p>
+            <p>父子组件的通信</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Panel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render(){
         <span class="hljs-keyword">let</span> {header,body} = <span class="hljs-keyword">this</span>.props;
         <span class="hljs-keyword">return</span> (
@@ -392,9 +548,9 @@ class Header extends Component{
 let data = {header:'我非常帅',body:'长的帅'};
 ReactDOM.render(&lt;Panel {...data}/&gt;,window.root);
 </code></pre>
-<p>子父组件的通信
-通过父亲传递给儿子一个函数，儿子调用父亲的函数将值传递给父亲,父亲更新值，刷新视图</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Panel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <p>子父组件的通信
+                通过父亲传递给儿子一个函数，儿子调用父亲的函数将值传递给父亲,父亲更新值，刷新视图</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Panel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(){
         <span class="hljs-keyword">super</span>();
         <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">color</span>:<span class="hljs-string">'primary'</span>}
@@ -424,11 +580,13 @@ ReactDOM.render(&lt;Panel {...data}/&gt;,window.root);
         <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>)}
 }
 </code></pre>
-<h2 id="t1717.受控组件和非受控组件">17.受控组件和非受控组件 <a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1717.%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6"> # </a></h2>
-<p>受状态控制的组件，必须要有onChange方法，否则不能使用
-受控组件可以赋予默认值（官方推荐使用 受控组件）
-实现双向数据绑定</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Input</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <h2 id="t1717.受控组件和非受控组件">17.受控组件和非受控组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html#t1717.%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">
+                    # </a></h2>
+            <p>受状态控制的组件，必须要有onChange方法，否则不能使用
+                受控组件可以赋予默认值（官方推荐使用 受控组件）
+                实现双向数据绑定</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Input</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(){
         <span class="hljs-keyword">super</span>();
         <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">val</span>:<span class="hljs-string">'100'</span>}
@@ -445,8 +603,8 @@ ReactDOM.render(&lt;Panel {...data}/&gt;,window.root);
     }
 }
 </span></code></pre>
-<p>受控组件</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <p>受控组件</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(){
         <span class="hljs-keyword">super</span>();
         <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">a</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">1</span>}
@@ -469,8 +627,8 @@ ReactDOM.render(&lt;Panel {...data}/&gt;,window.root);
     }
 }
 </code></pre>
-<p>非受控组件</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <p>非受控组件</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">constructor</span>(){
         <span class="hljs-keyword">super</span>();
         <span class="hljs-keyword">this</span>.state =  {<span class="hljs-attr">result</span>:<span class="hljs-string">''</span>}
@@ -495,83 +653,80 @@ ReactDOM.render(&lt;Panel {...data}/&gt;,window.root);
 }
 </code></pre>
 
-        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+            <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>.
+                Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+        </div>
+
     </div>
-    
-</div>
 
-<script src="./27.react-1_files/jquery.js"></script>
-<script>
-$('.warpper .page-toc ul ul li a').on('click',function(){
-  $('.warpper .page-toc ul ul li a').removeClass('my-active')
-  $(this).addClass('my-active')
-})
+    <script src="./27.react-1_files/jquery.js"></script>
+    <script>
+        $('.warpper .page-toc ul ul li a').on('click', function () {
+            $('.warpper .page-toc ul ul li a').removeClass('my-active')
+            $(this).addClass('my-active')
+        })
 
-$('.logo').on('mouseenter',function(){
-  $('.nav').height('400px');
-})
-$('.nav').on('mouseleave',function(){
-  $('.nav').height('80px');
-})
-$('.logo').on('click',function(){
-  $('.nav').css('display','none');
- $('.warpper').css('padding','0px');
-})
-// if (!$('.understand-me').length) {
-  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-  //   var count = bar / 26 / 2;
-  //   var barHeight = $('.page-toc').outerHeight();
-  //   $('.page-toc li').eq(0).children('a').addClass('red');
-  //   var arr = [];
-  //   $("h1,h2,h3,h4,h5,h6").each(function () {
-  //     arr.push($(this).position().top);
-  //   });
-  //   var timer
-  //   function dark() {
-  //     clearTimeout(timer)
-  //      timer = setTimeout(function () {
-  //      var top = Math.abs($('.page-toc > ul').position().top);
-  //      var cur = $('.content').scrollTop();
-  //      for (var i = arr.length; i >= 0; i--) {
-  //        if (arr[i] <= cur) {
-  //          break;
-  //        }
-  //      }
-  //      if (i === -1) {
-  //        i = 0;
-  //      }
-  //      $('.page-toc li a').removeClass('red');
-  //      $('.page-toc li').eq(i).children('a').addClass('red');
-  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-  //    },200)
-  //   }
+        $('.logo').on('mouseenter', function () {
+            $('.nav').height('400px');
+        })
+        $('.nav').on('mouseleave', function () {
+            $('.nav').height('80px');
+        })
+        $('.logo').on('click', function () {
+            $('.nav').css('display', 'none');
+            $('.warpper').css('padding', '0px');
+        })
+        // if (!$('.understand-me').length) {
+        //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+        //   var count = bar / 26 / 2;
+        //   var barHeight = $('.page-toc').outerHeight();
+        //   $('.page-toc li').eq(0).children('a').addClass('red');
+        //   var arr = [];
+        //   $("h1,h2,h3,h4,h5,h6").each(function () {
+        //     arr.push($(this).position().top);
+        //   });
+        //   var timer
+        //   function dark() {
+        //     clearTimeout(timer)
+        //      timer = setTimeout(function () {
+        //      var top = Math.abs($('.page-toc > ul').position().top);
+        //      var cur = $('.content').scrollTop();
+        //      for (var i = arr.length; i >= 0; i--) {
+        //        if (arr[i] <= cur) {
+        //          break;
+        //        }
+        //      }
+        //      if (i === -1) {
+        //        i = 0;
+        //      }
+        //      $('.page-toc li a').removeClass('red');
+        //      $('.page-toc li').eq(i).children('a').addClass('red');
+        //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+        //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+        //    },200)
+        //   }
 
-  //   $('.content').on('scroll', dark);
-  // }
-</script>
-<style>
-
-    /* ::-webkit-scrollbar{width:14px;}
+        //   $('.content').on('scroll', dark);
+        // }
+    </script>
+    <style>
+        /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
     ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
-    .page-toc > ul .red {
-        background: #f3f3f3;
-        z-index: 1;
-        border-left: 3px solid #009a61;
-        -webkit-transition: all .2s ease;
-        transition: all .2s ease;
-        color: #000
-    }
+        .page-toc>ul .red {
+            background: #f3f3f3;
+            z-index: 1;
+            border-left: 3px solid #009a61;
+            -webkit-transition: all .2s ease;
+            transition: all .2s ease;
+            color: #000
+        }
+    </style>
 
 
+</body>
 
-
-
-</style>
-
-
-</body></html>
+</html>

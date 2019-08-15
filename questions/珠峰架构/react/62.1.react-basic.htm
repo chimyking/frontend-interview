@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <!-- saved from url=(0067)http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>珠峰架构师成长计划</title>
     <link rel="stylesheet" type="text/css" href="./62.1.react-basic_files/main.css">
-<style type="text/css" abt="234"></style><script>//console.log('a')
-</script><script>//remove 17173 video ad
-doAdblock();
-function doAdblock(){
-    (function() {
-        function A() {}
-        A.prototype = {
-            rules: {
-                '17173_in':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
-                },
-                '17173_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
-                },
-                '17173_live':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
-                },
-                '17173_live_out':{
-                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
-                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
-                }
-            },
-            _done: null,
-            get done() {
-                if(!this._done) {
-                    this._done = new Array();
-                }
-                return this._done;
-            },
-            addAnimations: function() {
-                var style = document.createElement('style');
-                style.type = 'text/css';
-                style.innerHTML = 'object,embed{\
+    <style type="text/css" abt="234"></style>
+    <script>
+        //console.log('a')
+    </script>
+    <script>
+        //remove 17173 video ad
+        doAdblock();
+
+        function doAdblock() {
+            (function () {
+                function A() {}
+                A.prototype = {
+                    rules: {
+                        '17173_in': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_in_20150522.swf"
+                        },
+                        '17173_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_out_20150522.swf"
+                        },
+                        '17173_live': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173_stream_20150522.swf"
+                        },
+                        '17173_live_out': {
+                            'find': /http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                            'replace': "http://swf.adtchrome.com/17173.out.Live.swf"
+                        }
+                    },
+                    _done: null,
+                    get done() {
+                        if (!this._done) {
+                            this._done = new Array();
+                        }
+                        return this._done;
+                    },
+                    addAnimations: function () {
+                        var style = document.createElement('style');
+                        style.type = 'text/css';
+                        style.innerHTML = 'object,embed{\
                 -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
                 -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
                 -o-animation-duration:.001s;-o-animation-name:playerInserted;\
@@ -49,173 +57,414 @@ function doAdblock(){
                 @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
                 @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
-                document.getElementsByTagName('head')[0].appendChild(style);
-            },
-            animationsHandler: function(e) {
-                if(e.animationName === 'playerInserted') {
-                    this.replace(e.target);
-                }
-            },
-            replace: function(elem) {
-                if(this.done.indexOf(elem) != -1) return;
-                this.done.push(elem);
-                var player = elem.data || elem.src;
-                if(!player) return;
-                var i, find, replace = false;
-                for(i in this.rules) {
-                    find = this.rules[i]['find'];
-                    if(find.test(player)) {
-                        replace = this.rules[i]['replace'];
-                        if('function' === typeof this.rules[i]['preHandle']) {
-                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
-                        }else{
-                            this.reallyReplace.bind(this, elem, find, replace)();
+                        document.getElementsByTagName('head')[0].appendChild(style);
+                    },
+                    animationsHandler: function (e) {
+                        if (e.animationName === 'playerInserted') {
+                            this.replace(e.target);
                         }
-                        break;
+                    },
+                    replace: function (elem) {
+                        if (this.done.indexOf(elem) != -1) return;
+                        this.done.push(elem);
+                        var player = elem.data || elem.src;
+                        if (!player) return;
+                        var i, find, replace = false;
+                        for (i in this.rules) {
+                            find = this.rules[i]['find'];
+                            if (find.test(player)) {
+                                replace = this.rules[i]['replace'];
+                                if ('function' === typeof this.rules[i]['preHandle']) {
+                                    this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                                } else {
+                                    this.reallyReplace.bind(this, elem, find, replace)();
+                                }
+                                break;
+                            }
+                        }
+                    },
+                    reallyReplace: function (elem, find, replace) {
+                        elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem
+                            .src = elem.src.replace(find, replace)) && (elem.style.display =
+                            'block'));
+                        var b = elem.querySelector("param[name='movie']");
+                        this.reloadPlugin(elem);
+                    },
+                    reloadPlugin: function (elem) {
+                        var nextSibling = elem.nextSibling;
+                        var parentNode = elem.parentNode;
+                        parentNode.removeChild(elem);
+                        var newElem = elem.cloneNode(true);
+                        this.done.push(newElem);
+                        if (nextSibling) {
+                            parentNode.insertBefore(newElem, nextSibling);
+                        } else {
+                            parentNode.appendChild(newElem);
+                        }
+                    },
+                    init: function () {
+                        var handler = this.animationsHandler.bind(this);
+                        document.body.addEventListener('webkitAnimationStart', handler, false);
+                        document.body.addEventListener('msAnimationStart', handler, false);
+                        document.body.addEventListener('oAnimationStart', handler, false);
+                        document.body.addEventListener('animationstart', handler, false);
+                        this.addAnimations();
+                    }
+                };
+                new A().init();
+            })();
+        }
+        //remove baidu search ad
+        if (document.URL.indexOf('www.baidu.com') >= 0) {
+            if (document && document.getElementsByTagName && document.getElementById && document.body) {
+                var aa = function () {
+                    var all = document.body.querySelectorAll("#content_left div,#content_left table");
+                    for (var i = 0; i < all.length; i++) {
+                        if (/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
+                    }
+                    all = document.body.querySelectorAll('.result.c-container[id="1"]');
+                    //if(all.length == 1) return;
+                    for (var i = 0; i < all.length; i++) {
+                        if (all[i].innerHTML && all[i].innerHTML.indexOf('广告') > -1) {
+                            all[i].style.display = "none";
+                            all[i].style.visibility = 'hidden';
+                        }
                     }
                 }
-            },
-            reallyReplace: function(elem, find, replace) {
-                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
-                var b = elem.querySelector("param[name='movie']");
-                this.reloadPlugin(elem);
-            },
-            reloadPlugin: function(elem) {
-                var nextSibling = elem.nextSibling;
-                var parentNode = elem.parentNode;
-                parentNode.removeChild(elem);
-                var newElem = elem.cloneNode(true);
-                this.done.push(newElem);
-                if(nextSibling) {
-                    parentNode.insertBefore(newElem, nextSibling);
+                aa();
+                document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified', aa)
+            };
+        }
+        //remove sohu video ad
+        if (document.URL.indexOf("tv.sohu.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //remove 56.com video ad
+        if (document.URL.indexOf("56.com") >= 0) {
+            if (document.cookie.indexOf("fee_status=true") == -1) {
+                document.cookie = 'fee_status=true'
+            };
+        }
+        //fore iqiyi enable html5 player function
+        if (document.URL.indexOf("iqiyi.com") >= 0) {
+            if (document.cookie.indexOf("player_forcedType=h5_VOD") == -1) {
+                document.cookie = 'player_forcedType=h5_VOD'
+                if (localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime) < 60000) {
+                    console.log('no reload')
                 } else {
-                    parentNode.appendChild(newElem);
-                }
-            },
-            init: function() {
-                var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
-                document.body.addEventListener('animationstart', handler, false);
-                this.addAnimations();
-            }
-        };
-        new A().init();
-    })();
-}
-//remove baidu search ad
-if(document.URL.indexOf('www.baidu.com') >= 0){
-    if(document && document.getElementsByTagName && document.getElementById && document.body){
-        var aa = function(){
-            var all = document.body.querySelectorAll("#content_left div,#content_left table");
-            for(var i = 0; i < all.length; i++){
-                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
-            }
-            all = document.body.querySelectorAll('.result.c-container[id="1"]');
-            //if(all.length == 1) return;
-            for(var i = 0; i < all.length; i++){
-                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
-                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                    location.reload()
+                    localStorage.reloadTime = Date.now();
                 }
             }
         }
-        aa();
-        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
-    };
-}
-//remove sohu video ad
-if (document.URL.indexOf("tv.sohu.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//remove 56.com video ad
-if (document.URL.indexOf("56.com") >= 0){
-    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
-}
-//fore iqiyi enable html5 player function
-if (document.URL.indexOf("iqiyi.com") >= 0){
-    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
-        document.cookie='player_forcedType=h5_VOD'
-        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
-            console.log('no reload')
-        }else{
-            location.reload()
-            localStorage.reloadTime = Date.now();
+    </script>
+    <style type="text/css">
+        object,
+        embed {
+            -webkit-animation-duration: .001s;
+            -webkit-animation-name: playerInserted;
+            -ms-animation-duration: .001s;
+            -ms-animation-name: playerInserted;
+            -o-animation-duration: .001s;
+            -o-animation-name: playerInserted;
+            animation-duration: .001s;
+            animation-name: playerInserted;
         }
-    }
-}
-</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+
+        @-webkit-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-ms-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes playerInserted {
+            from {
+                opacity: 0.99;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
 <body>
-<div class="nav" style="height: 81px;">
-    <div class="logo">
-        
-            珠峰架构师成长计划
-        
-    </div>
-<ul><li><a href="http://www.zhufengpeixun.cn/architecture/index.html">0.Async</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.editor.html">0.editor</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/0.module.html">0.module</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/1.ES2015.html">1.ES2015</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/2.Promise.html">2.Promise</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/3.Node.html">3.Node</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/4.NodeInstall.html">4.NodeInstall</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/5.REPL.html">5.REPL</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/6.NodeCore.html">6.NodeCore</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.module&amp;NPM.html">7.module&amp;NPM</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/8.Encoding.html">8.Encoding</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/9.Buffer.html">9.Buffer</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/10.fs.html">10.fs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-1.html">11.Stream-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-2.html">11.Stream-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-3.html">11.Stream-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/11.Stream-4.html">11.Stream-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12-Network-2.html">12-Network-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.NetWork-3.html">12.NetWork-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/12.Network-1.html">12.Network-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/13.tcp.html">13.tcp</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-1.html">14.http-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/14.http-2.html">14.http-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/15.compress.html">15.compress</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/16.crypto.html">16.crypto</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/17.process.html">17.process</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/18.yargs.html">18.yargs</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/19.cache.html">19.cache</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/20.action.html">20.action</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/21.https.html">21.https</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/22.cookie.html">22.cookie</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/23.session.html">23.session</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-1.html">24.express-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-2.html">24.express-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-3.html">24.express-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/24.express-4.html">24.express-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/25.koa-1.html">25.koa-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-1-basic.html">26.webpack-1-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-2-optimize.html">26.webpack-2-optimize</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-3.tapable.html">26.webpack-3.tapable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-4-AST.html">26.webpack-4-AST</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-5-source.html">26.webpack-5-source</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-6-loader.html">26.webpack-6-loader</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-7-plugin.html">26.webpack-7-plugin</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/26.webpack-8-hand.html">26.webpack-8-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-1.html">27.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-2.html">27.react-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-3.html">27.react-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-4-immutable.html">27.react-4-immutable</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-5-react-dom-diff.html">27.react-5-react-dom-diff</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/27.react-6.html">27.react-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.react-mobx.html">28.react-mobx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-0.html">28.redux-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-1.html">28.redux-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-2-%E4%B8%AD%E9%97%B4%E4%BB%B6.html">28.redux-2-中间件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-back.html">28.redux-jwt-back</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/28.redux-jwt-front.html">28.redux-jwt-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-1.html">29.mongodb-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-2.html">29.mongodb-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-3.html">29.mongodb-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-4.html">29.mongodb-4</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-5.html">29.mongodb-5</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/29.mongodb-6.html">29.mongodb-6</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-1-mysql.html">30.cms-1-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-2-mysql.html">30.cms-2-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-3-mysql.html">30.cms-3-mysql</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-4-nunjucks.html">30.cms-4-nunjucks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-5-mock.html">30.cms-5-mock</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-6-egg.html">30.cms-6-egg</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-7-api.html">30.cms-7-api</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-8-roadhog.html">30.cms-8-roadhog</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-9-yaml.html">30.cms-9-yaml</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-10-umi.html">30.cms-10-umi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-11-saga.html">30.cms-11-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-12-dva.html">30.cms-12-dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-13-dva-ant.html">30.cms-13-dva-ant</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-14-front.html">30.cms-14-front</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/30.cms-15-deploy.html">30.cms-15-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.dva.html">31.dva</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.saga.html">31.saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/33.redis.html">33.redis</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/34.unittest.html">34.unittest</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/35.jwt.html">35.jwt</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-1.html">36.websocket-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/36.websocket-2.html">36.websocket-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-1.html">38.chat-api-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-2.html">38.chat-api-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-3.html">38.chat-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat-api-3.html">38.chat-api-3</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat.html">38.chat</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/38.chat2.html">38.chat2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-0.html">39.crawl-0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-1.html">39.crawl-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/39.crawl-2.html">39.crawl-2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/40.deploy.html">40.deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/41.safe.html">41.safe</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/42.test.html">42.test</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/43.nginx.html">43.nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/44.enzyme.html">44.enzyme</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/45.docker.html">45.docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/46.elastic.html">46.elastic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/47.oauth.html">47.oauth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/48.wxpay.html">48.wxpay</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/51.typescript.html">51.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/52.UML.html">52.UML</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/53.design.html">53.design</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/index.html">index</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/54.linux.html">54.linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/57.ts.html">57.ts</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/56.react-ssr.html">56.react-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/58.ts_react.html">58.ts_react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang.html">59.ketang</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/59.ketang2.html">59.ketang2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react.html">60.react</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-1.html">60.react-1</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.1.devops-linux.html">61.1.devops-linux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.2.devops-vi.html">61.2.devops-vi</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.3.devops-user.html">61.3.devops-user</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.4.devops-auth.html">61.4.devops-auth</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.5.devops-shell.html">61.5.devops-shell</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.6.devops-install.html">61.6.devops-install</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.7.devops-system.html">61.7.devops-system</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.8.devops-service.html">61.8.devops-service</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.9.devops-network.html">61.9.devops-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.10.devops-nginx.html">61.10.devops-nginx</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.11.devops-docker.html">61.11.devops-docker</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.12.devops-jekins.html">61.12.devops-jekins</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.13.devops-groovy.html">61.13.devops-groovy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.14.devops-php.html">61.14.devops-php</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.15.devops-java.html">61.15.devops-java</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.16.devops-node.html">61.16.devops-node</a></li><li class="active"><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html">62.1.react-basic</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.2.react-state.html">62.2.react-state</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.3.react-high.html">62.3.react-high</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.4.react-hooks.html">62.4.react-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.1.redux.html">63.1.redux</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.2.redux-middleware.html">63.2.redux-middleware</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.3.redux-saga.html">63.3.redux-saga</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/63.4.redux-saga-hand.html">63.4.redux-saga-hand</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.1.router.html">64.1.router</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/64.2.router-connected.html">64.2.router-connected</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.1.typescript.html">65.1.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.2.typescript.html">65.2.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.3.typescript.html">65.3.typescript</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/65.4.antd.html">65.4.antd</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-1.vue-base.html">66-1.vue-base</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-2.vue-component.html">66-2.vue-component</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-3.vue-cli3.0.html">66-3.vue-cli3.0</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-4.$message%E7%BB%84%E4%BB%B6.html">66-4.$message组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-5.Form%E7%BB%84%E4%BB%B6.html">66-5.Form组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-6.tree.html">66-6.tree</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-7.vue-router-apply.html">66-7.vue-router-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-8.axios-apply.html">66-8.axios-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-9.vuex-apply.html">66-9.vuex-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-10.jwt-vue.html">66-10.jwt-vue</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-11.vue-ssr.html">66-11.vue-ssr</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-12.nuxt-apply.html">66-12.nuxt-apply</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-13.pwa.html">66-13.pwa</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-14.vue%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.html">66-14.vue单元测试</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/66-15.%E6%9D%83%E9%99%90%E6%A0%A1%E9%AA%8C.html">66-15.权限校验</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/67-1-network.html">67-1-network</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/68-2-wireshark.html">68-2-wireshark</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/7.npm2.html">7.npm2</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/31.cms-13-dva-antdesign.html">31.cms-13-dva-antdesign</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/69-hooks.html">69-hooks</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/70-deploy.html">70-deploy</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/61.17.devops-k8s.html">61.17.devops-k8s</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/60.react-2.html">60.react-2</a></li></ul></div>
-
-
-<div class="warpper">
-
-    <div class="page-toc">
-        <ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t01.%20%E4%BB%80%E4%B9%88%E6%98%AFReact?">1. 什么是React?</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t12.%20%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5">2. 组件化的概念</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t23.%E6%90%AD%E5%BB%BAReact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">3.搭建React开发环境</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t34.JSX">4.JSX</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t44.1%20%E4%BB%80%E4%B9%88%E6%98%AFJSX">4.1 什么是JSX</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t54.2%20%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%83%E7%B4%A0">4.2 什么是元素</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t64.3%20JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F">4.3 JSX表达式</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t74.4%20JSX%E5%B1%9E%E6%80%A7">4.4 JSX属性</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t84.5%20JSX%E4%B9%9F%E6%98%AF%E5%AF%B9%E8%B1%A1">4.5 JSX也是对象</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t94.6%20%E6%9B%B4%E6%96%B0%E5%85%83%E7%B4%A0%E6%B8%B2%E6%9F%93">4.6 更新元素渲染</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t104.7%20React%E5%8F%AA%E4%BC%9A%E6%9B%B4%E6%96%B0%E5%BF%85%E8%A6%81%E7%9A%84%E9%83%A8%E5%88%86">4.7 React只会更新必要的部分</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t115.%20%E7%BB%84%E4%BB%B6%20&amp;%20Props">5. 组件 &amp; Props</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t125.1%20%E5%87%BD%E6%95%B0(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6">5.1 函数(定义的)组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t135.2%20%E7%B1%BB(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6">5.2 类(定义的)组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t145.3%20%E7%BB%84%E4%BB%B6%E6%B8%B2%E6%9F%93">5.3 组件渲染</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t155.4%20%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6&amp;%E6%8F%90%E5%8F%96%E7%BB%84%E4%BB%B6">5.4 复合组件&amp;提取组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t165.5%20Props%E7%9A%84%E5%8F%AA%E8%AF%BB%E6%80%A7">5.5 Props的只读性</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t175.6%20%20%E8%BF%9B%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5">5.6  进类型检查</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t186.%20%E8%99%9A%E6%8B%9FDOM">6. 虚拟DOM</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t194.1%20index.js">4.1 index.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t204.2%20react.js">4.2 react.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t214.3%20element.js">4.3 element.js</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t224.4%20react-dom.js">4.4 react-dom.js</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t236.%20%E7%8A%B6%E6%80%81">6. 状态</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t246.1%20%E4%B8%8D%E8%A6%81%E7%9B%B4%E6%8E%A5%E4%BF%AE%E6%94%B9%20State">6.1 不要直接修改 State</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t256.2%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E5%8F%AF%E8%83%BD%E6%98%AF%E5%BC%82%E6%AD%A5%E7%9A%84">6.2 State 的更新可能是异步的</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t266.3%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E4%BC%9A%E8%A2%AB%E5%90%88%E5%B9%B6">6.3 State 的更新会被合并</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t276.4%20%E6%95%B0%E6%8D%AE%E6%98%AF%E5%90%91%E4%B8%8B%E6%B5%81%E5%8A%A8%E7%9A%84">6.4 数据是向下流动的</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t287.%20%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86">7. 事件处理</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t297.2%20this">7.2 this</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t307.3%20%E5%90%91%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0">7.3 向事件处理程序传递参数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t317.4%20Ref">7.4 Ref</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t327.4.1%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2">7.4.1 ref的值是一个字符串</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t337.4.2%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0">7.4.2 ref的值是一个函数</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t347.4.3%20%E4%B8%BA%20DOM%20%E5%85%83%E7%B4%A0%E6%B7%BB%E5%8A%A0%20ref">7.4.3 为 DOM 元素添加 ref</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t357.4.4%20%E4%B8%BA%20class%20%E7%BB%84%E4%BB%B6%E6%B7%BB%E5%8A%A0%20Ref">7.4.4 为 class 组件添加 Ref</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t367.4.5%20Ref%E8%BD%AC%E5%8F%91">7.4.5 Ref转发</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t378.%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">8.生命周期</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t388.1%20%E6%97%A7%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">8.1 旧版生命周期</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t398.2%20%E6%96%B0%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">8.2 新版生命周期</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t408.2.1%20getDerivedStateFromProps">8.2.1 getDerivedStateFromProps</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t418.2.2%20getSnapshotBeforeUpdate">8.2.2 getSnapshotBeforeUpdate</a></li></ul></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t429.%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">9. 条件渲染</a><ul><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t439.1%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">9.1 条件渲染</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t449.2%20%E5%88%97%E8%A1%A8&amp;Key">9.2 列表&amp;Key</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t459.3%20%E8%A1%A8%E5%8D%95%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">9.3 表单受控组件和非受控组件</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t469.4%20todoApp">9.4 todoApp</a></li></ul></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t4710.%E7%8A%B6%E6%80%81%E6%8F%90%E5%8D%87">10.状态提升</a></li><li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t48%E5%8F%82%E8%80%83">参考</a></li></ul>
-    </div>
     
-    <div class="content markdown-body">
-        <h2 id="t01. 什么是React?">1. 什么是React? <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t01.%20%E4%BB%80%E4%B9%88%E6%98%AFReact?"> # </a></h2>
-<ul>
-<li>React 是一个用于构建用户界面的JavaScript库 核心专注于视图,目的实现组件化开发</li>
-</ul>
-<h2 id="t12. 组件化的概念">2. 组件化的概念 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t12.%20%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5"> # </a></h2>
-<ul>
-<li>我们可以很直观的将一个复杂的页面分割成若干个独立组件,每个组件包含自己的逻辑和样式 再将这些独立组件组合完成一个复杂的页面。 这样既减少了逻辑复杂度，又实现了代码的重用<ul>
-<li>可组合：一个组件可以和其他的组件一起使用或者可以直接嵌套在另一个组件内部</li>
-<li>可重用：每个组件都是具有独立功能的，它可以被使用在多个场景中</li>
-<li>可维护：每个小的组件仅仅包含自身的逻辑，更容易被理解和维护</li>
-</ul>
-</li>
-</ul>
-<h2 id="t23.搭建React开发环境">3.搭建React开发环境 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t23.%E6%90%AD%E5%BB%BAReact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"> # </a></h2>
-<pre><code class="lang-js">cnpm i create-react-app -g
+
+
+    <div class="warpper">
+
+        <div class="page-toc">
+            <ul>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t01.%20%E4%BB%80%E4%B9%88%E6%98%AFReact?">1.
+                        什么是React?</a></li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t12.%20%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5">2.
+                        组件化的概念</a></li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t23.%E6%90%AD%E5%BB%BAReact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">3.搭建React开发环境</a>
+                </li>
+                <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t34.JSX">4.JSX</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t44.1%20%E4%BB%80%E4%B9%88%E6%98%AFJSX">4.1
+                                什么是JSX</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t54.2%20%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%83%E7%B4%A0">4.2
+                                什么是元素</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t64.3%20JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F">4.3
+                                JSX表达式</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t74.4%20JSX%E5%B1%9E%E6%80%A7">4.4
+                                JSX属性</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t84.5%20JSX%E4%B9%9F%E6%98%AF%E5%AF%B9%E8%B1%A1">4.5
+                                JSX也是对象</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t94.6%20%E6%9B%B4%E6%96%B0%E5%85%83%E7%B4%A0%E6%B8%B2%E6%9F%93">4.6
+                                更新元素渲染</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t104.7%20React%E5%8F%AA%E4%BC%9A%E6%9B%B4%E6%96%B0%E5%BF%85%E8%A6%81%E7%9A%84%E9%83%A8%E5%88%86">4.7
+                                React只会更新必要的部分</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t115.%20%E7%BB%84%E4%BB%B6%20&amp;%20Props">5.
+                        组件 &amp; Props</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t125.1%20%E5%87%BD%E6%95%B0(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6">5.1
+                                函数(定义的)组件</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t135.2%20%E7%B1%BB(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6">5.2
+                                类(定义的)组件</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t145.3%20%E7%BB%84%E4%BB%B6%E6%B8%B2%E6%9F%93">5.3
+                                组件渲染</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t155.4%20%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6&amp;%E6%8F%90%E5%8F%96%E7%BB%84%E4%BB%B6">5.4
+                                复合组件&amp;提取组件</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t165.5%20Props%E7%9A%84%E5%8F%AA%E8%AF%BB%E6%80%A7">5.5
+                                Props的只读性</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t175.6%20%20%E8%BF%9B%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5">5.6
+                                进类型检查</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t186.%20%E8%99%9A%E6%8B%9FDOM">6.
+                        虚拟DOM</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t194.1%20index.js">4.1
+                                index.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t204.2%20react.js">4.2
+                                react.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t214.3%20element.js">4.3
+                                element.js</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t224.4%20react-dom.js">4.4
+                                react-dom.js</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t236.%20%E7%8A%B6%E6%80%81">6.
+                        状态</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t246.1%20%E4%B8%8D%E8%A6%81%E7%9B%B4%E6%8E%A5%E4%BF%AE%E6%94%B9%20State">6.1
+                                不要直接修改 State</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t256.2%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E5%8F%AF%E8%83%BD%E6%98%AF%E5%BC%82%E6%AD%A5%E7%9A%84">6.2
+                                State 的更新可能是异步的</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t266.3%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E4%BC%9A%E8%A2%AB%E5%90%88%E5%B9%B6">6.3
+                                State 的更新会被合并</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t276.4%20%E6%95%B0%E6%8D%AE%E6%98%AF%E5%90%91%E4%B8%8B%E6%B5%81%E5%8A%A8%E7%9A%84">6.4
+                                数据是向下流动的</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t287.%20%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86">7.
+                        事件处理</a>
+                    <ul>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t297.2%20this">7.2
+                                this</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t307.3%20%E5%90%91%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0">7.3
+                                向事件处理程序传递参数</a></li>
+                        <li><a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t317.4%20Ref">7.4
+                                Ref</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t327.4.1%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2">7.4.1
+                                        ref的值是一个字符串</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t337.4.2%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0">7.4.2
+                                        ref的值是一个函数</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t347.4.3%20%E4%B8%BA%20DOM%20%E5%85%83%E7%B4%A0%E6%B7%BB%E5%8A%A0%20ref">7.4.3
+                                        为 DOM 元素添加 ref</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t357.4.4%20%E4%B8%BA%20class%20%E7%BB%84%E4%BB%B6%E6%B7%BB%E5%8A%A0%20Ref">7.4.4
+                                        为 class 组件添加 Ref</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t367.4.5%20Ref%E8%BD%AC%E5%8F%91">7.4.5
+                                        Ref转发</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t378.%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">8.生命周期</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t388.1%20%E6%97%A7%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">8.1
+                                旧版生命周期</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t398.2%20%E6%96%B0%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">8.2
+                                新版生命周期</a>
+                            <ul>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t408.2.1%20getDerivedStateFromProps">8.2.1
+                                        getDerivedStateFromProps</a></li>
+                                <li><a
+                                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t418.2.2%20getSnapshotBeforeUpdate">8.2.2
+                                        getSnapshotBeforeUpdate</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t429.%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">9.
+                        条件渲染</a>
+                    <ul>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t439.1%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">9.1
+                                条件渲染</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t449.2%20%E5%88%97%E8%A1%A8&amp;Key">9.2
+                                列表&amp;Key</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t459.3%20%E8%A1%A8%E5%8D%95%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">9.3
+                                表单受控组件和非受控组件</a></li>
+                        <li><a
+                                href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t469.4%20todoApp">9.4
+                                todoApp</a></li>
+                    </ul>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t4710.%E7%8A%B6%E6%80%81%E6%8F%90%E5%8D%87">10.状态提升</a>
+                </li>
+                <li><a
+                        href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t48%E5%8F%82%E8%80%83">参考</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content markdown-body">
+            <h2 id="t01. 什么是React?">1. 什么是React? <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t01.%20%E4%BB%80%E4%B9%88%E6%98%AFReact?">
+                    # </a></h2>
+            <ul>
+                <li>React 是一个用于构建用户界面的JavaScript库 核心专注于视图,目的实现组件化开发</li>
+            </ul>
+            <h2 id="t12. 组件化的概念">2. 组件化的概念 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t12.%20%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5">
+                    # </a></h2>
+            <ul>
+                <li>我们可以很直观的将一个复杂的页面分割成若干个独立组件,每个组件包含自己的逻辑和样式 再将这些独立组件组合完成一个复杂的页面。 这样既减少了逻辑复杂度，又实现了代码的重用<ul>
+                        <li>可组合：一个组件可以和其他的组件一起使用或者可以直接嵌套在另一个组件内部</li>
+                        <li>可重用：每个组件都是具有独立功能的，它可以被使用在多个场景中</li>
+                        <li>可维护：每个小的组件仅仅包含自身的逻辑，更容易被理解和维护</li>
+                    </ul>
+                </li>
+            </ul>
+            <h2 id="t23.搭建React开发环境">3.搭建React开发环境 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t23.%E6%90%AD%E5%BB%BAReact%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">
+                    # </a></h2>
+            <pre><code class="lang-js">cnpm i create-react-app -g
 create-react-app react2019
 cd react2019
 yarn start
 </code></pre>
-<ul>
-<li>默认会自动安装React,react由两部分组成,分别是:<ul>
-<li><code>react.js</code> 是 React 的核心库</li>
-<li><code>react-dom.js</code> 是提供与DOM相关的功能,内部比较重要的方法是render,它用来向浏览器里插入DOM元素</li>
-</ul>
-</li>
-</ul>
-<h2 id="t34.JSX">4.JSX <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t34.JSX"> # </a></h2>
-<h3 id="t44.1 什么是JSX">4.1 什么是JSX <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t44.1%20%E4%BB%80%E4%B9%88%E6%98%AFJSX"> # </a></h3>
-<ul>
-<li>是一种JS和HTML混合的语法,将组件的结构、数据甚至样式都聚合在一起定义组件</li>
-<li>JSX其实只是一种语法糖,最终会通过<a href="https://www.babeljs.cn/repl">babeljs</a>转译成<code>createElement</code>语法,以下代码等价</li>
-</ul>
-<pre><code class="lang-js">ReactDOM.render(
+            <ul>
+                <li>默认会自动安装React,react由两部分组成,分别是:<ul>
+                        <li><code>react.js</code> 是 React 的核心库</li>
+                        <li><code>react-dom.js</code> 是提供与DOM相关的功能,内部比较重要的方法是render,它用来向浏览器里插入DOM元素</li>
+                    </ul>
+                </li>
+            </ul>
+            <h2 id="t34.JSX">4.JSX <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t34.JSX"> # </a></h2>
+            <h3 id="t44.1 什么是JSX">4.1 什么是JSX <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t44.1%20%E4%BB%80%E4%B9%88%E6%98%AFJSX">
+                    # </a></h3>
+            <ul>
+                <li>是一种JS和HTML混合的语法,将组件的结构、数据甚至样式都聚合在一起定义组件</li>
+                <li>JSX其实只是一种语法糖,最终会通过<a
+                        href="https://www.babeljs.cn/repl">babeljs</a>转译成<code>createElement</code>语法,以下代码等价</li>
+            </ul>
+            <pre><code class="lang-js">ReactDOM.render(
   <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>,
   <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
 </code></pre>
-<h3 id="t54.2 什么是元素">4.2 什么是元素 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t54.2%20%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%83%E7%B4%A0"> # </a></h3>
-<ul>
-<li>元素是构成 React 应用的最小单位</li>
-<li>元素用来描述你在屏幕上看到的内容</li>
-<li>React当中的元素事实上是普通的JS对象,ReactDOM来确保浏览器中的DOM数据和React元素保持一致</li>
-</ul>
-<pre><code class="lang-js">&lt;h1 className="title" style={{color:'red'}}&gt;hello&lt;/h1&gt;
+            <h3 id="t54.2 什么是元素">4.2 什么是元素 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t54.2%20%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%83%E7%B4%A0">
+                    # </a></h3>
+            <ul>
+                <li>元素是构成 React 应用的最小单位</li>
+                <li>元素用来描述你在屏幕上看到的内容</li>
+                <li>React当中的元素事实上是普通的JS对象,ReactDOM来确保浏览器中的DOM数据和React元素保持一致</li>
+            </ul>
+            <pre><code class="lang-js">&lt;h1 className="title" style={{color:'red'}}&gt;hello&lt;/h1&gt;
 </code></pre>
-<pre><code class="lang-js">React.createElement(<span class="hljs-string">"h1"</span>, {
+            <pre><code class="lang-js">React.createElement(<span class="hljs-string">"h1"</span>, {
   <span class="hljs-attr">className</span>: <span class="hljs-string">"title"</span>,
   <span class="hljs-attr">style</span>: {
     <span class="hljs-attr">color</span>: <span class="hljs-string">'red'</span>
   }
 }, <span class="hljs-string">"hello"</span>);
 </code></pre>
-<p>createElement的结果</p>
-<pre><code class="lang-js">{
+            <p>createElement的结果</p>
+            <pre><code class="lang-js">{
   <span class="hljs-attr">type</span>:<span class="hljs-string">'h1'</span>,
   <span class="hljs-attr">props</span>:{
     <span class="hljs-attr">className</span>: <span class="hljs-string">"title"</span>,
@@ -226,32 +475,39 @@ yarn start
   <span class="hljs-attr">children</span>:<span class="hljs-string">"hello"</span>
 }
 </code></pre>
-<h3 id="t64.3 JSX表达式">4.3 JSX表达式 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t64.3%20JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F"> # </a></h3>
-<ul>
-<li>可以任意地在 JSX 当中使用 JavaScript 表达式，在 JSX 当中的表达式要包含在大括号里<pre><code class="lang-js"><span class="hljs-keyword">let</span> title = <span class="hljs-string">'hello'</span>;
+            <h3 id="t64.3 JSX表达式">4.3 JSX表达式 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t64.3%20JSX%E8%A1%A8%E8%BE%BE%E5%BC%8F">
+                    # </a></h3>
+            <ul>
+                <li>可以任意地在 JSX 当中使用 JavaScript 表达式，在 JSX 当中的表达式要包含在大括号里
+                    <pre><code class="lang-js"><span class="hljs-keyword">let</span> title = <span class="hljs-string">'hello'</span>;
 ReactDOM.render(
 <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>{title}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>,
 <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
 </code></pre>
-</li>
-</ul>
-<h3 id="t74.4 JSX属性">4.4 JSX属性 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t74.4%20JSX%E5%B1%9E%E6%80%A7"> # </a></h3>
-<ul>
-<li>需要注意的是JSX并不是html,在JSX中属性不能包含关键字，像class需要写成className,for需要写成htmlFor,并且属性名需要采用驼峰命名法</li>
-</ul>
-<pre><code class="lang-js">ReactDOM.render(
+                </li>
+            </ul>
+            <h3 id="t74.4 JSX属性">4.4 JSX属性 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t74.4%20JSX%E5%B1%9E%E6%80%A7">
+                    # </a></h3>
+            <ul>
+                <li>需要注意的是JSX并不是html,在JSX中属性不能包含关键字，像class需要写成className,for需要写成htmlFor,并且属性名需要采用驼峰命名法</li>
+            </ul>
+            <pre><code class="lang-js">ReactDOM.render(
   <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"title"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{color:</span>'<span class="hljs-attr">red</span>'}}&gt;</span>Hello<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>,
   <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
 </code></pre>
-<h3 id="t84.5 JSX也是对象">4.5 JSX也是对象 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t84.5%20JSX%E4%B9%9F%E6%98%AF%E5%AF%B9%E8%B1%A1"> # </a></h3>
-<ul>
-<li>可以在<code>if</code>或者 <code>for</code>语句里使用<code>JSX</code></li>
-<li>将它赋值给变量，当作参数传入，作为返回值都可以</li>
-</ul>
-<p>if中使用</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t84.5 JSX也是对象">4.5 JSX也是对象 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t84.5%20JSX%E4%B9%9F%E6%98%AF%E5%AF%B9%E8%B1%A1">
+                    # </a></h3>
+            <ul>
+                <li>可以在<code>if</code>或者 <code>for</code>语句里使用<code>JSX</code></li>
+                <li>将它赋值给变量，当作参数传入，作为返回值都可以</li>
+            </ul>
+            <p>if中使用</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">greeting</span>(<span class="hljs-params">name</span>) </span>{
     <span class="hljs-keyword">if</span> (name) {
@@ -267,8 +523,8 @@ ReactDOM.render(
     <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
   );
 </code></pre>
-<p>for中使用</p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <p>for中使用</p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">let</span> names = [<span class="hljs-string">'张三'</span>,<span class="hljs-string">'李四'</span>,<span class="hljs-string">'王五'</span>];
 <span class="hljs-keyword">let</span> elements = [];
@@ -282,12 +538,14 @@ ReactDOM.render(
     <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>)
 );
 </code></pre>
-<h3 id="t94.6 更新元素渲染">4.6 更新元素渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t94.6%20%E6%9B%B4%E6%96%B0%E5%85%83%E7%B4%A0%E6%B8%B2%E6%9F%93"> # </a></h3>
-<ul>
-<li>React 元素都是<code>immutable</code>不可变的。当元素被创建之后，你是无法改变其内容或属性的。一个元素就好像是动画里的一帧，它代表应用界面在某一时间点的样子</li>
-<li>更新界面的唯一办法是创建一个新的元素，然后将它传入<code>ReactDOM.render()</code>方法</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t94.6 更新元素渲染">4.6 更新元素渲染 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t94.6%20%E6%9B%B4%E6%96%B0%E5%85%83%E7%B4%A0%E6%B8%B2%E6%9F%93">
+                    # </a></h3>
+            <ul>
+                <li>React 元素都是<code>immutable</code>不可变的。当元素被创建之后，你是无法改变其内容或属性的。一个元素就好像是动画里的一帧，它代表应用界面在某一时间点的样子</li>
+                <li>更新界面的唯一办法是创建一个新的元素，然后将它传入<code>ReactDOM.render()</code>方法</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tick</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">const</span> element = (
@@ -299,40 +557,50 @@ ReactDOM.render(
 }
 setInterval(tick, <span class="hljs-number">1000</span>);
 </code></pre>
-<h3 id="t104.7 React只会更新必要的部分">4.7 React只会更新必要的部分 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t104.7%20React%E5%8F%AA%E4%BC%9A%E6%9B%B4%E6%96%B0%E5%BF%85%E8%A6%81%E7%9A%84%E9%83%A8%E5%88%86"> # </a></h3>
-<ul>
-<li>React DOM 首先会比较元素内容先后的不同，而在渲染过程中只会更新改变了的部分。</li>
-<li>即便我们每秒都创建了一个描述整个UI树的新元素，React DOM 也只会更新渲染文本节点中发生变化的内容</li>
-</ul>
-<h2 id="t115. 组件 &amp; Props">5. 组件 &amp; Props <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t115.%20%E7%BB%84%E4%BB%B6%20&amp;%20Props"> # </a></h2>
-<ul>
-<li>可以将UI切分成一些独立的、可复用的部件，这样你就只需专注于构建每一个单独的部件</li>
-<li>组件从概念上类似于 JavaScript 函数。它接受任意的入参（即 “props”），并返回用于描述页面展示内容的 React 元素</li>
-</ul>
-<h3 id="t125.1 函数(定义的)组件">5.1 函数(定义的)组件 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t125.1%20%E5%87%BD%E6%95%B0(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6"> # </a></h3>
-<ul>
-<li>函数组件接收一个单一的<code>props</code>对象并返回了一个React元素</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Welcome</span>(<span class="hljs-params">props</span>) </span>{
+            <h3 id="t104.7 React只会更新必要的部分">4.7 React只会更新必要的部分 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t104.7%20React%E5%8F%AA%E4%BC%9A%E6%9B%B4%E6%96%B0%E5%BF%85%E8%A6%81%E7%9A%84%E9%83%A8%E5%88%86">
+                    # </a></h3>
+            <ul>
+                <li>React DOM 首先会比较元素内容先后的不同，而在渲染过程中只会更新改变了的部分。</li>
+                <li>即便我们每秒都创建了一个描述整个UI树的新元素，React DOM 也只会更新渲染文本节点中发生变化的内容</li>
+            </ul>
+            <h2 id="t115. 组件 &amp; Props">5. 组件 &amp; Props <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t115.%20%E7%BB%84%E4%BB%B6%20&amp;%20Props">
+                    # </a></h2>
+            <ul>
+                <li>可以将UI切分成一些独立的、可复用的部件，这样你就只需专注于构建每一个单独的部件</li>
+                <li>组件从概念上类似于 JavaScript 函数。它接受任意的入参（即 “props”），并返回用于描述页面展示内容的 React 元素</li>
+            </ul>
+            <h3 id="t125.1 函数(定义的)组件">5.1 函数(定义的)组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t125.1%20%E5%87%BD%E6%95%B0(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6">
+                    # </a></h3>
+            <ul>
+                <li>函数组件接收一个单一的<code>props</code>对象并返回了一个React元素</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Welcome</span>(<span class="hljs-params">props</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, {props.name}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>;
 }
 </code></pre>
-<h3 id="t135.2 类(定义的)组件">5.2 类(定义的)组件 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t135.2%20%E7%B1%BB(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Welcome</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h3 id="t135.2 类(定义的)组件">5.2 类(定义的)组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t135.2%20%E7%B1%BB(%E5%AE%9A%E4%B9%89%E7%9A%84)%E7%BB%84%E4%BB%B6">
+                    # </a></h3>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Welcome</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
   render() {
     <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, {this.props.name}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>;
   }
 }
 </code></pre>
-<h3 id="t145.3 组件渲染">5.3 组件渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t145.3%20%E7%BB%84%E4%BB%B6%E6%B8%B2%E6%9F%93"> # </a></h3>
-<ul>
-<li>React元素不但可以是DOM标签，还可以是用户自定义的组件</li>
-<li>当 React 元素为用户自定义组件时，它会将 JSX 所接收的属性（attributes）转换为单个对象传递给组件，这个对象被称之为 <code>props</code></li>
-<li>组件名称必须以大写字母开头</li>
-<li>组件必须在使用的时候定义或引用它</li>
-<li>组件的返回值只能有一个根元素</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Welcome</span>(<span class="hljs-params">props</span>) </span>{
+            <h3 id="t145.3 组件渲染">5.3 组件渲染 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t145.3%20%E7%BB%84%E4%BB%B6%E6%B8%B2%E6%9F%93">
+                    # </a></h3>
+            <ul>
+                <li>React元素不但可以是DOM标签，还可以是用户自定义的组件</li>
+                <li>当 React 元素为用户自定义组件时，它会将 JSX 所接收的属性（attributes）转换为单个对象传递给组件，这个对象被称之为 <code>props</code></li>
+                <li>组件名称必须以大写字母开头</li>
+                <li>组件必须在使用的时候定义或引用它</li>
+                <li>组件的返回值只能有一个根元素</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Welcome</span>(<span class="hljs-params">props</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, {props.name}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>;
 }
 
@@ -342,12 +610,14 @@ ReactDOM.render(
   document.getElementById('root')
 );
 </span></code></pre>
-<h3 id="t155.4 复合组件&amp;提取组件">5.4 复合组件&amp;提取组件 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t155.4%20%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6&amp;%E6%8F%90%E5%8F%96%E7%BB%84%E4%BB%B6"> # </a></h3>
-<ul>
-<li>组件由于嵌套变得难以被修改，可复用的部分也难以被复用，所以可以把大组件切分为更小的组件</li>
-<li>当你的UI中有一部分重复使用了好几次（比如，Button、Panel、Avatar），或者其自身就足够复杂（比如，App），类似这些都是抽象成可复用组件的绝佳选择</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Panel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
+            <h3 id="t155.4 复合组件&amp;提取组件">5.4 复合组件&amp;提取组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t155.4%20%E5%A4%8D%E5%90%88%E7%BB%84%E4%BB%B6&amp;%E6%8F%90%E5%8F%96%E7%BB%84%E4%BB%B6">
+                    # </a></h3>
+            <ul>
+                <li>组件由于嵌套变得难以被修改，可复用的部分也难以被复用，所以可以把大组件切分为更小的组件</li>
+                <li>当你的UI中有一部分重复使用了好几次（比如，Button、Panel、Avatar），或者其自身就足够复杂（比如，App），类似这些都是抽象成可复用组件的绝佳选择</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Panel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span></span>{
     render(){
         <span class="hljs-keyword">let</span> {header,body} = <span class="hljs-keyword">this</span>.props;
         <span class="hljs-keyword">return</span> (
@@ -369,13 +639,15 @@ class Header extends Component{
 let data = {header:'zhufeng',body:'jiagou'};
 ReactDOM.render(&lt;Panel {...data}/&gt;,window.root);
 </code></pre>
-<h3 id="t165.5 Props的只读性">5.5 Props的只读性 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t165.5%20Props%E7%9A%84%E5%8F%AA%E8%AF%BB%E6%80%A7"> # </a></h3>
-<ul>
-<li>无论是使用函数或是类来声明一个组件，它决不能修改它自己的<code>props</code></li>
-<li><code>纯函数</code>没有改变它自己的输入值，当传入的值相同时，总是会返回相同的结果</li>
-<li>所有的React组件必须像纯函数那样使用它们的props</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-comment">//纯函数</span>
+            <h3 id="t165.5 Props的只读性">5.5 Props的只读性 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t165.5%20Props%E7%9A%84%E5%8F%AA%E8%AF%BB%E6%80%A7">
+                    # </a></h3>
+            <ul>
+                <li>无论是使用函数或是类来声明一个组件，它决不能修改它自己的<code>props</code></li>
+                <li><code>纯函数</code>没有改变它自己的输入值，当传入的值相同时，总是会返回相同的结果</li>
+                <li>所有的React组件必须像纯函数那样使用它们的props</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-comment">//纯函数</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
 }
@@ -384,12 +656,14 @@ ReactDOM.render(&lt;Panel {...data}/&gt;,window.root);
   account.total -= amount;
 }
 </code></pre>
-<h3 id="t175.6  进类型检查">5.6  进类型检查 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t175.6%20%20%E8%BF%9B%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5"> # </a></h3>
-<ul>
-<li>要在组件的 props 上进行类型检查，你只需配置特定的 propTypes 属性</li>
-<li>您可以通过配置特定的 defaultProps 属性来定义 props 的默认值：</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>;
+            <h3 id="t175.6  进类型检查">5.6 进类型检查 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t175.6%20%20%E8%BF%9B%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5">
+                    # </a></h3>
+            <ul>
+                <li>要在组件的 props 上进行类型检查，你只需配置特定的 propTypes 属性</li>
+                <li>您可以通过配置特定的 defaultProps 属性来定义 props 的默认值：</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>;
 
 MyComponent.propTypes = {
   <span class="hljs-comment">// 你可以将属性声明为 JS 原生类型，默认情况下</span>
@@ -469,7 +743,7 @@ MyComponent.propTypes = {
   })
 };
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">'prop-types'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
@@ -526,9 +800,13 @@ MyComponent.propTypes = {
 }
 ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Person</span> {<span class="hljs-attr">...person</span>}/&gt;</span>, document.getElementById('root'));
 </span></code></pre>
-<h2 id="t186. 虚拟DOM">6. 虚拟DOM <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t186.%20%E8%99%9A%E6%8B%9FDOM"> # </a></h2>
-<h3 id="t194.1 index.js">4.1 index.js <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t194.1%20index.js"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
+            <h2 id="t186. 虚拟DOM">6. 虚拟DOM <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t186.%20%E8%99%9A%E6%8B%9FDOM">
+                    # </a></h2>
+            <h3 id="t194.1 index.js">4.1 index.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t194.1%20index.js"> # </a>
+            </h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'./react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'./react-dom'</span>;
 <span class="hljs-comment">//let element = &lt;h1 className="title" style={{color:'red',fontSize:'24px'}}&gt;&lt;/h1&gt;</span>
 <span class="hljs-comment">//let element = React.createElement('h1',{className:'title',style:{color:'red',fontSize:'50px'}},'hello');</span>
@@ -544,8 +822,10 @@ ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-n
 <span class="hljs-keyword">let</span> element = React.createElement(Welcome,{<span class="hljs-attr">title</span>:<span class="hljs-string">'标题'</span>});
 ReactDOM.render(element, <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'root'</span>));
 </code></pre>
-<h3 id="t204.2 react.js">4.2 react.js <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t204.2%20react.js"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> createElement <span class="hljs-keyword">from</span> <span class="hljs-string">'./element'</span>;
+            <h3 id="t204.2 react.js">4.2 react.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t204.2%20react.js"> # </a>
+            </h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> createElement <span class="hljs-keyword">from</span> <span class="hljs-string">'./element'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span></span>{
     <span class="hljs-keyword">static</span> isReactComponent = <span class="hljs-literal">true</span>
     <span class="hljs-keyword">constructor</span>(props){
@@ -556,8 +836,10 @@ ReactDOM.render(element, <span class="hljs-built_in">document</span>.getElementB
     createElement,Component
 }
 </code></pre>
-<h3 id="t214.3 element.js">4.3 element.js <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t214.3%20element.js"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> ReactElement = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type,props</span>) </span>{
+            <h3 id="t214.3 element.js">4.3 element.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t214.3%20element.js"> #
+                </a></h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">const</span> ReactElement = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type,props</span>) </span>{
     <span class="hljs-keyword">const</span> element = {
         <span class="hljs-attr">type</span>: type,
         <span class="hljs-attr">props</span>: props,
@@ -581,8 +863,10 @@ ReactDOM.render(element, <span class="hljs-built_in">document</span>.getElementB
 }
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> createElement;
 </code></pre>
-<h3 id="t224.4 react-dom.js">4.4 react-dom.js <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t224.4%20react-dom.js"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element,container</span>)</span>{
+            <h3 id="t224.4 react-dom.js">4.4 react-dom.js <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t224.4%20react-dom.js"> #
+                </a></h3>
+            <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">element,container</span>)</span>{
     <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> element == <span class="hljs-string">'string'</span>){
       <span class="hljs-keyword">return</span> container.appendChild(<span class="hljs-built_in">document</span>.createTextNode(element))
     }
@@ -625,14 +909,16 @@ ReactDOM.render(element, <span class="hljs-built_in">document</span>.getElementB
   }
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {render};
 </code></pre>
-<h2 id="t236. 状态">6. 状态 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t236.%20%E7%8A%B6%E6%80%81"> # </a></h2>
-<ul>
-<li>组件的数据来源有两个地方，分别是属性对象和状态对象</li>
-<li>属性是父组件传递过来的(默认属性，属性校验) </li>
-<li>状态是自己内部的,改变状态唯一的方式就是<code>setState</code></li>
-<li>属性和状态的变化都会影响视图更新</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t236. 状态">6. 状态 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t236.%20%E7%8A%B6%E6%80%81">
+                    # </a></h2>
+            <ul>
+                <li>组件的数据来源有两个地方，分别是属性对象和状态对象</li>
+                <li>属性是父组件传递过来的(默认属性，属性校验) </li>
+                <li>状态是自己内部的,改变状态唯一的方式就是<code>setState</code></li>
+                <li>属性和状态的变化都会影响视图更新</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Clock</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props) {
@@ -672,11 +958,13 @@ ReactDOM.render(element, <span class="hljs-built_in">document</span>.getElementB
     document.getElementById('root')
   );
 </span></code></pre>
-<h3 id="t246.1 不要直接修改 State">6.1 不要直接修改 State <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t246.1%20%E4%B8%8D%E8%A6%81%E7%9B%B4%E6%8E%A5%E4%BF%AE%E6%94%B9%20State"> # </a></h3>
-<ul>
-<li>构造函数是唯一可以给 <code>this.state</code> 赋值的地方</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t246.1 不要直接修改 State">6.1 不要直接修改 State <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t246.1%20%E4%B8%8D%E8%A6%81%E7%9B%B4%E6%8E%A5%E4%BF%AE%E6%94%B9%20State">
+                    # </a></h3>
+            <ul>
+                <li>构造函数是唯一可以给 <code>this.state</code> 赋值的地方</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props) {
@@ -714,13 +1002,15 @@ ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;
     document.getElementById('root')
 );
 </span></code></pre>
-<h3 id="t256.2 State 的更新可能是异步的">6.2 State 的更新可能是异步的 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t256.2%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E5%8F%AF%E8%83%BD%E6%98%AF%E5%BC%82%E6%AD%A5%E7%9A%84"> # </a></h3>
-<ul>
-<li>出于性能考虑，React 可能会把多个 setState() 调用合并成一个调用</li>
-<li>因为 this.props 和 this.state 可能会异步更新，所以你不要依赖他们的值来更新下一个状态</li>
-<li>可以让 setState() 接收一个函数而不是一个对象。这个函数用上一个 state 作为第一个参数</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t256.2 State 的更新可能是异步的">6.2 State 的更新可能是异步的 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t256.2%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E5%8F%AF%E8%83%BD%E6%98%AF%E5%BC%82%E6%AD%A5%E7%9A%84">
+                    # </a></h3>
+            <ul>
+                <li>出于性能考虑，React 可能会把多个 setState() 调用合并成一个调用</li>
+                <li>因为 this.props 和 this.state 可能会异步更新，所以你不要依赖他们的值来更新下一个状态</li>
+                <li>可以让 setState() 接收一个函数而不是一个对象。这个函数用上一个 state 作为第一个参数</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props) {
@@ -756,11 +1046,13 @@ ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;
     document.getElementById('root')
 );
 </span></code></pre>
-<h3 id="t266.3 State 的更新会被合并">6.3 State 的更新会被合并 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t266.3%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E4%BC%9A%E8%A2%AB%E5%90%88%E5%B9%B6"> # </a></h3>
-<ul>
-<li>当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t266.3 State 的更新会被合并">6.3 State 的更新会被合并 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t266.3%20State%20%E7%9A%84%E6%9B%B4%E6%96%B0%E4%BC%9A%E8%A2%AB%E5%90%88%E5%B9%B6">
+                    # </a></h3>
+            <ul>
+                <li>当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props) {
@@ -797,14 +1089,16 @@ ReactDOM.render(<span class="xml"><span class="hljs-tag">&lt;
     document.getElementById('root')
 );
 </span></code></pre>
-<h3 id="t276.4 数据是向下流动的">6.4 数据是向下流动的 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t276.4%20%E6%95%B0%E6%8D%AE%E6%98%AF%E5%90%91%E4%B8%8B%E6%B5%81%E5%8A%A8%E7%9A%84"> # </a></h3>
-<ul>
-<li>不管是父组件或是子组件都无法知道某个组件是有状态的还是无状态的，并且它们也并不关心它是函数组件还是 class 组件</li>
-<li>这就是为什么称 state 为局部的或是封装的的原因,除了拥有并设置了它的组件，其他组件都无法访问</li>
-<li>任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件</li>
-<li>如果你把一个以组件构成的树想象成一个 props 的数据瀑布的话，那么每一个组件的 state 就像是在任意一点上给瀑布增加额外的水源，但是它只能向下流动</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t276.4 数据是向下流动的">6.4 数据是向下流动的 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t276.4%20%E6%95%B0%E6%8D%AE%E6%98%AF%E5%90%91%E4%B8%8B%E6%B5%81%E5%8A%A8%E7%9A%84">
+                    # </a></h3>
+            <ul>
+                <li>不管是父组件或是子组件都无法知道某个组件是有状态的还是无状态的，并且它们也并不关心它是函数组件还是 class 组件</li>
+                <li>这就是为什么称 state 为局部的或是封装的的原因,除了拥有并设置了它的组件，其他组件都无法访问</li>
+                <li>任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件</li>
+                <li>如果你把一个以组件构成的树想象成一个 props 的数据瀑布的话，那么每一个组件的 state 就像是在任意一点上给瀑布增加额外的水源，但是它只能向下流动</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props) {
@@ -839,13 +1133,15 @@ ReactDOM.render(
     document.getElementById('root')
 );
 </span></code></pre>
-<h2 id="t287. 事件处理">7. 事件处理 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t287.%20%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86"> # </a></h2>
-<ul>
-<li>React 事件的命名采用小驼峰式（camelCase），而不是纯小写。</li>
-<li>使用 JSX 语法时你需要传入一个函数作为事件处理函数，而不是一个字符串</li>
-<li>你不能通过返回 <code>false</code> 的方式阻止默认行为。你必须显式的使用<code>preventDefault</code></li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t287. 事件处理">7. 事件处理 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t287.%20%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86">
+                    # </a></h2>
+            <ul>
+                <li>React 事件的命名采用小驼峰式（camelCase），而不是纯小写。</li>
+                <li>使用 JSX 语法时你需要传入一个函数作为事件处理函数，而不是一个字符串</li>
+                <li>你不能通过返回 <code>false</code> 的方式阻止默认行为。你必须显式的使用<code>preventDefault</code></li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Link</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     handleClick(e) {
@@ -867,16 +1163,18 @@ ReactDOM.render(
     document.getElementById('root')
 );
 </span></code></pre>
-<h3 id="t297.2 this">7.2 this <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t297.2%20this"> # </a></h3>
-<ul>
-<li>你必须谨慎对待 JSX 回调函数中的 this,可以使用:<ul>
-<li>公共属性(箭头函数)</li>
-<li>匿名函数</li>
-<li>bind进行绑定</li>
-</ul>
-</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoggingButton</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h3 id="t297.2 this">7.2 this <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t297.2%20this"> # </a>
+            </h3>
+            <ul>
+                <li>你必须谨慎对待 JSX 回调函数中的 this,可以使用:<ul>
+                        <li>公共属性(箭头函数)</li>
+                        <li>匿名函数</li>
+                        <li>bind进行绑定</li>
+                    </ul>
+                </li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoggingButton</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     handleClick() {
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'this is:'</span>, <span class="hljs-keyword">this</span>);
     }
@@ -893,12 +1191,14 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h3 id="t307.3 向事件处理程序传递参数">7.3 向事件处理程序传递参数 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t307.3%20%E5%90%91%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0"> # </a></h3>
-<ul>
-<li>匿名函数</li>
-<li>bind</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoggingButton</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h3 id="t307.3 向事件处理程序传递参数">7.3 向事件处理程序传递参数 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t307.3%20%E5%90%91%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0">
+                    # </a></h3>
+            <ul>
+                <li>匿名函数</li>
+                <li>bind</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoggingButton</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     handleClick1 = <span class="hljs-function">(<span class="hljs-params">id,event</span>) =&gt;</span> {
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'id:'</span>, id);
     }
@@ -916,13 +1216,17 @@ ReactDOM.render(
     }
 }
 </span></code></pre>
-<h3 id="t317.4 Ref">7.4 Ref <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t317.4%20Ref"> # </a></h3>
-<ul>
-<li>Refs 提供了一种方式，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素</li>
-<li>在 React 渲染生命周期时，表单元素上的 value 将会覆盖 DOM 节点中的值，在非受控组件中，你经常希望 React 能赋予组件一个初始值，但是不去控制后续的更新。 在这种情况下, 你可以指定一个 defaultValue 属性，而不是 <code>value</code></li>
-</ul>
-<h4 id="t327.4.1 ref的值是一个字符串">7.4.1 ref的值是一个字符串 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t327.4.1%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2"> # </a></h4>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h3 id="t317.4 Ref">7.4 Ref <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t317.4%20Ref"> # </a></h3>
+            <ul>
+                <li>Refs 提供了一种方式，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素</li>
+                <li>在 React 渲染生命周期时，表单元素上的 value 将会覆盖 DOM 节点中的值，在非受控组件中，你经常希望 React 能赋予组件一个初始值，但是不去控制后续的更新。 在这种情况下,
+                    你可以指定一个 defaultValue 属性，而不是 <code>value</code></li>
+            </ul>
+            <h4 id="t327.4.1 ref的值是一个字符串">7.4.1 ref的值是一个字符串 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t327.4.1%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2">
+                    # </a></h4>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     handleAdd = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
         <span class="hljs-keyword">let</span> a = <span class="hljs-keyword">this</span>.refs.a.value;
         <span class="hljs-keyword">let</span> b = <span class="hljs-keyword">this</span>.refs.b.value;
@@ -938,8 +1242,10 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h4 id="t337.4.2 ref的值是一个函数">7.4.2 ref的值是一个函数 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t337.4.2%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0"> # </a></h4>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h4 id="t337.4.2 ref的值是一个函数">7.4.2 ref的值是一个函数 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t337.4.2%20ref%E7%9A%84%E5%80%BC%E6%98%AF%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0">
+                    # </a></h4>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     handleAdd = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
         <span class="hljs-keyword">let</span> a = <span class="hljs-keyword">this</span>.a.value;
         <span class="hljs-keyword">let</span> b = <span class="hljs-keyword">this</span>.b.value;
@@ -954,12 +1260,14 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h4 id="t347.4.3 为 DOM 元素添加 ref">7.4.3 为 DOM 元素添加 ref <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t347.4.3%20%E4%B8%BA%20DOM%20%E5%85%83%E7%B4%A0%E6%B7%BB%E5%8A%A0%20ref"> # </a></h4>
-<ul>
-<li>可以使用 ref 去存储 DOM 节点的引用</li>
-<li>当 ref 属性用于 HTML 元素时，构造函数中使用 React.createRef() 创建的 ref 接收底层 DOM 元素作为其 current 属性</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h4 id="t347.4.3 为 DOM 元素添加 ref">7.4.3 为 DOM 元素添加 ref <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t347.4.3%20%E4%B8%BA%20DOM%20%E5%85%83%E7%B4%A0%E6%B7%BB%E5%8A%A0%20ref">
+                    # </a></h4>
+            <ul>
+                <li>可以使用 ref 去存储 DOM 节点的引用</li>
+                <li>当 ref 属性用于 HTML 元素时，构造函数中使用 React.createRef() 创建的 ref 接收底层 DOM 元素作为其 current 属性</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sum</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props){
         <span class="hljs-keyword">super</span>(props);
         <span class="hljs-keyword">this</span>.a = React.createRef();
@@ -980,11 +1288,13 @@ ReactDOM.render(
     }
 }
 </code></pre>
-<h4 id="t357.4.4 为 class 组件添加 Ref">7.4.4 为 class 组件添加 Ref <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t357.4.4%20%E4%B8%BA%20class%20%E7%BB%84%E4%BB%B6%E6%B7%BB%E5%8A%A0%20Ref"> # </a></h4>
-<ul>
-<li>当 ref 属性用于自定义 class 组件时，ref 对象接收组件的挂载实例作为其 current 属性</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Form</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h4 id="t357.4.4 为 class 组件添加 Ref">7.4.4 为 class 组件添加 Ref <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t357.4.4%20%E4%B8%BA%20class%20%E7%BB%84%E4%BB%B6%E6%B7%BB%E5%8A%A0%20Ref">
+                    # </a></h4>
+            <ul>
+                <li>当 ref 属性用于自定义 class 组件时，ref 对象接收组件的挂载实例作为其 current 属性</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Form</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props){
         <span class="hljs-keyword">super</span>(props);
         <span class="hljs-keyword">this</span>.input = React.createRef();
@@ -1014,11 +1324,14 @@ class TextInput extends React.Component{
     }
 }
 </code></pre>
-<h4 id="t367.4.5 Ref转发">7.4.5 Ref转发 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t367.4.5%20Ref%E8%BD%AC%E5%8F%91"> # </a></h4>
-<ul>
-<li>你不能在函数组件上使用 ref 属性，因为他们没有实例</li>
-<li>Ref 转发是一项将 ref 自动地通过组件传递到其一子组件的技巧</li>
-<li>Ref 转发允许某些组件接收 ref，并将其向下传递（换句话说，“转发”它）给子组件<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Form</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+            <h4 id="t367.4.5 Ref转发">7.4.5 Ref转发 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t367.4.5%20Ref%E8%BD%AC%E5%8F%91">
+                    # </a></h4>
+            <ul>
+                <li>你不能在函数组件上使用 ref 属性，因为他们没有实例</li>
+                <li>Ref 转发是一项将 ref 自动地通过组件传递到其一子组件的技巧</li>
+                <li>Ref 转发允许某些组件接收 ref，并将其向下传递（换句话说，“转发”它）给子组件
+                    <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Form</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
   <span class="hljs-keyword">constructor</span>(props){
       <span class="hljs-keyword">super</span>(props);
       <span class="hljs-keyword">this</span>.input = React.createRef();
@@ -1040,10 +1353,10 @@ function TextInput (){
   return &lt;input/&gt;
 }
 </code></pre>
-</li>
-</ul>
-<p>使用forwardRef</p>
-<pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Form</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+                </li>
+            </ul>
+            <p>使用forwardRef</p>
+            <pre><code class="lang-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Form</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props){
         <span class="hljs-keyword">super</span>(props);
         <span class="hljs-keyword">this</span>.input = React.createRef();
@@ -1065,8 +1378,8 @@ const TextInput = React.forwardRef((props,ref)=&gt;(
     &lt;input ref={ref}/&gt;
 ));
 </code></pre>
-<p>实现</p>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createRef</span>(<span class="hljs-params"></span>)</span>{
+            <p>实现</p>
+            <pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createRef</span>(<span class="hljs-params"></span>)</span>{
     <span class="hljs-keyword">return</span> {
         <span class="hljs-attr">current</span>:<span class="hljs-literal">null</span>
     }
@@ -1099,10 +1412,14 @@ const TextInput = forwardRef((props,ref)=&gt;(
 ));
 
 </code></pre>
-<h2 id="t378.生命周期">8.生命周期 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t378.%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"> # </a></h2>
-<h3 id="t388.1 旧版生命周期">8.1 旧版生命周期 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t388.1%20%E6%97%A7%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"> # </a></h3>
-<p><img src="./62.1.react-basic_files/react15.jpg" alt="react15"></p>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React, {
+            <h2 id="t378.生命周期">8.生命周期 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t378.%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">
+                    # </a></h2>
+            <h3 id="t388.1 旧版生命周期">8.1 旧版生命周期 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t388.1%20%E6%97%A7%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">
+                    # </a></h3>
+            <p><img src="./62.1.react-basic_files/react15.jpg" alt="react15"></p>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React, {
     Component,
     useState,
     useImperativeHandle,
@@ -1194,13 +1511,17 @@ ReactDOM.render(<span class="hljs-tag">&lt;<span class="hljs-name">Counter</span
 // 卸载
 // componentWillUnmount
 </span></code></pre>
-<h3 id="t398.2 新版生命周期">8.2 新版生命周期 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t398.2%20%E6%96%B0%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"> # </a></h3>
-<p><img src="./62.1.react-basic_files/react16.jpg" alt="react16"></p>
-<h4 id="t408.2.1 getDerivedStateFromProps">8.2.1 getDerivedStateFromProps <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t408.2.1%20getDerivedStateFromProps"> # </a></h4>
-<ul>
-<li>static getDerivedStateFromProps(props, state) 这个生命周期的功能实际上就是将传入的props映射到state上面</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h3 id="t398.2 新版生命周期">8.2 新版生命周期 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t398.2%20%E6%96%B0%E7%89%88%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">
+                    # </a></h3>
+            <p><img src="./62.1.react-basic_files/react16.jpg" alt="react16"></p>
+            <h4 id="t408.2.1 getDerivedStateFromProps">8.2.1 getDerivedStateFromProps <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t408.2.1%20getDerivedStateFromProps">
+                    # </a></h4>
+            <ul>
+                <li>static getDerivedStateFromProps(props, state) 这个生命周期的功能实际上就是将传入的props映射到state上面</li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{ 
     <span class="hljs-keyword">static</span> defaultProps = {
@@ -1256,11 +1577,15 @@ ReactDOM.render(
     document.getElementById('root')
 );
 </span></code></pre>
-<h4 id="t418.2.2 getSnapshotBeforeUpdate">8.2.2 getSnapshotBeforeUpdate <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t418.2.2%20getSnapshotBeforeUpdate"> # </a></h4>
-<ul>
-<li>getSnapshotBeforeUpdate() 被调用于render之后，可以读取但无法使用DOM的时候。它使您的组件可以在可能更改之前从DOM捕获一些信息（例如滚动位置）。此生命周期返回的任何值都将作为参数传递给componentDidUpdate()</li>
-</ul>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h4 id="t418.2.2 getSnapshotBeforeUpdate">8.2.2 getSnapshotBeforeUpdate <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t418.2.2%20getSnapshotBeforeUpdate">
+                    # </a></h4>
+            <ul>
+                <li>getSnapshotBeforeUpdate()
+                    被调用于render之后，可以读取但无法使用DOM的时候。它使您的组件可以在可能更改之前从DOM捕获一些信息（例如滚动位置）。此生命周期返回的任何值都将作为参数传递给componentDidUpdate()
+                </li>
+            </ul>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ScrollingList</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
     <span class="hljs-keyword">constructor</span>(props) {
@@ -1312,28 +1637,39 @@ ReactDOM.render(
     document.getElementById('root')
 );
 </span></code></pre>
-<h2 id="t429. 条件渲染">9. 条件渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t429.%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93"> # </a></h2>
-<h3 id="t439.1 条件渲染">9.1 条件渲染 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t439.1%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93"> # </a></h3>
-<ul>
-<li>可以 if 或者条件运算符去创建元素来表现当前的状态，然后让 React 根据它们来更新 UI</li>
-<li>你可以使用变量来储存元素。 它可以帮助你有条件地渲染组件的一部分</li>
-<li>你可以使用逻辑与 (&amp;&amp;) 和三目运算符 来进行条件渲染</li>
-</ul>
-<h3 id="t449.2 列表&amp;Key">9.2 列表&amp;Key <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t449.2%20%E5%88%97%E8%A1%A8&amp;Key"> # </a></h3>
-<ul>
-<li>一个元素的 key 最好是这个元素在列表中拥有的一个独一无二的字符串</li>
-<li>key 只是在兄弟节点之间必须唯一</li>
-</ul>
-<h3 id="t459.3 表单受控组件和非受控组件">9.3 表单受控组件和非受控组件 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t459.3%20%E8%A1%A8%E5%8D%95%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6"> # </a></h3>
-<ul>
-<li>表单组件分为受控组件和非受控组件<ul>
-<li>使 React 的 state 成为唯一数据源。渲染表单的 React 组件还控制着用户输入过程中表单发生的操作。被 React 以这种方式控制取值的表单输入元素就叫做“受控组件”</li>
-<li>表单元素（如input、 textarea 和 select）之类的表单元素通常自己维护 state，并根据用户输入进行更新，这是非受控组件</li>
-</ul>
-</li>
-</ul>
-<h3 id="t469.4 todoApp">9.4 todoApp <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t469.4%20todoApp"> # </a></h3>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t429. 条件渲染">9. 条件渲染 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t429.%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">
+                    # </a></h2>
+            <h3 id="t439.1 条件渲染">9.1 条件渲染 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t439.1%20%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">
+                    # </a></h3>
+            <ul>
+                <li>可以 if 或者条件运算符去创建元素来表现当前的状态，然后让 React 根据它们来更新 UI</li>
+                <li>你可以使用变量来储存元素。 它可以帮助你有条件地渲染组件的一部分</li>
+                <li>你可以使用逻辑与 (&amp;&amp;) 和三目运算符 来进行条件渲染</li>
+            </ul>
+            <h3 id="t449.2 列表&amp;Key">9.2 列表&amp;Key <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t449.2%20%E5%88%97%E8%A1%A8&amp;Key">
+                    # </a></h3>
+            <ul>
+                <li>一个元素的 key 最好是这个元素在列表中拥有的一个独一无二的字符串</li>
+                <li>key 只是在兄弟节点之间必须唯一</li>
+            </ul>
+            <h3 id="t459.3 表单受控组件和非受控组件">9.3 表单受控组件和非受控组件 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t459.3%20%E8%A1%A8%E5%8D%95%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E5%92%8C%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6">
+                    # </a></h3>
+            <ul>
+                <li>表单组件分为受控组件和非受控组件<ul>
+                        <li>使 React 的 state 成为唯一数据源。渲染表单的 React 组件还控制着用户输入过程中表单发生的操作。被 React 以这种方式控制取值的表单输入元素就叫做“受控组件”
+                        </li>
+                        <li>表单元素（如input、 textarea 和 select）之类的表单元素通常自己维护 state，并根据用户输入进行更新，这是非受控组件</li>
+                    </ul>
+                </li>
+            </ul>
+            <h3 id="t469.4 todoApp">9.4 todoApp <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t469.4%20todoApp"> # </a>
+            </h3>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> { declareTypeAlias } <span class="hljs-keyword">from</span> <span class="hljs-string">'@babel/types'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
@@ -1385,8 +1721,10 @@ ReactDOM.render(
     document.getElementById('root')
 );
 </code></pre>
-<h2 id="t4710.状态提升">10.状态提升 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t4710.%E7%8A%B6%E6%80%81%E6%8F%90%E5%8D%87"> # </a></h2>
-<pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+            <h2 id="t4710.状态提升">10.状态提升 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t4710.%E7%8A%B6%E6%80%81%E6%8F%90%E5%8D%87">
+                    # </a></h2>
+            <pre><code class="lang-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
    <span class="hljs-keyword">constructor</span>(props){
@@ -1458,89 +1796,88 @@ ReactDOM.render(
     document.getElementById('root')
 );
 </code></pre>
-<h2 id="t48参考">参考 <a href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t48%E5%8F%82%E8%80%83"> # </a></h2>
-<ul>
-<li><a href="https://zh-hans.reactjs.org/">react文档</a></li>
-<li><a href="https://github.com/zhufengnodejs/react">react源码</a></li>
-</ul>
+            <h2 id="t48参考">参考 <a
+                    href="http://www.zhufengpeixun.cn/architecture/html/62.1.react-basic.html#t48%E5%8F%82%E8%80%83"> #
+                </a></h2>
+            <ul>
+                <li><a href="https://zh-hans.reactjs.org/">react文档</a></li>
+                <li><a href="https://github.com/zhufengnodejs/react">react源码</a></li>
+            </ul>
 
-        <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>. Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+            <div class="copyright">Powered by <a href="https://github.com/jaywcjlove/idoc" target="_blank">idoc</a>.
+                Dependence <a href="https://nodejs.org/">Node.js</a> run.</div>
+        </div>
+
     </div>
-    
-</div>
 
-<script src="./62.1.react-basic_files/jquery.js"></script>
-<script>
-$('.warpper .page-toc ul ul li a').on('click',function(){
-  $('.warpper .page-toc ul ul li a').removeClass('my-active')
-  $(this).addClass('my-active')
-})
+    <script src="./62.1.react-basic_files/jquery.js"></script>
+    <script>
+        $('.warpper .page-toc ul ul li a').on('click', function () {
+            $('.warpper .page-toc ul ul li a').removeClass('my-active')
+            $(this).addClass('my-active')
+        })
 
-$('.logo').on('mouseenter',function(){
-  $('.nav').height('400px');
-})
-$('.nav').on('mouseleave',function(){
-  $('.nav').height('80px');
-})
-$('.logo').on('click',function(){
-  $('.nav').css('display','none');
- $('.warpper').css('padding','0px');
-})
-// if (!$('.understand-me').length) {
-  //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
-  //   var count = bar / 26 / 2;
-  //   var barHeight = $('.page-toc').outerHeight();
-  //   $('.page-toc li').eq(0).children('a').addClass('red');
-  //   var arr = [];
-  //   $("h1,h2,h3,h4,h5,h6").each(function () {
-  //     arr.push($(this).position().top);
-  //   });
-  //   var timer
-  //   function dark() {
-  //     clearTimeout(timer)
-  //      timer = setTimeout(function () {
-  //      var top = Math.abs($('.page-toc > ul').position().top);
-  //      var cur = $('.content').scrollTop();
-  //      for (var i = arr.length; i >= 0; i--) {
-  //        if (arr[i] <= cur) {
-  //          break;
-  //        }
-  //      }
-  //      if (i === -1) {
-  //        i = 0;
-  //      }
-  //      $('.page-toc li a').removeClass('red');
-  //      $('.page-toc li').eq(i).children('a').addClass('red');
-  //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
-  //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
-  //    },200)
-  //   }
+        $('.logo').on('mouseenter', function () {
+            $('.nav').height('400px');
+        })
+        $('.nav').on('mouseleave', function () {
+            $('.nav').height('80px');
+        })
+        $('.logo').on('click', function () {
+            $('.nav').css('display', 'none');
+            $('.warpper').css('padding', '0px');
+        })
+        // if (!$('.understand-me').length) {
+        //   var bar = $(window).height() - $('.navbar ').height() - $('.page-toc').position().top;
+        //   var count = bar / 26 / 2;
+        //   var barHeight = $('.page-toc').outerHeight();
+        //   $('.page-toc li').eq(0).children('a').addClass('red');
+        //   var arr = [];
+        //   $("h1,h2,h3,h4,h5,h6").each(function () {
+        //     arr.push($(this).position().top);
+        //   });
+        //   var timer
+        //   function dark() {
+        //     clearTimeout(timer)
+        //      timer = setTimeout(function () {
+        //      var top = Math.abs($('.page-toc > ul').position().top);
+        //      var cur = $('.content').scrollTop();
+        //      for (var i = arr.length; i >= 0; i--) {
+        //        if (arr[i] <= cur) {
+        //          break;
+        //        }
+        //      }
+        //      if (i === -1) {
+        //        i = 0;
+        //      }
+        //      $('.page-toc li a').removeClass('red');
+        //      $('.page-toc li').eq(i).children('a').addClass('red');
+        //      let height = $('.page-toc li').eq(i).position().top-$('.page-toc').height(); // 如果当前的offset出去了 回到中间可好？
+        //      $('.page-toc').scrollTop(height+$('.page-toc').height()/2);
+        //    },200)
+        //   }
 
-  //   $('.content').on('scroll', dark);
-  // }
-</script>
-<style>
-
-    /* ::-webkit-scrollbar{width:14px;}
+        //   $('.content').on('scroll', dark);
+        // }
+    </script>
+    <style>
+        /* ::-webkit-scrollbar{width:14px;}
     ::-webkit-scrollbar-track{background-color:transparent;}
     ::-webkit-scrollbar-thumb{background-color:transparent;}
     ::-webkit-scrollbar-thumb:hover {background-color:transparent}
     ::-webkit-scrollbar-thumb:active {background-color:transparent} */
 
-    .page-toc > ul .red {
-        background: #f3f3f3;
-        z-index: 1;
-        border-left: 3px solid #009a61;
-        -webkit-transition: all .2s ease;
-        transition: all .2s ease;
-        color: #000
-    }
+        .page-toc>ul .red {
+            background: #f3f3f3;
+            z-index: 1;
+            border-left: 3px solid #009a61;
+            -webkit-transition: all .2s ease;
+            transition: all .2s ease;
+            color: #000
+        }
+    </style>
 
 
+</body>
 
-
-
-</style>
-
-
-</body></html>
+</html>
